@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from 'react'
 import Footer from '@/components/Footer'
-import LanguageToggle from '@/components/LanguageToggle'
 import CropCard from '@/components/CropCard'
 import FeaturePageLayout from '@/components/FeaturePageLayout'
 import { motion } from 'framer-motion'
@@ -70,11 +69,7 @@ export default function CropLibraryPage() {
 
   return (
     <FeaturePageLayout>
-      <div className="relative min-h-screen">
-        {/* Language Toggle - Top Right */}
-        <div className="absolute top-4 right-6 z-50">
-          <LanguageToggle />
-        </div>
+      <div className="min-h-screen">
         <main className="container mx-auto px-4 py-16">
         {/* Page Header */}
         <motion.div

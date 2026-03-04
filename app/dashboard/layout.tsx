@@ -27,40 +27,41 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-krishi-bg flex">
-      {/* Sidebar */}
-      <Sidebar defaultExpanded={true} />
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-screen pl-64 transition-all duration-300">
-        {/* Top Navbar */}
-        <header className="sticky top-0 z-30 bg-white shadow-sm border-b-2 border-gray-200 relative">
-          <div className="px-4 py-4 flex items-center justify-between">
-            {/* Welcome Message */}
-            <div className="flex-1">
-              <h1 className="text-xl md:text-2xl font-bold text-krishi-heading">
-                {lang === 'hi' ? 'स्वागत है' : 'Welcome back'}, {farmerProfile?.name || user?.phoneNumber} 👋
-              </h1>
-            </div>
-
-            {/* User Info (Desktop) */}
-            <div className="hidden md:flex items-center space-x-4">
-              <div className="text-right">
-                <p className="text-sm text-krishi-text/60 font-semibold">
-                  {farmerProfile?.village}, {farmerProfile?.state}
-                </p>
-                <p className="text-xs text-krishi-text/40">
-                  {farmerProfile?.primaryCrop}
-                </p>
-              </div>
-            </div>
-
-            {/* Language Toggle - Top Right */}
-            <div className="ml-4">
-              <LanguageToggle />
-            </div>
+    <div className="min-h-screen bg-krishi-bg flex flex-col">
+      {/* Sticky Top Navbar */}
+      <header className="sticky top-0 z-50 bg-white shadow-sm border-b-2 border-gray-200">
+        <div className="px-4 py-4 flex items-center justify-between">
+          {/* Left - Logo and Brand */}
+          <div className="flex items-center space-x-4">
+            <span className="text-2xl">🌾</span>
+            <span className="font-bold text-krishi-heading text-lg hidden sm:inline">KrishiKonnect</span>
           </div>
-        </header>
+
+          {/* Center - Welcome Message */}
+          <div className="flex-1 text-center hidden md:block">
+            <h1 className="text-lg md:text-xl font-bold text-krishi-heading">
+              {lang === 'hi' ? 'स्वागत है' : 'Welcome back'}, {farmerProfile?.name || user?.phoneNumber} 👋
+            </h1>
+          </div>
+
+          {/* Right - User Info and Language Toggle */}
+          <div className="flex items-center space-x-4">
+            <div className="hidden lg:block text-right">
+              <p className="text-sm text-krishi-text/60 font-semibold">
+                {farmerProfile?.village}, {farmerProfile?.state}
+              </p>
+              <p className="text-xs text-krishi-text/40">
+                {farmerProfile?.primaryCrop}
+              </p>
+            </div>
+            <LanguageToggle />
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content with Sidebar */}
+      <div className="flex flex-1">
+        <Sidebar defaultExpanded={true} />
 
         {/* Page Content */}
         <main className="flex-1">

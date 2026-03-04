@@ -36,7 +36,7 @@ export default function RootPage() {
 
   // Show landing page if not authenticated or no profile
   return (
-    <div className="min-h-screen bg-krishi-bg">
+    <div className="min-h-screen bg-krishi-bg flex flex-col">
       <LandingNavbar />
       <HeroSection />
       <FeatureGrid />

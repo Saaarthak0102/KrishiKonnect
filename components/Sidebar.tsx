@@ -63,8 +63,8 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
   }
 
   return (
-    <div
-      className={`fixed left-0 top-0 h-screen bg-white border-r-2 border-gray-200 transition-all duration-300 z-40 flex flex-col ${
+    <aside
+      className={`sticky top-16 self-start h-[calc(100vh-4rem)] bg-white border-r-2 border-gray-200 transition-all duration-300 flex flex-col ${
         expanded ? 'w-64' : 'w-16'
       }`}
       style={{
@@ -90,21 +90,22 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
       </div>
 
       {/* Navigation Menu */}
-      <nav className="flex-1 overflow-y-auto p-3 space-y-2">
+      <nav className="flex-1 overflow-y-auto p-2 space-y-1">
         {menuItems.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+            className={`flex items-center rounded-lg mx-2 transition-all duration-200 ${
+              expanded ? 'justify-start px-4 space-x-3' : 'justify-center'
+            } py-3 ${
               isActive(item.href)
-                ? 'bg-krishi-bg border-l-4'
+                ? 'bg-krishi-bg'
                 : 'hover:bg-gray-100'
             }`}
             style={
               isActive(item.href)
                 ? {
                     backgroundColor: '#FAF3E0',
-                    borderLeftColor: '#1F3C88',
                     color: '#1F3C88',
                   }
                 : {}
@@ -138,6 +139,6 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
           </button>
         </div>
       )}
-    </div>
+    </aside>
   )
 }

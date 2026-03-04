@@ -1,7 +1,6 @@
 'use client'
 
 import Footer from '@/components/Footer'
-import LanguageToggle from '@/components/LanguageToggle'
 import FeaturePageLayout from '@/components/FeaturePageLayout'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
@@ -13,11 +12,7 @@ export default function CommunityPage() {
 
   return (
     <FeaturePageLayout>
-      <div className="relative min-h-screen">
-        {/* Language Toggle - Top Right */}
-        <div className="absolute top-4 right-6 z-50">
-          <LanguageToggle />
-        </div>
+      <div className="min-h-screen">
         <main className="container mx-auto px-4 py-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
