@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import LanguageToggle from '@/components/LanguageToggle'
 import CropCard from '@/components/CropCard'
+import FeaturePageLayout from '@/components/FeaturePageLayout'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
@@ -68,9 +69,13 @@ export default function CropLibraryPage() {
   }, [searchTerm, selectedSeason, sortOrder, lang])
 
   return (
-    <div className="min-h-screen bg-krishi-bg">
-      <Navbar />
-      <main className="container mx-auto px-4 py-16">
+    <FeaturePageLayout>
+      <div className="relative min-h-screen">
+        {/* Language Toggle - Top Right */}
+        <div className="absolute top-4 right-6 z-50">
+          <LanguageToggle />
+        </div>
+        <main className="container mx-auto px-4 py-16">
         {/* Page Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -204,6 +209,7 @@ export default function CropLibraryPage() {
         )}
       </main>
       <Footer />
-    </div>
+      </div>
+    </FeaturePageLayout>
   )
 }

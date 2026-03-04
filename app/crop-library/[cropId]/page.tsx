@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from 'react'
 import { useParams } from 'next/navigation'
-import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import FeaturePageLayout from '@/components/FeaturePageLayout'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
 import Link from 'next/link'
@@ -30,28 +30,29 @@ export default function CropDetailPage() {
 
   if (!crop) {
     return (
-      <div className="min-h-screen bg-krishi-bg">
-        <Navbar />
-        <main className="container mx-auto px-4 py-16">
-          <div className="text-center py-12">
-            <h1 className="text-3xl font-bold text-krishi-heading mb-4">
-              {lang === 'hi' ? 'फसल नहीं मिली' : 'Crop Not Found'}
-            </h1>
-            <p className="text-krishi-text mb-6">
-              {lang === 'hi'
-                ? 'यह फसल उपलब्ध नहीं है।'
-                : 'This crop is not available.'}
-            </p>
-            <Link
-              href="/crop-library"
-              className="inline-block bg-krishi-primary text-white px-6 py-2 rounded-lg hover:bg-krishi-primary/90 transition-colors"
-            >
-              {lang === 'hi' ? 'वापस जाएं' : 'Go Back'}
-            </Link>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <FeaturePageLayout>
+        <div className="relative min-h-screen">
+          <main className="container mx-auto px-4 py-16">
+            <div className="text-center py-12">
+              <h1 className="text-3xl font-bold text-krishi-heading mb-4">
+                {lang === 'hi' ? 'फसल नहीं मिली' : 'Crop Not Found'}
+              </h1>
+              <p className="text-krishi-text mb-6">
+                {lang === 'hi'
+                  ? 'यह फसल उपलब्ध नहीं है।'
+                  : 'This crop is not available.'}
+              </p>
+              <Link
+                href="/crop-library"
+                className="inline-block bg-krishi-primary text-white px-6 py-2 rounded-lg hover:bg-krishi-primary/90 transition-colors"
+              >
+                {lang === 'hi' ? 'वापस जाएं' : 'Go Back'}
+              </Link>
+            </div>
+          </main>
+          <Footer />
+        </div>
+      </FeaturePageLayout>
     )
   }
 
@@ -112,10 +113,9 @@ export default function CropDetailPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-krishi-bg">
-      <Navbar />
-
-      <main className="container mx-auto px-4 py-12">
+    <FeaturePageLayout>
+      <div className="relative min-h-screen">
+        <main className="container mx-auto px-4 py-12">
         {/* Back Button */}
         <Link
           href="/crop-library"
@@ -246,6 +246,7 @@ export default function CropDetailPage() {
       </main>
 
       <Footer />
-    </div>
+      </div>
+    </FeaturePageLayout>
   )
 }

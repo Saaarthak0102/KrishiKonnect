@@ -1,11 +1,25 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { sendOTP, verifyOTP, checkFarmerProfile } from '@/lib/auth'
-import { ConfirmationResult } from 'firebase/auth'
+import { verifyOTP, checkFarmerProfile } from '@/lib/auth'
+import { ConfirmationResult, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
+import { auth } from '@/lib/firebase'
 import { useLanguage } from '@/lib/LanguageContext'
+import LanguageToggle from '@/components/LanguageToggle'
+
+/**
+ * FIREBASE TEST PHONE NUMBERS FOR DEVELOPMENT
+ * 
+ * To avoid reCAPTCHA challenges during development/testing, use Firebase test phone numbers:
+ * 
+ * Test Phone Number: +919876543210
+ * Test OTP Code: 123456
+ * 
+ * Important: Test phone numbers only work in development. For production, real phone numbers are required.
+ * Firebase will NOT trigger reCAPTCHA for test numbers.
+ */
 
 export default function LoginPage() {
   const router = useRouter()
@@ -16,17 +30,78 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null)
-  const recaptchaContainerId = useRef('recaptcha-container')
 
+  // Initialize reCAPTCHA verifier once
   useEffect(() => {
-    // Create recaptcha container
-    const container = document.getElementById(recaptchaContainerId.current)
-    if (!container) {
-      const div = document.createElement('div')
-      div.id = recaptchaContainerId.current
-      document.body.appendChild(div)
+    const w = window as any
+    
+    if (typeof window !== 'undefined' && !w.recaptchaVerifier) {
+      try {
+        w.recaptchaVerifier = new RecaptchaVerifier(
+          auth,
+          'recaptcha-container',
+          {
+            size: 'invisible',
+            callback: (response: string) => {
+              // reCAPTCHA verification succeeded silently
+              console.log('reCAPTCHA verified silently')
+            },
+            'expired-callback': () => {
+              // reCAPTCHA token expired
+              console.warn('reCAPTCHA token expired')
+              resetRecaptcha()
+            },
+            'error-callback': () => {
+              // reCAPTCHA error occurred
+              console.error('reCAPTCHA error occurred')
+              resetRecaptcha()
+            },
+          }
+        )
+      } catch (error) {
+        console.error('Failed to initialize reCAPTCHA:', error)
+      }
+    }
+
+    // Cleanup: clear verifier on unmount
+    return () => {
+      const wCleanup = window as any
+      if (wCleanup.recaptchaVerifier) {
+        try {
+          wCleanup.recaptchaVerifier.clear()
+          delete wCleanup.recaptchaVerifier
+        } catch (error) {
+          console.warn('Error clearing reCAPTCHA:', error)
+        }
+      }
     }
   }, [])
+
+  // Helper function to reset reCAPTCHA verifier
+  const resetRecaptcha = () => {
+    const w = window as any
+    
+    if (w.recaptchaVerifier) {
+      try {
+        w.recaptchaVerifier.clear()
+        delete w.recaptchaVerifier
+        
+        // Reinitialize verifier for next attempt
+        w.recaptchaVerifier = new RecaptchaVerifier(
+          auth,
+          'recaptcha-container',
+          {
+            size: 'invisible',
+            callback: (response: string) => {
+              console.log('reCAPTCHA verified silently')
+            },
+          }
+        )
+      } catch (error) {
+        console.error('Error resetting reCAPTCHA:', error)
+      }
+    }
+  }
 
   const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,11 +120,41 @@ export default function LoginPage() {
       // Format phone number for Indian numbers
       const formattedPhone = '+91' + cleanPhone.slice(-10)
 
-      const result = await sendOTP(formattedPhone, recaptchaContainerId.current)
-      setConfirmationResult(result)
-      setStep('otp')
+      // Verify reCAPTCHA verifier exists
+      const w = window as any
+      const appVerifier = w.recaptchaVerifier
+      if (!appVerifier) {
+        setError(lang === 'hi' ? 'सुरक्षा सत्यापन विफल। कृपया पृष्ठ को रीलोड करें' : 'Security verification failed. Please reload the page.')
+        setLoading(false)
+        return
+      }
+
+      try {
+        const result = await signInWithPhoneNumber(auth, formattedPhone, appVerifier)
+        setConfirmationResult(result)
+        setStep('otp')
+      } catch (phoneAuthError: any) {
+        // Handle specific reCAPTCHA errors
+        if (phoneAuthError?.code === 'auth/invalid-phone-number') {
+          setError(lang === 'hi' ? 'अमान्य फोन नंबर' : 'Invalid phone number')
+        } else if (phoneAuthError?.code === 'auth/too-many-requests') {
+          setError(lang === 'hi' ? 'बहुत सारे प्रयास। कृपया बाद में पुनः प्रयास करें' : 'Too many attempts. Please try again later.')
+          resetRecaptcha()
+        } else if (phoneAuthError?.message?.includes('reCAPTCHA')) {
+          setError(lang === 'hi' ? 'सुरक्षा सत्यापन विफल। कृपया पुनः प्रयास करें' : 'Security verification failed. Please try again.')
+          resetRecaptcha()
+        } else {
+          setError(
+            lang === 'hi'
+              ? 'OTP भेजने में त्रुटि। कृपया बाद में पुनः प्रयास करें'
+              : 'Error sending OTP. Please try again later.'
+          )
+          resetRecaptcha()
+        }
+        console.error('Phone auth error:', phoneAuthError)
+      }
     } catch (err: any) {
-      console.error('Error sending OTP:', err)
+      console.error('Error in handlePhoneSubmit:', err)
       setError(
         lang === 'hi'
           ? 'OTP भेजने में त्रुटि। कृपया बाद में पुनः प्रयास करें'
@@ -68,6 +173,7 @@ export default function LoginPage() {
     try {
       if (!confirmationResult) {
         setError(lang === 'hi' ? 'कुछ गलत हुआ। कृपया पुनः प्रयास करें' : 'Something went wrong. Please try again.')
+        setLoading(false)
         return
       }
 
@@ -77,24 +183,50 @@ export default function LoginPage() {
         return
       }
 
-      await verifyOTP(confirmationResult, otp)
+      try {
+        await verifyOTP(confirmationResult, otp)
 
-      // Check if farmer profile exists
-      const cleanPhone = phoneNumber.replace(/\D/g, '')
-      const formattedPhone = '+91' + cleanPhone.slice(-10)
-      const profileExists = await checkFarmerProfile(formattedPhone)
+        // Check if farmer profile exists
+        const cleanPhone = phoneNumber.replace(/\D/g, '')
+        const formattedPhone = '+91' + cleanPhone.slice(-10)
+        const profileExists = await checkFarmerProfile(formattedPhone)
 
-      if (profileExists) {
-        router.push('/dashboard')
-      } else {
-        router.push('/setup')
+        if (profileExists) {
+          router.push('/dashboard')
+        } else {
+          router.push('/setup')
+        }
+      } catch (otpError: any) {
+        console.error('Error verifying OTP:', otpError)
+        
+        // Reset reCAPTCHA on OTP verification failure
+        resetRecaptcha()
+        
+        // Provide specific error messages
+        if (otpError?.code === 'auth/invalid-verification-code') {
+          setError(lang === 'hi' ? 'गलत OTP। कृपया सही OTP दर्ज करें' : 'Invalid OTP. Please enter the correct OTP.')
+        } else if (otpError?.code === 'auth/code-expired') {
+          setError(lang === 'hi' ? 'OTP की वैधता समाप्त हो गई। कृपया नया OTP प्राप्त करें' : 'OTP expired. Please request a new OTP.')
+          // Return to phone entry step
+          setTimeout(() => {
+            setStep('phone')
+            setOtp('')
+            setPhoneNumber('')
+          }, 2000)
+        } else {
+          setError(
+            lang === 'hi'
+              ? 'OTP सत्यापन विफल। कृपया सही OTP दर्ज करें'
+              : 'OTP verification failed. Please enter the correct OTP.'
+          )
+        }
       }
     } catch (err: any) {
-      console.error('Error verifying OTP:', err)
+      console.error('Error in handleOtpSubmit:', err)
       setError(
         lang === 'hi'
-          ? 'OTP सत्यापन विफल। कृपया सही OTP दर्ज करें'
-          : 'OTP verification failed. Please enter the correct OTP.'
+          ? 'OTP सत्यापन विफल। कृपया पुनः प्रयास करें'
+          : 'OTP verification failed. Please try again.'
       )
     } finally {
       setLoading(false)
@@ -131,7 +263,21 @@ export default function LoginPage() {
   const t = translations[lang]
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-krishi-bg p-4">
+    <main className="min-h-screen flex items-center justify-center bg-krishi-bg p-4 relative">
+      {/* Language Toggle - Top Right */}
+      <div className="absolute top-4 right-6 z-50">
+        <LanguageToggle />
+      </div>
+      
+      {/* Development Notice - Remove in Production */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed top-4 left-4 bg-blue-100 border-l-4 border-blue-500 p-4 max-w-xs hidden md:block">
+          <p className="text-sm font-semibold text-blue-900">📝 Development Mode</p>
+          <p className="text-xs text-blue-800 mt-1">Test Phone: <code className="bg-blue-50 px-2 py-1">+919876543210</code></p>
+          <p className="text-xs text-blue-800">Test OTP: <code className="bg-blue-50 px-2 py-1">123456</code></p>
+        </div>
+      )}
+      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -146,8 +292,6 @@ export default function LoginPage() {
             {step === 'phone' ? t.subtitle : t.otpSubtitle}
           </p>
         </div>
-
-        <div id={recaptchaContainerId.current} className="mb-4"></div>
 
         {step === 'phone' ? (
           <form onSubmit={handlePhoneSubmit} className="space-y-4">
@@ -215,6 +359,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => {
+                resetRecaptcha()
                 setStep('phone')
                 setPhoneNumber('')
                 setOtp('')
@@ -226,6 +371,9 @@ export default function LoginPage() {
             </button>
           </form>
         )}
+
+        {/* reCAPTCHA container - invisible */}
+        <div id="recaptcha-container"></div>
       </motion.div>
     </main>
   )

@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { createFarmerProfile } from '@/lib/auth'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
+import LanguageToggle from '@/components/LanguageToggle'
 
 const INDIAN_STATES = [
   'Andhra Pradesh',
@@ -156,7 +157,12 @@ export default function SetupPage() {
   const t = translations[lang]
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-krishi-bg p-4">
+    <main className="min-h-screen flex items-center justify-center bg-krishi-bg p-4 relative">
+      {/* Language Toggle - Top Right */}
+      <div className="absolute top-4 right-6 z-50">
+        <LanguageToggle />
+      </div>
+      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

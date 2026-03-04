@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
+import LandingNavbar from '@/components/LandingNavbar'
 import Footer from '@/components/Footer'
 import HeroSection from '@/components/HeroSection'
 import FeatureGrid from '@/components/FeatureGrid'
@@ -36,6 +37,7 @@ export default function RootPage() {
   // Show landing page if not authenticated or no profile
   return (
     <div className="min-h-screen bg-krishi-bg">
+      <LandingNavbar />
       <HeroSection />
       <FeatureGrid />
       <HowItWorks />

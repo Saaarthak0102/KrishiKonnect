@@ -2,38 +2,15 @@
 
 import { auth, db } from './firebase'
 import {
-  signInWithPhoneNumber,
-  RecaptchaVerifier,
   ConfirmationResult,
 } from 'firebase/auth'
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
 
-// Send OTP to phone number
-export const sendOTP = async (
-  phoneNumber: string,
-  recaptchaContainerId: string
-): Promise<ConfirmationResult> => {
-  try {
-    // Initialize reCAPTCHA verifier
-    const recaptchaVerifier = new RecaptchaVerifier(
-      auth,
-      recaptchaContainerId,
-      {
-        size: 'invisible',
-        callback: (response: any) => {
-          console.log('reCAPTCHA resolved')
-        },
-      }
-    )
-
-    // Send OTP
-    const result = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier)
-    return result
-  } catch (error) {
-    console.error('Error sending OTP:', error)
-    throw error
-  }
-}
+/**
+ * NOTE: reCAPTCHA initialization and phone authentication is now handled directly in login/page.tsx
+ * to ensure a single RecaptchaVerifier instance is maintained throughout the login flow.
+ * This prevents reCAPTCHA challenges from appearing during development.
+ */
 
 // Verify OTP
 export const verifyOTP = async (confirmationResult: ConfirmationResult, otp: string) => {

@@ -10,7 +10,7 @@ export default function HeroSection() {
   const t = translations[lang]
 
   return (
-    <section className="container mx-auto px-4 py-16 md:py-24">
+    <section id="home" className="container mx-auto px-4 py-16 md:py-24">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
