@@ -7,8 +7,8 @@ export default function LanguageSelector() {
   const router = useRouter()
 
   const selectLanguage = (lang: 'hi' | 'en') => {
-    localStorage.setItem('language', lang)
-    router.push('/home')
+    localStorage.setItem('app_language', lang)
+    router.push('/login')
   }
 
   return (

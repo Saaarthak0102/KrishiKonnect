@@ -16,7 +16,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   // Load language from localStorage on mount
   useEffect(() => {
-    const savedLang = localStorage.getItem('language') as Language
+    const savedLang = localStorage.getItem('app_language') as Language
     if (savedLang === 'hi' || savedLang === 'en') {
       setLang(savedLang)
     }
@@ -25,7 +25,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const changeLang = (newLang: Language) => {
     setLang(newLang)
-    localStorage.setItem('language', newLang)
+    localStorage.setItem('app_language', newLang)
   }
 
   // Prevent hydration mismatch by not rendering until initialized

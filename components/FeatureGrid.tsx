@@ -13,37 +13,31 @@ export default function FeatureGrid() {
       icon: '📚',
       titleKey: 'cropLibrary',
       descKey: 'cropLibraryDesc',
-      route: '/crop-library'
     },
     {
       icon: '💰',
       titleKey: 'mandiPrices',
       descKey: 'mandiPricesDesc',
-      route: '/mandi'
     },
     {
       icon: '🤝',
       titleKey: 'community',
       descKey: 'communityDesc',
-      route: '/community'
     },
     {
       icon: '🚚',
       titleKey: 'transport',
       descKey: 'transportDesc',
-      route: '/transport'
     },
     {
       icon: '🤖',
       titleKey: 'aiAdvisor',
       descKey: 'aiAdvisorDesc',
-      route: '/ai-advisor'
     },
     {
       icon: '📊',
       titleKey: 'dataAnalytics',
       descKey: 'dataAnalyticsDesc',
-      route: '/home'
     }
   ]
 
@@ -59,7 +53,6 @@ export default function FeatureGrid() {
             icon={feature.icon}
             title={t[feature.titleKey as keyof typeof t] as string}
             description={t[feature.descKey as keyof typeof t] as string}
-            route={feature.route}
           />
         ))}
       </div>

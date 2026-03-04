@@ -26,7 +26,7 @@ export default function HeroSection() {
           <div className="flex flex-col sm:flex-row gap-4">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
-                href="/ai-advisor"
+                href="/login"
                 className="inline-block bg-krishi-primary text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-shadow"
               >
                 {t.startUsing}

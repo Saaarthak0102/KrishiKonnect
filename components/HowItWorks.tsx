@@ -15,7 +15,7 @@ export default function HowItWorks() {
   ]
 
   return (
-    <section className="container mx-auto px-4 py-16 bg-white/50 rounded-2xl my-16">
+    <section id="how-it-works" className="container mx-auto px-4 py-16 bg-white/50 rounded-2xl my-16">
       <h2 className="text-4xl md:text-5xl font-bold text-krishi-heading text-center mb-12">
         {t.howItWorksHeading}
       </h2>
