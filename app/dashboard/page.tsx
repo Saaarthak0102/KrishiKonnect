@@ -1,15 +1,17 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
+import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
 
 export default function DashboardPage() {
   const router = useRouter()
   const { user, farmerProfile, loading } = useAuth()
   const { lang } = useLanguage()
+  const [dashboardLoading, setDashboardLoading] = useState(true)
 
   // Handle redirect in useEffect to avoid React render phase error
   useEffect(() => {
@@ -17,6 +19,16 @@ export default function DashboardPage() {
       router.push('/')
     }
   }, [user, loading, router])
+
+  // Simulate dashboard data loading
+  useEffect(() => {
+    if (!loading && user) {
+      const timer = setTimeout(() => {
+        setDashboardLoading(false)
+      }, 800)
+      return () => clearTimeout(timer)
+    }
+  }, [loading, user])
 
   if (loading) {
     return (
@@ -31,6 +43,11 @@ export default function DashboardPage() {
 
   if (!user || !farmerProfile) {
     return null
+  }
+
+  // Show skeleton while dashboard data is loading
+  if (dashboardLoading) {
+    return <DashboardSkeleton />
   }
 
   const translations = {
@@ -98,11 +115,40 @@ export default function DashboardPage() {
 
   const t = translations[lang]
 
-  // Sample data for starred crops
+  // Sample data for starred crops (set to empty array to demonstrate empty state)
   const starredCrops = [
     { name: lang === 'hi' ? 'गेहूं' : 'Wheat', name_en: 'Wheat', price: 2350, trend: 2.3 },
     { name: lang === 'hi' ? 'मक्का' : 'Maize', name_en: 'Maize', price: 2100, trend: -1.1 },
     { name: lang === 'hi' ? 'मूंगफली' : 'Groundnut', name_en: 'Groundnut', price: 5200, trend: 0.8 },
+  ]
+
+  // Sample service activity data (set to empty array to demonstrate empty state)
+  const serviceActivities = [
+    {
+      type: 'transport',
+      icon: '🚚',
+      title: t.transportPickup,
+      details: [
+        { label: t.status, value: t.confirmed, highlight: true },
+        { label: t.pickupTime, value: `${t.tomorrow} 6 AM`, highlight: false },
+      ],
+    },
+    {
+      type: 'community',
+      icon: '🤝',
+      title: t.communityActivity,
+      details: [
+        { label: `${t.replies}: 2 ${t.responsesOnQuestion}`, value: '', highlight: false },
+      ],
+    },
+    {
+      type: 'aiAdvisor',
+      icon: '🤖',
+      title: t.aiAdvisor,
+      details: [
+        { label: `${t.lastAdvice}: ${t.fertilizerRecommendation}`, value: '', highlight: false },
+      ],
+    },
   ]
 
   return (
@@ -194,8 +240,7 @@ export default function DashboardPage() {
         className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
       >
         <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
-          <span>☀️</span>
-          {t.weatherToday}
+          🌤 {t.weatherToday}
         </h3>
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -227,58 +272,41 @@ export default function DashboardPage() {
           transition={{ duration: 0.4, delay: 0.2 }}
           className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
         >
-          <h3 className="text-xl font-bold text-krishi-heading mb-4">
-            {t.recentServices}
+          <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
+            🚚 {t.recentServices}
           </h3>
           
           <div className="space-y-4">
-            {/* Transport Activity */}
-            <div className="p-4 bg-[#FAF3E0]/50 rounded-lg border border-gray-200">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">🚚</span>
-                <div className="flex-1">
-                  <p className="font-semibold text-krishi-heading mb-1">
-                    {t.transportPickup}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {t.status}: <span className="text-[#7FB069] font-semibold">{t.confirmed}</span>
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {t.pickupTime}: {t.tomorrow} 6 AM
-                  </p>
+            {serviceActivities.length === 0 ? (
+              <p className="text-sm text-gray-500 py-4">
+                {lang === 'hi' 
+                  ? 'अभी तक कोई सेवा का उपयोग नहीं किया गया। परिवहन बुक करें या AI सलाहकार से पूछें।'
+                  : 'No services used yet. Book transport or ask the AI advisor.'}
+              </p>
+            ) : (
+              serviceActivities.map((activity, index) => (
+                <div key={index} className="p-4 bg-[#FAF3E0]/50 rounded-lg border border-gray-200">
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">{activity.icon}</span>
+                    <div className="flex-1">
+                      <p className="font-semibold text-krishi-heading mb-1">
+                        {activity.title}
+                      </p>
+                      {activity.details.map((detail, idx) => (
+                        <p key={idx} className="text-sm text-gray-600">
+                          {detail.label}
+                          {detail.value && (
+                            <>
+                              : <span className={detail.highlight ? 'text-[#7FB069] font-semibold' : ''}>{detail.value}</span>
+                            </>
+                          )}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Community Activity */}
-            <div className="p-4 bg-[#FAF3E0]/50 rounded-lg border border-gray-200">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">🤝</span>
-                <div className="flex-1">
-                  <p className="font-semibold text-krishi-heading mb-1">
-                    {t.communityActivity}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {t.replies}: <span className="font-semibold">2</span> {t.responsesOnQuestion}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* AI Advisor Activity */}
-            <div className="p-4 bg-[#FAF3E0]/50 rounded-lg border border-gray-200">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">🤖</span>
-                <div className="flex-1">
-                  <p className="font-semibold text-krishi-heading mb-1">
-                    {t.aiAdvisor}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {t.lastAdvice}: {t.fertilizerRecommendation}
-                  </p>
-                </div>
-              </div>
-            </div>
+              ))
+            )}
           </div>
         </motion.div>
 
@@ -289,33 +317,41 @@ export default function DashboardPage() {
           transition={{ duration: 0.4, delay: 0.3 }}
           className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
         >
-          <h3 className="text-xl font-bold text-krishi-heading mb-4">
-            {t.starredCrops}
+          <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
+            📈 {t.starredCrops}
           </h3>
           
           <div className="space-y-3">
-            {starredCrops.map((crop, index) => (
-              <div
-                key={index}
-                className="p-4 bg-gradient-to-r from-[#FAF3E0]/50 to-white rounded-lg border border-gray-200 hover:border-[#B85C38]/30 transition-colors"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <p className="font-semibold text-krishi-heading text-lg">
-                    {crop.name}
+            {starredCrops.length === 0 ? (
+              <p className="text-sm text-gray-500 py-4">
+                {lang === 'hi'
+                  ? 'अभी तक कोई फसल तारांकित नहीं की गई। मंडी की कीमतों को ट्रैक करने के लिए फसल पुस्तकालय से फसलों को तारांकित करें।'
+                  : 'No starred crops yet. Star crops from the Crop Library to track mandi prices.'}
+              </p>
+            ) : (
+              starredCrops.map((crop, index) => (
+                <div
+                  key={index}
+                  className="p-4 bg-gradient-to-r from-[#FAF3E0]/50 to-white rounded-lg border border-gray-200 hover:border-[#B85C38]/30 transition-colors"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="font-semibold text-krishi-heading text-lg">
+                      {crop.name}
+                    </p>
+                    <span
+                      className={`text-sm font-bold ${
+                        crop.trend > 0 ? 'text-[#7FB069]' : 'text-red-500'
+                      }`}
+                    >
+                      {crop.trend > 0 ? '↗' : '↘'} {Math.abs(crop.trend)}%
+                    </span>
+                  </div>
+                  <p className="text-xl font-bold text-[#1F3C88]">
+                    ₹{crop.price.toLocaleString()} <span className="text-sm font-normal text-gray-600">/ {t.quintal}</span>
                   </p>
-                  <span
-                    className={`text-sm font-bold ${
-                      crop.trend > 0 ? 'text-[#7FB069]' : 'text-red-500'
-                    }`}
-                  >
-                    {crop.trend > 0 ? '↗' : '↘'} {Math.abs(crop.trend)}%
-                  </span>
                 </div>
-                <p className="text-xl font-bold text-[#1F3C88]">
-                  ₹{crop.price.toLocaleString()} <span className="text-sm font-normal text-gray-600">/ {t.quintal}</span>
-                </p>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </motion.div>
       </div>
