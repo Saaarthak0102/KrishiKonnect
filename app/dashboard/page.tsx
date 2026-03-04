@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
-import Link from 'next/link'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -36,143 +35,290 @@ export default function DashboardPage() {
 
   const translations = {
     hi: {
-      welcome: 'स्वागत है',
-      dashboardTitle: 'किसान डैशबोर्ड',
-      cropLibrary: 'फसल पुस्तकालय',
-      cropLibraryDesc: 'सभी फसलों की जानकारी जानें',
-      mandiPrices: 'मंडी भाव',
-      mandiDesc: 'लाइव मार्केट दरें देखें',
-      community: 'समुदाय',
-      communityDesc: 'अन्य किसानों से जुड़ें',
-      transport: 'परिवहन',
-      transportDesc: 'अपनी फसल खिंचवाएं',
+      farmOverview: 'कृषि सारांश',
+      primaryCrop: 'मुख्य फसल',
+      location: 'स्थान',
+      season: 'मौसम',
+      latestMandiPrice: 'नवीनतम मंडी भाव',
+      marketTrend: 'बाजार रुझान',
+      estimatedHarvest: 'अनुमानित कटाई',
+      weatherToday: 'आज का मौसम',
+      temperature: 'तापमान',
+      rainChance: 'बारिश की संभावना',
+      humidity: 'नमी',
+      wind: 'हवा',
+      recentServices: 'हाल की सेवाएं',
+      starredCrops: 'पसंदीदा फसलें',
+      transportPickup: 'परिवहन पिकअप',
+      status: 'स्थिति',
+      confirmed: 'पुष्टि की गई',
+      pickupTime: 'पिकअप समय',
+      tomorrow: 'कल',
+      communityActivity: 'समुदाय गतिविधि',
+      replies: 'उत्तर',
+      responsesOnQuestion: 'आपके प्रश्न पर प्रतिक्रियाएं',
       aiAdvisor: 'AI सलाहकार',
-      aiAdvisorDesc: 'कृषि विशेषज्ञ की सलाह पाएं',
-      logout: 'लॉगआउट',
-      yourProfile: 'आपकी प्रोफाइल',
-      village: 'गांव',
-      state: 'राज्य',
-      primaryCrop: 'प्राथमिक फसल',
+      lastAdvice: 'अंतिम सलाह',
+      fertilizerRecommendation: 'उर्वरक सिफारिश',
+      days: 'दिन',
+      rising: 'बढ़ रहा है',
+      quintal: 'क्विंटल',
     },
     en: {
-      welcome: 'Welcome back',
-      dashboardTitle: 'Farmer Dashboard',
-      cropLibrary: 'Crop Library',
-      cropLibraryDesc: 'Learn about all crops',
-      mandiPrices: 'Mandi Prices',
-      mandiDesc: 'Check live market rates',
-      community: 'Community',
-      communityDesc: 'Connect with other farmers',
-      transport: 'Transport',
-      transportDesc: 'Arrange crop transport',
-      aiAdvisor: 'AI Advisor',
-      aiAdvisorDesc: 'Get expert farming advice',
-      logout: 'Logout',
-      yourProfile: 'Your Profile',
-      village: 'Village',
-      state: 'State',
+      farmOverview: 'Farm Overview',
       primaryCrop: 'Primary Crop',
+      location: 'Location',
+      season: 'Season',
+      latestMandiPrice: 'Latest Mandi Price',
+      marketTrend: 'Market Trend',
+      estimatedHarvest: 'Estimated Harvest',
+      weatherToday: 'Weather Today',
+      temperature: 'Temperature',
+      rainChance: 'Rain Chance',
+      humidity: 'Humidity',
+      wind: 'Wind',
+      recentServices: 'Recent Services',
+      starredCrops: 'Starred Crops',
+      transportPickup: 'Transport Pickup',
+      status: 'Status',
+      confirmed: 'Confirmed',
+      pickupTime: 'Pickup Time',
+      tomorrow: 'Tomorrow',
+      communityActivity: 'Community Activity',
+      replies: 'Replies',
+      responsesOnQuestion: 'responses on your question',
+      aiAdvisor: 'AI Advisor',
+      lastAdvice: 'Last Advice',
+      fertilizerRecommendation: 'Fertilizer recommendation',
+      days: 'days',
+      rising: 'Rising',
+      quintal: 'quintal',
     },
   }
 
   const t = translations[lang]
 
-  const modules = [
-    {
-      title: t.cropLibrary,
-      desc: t.cropLibraryDesc,
-      icon: '🌾',
-      href: '/crop-library',
-      color: 'from-green-50 to-green-100',
-    },
-    {
-      title: t.mandiPrices,
-      desc: t.mandiDesc,
-      icon: '💰',
-      href: '/mandi',
-      color: 'from-yellow-50 to-yellow-100',
-    },
-    {
-      title: t.community,
-      desc: t.communityDesc,
-      icon: '🤝',
-      href: '/community',
-      color: 'from-blue-50 to-blue-100',
-    },
-    {
-      title: t.transport,
-      desc: t.transportDesc,
-      icon: '🚚',
-      href: '/transport',
-      color: 'from-orange-50 to-orange-100',
-    },
-    {
-      title: t.aiAdvisor,
-      desc: t.aiAdvisorDesc,
-      icon: '🤖',
-      href: '/ai-advisor',
-      color: 'from-purple-50 to-purple-100',
-    },
+  // Sample data for starred crops
+  const starredCrops = [
+    { name: lang === 'hi' ? 'गेहूं' : 'Wheat', name_en: 'Wheat', price: 2350, trend: 2.3 },
+    { name: lang === 'hi' ? 'मक्का' : 'Maize', name_en: 'Maize', price: 2100, trend: -1.1 },
+    { name: lang === 'hi' ? 'मूंगफली' : 'Groundnut', name_en: 'Groundnut', price: 5200, trend: 0.8 },
   ]
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
-      {/* Profile Widget */}
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      {/* Row 1 - Farm Overview Card (Full Width) */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl shadow-md p-6 border-2 border-krishi-border"
+        transition={{ duration: 0.4 }}
+        className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
       >
-        <h2 className="text-xl font-bold text-krishi-heading mb-4">{t.yourProfile}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <p className="text-sm text-krishi-text/60 font-semibold">{lang === 'hi' ? 'नाम' : 'Name'}</p>
-            <p className="text-lg font-bold text-krishi-heading">{farmerProfile.name}</p>
+        <h2 className="text-2xl font-bold text-krishi-heading mb-6 flex items-center gap-2">
+          <span>🌾</span>
+          {t.farmOverview}
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Column 1 - Crop & Location */}
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                <span>🌾</span>
+                {t.primaryCrop}
+              </p>
+              <p className="text-lg font-semibold text-krishi-heading">
+                {farmerProfile.primaryCrop}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                <span>📍</span>
+                {t.location}
+              </p>
+              <p className="text-lg font-semibold text-krishi-heading">
+                {farmerProfile.village}, {farmerProfile.state}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                <span>📅</span>
+                {t.season}
+              </p>
+              <p className="text-lg font-semibold text-krishi-heading">
+                Rabi
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm text-krishi-text/60 font-semibold">{t.village}</p>
-            <p className="text-lg font-bold text-krishi-heading">{farmerProfile.village}</p>
+
+          {/* Column 2 - Market Info */}
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-gray-500 mb-1">
+                {t.latestMandiPrice}
+              </p>
+              <p className="text-2xl font-bold text-[#7FB069]">
+                ₹2,350 <span className="text-base font-normal text-gray-600">/ {t.quintal}</span>
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                <span>📈</span>
+                {t.marketTrend}
+              </p>
+              <p className="text-lg font-semibold text-[#7FB069]">
+                {t.rising}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm text-krishi-text/60 font-semibold">{t.state}</p>
-            <p className="text-lg font-bold text-krishi-heading">{farmerProfile.state}</p>
-          </div>
-          <div>
-            <p className="text-sm text-krishi-text/60 font-semibold">{t.primaryCrop}</p>
-            <p className="text-lg font-bold text-krishi-heading">{farmerProfile.primaryCrop}</p>
+
+          {/* Column 3 - Harvest Info */}
+          <div className="space-y-4">
+            <div className="bg-gradient-to-br from-[#FAF3E0] to-[#F5E6D3] rounded-lg p-4 border border-[#B85C38]/20">
+              <p className="text-sm text-gray-600 mb-2">
+                {t.estimatedHarvest}
+              </p>
+              <p className="text-3xl font-bold text-[#1F3C88]">
+                38 <span className="text-lg font-normal">{t.days}</span>
+              </p>
+            </div>
           </div>
         </div>
       </motion.div>
 
-      {/* Modules Grid */}
-      <div>
-          <h2 className="text-2xl font-bold text-krishi-heading mb-6">
-            {lang === 'hi' ? 'उपलब्ध सेवाएं' : 'Available Services'}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {modules.map((module, idx) => (
-              <motion.div
-                key={module.href}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-              >
-                <Link href={module.href}>
-                  <div className={`bg-gradient-to-br ${module.color} rounded-2xl shadow-md hover:shadow-lg transition-all p-6 cursor-pointer border-2 border-krishi-border hover:border-krishi-primary`}>
-                    <div className="text-4xl mb-4">{module.icon}</div>
-                    <h3 className="text-xl font-bold text-krishi-heading mb-2">
-                      {module.title}
-                    </h3>
-                    <p className="text-krishi-text/70">{module.desc}</p>
-                    <div className="mt-4 text-krishi-primary font-semibold">
-                      {lang === 'hi' ? 'अनुभव करें →' : 'Explore →'}
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+      {/* Row 2 - Weather Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+      >
+        <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
+          <span>☀️</span>
+          {t.weatherToday}
+        </h3>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div>
+            <p className="text-sm text-gray-500 mb-1">{t.temperature}</p>
+            <p className="text-2xl font-bold text-[#B85C38]">28°C</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500 mb-1">{t.rainChance}</p>
+            <p className="text-2xl font-bold text-[#1F3C88]">20%</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500 mb-1">{t.humidity}</p>
+            <p className="text-2xl font-bold text-[#7FB069]">65%</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500 mb-1">{t.wind}</p>
+            <p className="text-2xl font-bold text-gray-700">10 km/h</p>
           </div>
         </div>
+      </motion.div>
+
+      {/* Row 3 - Two Cards Side by Side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Service Activity Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+        >
+          <h3 className="text-xl font-bold text-krishi-heading mb-4">
+            {t.recentServices}
+          </h3>
+          
+          <div className="space-y-4">
+            {/* Transport Activity */}
+            <div className="p-4 bg-[#FAF3E0]/50 rounded-lg border border-gray-200">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">🚚</span>
+                <div className="flex-1">
+                  <p className="font-semibold text-krishi-heading mb-1">
+                    {t.transportPickup}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t.status}: <span className="text-[#7FB069] font-semibold">{t.confirmed}</span>
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t.pickupTime}: {t.tomorrow} 6 AM
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Community Activity */}
+            <div className="p-4 bg-[#FAF3E0]/50 rounded-lg border border-gray-200">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">🤝</span>
+                <div className="flex-1">
+                  <p className="font-semibold text-krishi-heading mb-1">
+                    {t.communityActivity}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t.replies}: <span className="font-semibold">2</span> {t.responsesOnQuestion}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* AI Advisor Activity */}
+            <div className="p-4 bg-[#FAF3E0]/50 rounded-lg border border-gray-200">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">🤖</span>
+                <div className="flex-1">
+                  <p className="font-semibold text-krishi-heading mb-1">
+                    {t.aiAdvisor}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t.lastAdvice}: {t.fertilizerRecommendation}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Starred Crops Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+        >
+          <h3 className="text-xl font-bold text-krishi-heading mb-4">
+            {t.starredCrops}
+          </h3>
+          
+          <div className="space-y-3">
+            {starredCrops.map((crop, index) => (
+              <div
+                key={index}
+                className="p-4 bg-gradient-to-r from-[#FAF3E0]/50 to-white rounded-lg border border-gray-200 hover:border-[#B85C38]/30 transition-colors"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-semibold text-krishi-heading text-lg">
+                    {crop.name}
+                  </p>
+                  <span
+                    className={`text-sm font-bold ${
+                      crop.trend > 0 ? 'text-[#7FB069]' : 'text-red-500'
+                    }`}
+                  >
+                    {crop.trend > 0 ? '↗' : '↘'} {Math.abs(crop.trend)}%
+                  </span>
+                </div>
+                <p className="text-xl font-bold text-[#1F3C88]">
+                  ₹{crop.price.toLocaleString()} <span className="text-sm font-normal text-gray-600">/ {t.quintal}</span>
+                </p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </div>
-    )
-  }
+    </div>
+  )
+}
