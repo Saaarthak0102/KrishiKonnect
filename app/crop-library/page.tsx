@@ -24,6 +24,7 @@ export default function CropLibraryPage() {
     { value: 'Rabi', label: t.rabiSeason },
     { value: 'Kharif', label: t.kharifSeason },
     { value: 'Zaid', label: t.zaidSeason },
+    { value: 'Year-round', label: t.yearRoundSeason },
   ]
 
   // Filtering and Sorting Logic

@@ -17,6 +17,15 @@ interface CropCardProps {
   crop: Crop
 }
 
+// Helper function to get badge color based on season
+const getSeasonBadgeClass = (season: string) => {
+  if (season === 'Rabi') return 'bg-[#7FB069] text-white'
+  if (season === 'Kharif') return 'bg-[#F2A541] text-white'
+  if (season === 'Zaid') return 'bg-[#B85C38] text-white'
+  if (season === 'Year-round') return 'bg-[#1F3C88] text-white'
+  return 'bg-[#D8CFC0] text-[#1D1D1D]'
+}
+
 export default function CropCard({ crop }: CropCardProps) {
   const { lang } = useLanguage()
   const cropName = lang === 'hi' ? crop.name_hi : crop.name_en
@@ -56,7 +65,7 @@ export default function CropCard({ crop }: CropCardProps) {
 
           {/* Season Badge */}
           <div className="inline-block">
-            <span className="inline-block bg-krishi-highlight text-white px-3 py-1 rounded-full text-sm font-semibold">
+            <span className={`${getSeasonBadgeClass(crop.season_en)} rounded-full px-3 py-1 text-sm font-medium`}>
               {seasonName}
             </span>
           </div>

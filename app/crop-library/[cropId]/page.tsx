@@ -9,6 +9,15 @@ import { useLanguage } from '@/lib/LanguageContext'
 import Link from 'next/link'
 import cropsData from '@/data/crops.json'
 
+// Helper function to get badge color based on season
+const getSeasonBadgeClass = (season: string) => {
+  if (season === 'Rabi') return 'bg-[#7FB069] text-white'
+  if (season === 'Kharif') return 'bg-[#F2A541] text-white'
+  if (season === 'Zaid') return 'bg-[#B85C38] text-white'
+  if (season === 'Year-round') return 'bg-[#1F3C88] text-white'
+  return 'bg-[#D8CFC0] text-[#1D1D1D]'
+}
+
 export default function CropDetailPage() {
   const params = useParams() as { cropId: string }
   const { lang } = useLanguage()
@@ -147,7 +156,7 @@ export default function CropDetailPage() {
                 {cropName}
               </h1>
               <div className="flex flex-wrap gap-4 items-center">
-                <span className="inline-block bg-krishi-highlight text-white px-4 py-2 rounded-full text-lg font-semibold">
+                <span className={`${getSeasonBadgeClass(crop.season_en)} px-4 py-2 rounded-full font-semibold`}>
                   {seasonName}
                 </span>
                 <p className="text-krishi-text/80 text-lg">
