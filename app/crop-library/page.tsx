@@ -9,6 +9,52 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import cropsData from '@/data/crops.json'
 
+// Season mapping: English to Hindi
+const SEASON_MAPPING: Record<string, string> = {
+  'Rabi': 'रबी',
+  'Kharif': 'खरीफ',
+  'Zaid': 'ज़ैद',
+  'Year-round': 'पूरे साल',
+}
+
+// Season color mapping - consistent with crop cards
+const SEASON_COLORS: Record<string, string> = {
+  'Rabi': '#7FB069',
+  'Kharif': '#F2A541',
+  'Zaid': '#B85C38',
+  'Year-round': '#1F3C88',
+}
+
+// Get filter button styling based on season
+const getFilterButtonClass = (season: string, isSelected: boolean): string => {
+  if (season === 'all') {
+    return isSelected
+      ? 'bg-gray-800 text-white shadow-md'
+      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+  }
+
+  if (isSelected) {
+    const color = SEASON_COLORS[season]
+    return `text-white shadow-md`
+  }
+
+  return 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+}
+
+// Get background color style for season buttons
+const getFilterBackgroundStyle = (season: string, isSelected: boolean): string => {
+  if (season === 'all') {
+    return isSelected ? 'bg-gray-800' : 'bg-gray-100'
+  }
+
+  if (isSelected) {
+    const color = SEASON_COLORS[season]
+    return `bg-[${color}]`
+  }
+
+  return 'bg-gray-100'
+}
+
 export default function CropLibraryPage() {
   const { lang } = useLanguage()
   const t = translations[lang]
@@ -29,16 +75,26 @@ export default function CropLibraryPage() {
 
   // Filtering and Sorting Logic
   const filteredAndSortedCrops = useMemo(() => {
+    // Helper function to normalize season strings
+    const normalizeSeason = (season: string): string => {
+      return season.toLowerCase().replace(/\s+/g, '')
+    }
+
     let crops = [...cropsData]
 
     // Step 1: Apply season filter
     if (selectedSeason !== 'all') {
       crops = crops.filter((crop) => {
+        // Get the season value to compare based on current language
+        const compareValue = lang === 'hi' ? SEASON_MAPPING[selectedSeason] : selectedSeason
         const cropSeason = lang === 'hi' ? crop.season_hi : crop.season_en
-        const selectedSeasonLabel = lang === 'hi' 
-          ? t[selectedSeason.toLowerCase() + 'Season'] 
-          : seasons.find(s => s.value === selectedSeason)?.label
-        return cropSeason === selectedSeason
+        
+        // Normalize both values to handle spaces and case differences
+        // This handles multi-season crops like "Kharif / Rabi" or "Kharif/Rabi"
+        const normalizedCropSeason = normalizeSeason(cropSeason)
+        const normalizedCompareValue = normalizeSeason(compareValue)
+        
+        return normalizedCropSeason.includes(normalizedCompareValue)
       })
     }
 
@@ -112,19 +168,35 @@ export default function CropLibraryPage() {
                   {lang === 'hi' ? 'मौसम द्वारा फिल्टर करें' : 'Filter by Season'}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {seasons.map((season) => (
-                    <button
-                      key={season.value}
-                      onClick={() => setSelectedSeason(season.value)}
-                      className={`px-4 py-2 rounded-full font-semibold transition-all duration-200 ${
-                        selectedSeason === season.value
-                          ? 'bg-krishi-primary text-white shadow-md'
-                          : 'bg-krishi-border text-krishi-heading hover:bg-krishi-agriculture/20'
-                      }`}
-                    >
-                      {season.label}
-                    </button>
-                  ))}
+                  {seasons.map((season) => {
+                    const isSelected = selectedSeason === season.value
+                    let buttonClass = 'px-4 py-2 rounded-full font-semibold transition-all duration-200 '
+
+                    if (season.value === 'all') {
+                      buttonClass += isSelected
+                        ? 'bg-gray-800 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    } else {
+                      const seasonColor = SEASON_COLORS[season.value]
+                      if (isSelected) {
+                        buttonClass += `text-white shadow-md`
+                        buttonClass += ` bg-[${seasonColor}]`
+                      } else {
+                        buttonClass += 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }
+                    }
+
+                    return (
+                      <button
+                        key={season.value}
+                        onClick={() => setSelectedSeason(season.value)}
+                        style={isSelected && season.value !== 'all' ? { backgroundColor: SEASON_COLORS[season.value] } : {}}
+                        className={buttonClass}
+                      >
+                        {season.label}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 

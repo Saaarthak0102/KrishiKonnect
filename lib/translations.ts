@@ -66,7 +66,7 @@ export const translations = {
     allSeasons: 'सभी',
     rabiSeason: 'रबी',
     kharifSeason: 'खरीफ',
-    zaidSeason: 'जायद',
+    zaidSeason: 'ज़ैद',
     yearRoundSeason: 'साल भर',
     sortAZ: 'अ से ज्ञ',
     sortZA: 'ज्ञ से अ',

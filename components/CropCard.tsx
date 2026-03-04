@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
 
 interface Crop {
@@ -17,8 +18,18 @@ interface CropCardProps {
   crop: Crop
 }
 
-// Helper function to get badge color based on season
-const getSeasonBadgeClass = (season: string) => {
+// Season color mapping - consistent across the app
+const SEASON_COLORS: Record<string, string> = {
+  'Rabi': '#7FB069',
+  'Kharif': '#F2A541',
+  'Zaid': '#B85C38',
+  'Year-round': '#1F3C88',
+}
+
+// Helper function to get badge color and classes based on season
+const getSeasonBadgeClass = (seasonEn: string) => {
+  const season = seasonEn.split('/')[0].trim() // Handle composite seasons like "Kharif / Rabi"
+  
   if (season === 'Rabi') return 'bg-[#7FB069] text-white'
   if (season === 'Kharif') return 'bg-[#F2A541] text-white'
   if (season === 'Zaid') return 'bg-[#B85C38] text-white'
@@ -28,16 +39,58 @@ const getSeasonBadgeClass = (season: string) => {
 
 export default function CropCard({ crop }: CropCardProps) {
   const { lang } = useLanguage()
+  const [isStarred, setIsStarred] = useState(false)
   const cropName = lang === 'hi' ? crop.name_hi : crop.name_en
   const seasonName = lang === 'hi' ? crop.season_hi : crop.season_en
+
+  useEffect(() => {
+    try {
+      const starred = JSON.parse(localStorage.getItem('starredCrops') || '[]')
+      setIsStarred(Array.isArray(starred) && starred.includes(crop.id))
+    } catch {
+      setIsStarred(false)
+    }
+  }, [crop.id])
+
+  const toggleStar = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    let starred: string[] = []
+
+    try {
+      const stored = JSON.parse(localStorage.getItem('starredCrops') || '[]')
+      starred = Array.isArray(stored) ? stored : []
+    } catch {
+      starred = []
+    }
+
+    if (starred.includes(crop.id)) {
+      starred = starred.filter((id) => id !== crop.id)
+      setIsStarred(false)
+    } else {
+      starred.push(crop.id)
+      setIsStarred(true)
+    }
+
+    localStorage.setItem('starredCrops', JSON.stringify(starred))
+  }
 
   return (
     <Link href={`/crop-library/${crop.id}`}>
       <motion.div
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.98 }}
-        className="h-full bg-white border-2 border-krishi-border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+        className="relative h-full bg-white border-2 border-krishi-border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 cursor-pointer"
       >
+        <button
+          onClick={toggleStar}
+          className="absolute top-3 right-3 text-xl z-10"
+          aria-label={isStarred ? 'Unstar crop' : 'Star crop'}
+        >
+          {isStarred ? '⭐' : '☆'}
+        </button>
+
         {/* Crop Image */}
         <div className="relative w-full h-48 bg-gradient-to-br from-krishi-bg to-krishi-agriculture overflow-hidden">
           <img
@@ -69,6 +122,10 @@ export default function CropCard({ crop }: CropCardProps) {
               {seasonName}
             </span>
           </div>
+
+          <p className="mt-3 text-sm font-medium text-krishi-heading">
+            {isStarred ? '⭐ Starred' : '☆ Star Crop'}
+          </p>
         </div>
       </motion.div>
     </Link>
