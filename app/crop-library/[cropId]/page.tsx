@@ -1,0 +1,223 @@
+'use client'
+
+import { useState, useMemo } from 'react'
+import { useParams } from 'next/navigation'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
+import { motion } from 'framer-motion'
+import { useLanguage } from '@/lib/LanguageContext'
+import Link from 'next/link'
+import cropsData from '@/data/crops.json'
+
+export default function CropDetailPage() {
+  const params = useParams() as { cropId: string }
+  const { lang } = useLanguage()
+  const cropId = params.cropId
+
+  // Find crop data
+  const crop = useMemo(() => {
+    return cropsData.find((c) => c.id === cropId)
+  }, [cropId])
+
+  if (!crop) {
+    return (
+      <div className="min-h-screen bg-krishi-bg">
+        <Navbar />
+        <main className="container mx-auto px-4 py-16">
+          <div className="text-center py-12">
+            <h1 className="text-3xl font-bold text-krishi-heading mb-4">
+              {lang === 'hi' ? 'फसल नहीं मिली' : 'Crop Not Found'}
+            </h1>
+            <p className="text-krishi-text mb-6">
+              {lang === 'hi'
+                ? 'यह फसल उपलब्ध नहीं है।'
+                : 'This crop is not available.'}
+            </p>
+            <Link
+              href="/crop-library"
+              className="inline-block bg-krishi-primary text-white px-6 py-2 rounded-lg hover:bg-krishi-primary/90 transition-colors"
+            >
+              {lang === 'hi' ? 'वापस जाएं' : 'Go Back'}
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
+  }
+
+  // Get language-specific content
+  const cropName = lang === 'hi' ? crop.name_hi : crop.name_en
+  const seasonName = lang === 'hi' ? crop.season_hi : crop.season_en
+  const basicInfo = lang === 'hi' ? crop.basic_hi : crop.basic_en
+  const soilInfo = lang === 'hi' ? crop.soil_hi : crop.soil_en
+  const climateInfo = lang === 'hi' ? crop.climate_hi : crop.climate_en
+  const sowingInfo = lang === 'hi' ? crop.sowing_hi : crop.sowing_en
+  const irrigationInfo = lang === 'hi' ? crop.irrigation_hi : crop.irrigation_en
+  const fertilizerInfo = lang === 'hi' ? crop.fertilizer_hi : crop.fertilizer_en
+  const pestsInfo = lang === 'hi' ? crop.pests_hi : crop.pests_en
+  const yieldInfo = lang === 'hi' ? crop.yield_hi : crop.yield_en
+
+  // Information sections with icons
+  const sections = [
+    {
+      title: lang === 'hi' ? 'मूल जानकारी' : 'Basic Info',
+      content: basicInfo,
+      icon: '🌱',
+    },
+    {
+      title: lang === 'hi' ? 'मिट्टी' : 'Soil',
+      content: soilInfo,
+      icon: '🌍',
+    },
+    {
+      title: lang === 'hi' ? 'जलवायु' : 'Climate',
+      content: climateInfo,
+      icon: '☀️',
+    },
+    {
+      title: lang === 'hi' ? 'बुवाई का समय' : 'Sowing Time',
+      content: sowingInfo,
+      icon: '📅',
+    },
+    {
+      title: lang === 'hi' ? 'सिंचाई' : 'Irrigation',
+      content: irrigationInfo,
+      icon: '💧',
+    },
+    {
+      title: lang === 'hi' ? 'उर्वरक' : 'Fertilizer',
+      content: fertilizerInfo,
+      icon: '🧪',
+    },
+    {
+      title: lang === 'hi' ? 'कीट / रोग' : 'Pests & Diseases',
+      content: pestsInfo,
+      icon: '🐛',
+    },
+    {
+      title: lang === 'hi' ? 'अपेक्षित उपज' : 'Expected Yield',
+      content: yieldInfo,
+      icon: '🎯',
+    },
+  ]
+
+  return (
+    <div className="min-h-screen bg-krishi-bg">
+      <Navbar />
+
+      <main className="container mx-auto px-4 py-12">
+        {/* Back Button */}
+        <Link
+          href="/crop-library"
+          className="inline-flex items-center text-krishi-primary hover:text-krishi-primary/80 transition-colors mb-8 font-semibold"
+        >
+          <span className="mr-2">←</span>
+          {lang === 'hi' ? 'वापस जाएं' : 'Back to Library'}
+        </Link>
+
+        {/* Crop Header Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="bg-white border-2 border-krishi-border rounded-lg overflow-hidden shadow-md mb-12"
+        >
+          {/* Crop Image */}
+          <div className="relative w-full h-64 md:h-80 bg-gradient-to-br from-krishi-agriculture to-krishi-primary overflow-hidden">
+            <img
+              src={crop.image}
+              alt={cropName}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement
+                target.style.display = 'none'
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-krishi-agriculture/80 to-krishi-primary/80 flex items-center justify-center text-8xl font-bold opacity-0 hover:opacity-100 transition-opacity">
+              {cropName.charAt(0)}
+            </div>
+          </div>
+
+          {/* Crop Info */}
+          <div className="p-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-krishi-heading mb-4">
+              {cropName}
+            </h1>
+            <div className="flex flex-wrap gap-4 items-center">
+              <span className="inline-block bg-krishi-highlight text-white px-4 py-2 rounded-full text-lg font-semibold">
+                {seasonName}
+              </span>
+              <p className="text-krishi-text/80 text-lg">
+                {lang === 'hi'
+                  ? `${cropName} की विस्तृत खेती जानकारी`
+                  : `Detailed Farming Information for ${cropName}`}
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Information Sections Grid */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-12"
+        >
+          {sections.map((section, index) => (
+            <motion.div
+              key={section.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.4 }}
+              className="bg-white border-2 border-krishi-border rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow"
+            >
+              {/* Section Header */}
+              <div className="flex items-center mb-4">
+                <span className="text-4xl mr-3">{section.icon}</span>
+                <h2 className="text-2xl font-bold text-krishi-heading">
+                  {section.title}
+                </h2>
+              </div>
+
+              {/* Section Divider */}
+              <div className="w-12 h-1 bg-krishi-primary rounded mb-4"></div>
+
+              {/* Section Content */}
+              <p className="text-krishi-text leading-relaxed text-base md:text-lg">
+                {section.content}
+              </p>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Call to Action */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.6 }}
+          className="bg-gradient-to-r from-krishi-primary/90 to-krishi-agriculture/90 rounded-lg p-8 text-white text-center"
+        >
+          <h3 className="text-2xl md:text-3xl font-bold mb-3">
+            {lang === 'hi'
+              ? 'अधिक सहायता की आवश्यकता है?'
+              : 'Need More Help?'}
+          </h3>
+          <p className="text-white/90 mb-6 text-lg">
+            {lang === 'hi'
+              ? 'AI सलाहकार से अपने खेती के सवाल पूछें'
+              : 'Ask our AI Advisor your farming questions'}
+          </p>
+          <Link
+            href="/ai-advisor"
+            className="inline-block bg-white text-krishi-primary font-bold px-8 py-3 rounded-lg hover:bg-white/90 transition-colors"
+          >
+            {lang === 'hi' ? 'AI सलाहकार से पूछें' : 'Ask AI Advisor'}
+          </Link>
+        </motion.div>
+      </main>
+
+      <Footer />
+    </div>
+  )
+}
