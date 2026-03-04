@@ -3,30 +3,12 @@
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { useLanguage } from '@/lib/LanguageContext'
+import { translations } from '@/lib/translations'
 
 export default function CommunityPage() {
-  const [language, setLanguage] = useState('hi')
-
-  useEffect(() => {
-    const lang = localStorage.getItem('language') || 'hi'
-    setLanguage(lang)
-  }, [])
-
-  const content = {
-    hi: {
-      title: 'किसान समुदाय 🤝',
-      subtitle: 'अपने साथी किसानों से जुड़ें',
-      description: 'अनुभव साझा करें, सवाल पूछें, और एक-दूसरे की मदद करें।'
-    },
-    en: {
-      title: 'Farmer Community 🤝',
-      subtitle: 'Connect with fellow farmers',
-      description: 'Share experiences, ask questions, and help each other.'
-    }
-  }
-
-  const t = content[language as keyof typeof content]
+  const { lang } = useLanguage()
+  const t = translations[lang]
 
   return (
     <div className="min-h-screen bg-krishi-bg">
@@ -39,10 +21,10 @@ export default function CommunityPage() {
           className="text-center mb-12"
         >
           <h1 className="text-4xl md:text-5xl font-bold text-krishi-heading mb-4">
-            {t.title}
+            {t.communityTitle}
           </h1>
-          <p className="text-xl text-krishi-text mb-2">{t.subtitle}</p>
-          <p className="text-krishi-text/80 max-w-2xl mx-auto">{t.description}</p>
+          <p className="text-xl text-krishi-text mb-2">{t.communitySubtitle}</p>
+          <p className="text-krishi-text/80 max-w-2xl mx-auto">{t.communityDescription}</p>
         </motion.div>
 
         <motion.div
@@ -56,13 +38,10 @@ export default function CommunityPage() {
               <div className="text-3xl">👨‍🌾</div>
               <div className="flex-1">
                 <h3 className="font-semibold text-krishi-heading mb-2">
-                  {language === 'hi' ? 'राज कुमार' : 'Raj Kumar'}
+                  {t.farmerName}
                 </h3>
                 <p className="text-krishi-text">
-                  {language === 'hi' 
-                    ? 'टमाटर की खेती में कीट नियंत्रण के लिए कोई सुझाव?'
-                    : 'Any suggestions for pest control in tomato farming?'
-                  }
+                  {t.sampleQuestion}
                 </p>
               </div>
             </div>

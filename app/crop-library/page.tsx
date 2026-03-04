@@ -3,30 +3,12 @@
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { useLanguage } from '@/lib/LanguageContext'
+import { translations } from '@/lib/translations'
 
 export default function CropLibraryPage() {
-  const [language, setLanguage] = useState('hi')
-
-  useEffect(() => {
-    const lang = localStorage.getItem('language') || 'hi'
-    setLanguage(lang)
-  }, [])
-
-  const content = {
-    hi: {
-      title: 'फसल पुस्तकालय 🌾',
-      subtitle: 'हर फसल के बारे में विस्तृत जानकारी',
-      description: 'यहाँ आपको विभिन्न फसलों की जानकारी, खेती के तरीके, और बेहतर उपज के टिप्स मिलेंगे।'
-    },
-    en: {
-      title: 'Crop Library 🌾',
-      subtitle: 'Detailed information about every crop',
-      description: 'Find information about different crops, cultivation methods, and tips for better yield.'
-    }
-  }
-
-  const t = content[language as keyof typeof content]
+  const { lang } = useLanguage()
+  const t = translations[lang]
 
   return (
     <div className="min-h-screen bg-krishi-bg">
@@ -39,10 +21,10 @@ export default function CropLibraryPage() {
           className="text-center mb-12"
         >
           <h1 className="text-4xl md:text-5xl font-bold text-krishi-heading mb-4">
-            {t.title}
+            {t.cropLibraryTitle}
           </h1>
-          <p className="text-xl text-krishi-text mb-2">{t.subtitle}</p>
-          <p className="text-krishi-text/80 max-w-2xl mx-auto">{t.description}</p>
+          <p className="text-xl text-krishi-text mb-2">{t.cropLibrarySubtitle}</p>
+          <p className="text-krishi-text/80 max-w-2xl mx-auto">{t.cropLibraryDescription}</p>
         </motion.div>
 
         <motion.div
@@ -55,10 +37,10 @@ export default function CropLibraryPage() {
           <div className="bg-white border-2 border-krishi-border rounded-lg p-6 shadow-sm">
             <div className="text-4xl mb-3">🌾</div>
             <h3 className="text-xl font-semibold text-krishi-heading mb-2">
-              {language === 'hi' ? 'गेहूँ' : 'Wheat'}
+              {t.wheat}
             </h3>
             <p className="text-krishi-text/80">
-              {language === 'hi' ? 'रबी सीजन की प्रमुख फसल' : 'Major Rabi season crop'}
+              {t.rabiCrop}
             </p>
           </div>
         </motion.div>

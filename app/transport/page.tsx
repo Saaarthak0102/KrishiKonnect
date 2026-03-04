@@ -3,30 +3,12 @@
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { useLanguage } from '@/lib/LanguageContext'
+import { translations } from '@/lib/translations'
 
 export default function TransportPage() {
-  const [language, setLanguage] = useState('hi')
-
-  useEffect(() => {
-    const lang = localStorage.getItem('language') || 'hi'
-    setLanguage(lang)
-  }, [])
-
-  const content = {
-    hi: {
-      title: 'परिवहन सेवा 🚚',
-      subtitle: 'अपनी फसल को मंडी तक पहुंचाएं',
-      description: 'किफायती और भरोसेमंद परिवहन सेवाएं खोजें।'
-    },
-    en: {
-      title: 'Transport Service 🚚',
-      subtitle: 'Get your crops to the market',
-      description: 'Find affordable and reliable transport services.'
-    }
-  }
-
-  const t = content[language as keyof typeof content]
+  const { lang } = useLanguage()
+  const t = translations[lang]
 
   return (
     <div className="min-h-screen bg-krishi-bg">
@@ -39,10 +21,10 @@ export default function TransportPage() {
           className="text-center mb-12"
         >
           <h1 className="text-4xl md:text-5xl font-bold text-krishi-heading mb-4">
-            {t.title}
+            {t.transportTitle}
           </h1>
-          <p className="text-xl text-krishi-text mb-2">{t.subtitle}</p>
-          <p className="text-krishi-text/80 max-w-2xl mx-auto">{t.description}</p>
+          <p className="text-xl text-krishi-text mb-2">{t.transportSubtitle}</p>
+          <p className="text-krishi-text/80 max-w-2xl mx-auto">{t.transportDescription}</p>
         </motion.div>
 
         <motion.div
@@ -53,31 +35,31 @@ export default function TransportPage() {
         >
           <div className="bg-white border-2 border-krishi-border rounded-lg p-6 shadow-sm">
             <h3 className="text-xl font-semibold text-krishi-heading mb-4">
-              {language === 'hi' ? 'परिवहन बुक करें' : 'Book Transport'}
+              {t.bookTransport}
             </h3>
             <div className="space-y-4">
               <div>
                 <label className="block text-krishi-text mb-2">
-                  {language === 'hi' ? 'शुरुआती स्थान' : 'Starting Location'}
+                  {t.pickupLocation}
                 </label>
                 <input
                   type="text"
                   className="w-full px-4 py-2 border-2 border-krishi-border rounded-lg focus:border-krishi-primary outline-none"
-                  placeholder={language === 'hi' ? 'अपना गाँव या शहर दर्ज करें' : 'Enter your village or city'}
+                  placeholder={t.pickupPlaceholder}
                 />
               </div>
               <div>
                 <label className="block text-krishi-text mb-2">
-                  {language === 'hi' ? 'गंतव्य मंडी' : 'Destination Mandi'}
+                  {t.destination}
                 </label>
                 <input
                   type="text"
                   className="w-full px-4 py-2 border-2 border-krishi-border rounded-lg focus:border-krishi-primary outline-none"
-                  placeholder={language === 'hi' ? 'मंडी का नाम दर्ज करें' : 'Enter mandi name'}
+                  placeholder={t.destinationPlaceholder}
                 />
               </div>
               <button className="w-full bg-krishi-primary text-white py-3 rounded-lg font-semibold hover:scale-105 transition-transform">
-                {language === 'hi' ? 'परिवहन खोजें' : 'Find Transport'}
+                {t.findTransport}
               </button>
             </div>
           </div>
