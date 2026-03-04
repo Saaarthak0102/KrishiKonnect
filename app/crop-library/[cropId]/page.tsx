@@ -140,19 +140,38 @@ export default function CropDetailPage() {
           </div>
 
           {/* Crop Info */}
-          <div className="p-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-krishi-heading mb-4">
-              {cropName}
-            </h1>
-            <div className="flex flex-wrap gap-4 items-center">
-              <span className="inline-block bg-krishi-highlight text-white px-4 py-2 rounded-full text-lg font-semibold">
-                {seasonName}
-              </span>
-              <p className="text-krishi-text/80 text-lg">
-                {lang === 'hi'
-                  ? `${cropName} की विस्तृत खेती जानकारी`
-                  : `Detailed Farming Information for ${cropName}`}
-              </p>
+          <div className="p-8 flex flex-col md:flex-row md:justify-between md:items-start gap-6">
+            {/* Left Side - Crop Details */}
+            <div className="flex-1">
+              <h1 className="text-4xl md:text-5xl font-bold text-krishi-heading mb-4">
+                {cropName}
+              </h1>
+              <div className="flex flex-wrap gap-4 items-center">
+                <span className="inline-block bg-krishi-highlight text-white px-4 py-2 rounded-full text-lg font-semibold">
+                  {seasonName}
+                </span>
+                <p className="text-krishi-text/80 text-lg">
+                  {lang === 'hi'
+                    ? `${cropName} की विस्तृत खेती जानकारी`
+                    : `Detailed Farming Information for ${cropName}`}
+                </p>
+              </div>
+            </div>
+
+            {/* Right Side - Action Buttons */}
+            <div className="flex flex-col gap-3 w-full md:w-auto">
+              <Link
+                href={`/mandi?crop=${cropId}`}
+                className="bg-krishi-agriculture hover:bg-krishi-agriculture/90 text-white font-semibold px-6 py-2 rounded-lg transition-colors duration-200 text-center whitespace-nowrap"
+              >
+                {lang === 'hi' ? 'मंडी भाव देखें' : 'Check Mandi Prices'}
+              </Link>
+              <Link
+                href={`/transport?crop=${cropId}`}
+                className="bg-krishi-primary hover:bg-krishi-primary/90 text-white font-semibold px-6 py-2 rounded-lg transition-colors duration-200 text-center whitespace-nowrap"
+              >
+                {lang === 'hi' ? 'ट्रांसपोर्ट अनुरोध' : 'Request Transport'}
+              </Link>
             </div>
           </div>
         </motion.div>

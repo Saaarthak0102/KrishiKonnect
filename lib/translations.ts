@@ -62,6 +62,16 @@ export const translations = {
     wheat: 'गेहूँ',
     rice: 'धान',
     rabiCrop: 'रबी सीजन की प्रमुख फसल',
+    searchPlaceholder: 'फसल खोजें...',
+    allSeasons: 'सभी',
+    rabiSeason: 'रबी',
+    kharifSeason: 'खरीफ',
+    zaidSeason: 'जायद',
+    sortAZ: 'अ से ज्ञ',
+    sortZA: 'ज्ञ से अ',
+    noCropsFound: 'कोई फसल नहीं मिली',
+    checkMandiPrices: 'मंडी भाव देखें',
+    requestTransport: 'ट्रांसपोर्ट अनुरोध',
     
     // Mandi Page
     mandiTitle: 'मंडी भाव 💰',
@@ -161,6 +171,16 @@ export const translations = {
     wheat: 'Wheat',
     rice: 'Rice',
     rabiCrop: 'Major Rabi season crop',
+    searchPlaceholder: 'Search crops...',
+    allSeasons: 'All',
+    rabiSeason: 'Rabi',
+    kharifSeason: 'Kharif',
+    zaidSeason: 'Zaid',
+    sortAZ: 'Sort A–Z',
+    sortZA: 'Sort Z–A',
+    noCropsFound: 'No crops found',
+    checkMandiPrices: 'Check Mandi Prices',
+    requestTransport: 'Request Transport',
     
     // Mandi Page
     mandiTitle: 'Mandi Prices 💰',
