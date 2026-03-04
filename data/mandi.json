@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "crop_hi": "गेहूँ",
+    "crop_en": "Wheat",
+    "mandi_hi": "खन्ना मंडी (पंजाब)",
+    "mandi_en": "Khanna Mandi (Punjab)",
+    "price": 2150,
+    "unit": "quintal",
+    "date": "2026-03-04",
+    "trend": "up"
+  },
+  {
+    "id": 2,
+    "crop_hi": "धान",
+    "crop_en": "Rice",
+    "mandi_hi": "करनाल मंडी (हरियाणा)",
+    "mandi_en": "Karnal Mandi (Haryana)",
+    "price": 2850,
+    "unit": "quintal",
+    "date": "2026-03-04",
+    "trend": "stable"
+  },
+  {
+    "id": 3,
+    "crop_hi": "टमाटर",
+    "crop_en": "Tomato",
+    "mandi_hi": "आज़ादपुर मंडी (दिल्ली)",
+    "mandi_en": "Azadpur Mandi (Delhi)",
+    "price": 1800,
+    "unit": "quintal",
+    "date": "2026-03-04",
+    "trend": "down"
+  },
+  {
+    "id": 4,
+    "crop_hi": "प्याज",
+    "crop_en": "Onion",
+    "mandi_hi": "लासलगांव मंडी (महाराष्ट्र)",
+    "mandi_en": "Lasalgaon Mandi (Maharashtra)",
+    "price": 2200,
+    "unit": "quintal",
+    "date": "2026-03-04",
+    "trend": "up"
+  },
+  {
+    "id": 5,
+    "crop_hi": "आलू",
+    "crop_en": "Potato",
+    "mandi_hi": "आगरा मंडी (उत्तर प्रदेश)",
+    "mandi_en": "Agra Mandi (Uttar Pradesh)",
+    "price": 1200,
+    "unit": "quintal",
+    "date": "2026-03-04",
+    "trend": "stable"
+  },
+  {
+    "id": 6,
+    "crop_hi": "कपास",
+    "crop_en": "Cotton",
+    "mandi_hi": "राजकोट मंडी (गुजरात)",
+    "mandi_en": "Rajkot Mandi (Gujarat)",
+    "price": 7500,
+    "unit": "quintal",
+    "date": "2026-03-04",
+    "trend": "up"
+  }
+]

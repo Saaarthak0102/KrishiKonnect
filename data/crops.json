@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "name_hi": "गेहूँ",
+    "name_en": "Wheat",
+    "season": "Rabi",
+    "icon": "🌾",
+    "description_hi": "रबी सीजन की प्रमुख फसल। नवंबर-दिसंबर में बुवाई, मार्च-अप्रैल में कटाई।",
+    "description_en": "Major Rabi season crop. Sowing in November-December, harvesting in March-April.",
+    "optimal_temp": "15-25°C",
+    "soil_type_hi": "दोमट मिट्टी",
+    "soil_type_en": "Loamy soil"
+  },
+  {
+    "id": 2,
+    "name_hi": "धान",
+    "name_en": "Rice",
+    "season": "Kharif",
+    "icon": "🌾",
+    "description_hi": "खरीफ सीजन की मुख्य फसल। जून-जुलाई में बुवाई, अक्टूबर-नवंबर में कटाई।",
+    "description_en": "Main Kharif season crop. Sowing in June-July, harvesting in October-November.",
+    "optimal_temp": "20-35°C",
+    "soil_type_hi": "चिकनी दोमट मिट्टी",
+    "soil_type_en": "Clay loam soil"
+  },
+  {
+    "id": 3,
+    "name_hi": "मक्का",
+    "name_en": "Maize",
+    "season": "Kharif",
+    "icon": "🌽",
+    "description_hi": "बहुउपयोगी फसल। जून-जुलाई में बुवाई, सितंबर-अक्टूबर में कटाई।",
+    "description_en": "Multi-purpose crop. Sowing in June-July, harvesting in September-October.",
+    "optimal_temp": "21-27°C",
+    "soil_type_hi": "अच्छी जल निकासी वाली मिट्टी",
+    "soil_type_en": "Well-drained soil"
+  },
+  {
+    "id": 4,
+    "name_hi": "टमाटर",
+    "name_en": "Tomato",
+    "season": "All seasons",
+    "icon": "🍅",
+    "description_hi": "सालभर उगाई जा सकने वाली सब्जी। 60-70 दिन में तैयार।",
+    "description_en": "Year-round vegetable crop. Ready in 60-70 days.",
+    "optimal_temp": "20-25°C",
+    "soil_type_hi": "उपजाऊ दोमट मिट्टी",
+    "soil_type_en": "Fertile loamy soil"
+  },
+  {
+    "id": 5,
+    "name_hi": "आलू",
+    "name_en": "Potato",
+    "season": "Rabi",
+    "icon": "🥔",
+    "description_hi": "महत्वपूर्ण सब्जी फसल। अक्टूबर-नवंबर में बुवाई, फरवरी-मार्च में कटाई।",
+    "description_en": "Important vegetable crop. Sowing in October-November, harvesting in February-March.",
+    "optimal_temp": "15-20°C",
+    "soil_type_hi": "रेतीली दोमट मिट्टी",
+    "soil_type_en": "Sandy loam soil"
+  },
+  {
+    "id": 6,
+    "name_hi": "कपास",
+    "name_en": "Cotton",
+    "season": "Kharif",
+    "icon": "🌱",
+    "description_hi": "नकदी फसल। मई-जून में बुवाई, अक्टूबर से जनवरी तक कटाई।",
+    "description_en": "Cash crop. Sowing in May-June, harvesting from October to January.",
+    "optimal_temp": "21-27°C",
+    "soil_type_hi": "काली कपासी मिट्टी",
+    "soil_type_en": "Black cotton soil"
+  }
+]
