@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useStarredCrops } from '@/lib/useStarredCrops'
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
+import MarketInsightCard from '@/components/dashboard/MarketInsightCard'
 import { getTransportBookings, type TransportBookingRecord } from '@/lib/transportBookings'
 import cropsData from '@/data/crops.json'
 import mandiPricesData from '@/data/mandiPrices.json'
@@ -253,34 +254,44 @@ export default function DashboardPage() {
         </div>
       </motion.div>
 
-      {/* Row 3 - Weather Card */}
+      {/* Row 2 - Weather (35%) & Market Insight (65%) Cards */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+        className="grid grid-cols-1 lg:grid-cols-[35%_65%] gap-6 items-stretch"
       >
-        <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
-          🌤 {t.weatherToday}
-        </h3>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div>
-            <p className="text-sm text-gray-500 mb-1">{t.temperature}</p>
-            <p className="text-2xl font-bold text-[#B85C38]">28°C</p>
+        {/* Weather Card - 35% Width */}
+        <div className="h-full">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full flex flex-col">
+            <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
+              🌤 {t.weatherToday}
+            </h3>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-2 gap-6 flex-1">
+              <div>
+                <p className="text-sm text-gray-500 mb-1">{t.temperature}</p>
+                <p className="text-2xl font-bold text-[#B85C38]">28°C</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">{t.rainChance}</p>
+                <p className="text-2xl font-bold text-[#1F3C88]">20%</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">{t.humidity}</p>
+                <p className="text-2xl font-bold text-[#7FB069]">65%</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">{t.wind}</p>
+                <p className="text-2xl font-bold text-gray-700">10 km/h</p>
+              </div>
+            </div>
           </div>
-          <div>
-            <p className="text-sm text-gray-500 mb-1">{t.rainChance}</p>
-            <p className="text-2xl font-bold text-[#1F3C88]">20%</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500 mb-1">{t.humidity}</p>
-            <p className="text-2xl font-bold text-[#7FB069]">65%</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500 mb-1">{t.wind}</p>
-            <p className="text-2xl font-bold text-gray-700">10 km/h</p>
-          </div>
+        </div>
+
+        {/* Market Insight Card - 65% Width */}
+        <div className="h-full">
+          <MarketInsightCard starredCrops={starredCrops} />
         </div>
       </motion.div>
 
