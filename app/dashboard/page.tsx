@@ -2,13 +2,39 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useStarredCrops } from '@/lib/useStarredCrops'
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
-import MyCropsWithPrices from '@/components/MyCropsWithPrices'
 import { getTransportBookings, type TransportBookingRecord } from '@/lib/transportBookings'
+import cropsData from '@/data/crops.json'
+import mandiPricesData from '@/data/mandiPrices.json'
+
+// Helper function to get best price for a crop from local dataset
+function getBestPriceForCrop(cropId: string) {
+  const crop = cropsData.find(c => c.id === cropId)
+  if (!crop) return null
+  
+  const cropName = crop.name_en
+  const cropPrices = mandiPricesData.prices.filter(
+    (p: any) => p.crop.toLowerCase() === cropName.toLowerCase()
+  )
+
+  if (!cropPrices.length) return null
+
+  // Find the entry with the highest modalPrice
+  const bestPrice = cropPrices.reduce((best: any, current: any) => {
+    return current.modalPrice > best.modalPrice ? current : best
+  })
+
+  return {
+    price: bestPrice.modalPrice,
+    mandi: bestPrice.mandi,
+    trend: bestPrice.trend.direction as 'up' | 'down' | 'stable'
+  }
+}
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -17,6 +43,24 @@ export default function DashboardPage() {
   const { starredCrops } = useStarredCrops()
   const [dashboardLoading, setDashboardLoading] = useState(true)
   const [transportBookings, setTransportBookings] = useState<TransportBookingRecord[]>([])
+
+  // Compute My Crops from starred crops
+  const myCrops = useMemo(() => {
+    return cropsData
+      .filter(crop => starredCrops.includes(crop.id))
+      .slice(0, 5) // Limit to maximum 5 crops
+  }, [starredCrops])
+
+  // Compute best prices for all starred crops (optimized with useMemo)
+  const bestPrices = useMemo(() => {
+    const pricesMap: Record<string, { price: number; mandi: string; trend: 'up' | 'down' | 'stable' } | null> = {}
+    
+    myCrops.forEach(crop => {
+      pricesMap[crop.id] = getBestPriceForCrop(crop.id)
+    })
+    
+    return pricesMap
+  }, [myCrops])
 
   // Handle redirect in useEffect to avoid React render phase error
   useEffect(() => {
@@ -89,6 +133,15 @@ export default function DashboardPage() {
       noServices: 'अभी तक कोई परिवहन बुकिंग नहीं है। मंडी से परिवहन बुक करें।',
       days: 'दिन',
       rising: 'बढ़ रहा है ↑',
+      myCrops: 'मेरी फसलें',
+      latestMandiPrices: 'आपकी फसलों के लिए नवीनतम मंडी भाव',
+      noCropsSelected: 'अभी कोई फसल नहीं चुनी गई',
+      noCropsMessage: 'बाजार सतर्कताएं और सिफारिशों तक जल्दी पहुंचने के लिए फसलें सहेजें।',
+      exploreCrops: 'फसल पुस्तकालय खोजें →',
+      topMandi: 'शीर्ष मंडी',
+      risingTrend: 'बढ़ रहा है',
+      fallingTrend: 'गिर रहा है',
+      stableTrend: 'स्थिर',
     },
     en: {
       farmOverview: 'Farm Overview',
@@ -113,6 +166,15 @@ export default function DashboardPage() {
       noServices: 'No transport bookings yet. Book transport from mandi flow.',
       days: 'days',
       rising: 'Rising ↑',
+      myCrops: 'My Crops',
+      latestMandiPrices: 'Latest mandi prices for your crops',
+      noCropsSelected: 'No crops selected yet',
+      noCropsMessage: 'Save crops to quickly access market alerts and recommendations.',
+      exploreCrops: 'Explore Crop Library →',
+      topMandi: 'Top Mandi',
+      risingTrend: 'Rising',
+      fallingTrend: 'Falling',
+      stableTrend: 'Stable',
     },
   }
 
@@ -225,10 +287,109 @@ export default function DashboardPage() {
       {/* Row 4 - Two Column Layout: My Crops (Left) & Your Services (Right) */}
       <div className="dashboard-sections">
         {/* Left Column - My Crops with Mandi Prices */}
-        <MyCropsWithPrices
-          primaryCrop={farmerProfile.primaryCrop.toLowerCase()}
-          starredCrops={starredCrops}
-        />
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+        >
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-krishi-heading flex items-center gap-2 mb-1">
+              <span>🌾</span>
+              {t.myCrops}
+            </h2>
+            <p className="text-sm text-gray-600">
+              {t.latestMandiPrices}
+            </p>
+          </div>
+
+          {/* Empty State */}
+          {myCrops.length === 0 && (
+            <div className="py-12 px-6 text-center">
+              <div className="mb-4 text-5xl">🌾</div>
+              <h3 className="text-lg font-bold text-krishi-heading mb-2">
+                {t.noCropsSelected}
+              </h3>
+              <p className="text-gray-600 mb-6 max-w-sm mx-auto">
+                {t.noCropsMessage}
+              </p>
+              <Link
+                href="/crop-library"
+                className="inline-block bg-[#1F3C88] hover:bg-[#1F3C88]/80 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
+              >
+                {t.exploreCrops}
+              </Link>
+            </div>
+          )}
+
+          {/* Crops List */}
+          {myCrops.length > 0 && (
+            <div className="space-y-3">
+              {myCrops.map((crop, index) => {
+                const cropName = lang === 'hi' ? crop.name_hi : crop.name_en
+                const priceData = bestPrices[crop.id]
+                
+                const getTrendIcon = (trend: 'up' | 'down' | 'stable') => {
+                  if (trend === 'up') return '↑'
+                  if (trend === 'down') return '↓'
+                  return '→'
+                }
+
+                const getTrendText = (trend: 'up' | 'down' | 'stable') => {
+                  if (trend === 'up') return t.risingTrend
+                  if (trend === 'down') return t.fallingTrend
+                  return t.stableTrend
+                }
+
+                const getTrendColor = (trend: 'up' | 'down' | 'stable') => {
+                  if (trend === 'up') return 'text-[#7FB069]'
+                  if (trend === 'down') return 'text-[#B85C38]'
+                  return 'text-gray-600'
+                }
+
+                return (
+                  <Link
+                    key={crop.id}
+                    href={`/mandi?crop=${crop.id}`}
+                    className="block"
+                  >
+                    <motion.div
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="flex items-center justify-between p-4 bg-[#FAF3E0]/30 rounded-lg border border-gray-200 hover:border-[#B85C38] hover:shadow-md transition-all cursor-pointer"
+                    >
+                      <div className="flex-1">
+                        <p className="font-semibold text-krishi-heading mb-1">
+                          {cropName}
+                        </p>
+                        {priceData && (
+                          <p className="text-sm text-gray-600">
+                            {t.topMandi}: {priceData.mandi}
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        {priceData ? (
+                          <>
+                            <p className="text-lg font-bold text-krishi-heading">
+                              ₹{priceData.price.toLocaleString()}
+                            </p>
+                            <p className={`text-sm font-medium ${getTrendColor(priceData.trend)}`}>
+                              {getTrendIcon(priceData.trend)} {getTrendText(priceData.trend)}
+                            </p>
+                          </>
+                        ) : (
+                          <p className="text-sm text-gray-500">—</p>
+                        )}
+                      </div>
+                    </motion.div>
+                  </Link>
+                )
+              })}
+            </div>
+          )}
+        </motion.div>
 
         {/* Right Column - Your Services Card */}
         <motion.div
