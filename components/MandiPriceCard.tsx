@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { MandiPrice } from '@/lib/mandiService'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
@@ -10,10 +11,10 @@ import { getTrendColor } from '@/lib/trendUtils'
 interface MandiPriceCardProps {
   price: MandiPrice
   isHighlighted?: boolean
-  onViewTrend?: () => void
+  onViewTrend?: (mandiId: string) => void
 }
 
-export default function MandiPriceCard({
+function MandiPriceCard({
   price,
   isHighlighted = false,
   onViewTrend,
@@ -179,7 +180,7 @@ export default function MandiPriceCard({
         </p>
         {onViewTrend && (
           <button
-            onClick={onViewTrend}
+            onClick={() => onViewTrend(price.id)}
             className="text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
             style={{
               color: '#1F3C88',
@@ -217,3 +218,5 @@ export default function MandiPriceCard({
     </motion.div>
   )
 }
+
+export default memo(MandiPriceCard)

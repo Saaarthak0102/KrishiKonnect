@@ -92,3 +92,63 @@ export const getTrendIcon = (trend: 'up' | 'down' | 'stable'): string => {
       return '—'
   }
 }
+
+interface WeeklyHistoryPoint {
+  modalPrice: number
+}
+
+export interface WeeklyDirectionResult {
+  direction: 'up' | 'down' | 'stable'
+  label: string
+  averageChange: number
+}
+
+export function calculateWeeklyDirection(
+  history: WeeklyHistoryPoint[]
+): WeeklyDirectionResult {
+  if (history.length < 2) {
+    return {
+      direction: 'stable',
+      label: 'Market Stable →',
+      averageChange: 0,
+    }
+  }
+
+  let upDays = 0
+  let downDays = 0
+  let totalPctChange = 0
+
+  for (let i = 1; i < history.length; i += 1) {
+    const prev = history[i - 1].modalPrice
+    const curr = history[i].modalPrice
+
+    if (curr > prev) upDays += 1
+    if (curr < prev) downDays += 1
+
+    if (prev > 0) {
+      totalPctChange += ((curr - prev) / prev) * 100
+    }
+  }
+
+  if (upDays > downDays) {
+    return {
+      direction: 'up',
+      label: 'Market Rising ↑',
+      averageChange: totalPctChange / (history.length - 1),
+    }
+  }
+
+  if (downDays > upDays) {
+    return {
+      direction: 'down',
+      label: 'Market Falling ↓',
+      averageChange: totalPctChange / (history.length - 1),
+    }
+  }
+
+  return {
+    direction: 'stable',
+    label: 'Market Stable →',
+    averageChange: totalPctChange / (history.length - 1),
+  }
+}

@@ -1,20 +1,25 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import FeaturePageLayout from '@/components/FeaturePageLayout'
 import Footer from '@/components/Footer'
 import { useLanguage } from '@/lib/LanguageContext'
-import { MandiPrice } from '@/lib/mandiService'
+import { useMandiPrices } from '@/lib/MandiContext'
+import { useAuth } from '@/context/AuthContext'
+import { MandiPrice, getBestMandiForCrop } from '@/lib/mandiService'
+import { calculateWeeklyDirection } from '@/lib/trendUtils'
 import MandiPriceCard from '@/components/MandiPriceCard'
 import MandiTrendChart from '@/components/MandiTrendChart'
+import MandiBestPriceCard from '@/components/MandiBestPriceCard'
+import MandiPriceSummary from '@/components/MandiPriceSummary'
+import NearbyMandisCard from '@/components/NearbyMandisCard'
+import WeeklyMarketTrend from '@/components/WeeklyMarketTrend'
 import { useStarredCrops } from '@/lib/useStarredCrops'
 import cropsData from '@/data/crops.json'
-import mandiPricesData from '@/data/mandiPrices.json'
 
-// Original mock data interface
-interface MandiPriceData {
+interface ContextMandiPrice {
   id: string
   crop: string
   state: string
@@ -33,8 +38,7 @@ interface GroupedByState {
   [state: string]: MandiPrice[]
 }
 
-// Helper to convert mock data to component interface
-function convertToComponentPrice(data: MandiPriceData, cropHi: string): any {
+function convertToComponentPrice(data: ContextMandiPrice, cropHi: string): MandiPrice {
   return {
     id: data.id,
     crop: data.crop,
@@ -50,17 +54,19 @@ function convertToComponentPrice(data: MandiPriceData, cropHi: string): any {
     modalPrice: data.modalPrice,
     trend: data.trend.direction,
     unit: 'per quintal',
-    source: 'Mock Dataset',
-    date: new Date().toISOString(),
+    source: 'Cached Dataset',
+    date: new Date().toISOString().slice(0, 10),
   }
 }
 
 export default function MandiPage() {
   const { lang } = useLanguage()
+  const { farmerProfile } = useAuth()
+  const { prices: cachedPrices, loading } = useMandiPrices()
   const searchParams = useSearchParams()
   const cropIdFromParam = searchParams.get('crop')
   const { starredCrops } = useStarredCrops()
-  
+
   // Get crop name from ID when navigated from crop detail page
   const initialCropName = useMemo(() => {
     if (!cropIdFromParam) return null
@@ -72,52 +78,40 @@ export default function MandiPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedState, setSelectedState] = useState('')
   const [showMyCrops, setShowMyCrops] = useState(false)
-  const [prices, setPrices] = useState<MandiPrice[]>([])
-  const [loading, setLoading] = useState(false)
   const [expandedMandi, setExpandedMandi] = useState<string | null>(null)
   const [shouldScroll, setShouldScroll] = useState(!!initialCropName)
 
-  // Load and process prices with mock live updates
-  useEffect(() => {
-    const loadPrices = () => {
-      // Apply mock live price updates (±2%) to simulate real market data
-      const updatedPrices = (mandiPricesData.prices as MandiPriceData[])
-        .map((priceData) => {
-          const variation = Math.random() * 0.04 - 0.02 // ±2%
-          const newModalPrice = Math.round(priceData.modalPrice * (1 + variation))
-          const newMinPrice = Math.round(priceData.minPrice * (1 + variation))
-          const newMaxPrice = Math.round(priceData.maxPrice * (1 + variation))
+  const componentPrices = useMemo(() => {
+    if (!cachedPrices.length) return []
 
-          // Recalculate trend based on new price variation
-          let trend: 'up' | 'down' | 'stable' = 'stable'
+    const cropNameHiByEn = new Map(cropsData.map((crop) => [crop.name_en, crop.name_hi]))
 
-          if (variation > 0.01) {
-            trend = 'up'
-          } else if (variation < -0.01) {
-            trend = 'down'
-          }
+    return (cachedPrices as ContextMandiPrice[]).map((price) => {
+      const cropHi = cropNameHiByEn.get(price.crop) || price.crop
+      return convertToComponentPrice(price, cropHi)
+    })
+  }, [cachedPrices])
 
-          const updated: MandiPriceData = {
-            ...priceData,
-            modalPrice: newModalPrice,
-            minPrice: newMinPrice,
-            maxPrice: newMaxPrice,
-            trend: { ...priceData.trend, direction: trend },
-          }
+  const cropPriceStats = useMemo(() => {
+    const stats: Record<string, { mandiCount: number; bestPrice: number }> = {}
 
-          // Find crop Hindi name
-          const crop = cropsData.find((c) => c.name_en === priceData.crop)
-          const cropHi = crop ? crop.name_hi : priceData.crop
+    for (const price of componentPrices) {
+      const key = price.cropEn
+      if (!stats[key]) {
+        stats[key] = {
+          mandiCount: 0,
+          bestPrice: 0,
+        }
+      }
 
-          return convertToComponentPrice(updated, cropHi)
-        })
-
-      setPrices(updatedPrices)
-      setLoading(false)
+      stats[key].mandiCount += 1
+      if (price.modalPrice > stats[key].bestPrice) {
+        stats[key].bestPrice = price.modalPrice
+      }
     }
 
-    loadPrices()
-  }, [])
+    return stats
+  }, [componentPrices])
 
   // Handle auto-scroll and highlight when crop is navigated from detail page
   useEffect(() => {
@@ -154,7 +148,7 @@ export default function MandiPage() {
     // Filter by state - show only crops that have mandi data in selected state
     if (selectedState) {
       const cropsInState = new Set(
-        prices
+        componentPrices
           .filter((p) => p.state === selectedState)
           .map((p) => p.cropEn)
       )
@@ -167,14 +161,14 @@ export default function MandiPage() {
     }
 
     return crops.sort((a, b) => a.name_en.localeCompare(b.name_en))
-  }, [searchTerm, showMyCrops, starredCrops, selectedState, prices])
+  }, [searchTerm, showMyCrops, starredCrops, selectedState, componentPrices])
 
   // Get mandis for selected crop grouped by state, filtered by selectedState
   const mandisGroupedByState = useMemo((): GroupedByState => {
     if (!selectedCrop) return {}
 
-    let filtered = prices.filter((p) => p.cropEn === selectedCrop)
-    
+    let filtered = componentPrices.filter((p) => p.cropEn === selectedCrop)
+
     // Apply state filter
     if (selectedState) {
       filtered = filtered.filter((p) => p.state === selectedState)
@@ -190,33 +184,88 @@ export default function MandiPage() {
     })
 
     return grouped
-  }, [selectedCrop, prices, selectedState])
+  }, [selectedCrop, componentPrices, selectedState])
 
   // Get all available states for selected crop
   const availableStates = useMemo(() => {
     if (!selectedCrop) return []
-    const states = prices
+    const states = componentPrices
       .filter((p) => p.cropEn === selectedCrop)
       .map((p) => p.state)
     return [...new Set(states)].sort()
-  }, [selectedCrop, prices])
+  }, [selectedCrop, componentPrices])
 
   // Get all states from all mandi data (for crop selection filter)
   const allStates = useMemo(() => {
-    const states = prices.map((p) => p.state)
+    const states = componentPrices.map((p) => p.state)
     return [...new Set(states)].sort()
-  }, [prices])
+  }, [componentPrices])
 
   // Sort states for display
   const sortedStates = useMemo(() => {
     return Object.keys(mandisGroupedByState).sort()
   }, [mandisGroupedByState])
 
-  // Get crop by ID
-  const getCropName = (cropId: string): string => {
-    const crop = cropsData.find((c) => c.id === cropId)
-    return crop ? (lang === 'hi' ? crop.name_hi : crop.name_en) : cropId
-  }
+  const selectedCropPrices = useMemo(() => {
+    if (!selectedCrop) return []
+    return componentPrices.filter((p) => p.cropEn === selectedCrop)
+  }, [selectedCrop, componentPrices])
+
+  const bestMandiForSelectedCrop = useMemo(() => {
+    if (!selectedCrop) return null
+    return getBestMandiForCrop(selectedCrop, componentPrices)
+  }, [selectedCrop, componentPrices])
+
+  const priceSummary = useMemo(() => {
+    if (!selectedCropPrices.length) {
+      return {
+        bestPrice: 0,
+        lowestPrice: 0,
+        averagePrice: 0,
+        mandiCount: 0,
+      }
+    }
+
+    const modalPrices = selectedCropPrices.map((p) => p.modalPrice)
+    const total = modalPrices.reduce((acc, value) => acc + value, 0)
+
+    return {
+      bestPrice: Math.max(...modalPrices),
+      lowestPrice: Math.min(...modalPrices),
+      averagePrice: Math.round(total / modalPrices.length),
+      mandiCount: selectedCropPrices.length,
+    }
+  }, [selectedCropPrices])
+
+  const nearbyMandis = useMemo(() => {
+    const userState = farmerProfile?.state
+    if (!userState || !selectedCropPrices.length) return []
+
+    return selectedCropPrices
+      .filter((price) => price.state === userState)
+      .slice()
+      .sort((a, b) => b.modalPrice - a.modalPrice)
+      .slice(0, 3)
+  }, [farmerProfile?.state, selectedCropPrices])
+
+  const weeklyHistory = useMemo(() => {
+    return selectedCropPrices
+      .slice()
+      .sort((a, b) => a.id.localeCompare(b.id))
+      .slice(0, 7)
+      .map((item, index) => ({
+        date: `D${index + 1}`,
+        modalPrice: item.modalPrice,
+      }))
+  }, [selectedCropPrices])
+
+  const weeklyDirection = useMemo(() => {
+    return calculateWeeklyDirection(weeklyHistory)
+  }, [weeklyHistory])
+
+  const handleToggleTrend = useCallback((mandiId: string) => {
+    setExpandedMandi((prev) => (prev === mandiId ? null : mandiId))
+  }, [])
 
   return (
     <FeaturePageLayout>
@@ -380,11 +429,9 @@ export default function MandiPage() {
               {/* Crop Cards Grid */}
               <section className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {filteredCrops.map((crop, idx) => {
-                  const cropPrices = prices.filter((p) => p.cropEn === crop.name_en)
-                  const bestPrice =
-                    cropPrices.length > 0
-                      ? Math.max(...cropPrices.map((p) => p.modalPrice))
-                      : 0
+                  const cropStats = cropPriceStats[crop.name_en]
+                  const bestPrice = cropStats?.bestPrice || 0
+                  const mandiCount = cropStats?.mandiCount || 0
 
                   return (
                     <motion.button
@@ -406,7 +453,7 @@ export default function MandiPage() {
                             {lang === 'hi' ? crop.name_hi : crop.name_en}
                           </h3>
                           <p className="text-sm text-gray-600 mb-3">
-                            {cropPrices.length} {lang === 'hi' ? 'मंडियां' : 'mandis'}
+                            {mandiCount} {lang === 'hi' ? 'मंडियां' : 'mandis'}
                           </p>
                           <p className="text-2xl font-bold" style={{ color: '#7FB069' }}>
                             ₹{bestPrice.toLocaleString('en-IN')}
@@ -542,6 +589,28 @@ export default function MandiPage() {
                 </div>
               </motion.div>
 
+              <div className="mb-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <MandiBestPriceCard bestMandi={bestMandiForSelectedCrop} lang={lang} />
+                <MandiPriceSummary
+                  bestPrice={priceSummary.bestPrice}
+                  averagePrice={priceSummary.averagePrice}
+                  lowestPrice={priceSummary.lowestPrice}
+                  mandiCount={priceSummary.mandiCount}
+                  lang={lang}
+                />
+                <NearbyMandisCard
+                  userState={farmerProfile?.state || (lang === 'hi' ? 'आपका राज्य' : 'Your State')}
+                  mandis={nearbyMandis}
+                  lang={lang}
+                />
+                <WeeklyMarketTrend
+                  direction={weeklyDirection.direction}
+                  label={weeklyDirection.label}
+                  averageChange={weeklyDirection.averageChange}
+                  lang={lang}
+                />
+              </div>
+
               {/* States with Mandis */}
               <div className="space-y-8">
                 {sortedStates.map((state, stateIdx) => (
@@ -568,9 +637,7 @@ export default function MandiPage() {
                         >
                           <MandiPriceCard
                             price={mandi}
-                            onViewTrend={() =>
-                              setExpandedMandi(expandedMandi === mandi.id ? null : mandi.id)
-                            }
+                            onViewTrend={handleToggleTrend}
                           />
                           {expandedMandi === mandi.id && (
                             <motion.div
@@ -582,7 +649,7 @@ export default function MandiPage() {
                               <MandiTrendChart
                                 crop={selectedCrop}
                                 mandi={mandi.mandiEn}
-                                data={[]}
+                                data={weeklyHistory}
                                 trend={mandi.trend}
                               />
                             </motion.div>

@@ -562,6 +562,23 @@ export function getBestPriceFromRows(rows: MandiPrice[]): MandiPrice | null {
   )
 }
 
+export function getBestMandiForCrop(
+  cropId: string,
+  prices: MandiPrice[]
+): MandiPrice | null {
+  if (!cropId || prices.length === 0) return null
+
+  const cropKey = cropId.toLowerCase()
+  const cropPrices = prices.filter(
+    (row) => row.crop.toLowerCase() === cropKey || row.cropEn.toLowerCase() === cropKey
+  )
+  if (cropPrices.length === 0) return null
+
+  return cropPrices.reduce((best, current) =>
+    current.modalPrice > best.modalPrice ? current : best
+  )
+}
+
 export async function getBestPriceForCrop(
   cropId: string,
   state?: string
