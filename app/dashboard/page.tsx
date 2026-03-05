@@ -199,7 +199,7 @@ export default function DashboardPage() {
         transition={{ duration: 0.4 }}
         className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
       >
-        <h2 className="text-2xl font-bold text-krishi-heading mb-6 flex items-center gap-2">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
           <span>🌾</span>
           {t.farmOverview}
         </h2>
@@ -208,29 +208,29 @@ export default function DashboardPage() {
           {/* Column 1 - Crop & Location */}
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+              <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
                 <span>🌾</span>
                 {t.primaryCrop}
               </p>
-              <p className="text-lg font-semibold text-krishi-heading">
+              <p className="text-lg font-semibold text-gray-900">
                 {farmerProfile.primaryCrop}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+              <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
                 <span>📍</span>
                 {t.location}
               </p>
-              <p className="text-lg font-semibold text-krishi-heading">
+              <p className="text-lg font-semibold text-gray-900">
                 {farmerProfile.village}, {farmerProfile.state}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+              <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
                 <span>📅</span>
                 {t.season}
               </p>
-              <p className="text-lg font-semibold text-krishi-heading">
+              <p className="text-lg font-semibold text-gray-900">
                 Rabi
               </p>
             </div>
@@ -239,7 +239,7 @@ export default function DashboardPage() {
           {/* Column 2 - Market Trend */}
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+              <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
                 <span>📈</span>
                 {t.marketTrend}
               </p>
@@ -263,42 +263,42 @@ export default function DashboardPage() {
         </div>
       </motion.div>
 
-      {/* Row 2 - Weather (35%) & Market Insight (65%) Cards */}
+      {/* Row 2 - Weather & Market Insight Cards */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="grid grid-cols-1 lg:grid-cols-[35%_65%] gap-6 items-stretch"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch"
       >
-        {/* Weather Card - 35% Width */}
+        {/* Weather Card */}
         <div className="h-full">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full flex flex-col">
-            <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               🌤 {t.weatherToday}
             </h3>
             
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-2 gap-6 flex-1">
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t.temperature}</p>
+                <p className="text-sm text-gray-600 mb-1">{t.temperature}</p>
                 <p className="text-2xl font-bold text-[#B85C38]">28°C</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t.rainChance}</p>
+                <p className="text-sm text-gray-600 mb-1">{t.rainChance}</p>
                 <p className="text-2xl font-bold text-[#1F3C88]">20%</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t.humidity}</p>
+                <p className="text-sm text-gray-600 mb-1">{t.humidity}</p>
                 <p className="text-2xl font-bold text-[#7FB069]">65%</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">{t.wind}</p>
+                <p className="text-sm text-gray-600 mb-1">{t.wind}</p>
                 <p className="text-2xl font-bold text-gray-700">10 km/h</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Market Insight Card - 65% Width */}
+        {/* Market Insight Card */}
         <div className="h-full">
           <MarketInsightCard starredCrops={starredCrops} />
         </div>
@@ -314,7 +314,7 @@ export default function DashboardPage() {
           className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
         >
           <div className="mb-6">
-            <h2 className="text-xl font-bold text-krishi-heading flex items-center gap-2 mb-1">
+            <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-1">
               <span>🌾</span>
               {t.myCrops}
             </h2>
@@ -327,7 +327,7 @@ export default function DashboardPage() {
           {myCrops.length === 0 && (
             <div className="py-12 px-6 text-center">
               <div className="mb-4 text-5xl">🌾</div>
-              <h3 className="text-lg font-bold text-krishi-heading mb-2">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 {t.noCropsSelected}
               </h3>
               <p className="text-gray-600 mb-6 max-w-sm mx-auto">
@@ -380,7 +380,7 @@ export default function DashboardPage() {
                       className="flex items-center justify-between p-4 bg-[#FAF3E0]/30 rounded-lg border border-gray-200 hover:border-[#B85C38] hover:shadow-md transition-all cursor-pointer"
                     >
                       <div className="flex-1">
-                        <p className="font-semibold text-krishi-heading mb-1">
+                        <p className="font-semibold text-gray-900 mb-1">
                           {cropName}
                         </p>
                         {priceData && (
@@ -392,7 +392,7 @@ export default function DashboardPage() {
                       <div className="text-right">
                         {priceData ? (
                           <>
-                            <p className="text-lg font-bold text-krishi-heading">
+                            <p className="text-lg font-bold text-gray-900">
                               ₹{priceData.price.toLocaleString()}
                             </p>
                             <p className={`text-sm font-medium ${getTrendColor(priceData.trend)}`}>
@@ -428,7 +428,7 @@ export default function DashboardPage() {
           transition={{ duration: 0.4, delay: 0.3 }}
           className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
         >
-          <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
             🚚 {t.yourServices}
           </h3>
         
@@ -439,11 +439,11 @@ export default function DashboardPage() {
             </p>
           ) : (
             latestTransportBookings.map((booking) => (
-              <div key={booking.id} className="p-4 bg-[#FAF3E0]/50 rounded-lg border border-gray-200">
+              <div key={booking.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">🚚</span>
                   <div className="flex-1">
-                    <p className="font-semibold text-krishi-heading mb-1">
+                    <p className="font-semibold text-gray-900 mb-1">
                       {t.transportBooked}
                     </p>
                     <p className="text-xs text-gray-500 mb-1">ID: {booking.id}</p>

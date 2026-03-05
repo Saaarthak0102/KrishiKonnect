@@ -56,15 +56,9 @@ const translations = {
 }
 
 const getTrendColor = (trend: 'up' | 'down' | 'stable') => {
-  if (trend === 'up') return 'text-green-600'
-  if (trend === 'down') return 'text-orange-600'
-  return 'text-amber-600'
-}
-
-const getTrendBgColor = (trend: 'up' | 'down' | 'stable') => {
-  if (trend === 'up') return 'bg-green-50 border-green-200'
-  if (trend === 'down') return 'bg-orange-50 border-orange-200'
-  return 'bg-amber-50 border-amber-200'
+  if (trend === 'up') return 'text-[#7FB069]'
+  if (trend === 'down') return 'text-[#B85C38]'
+  return 'text-gray-600'
 }
 
 interface MarketInsightCardProps {
@@ -131,14 +125,14 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
         transition={{ duration: 0.4, delay: 0.15 }}
         className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full flex flex-col"
       >
-        <h3 className="text-xl font-bold text-krishi-heading flex items-center gap-2 mb-6">
-          <span>📊</span>
-          {t.marketInsight}
-        </h3>
+      <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-6">
+        <span>📊</span>
+        {t.marketInsight}
+      </h3>
 
         <div className="py-12 px-6 text-center">
           <div className="mb-4 text-5xl">📊</div>
-          <h4 className="text-lg font-bold text-krishi-heading mb-2">
+          <h4 className="text-lg font-semibold text-gray-900 mb-2">
             {t.noInsightTitle}
           </h4>
           <p className="text-gray-600 mb-6 max-w-sm mx-auto">
@@ -170,41 +164,31 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.15 }}
-      className={`rounded-xl shadow-sm border p-6 h-full flex flex-col ${getTrendBgColor(insight.trend)}`}
-      style={{
-        backgroundColor:
-          insight.trend === 'up'
-            ? '#F0FDF4'
-            : insight.trend === 'down'
-              ? '#FFF7ED'
-              : '#FFFBEB',
-        borderColor:
-          insight.trend === 'up' ? '#BBF7D0' : insight.trend === 'down' ? '#FED7AA' : '#FCD34D',
-      }}
+      className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full flex flex-col"
     >
-      <h3 className="text-xl font-bold text-krishi-heading flex items-center gap-2 mb-4">
+      <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
         <span>📊</span>
         {t.marketInsight}
       </h3>
 
       <div className="space-y-4">
         {/* Main insight text */}
-        <p className="text-base text-krishi-heading font-medium">
+        <p className="text-base text-gray-900 font-medium">
           {insightText}
         </p>
 
         {/* Recommendation */}
-        <p className="text-sm text-gray-700">
+        <p className="text-sm text-gray-600">
           {t.considerSelling}
         </p>
 
         {/* Best mandi section */}
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
+        <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
           <p className="text-sm text-gray-600 mb-2">
             {t.bestMandiToday}
           </p>
           <div className="flex items-baseline justify-between">
-            <h4 className="text-lg font-bold text-krishi-heading">
+            <h4 className="text-lg font-bold text-gray-900">
               {insight.mandi}
             </h4>
             <div className="text-right">
