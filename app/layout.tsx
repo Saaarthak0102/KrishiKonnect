@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { LanguageProvider } from '@/lib/LanguageContext'
 import { AuthWrapper } from '@/components/AuthProvider'
+import { MandiProvider } from '@/lib/MandiContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,7 +22,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <LanguageProvider>
           <AuthWrapper>
-            {children}
+            <MandiProvider>
+              {children}
+            </MandiProvider>
           </AuthWrapper>
         </LanguageProvider>
       </body>

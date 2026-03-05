@@ -8,11 +8,13 @@ import { translations } from '@/lib/translations'
 interface MandiPriceCardProps {
   price: MandiPrice
   isHighlighted?: boolean
+  onViewTrend?: () => void
 }
 
 export default function MandiPriceCard({
   price,
   isHighlighted = false,
+  onViewTrend,
 }: MandiPriceCardProps) {
   const { lang } = useLanguage()
   const t = translations[lang]
@@ -20,22 +22,37 @@ export default function MandiPriceCard({
   const getTrendIcon = (trend: string) => {
     switch (trend) {
       case 'up':
-        return '📈'
+        return '⬆'
       case 'down':
-        return '📉'
+        return '⬇'
       default:
-        return '➡️'
+        return '→'
     }
   }
 
   const getTrendColor = (trend: string) => {
     switch (trend) {
       case 'up':
-        return 'text-green-600'
+        return '#7FB069'
       case 'down':
-        return 'text-red-600'
+        return '#B85C38'
+      case 'stable':
+        return '#F2A541'
       default:
-        return 'text-gray-600'
+        return '#666'
+    }
+  }
+
+  const getTrendBgColor = (trend: string) => {
+    switch (trend) {
+      case 'up':
+        return 'rgba(127, 176, 105, 0.1)'
+      case 'down':
+        return 'rgba(184, 92, 56, 0.1)'
+      case 'stable':
+        return 'rgba(242, 165, 65, 0.1)'
+      default:
+        return '#f0f0f0'
     }
   }
 
@@ -78,72 +95,111 @@ export default function MandiPriceCard({
   return (
     <motion.div
       whileHover={{ y: -4 }}
-      className={`rounded-2xl border-2 p-6 transition-all duration-300 ${
-        isHighlighted
-          ? 'border-krishi-highlight bg-gradient-to-br from-krishi-highlight/10 to-transparent shadow-lg'
-          : 'border-krishi-border bg-white hover:shadow-md'
+      className={`rounded-xl border-0 p-5 md:p-6 transition-all duration-300 shadow-md hover:shadow-lg ${
+        isHighlighted ? 'ring-2 ring-krishi-primary' : ''
       }`}
+      style={{
+        backgroundColor: '#FAF3E0',
+      }}
     >
-      {/* Header - Crop and Mandi */}
-      <div className="mb-4 flex items-start justify-between">
-        <div className="flex-1">
-          <h3 className="text-sm font-semibold text-krishi-text/60 uppercase tracking-wide">
-            {price.cropEn}
-          </h3>
-          <p className="text-lg font-bold text-krishi-heading mt-1">
-            {price.mandiEn}
-          </p>
-          <p className="text-xs text-krishi-text/70 mt-0.5">
-            {price.district}, {price.state}
-          </p>
-        </div>
-        <div className={`text-2xl ${getTrendColor(price.trend)}`}>
-          {getTrendIcon(price.trend)}
+      {/* Header */}
+      <div className="mb-4">
+        <h3
+          className="text-lg md:text-xl font-bold mb-1"
+          style={{ color: '#1F3C88' }}
+        >
+          {price.mandiEn}
+        </h3>
+        <p className="text-sm text-gray-600">
+          {price.district}, {price.state}
+        </p>
+      </div>
+
+      {/* Main Price Display */}
+      <div className="mb-6 pb-6 border-b border-gray-300">
+        <p className="text-gray-500 text-xs uppercase tracking-wide mb-2 font-semibold">
+          {lang === 'hi' ? 'मोडल भाव (प्रति क्विंटल)' : 'Modal Price (Per Quintal)'}
+        </p>
+        <div className="flex items-baseline gap-2">
+          <span
+            className="text-4xl md:text-5xl font-bold"
+            style={{ color: '#1F3C88' }}
+          >
+            ₹{price.modalPrice.toLocaleString('en-IN')}
+          </span>
+          <span className="text-gray-600 text-sm">/quintal</span>
         </div>
       </div>
 
-      {/* Price Information */}
-      <div className="mb-4 space-y-3 border-t border-krishi-border pt-4">
-        {/* Modal Price - Highlighted */}
-        <div className="flex items-baseline justify-between">
-          <span className="text-sm font-semibold text-krishi-text">
-            {lang === 'hi' ? 'मोडल भाव' : 'Modal Price'}
-          </span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold text-krishi-primary">
-              ₹{price.modalPrice}
-            </span>
-            <span className="text-xs text-krishi-text/60">/q</span>
-          </div>
+      {/* Price Range */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <div>
+          <p className="text-xs text-gray-500 uppercase tracking-wide mb-1 font-semibold">
+            {lang === 'hi' ? 'न्यूनतम' : 'Minimum'}
+          </p>
+          <p className="text-lg font-semibold" style={{ color: '#1F3C88' }}>
+            ₹{price.minPrice.toLocaleString('en-IN')}
+          </p>
         </div>
-
-        {/* Min and Max Prices */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-lg bg-krishi-bg p-2">
-            <p className="text-xs text-krishi-text/70 mb-1">
-              {lang === 'hi' ? 'न्यूनतम' : 'Min'}
-            </p>
-            <p className="text-sm font-bold text-krishi-text">₹{price.minPrice}</p>
-          </div>
-          <div className="rounded-lg bg-krishi-bg p-2">
-            <p className="text-xs text-krishi-text/70 mb-1">
-              {lang === 'hi' ? 'अधिकतम' : 'Max'}
-            </p>
-            <p className="text-sm font-bold text-krishi-text">₹{price.maxPrice}</p>
-          </div>
+        <div>
+          <p className="text-xs text-gray-500 uppercase tracking-wide mb-1 font-semibold">
+            {lang === 'hi' ? 'अधिकतम' : 'Maximum'}
+          </p>
+          <p className="text-lg font-semibold" style={{ color: '#1F3C88' }}>
+            ₹{price.maxPrice.toLocaleString('en-IN')}
+          </p>
         </div>
       </div>
 
-      {/* Date and Source - with Last Updated Info */}
-      <div className="flex flex-col gap-2 border-t border-krishi-border pt-3">
-        <div className="flex items-center justify-between text-xs">
-          <span className="font-medium text-krishi-primary">
-            {getLastUpdatedLabel()}
+      {/* Trend Section */}
+      <div
+        className="rounded-lg p-4 mb-4"
+        style={{ backgroundColor: getTrendBgColor(price.trend) }}
+      >
+        <p className="text-xs text-gray-600 uppercase tracking-wide mb-2 font-semibold">
+          {lang === 'hi' ? 'बाजार प्रवृत्ति' : 'Market Trend'}
+        </p>
+        <div className="flex items-center gap-3">
+          <span className="text-3xl" style={{ color: getTrendColor(price.trend) }}>
+            {getTrendIcon(price.trend)}
           </span>
-          <span className="text-xs font-medium text-krishi-text/60">
-            {price.source || 'Agmarknet'}
+          <span
+            className="text-lg font-semibold"
+            style={{ color: getTrendColor(price.trend) }}
+          >
+            {price.trend === 'up' && '+'}
+            {price.trend === 'down' && '-'}
+            {price.trend === 'stable' && ''}
+            2.0%
           </span>
         </div>
+      </div>
+
+      {/* Last Updated & Action */}
+      <div className="flex items-center justify-between pt-3 border-t border-gray-300">
+        <p className="text-xs text-gray-600">
+          {lang === 'hi' ? 'अपडेट' : 'Updated'}:{' '}
+          <span className="font-medium">{getLastUpdatedLabel()}</span>
+        </p>
+        {onViewTrend && (
+          <button
+            onClick={onViewTrend}
+            className="text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
+            style={{
+              color: '#1F3C88',
+              backgroundColor: '#E8DCC8',
+              border: '1px solid #D4C4A8',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#D4C4A8';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#E8DCC8';
+            }}
+          >
+            {lang === 'hi' ? 'चार्ट देखें' : 'View Chart'}
+          </button>
+        )}
       </div>
     </motion.div>
   )
