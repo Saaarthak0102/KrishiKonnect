@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import FeaturePageLayout from '@/components/FeaturePageLayout'
 import Footer from '@/components/Footer'
@@ -55,11 +56,22 @@ function convertToComponentPrice(data: MandiPriceData, cropHi: string): any {
 
 export default function MandiPage() {
   const { lang } = useLanguage()
-  const [selectedCrop, setSelectedCrop] = useState<string | null>(null)
+  const searchParams = useSearchParams()
+  const cropIdFromParam = searchParams.get('crop')
+  
+  // Get crop name from ID when navigated from crop detail page
+  const initialCropName = useMemo(() => {
+    if (!cropIdFromParam) return null
+    const crop = cropsData.find((c) => c.id === cropIdFromParam)
+    return crop ? crop.name_en : null
+  }, [cropIdFromParam])
+  
+  const [selectedCrop, setSelectedCrop] = useState<string | null>(initialCropName)
   const [searchTerm, setSearchTerm] = useState('')
   const [prices, setPrices] = useState<MandiPrice[]>([])
   const [loading, setLoading] = useState(false)
   const [expandedMandi, setExpandedMandi] = useState<string | null>(null)
+  const [shouldScroll, setShouldScroll] = useState(!!initialCropName)
 
   // Load and process prices with mock live updates
   useEffect(() => {
@@ -103,7 +115,25 @@ export default function MandiPage() {
     loadPrices()
   }, [])
 
-  // Get filtered and sorted crops
+  // Handle auto-scroll and highlight when crop is navigated from detail page
+  useEffect(() => {
+    if (shouldScroll && selectedCrop) {
+      // Add a small delay to ensure DOM is fully rendered
+      const timer = setTimeout(() => {
+        const cropElement = document.getElementById(`crop-card-${selectedCrop.toLowerCase().replace(/\s+/g, '-')}`)
+        if (cropElement) {
+          cropElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          // Highlight the card temporarily
+          cropElement.classList.add('highlighted-crop-card')
+          setTimeout(() => {
+            cropElement.classList.remove('highlighted-crop-card')
+          }, 3000) // Remove highlight after 3 seconds
+        }
+        setShouldScroll(false)
+      }, 200)
+      return () => clearTimeout(timer)
+    }
+  }, [shouldScroll, selectedCrop])
   const filteredCrops = useMemo(() => {
     return cropsData
       .filter((crop) => {
@@ -204,6 +234,7 @@ export default function MandiPage() {
                   return (
                     <motion.button
                       key={crop.id}
+                      id={`crop-card-${crop.name_en.toLowerCase().replace(/\s+/g, '-')}`}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: Math.min(idx * 0.02, 0.3), duration: 0.3 }}

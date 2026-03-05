@@ -7,3 +7,22 @@
     @apply bg-krishi-bg text-krishi-text;
   }
 }
+
+/* Highlighted crop card styling */
+.highlighted-crop-card {
+  border-color: #F2A541 !important;
+  box-shadow: 0 0 20px rgba(242, 165, 65, 0.4), 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  animation: highlight-pulse 1.5s ease-in-out;
+}
+
+@keyframes highlight-pulse {
+  0% {
+    box-shadow: 0 0 20px rgba(242, 165, 65, 0.6), 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(242, 165, 65, 0.8), 0 4px 6px rgba(0, 0, 0, 0.15);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(242, 165, 65, 0.4), 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+}
