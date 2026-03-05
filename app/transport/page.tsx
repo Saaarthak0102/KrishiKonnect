@@ -10,6 +10,12 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { useAuth } from '@/context/AuthContext'
 import cropsData from '@/data/crops.json'
 import { useMandiPrices } from '@/lib/MandiContext'
+import {
+  generateBookingId,
+  getTransportBookingById,
+  saveTransportBooking,
+  type TransportBookingRecord
+} from '@/lib/transportBookings'
 
 interface TransportRequest {
   farmerId: string
@@ -148,6 +154,8 @@ export default function TransportPage() {
   // Get URL parameters
   const cropFromUrl = searchParams.get('crop') || ''
   const mandiFromUrl = searchParams.get('mandi') || ''
+  const bookingIdFromUrl = searchParams.get('bookingId') || ''
+  const isReceiptRoute = Boolean(bookingIdFromUrl)
 
   // Form state
   const [formData, setFormData] = useState<TransportRequest>({
@@ -164,6 +172,8 @@ export default function TransportPage() {
   const [step, setStep] = useState<'form' | 'estimate' | 'transporters' | 'confirmed'>('form')
   const [selectedTransporter, setSelectedTransporter] = useState<Transporter | null>(null)
   const [estimatedCost, setEstimatedCost] = useState<{ min: number; max: number }>({ min: 0, max: 0 })
+  const [bookingRecord, setBookingRecord] = useState<TransportBookingRecord | null>(null)
+  const [isBookingLookupComplete, setIsBookingLookupComplete] = useState(!isReceiptRoute)
 
   const cropOptions = useMemo(
     () =>
@@ -244,6 +254,18 @@ export default function TransportPage() {
     if (!selectedCrop) return formData.crop
     return lang === 'hi' ? selectedCrop.nameHi : selectedCrop.nameEn
   }, [cropOptions, formData.crop, lang])
+
+  useEffect(() => {
+    if (!isReceiptRoute) {
+      setIsBookingLookupComplete(true)
+      return
+    }
+
+    const storedBooking = getTransportBookingById(bookingIdFromUrl)
+    setBookingRecord(storedBooking)
+    setStep('confirmed')
+    setIsBookingLookupComplete(true)
+  }, [bookingIdFromUrl, isReceiptRoute])
 
   useEffect(() => {
     if (!formData.crop && formData.destinationMandi) {
@@ -365,6 +387,34 @@ export default function TransportPage() {
   }
 
   const handleBookTransport = (transporter: Transporter) => {
+    const pickupDate = new Date(formData.preferredDate).toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+
+    const booking: TransportBookingRecord = {
+      id: generateBookingId(),
+      type: 'transport',
+      crop: selectedCropMarketName,
+      quantity: Number(formData.quantity),
+      pickupVillage: formData.pickupVillage,
+      destinationMandi: formData.destinationMandi,
+      provider: transporter.name,
+      driverContact: transporter.driverContact,
+      pickupDate,
+      estimatedArrival: '7 AM',
+      cost: transporter.price,
+      status: 'confirmed',
+      createdAt: new Date().toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    }
+
+    saveTransportBooking(booking)
+    setBookingRecord(booking)
     setSelectedTransporter(transporter)
     setFormData(prev => ({
       ...prev,
@@ -373,6 +423,7 @@ export default function TransportPage() {
       status: 'confirmed'
     }))
     setStep('confirmed')
+    router.replace(`/transport?bookingId=${booking.id}`)
   }
 
   const handleBackToMandi = () => {
@@ -387,11 +438,13 @@ export default function TransportPage() {
     }))
   }
 
-  const getTomorrowArrivalTime = () => {
-    const tomorrow = new Date()
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    return `${tomorrow.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })} 7 AM`
+  const handlePrintReceipt = () => {
+    document.body.classList.add('transport-receipt-print')
+    window.print()
+    document.body.classList.remove('transport-receipt-print')
   }
+
+  const activeBooking = bookingRecord
 
   return (
     <FeaturePageLayout>
@@ -415,6 +468,7 @@ export default function TransportPage() {
           </motion.div>
 
           {/* Step 1: Transport Request Form */}
+          {!isReceiptRoute && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -623,9 +677,10 @@ export default function TransportPage() {
               )}
             </form>
           </motion.div>
+          )}
 
           {/* Step 2: Transport Cost Estimate */}
-          {(step === 'estimate' || step === 'transporters' || step === 'confirmed') && (
+          {!isReceiptRoute && (step === 'estimate' || step === 'transporters' || step === 'confirmed') && (
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -657,7 +712,7 @@ export default function TransportPage() {
           )}
 
           {/* Step 3: Available Transporters */}
-          {(step === 'transporters' || step === 'confirmed') && (
+          {!isReceiptRoute && (step === 'transporters' || step === 'confirmed') && (
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -734,7 +789,32 @@ export default function TransportPage() {
           )}
 
           {/* Step 4: Booking Confirmation */}
-          {step === 'confirmed' && selectedTransporter && (
+          {isReceiptRoute && isBookingLookupComplete && !activeBooking && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 rounded-xl border-2 p-8 text-center"
+              style={{ borderColor: '#E8DCC8', backgroundColor: '#FFFFFF' }}
+            >
+              <h2 className="text-2xl font-bold mb-2" style={{ color: '#1F3C88' }}>
+                {lang === 'hi' ? 'बुकिंग नहीं मिली' : 'Booking not found'}
+              </h2>
+              <p className="text-gray-600 mb-6">
+                {lang === 'hi'
+                  ? 'यह रसीद उपलब्ध नहीं है। नई परिवहन बुकिंग करें।'
+                  : 'This receipt is unavailable. Please create a new transport booking.'}
+              </p>
+              <button
+                onClick={() => router.push('/transport')}
+                className="px-8 py-3 rounded-lg font-semibold text-white"
+                style={{ backgroundColor: '#1F3C88' }}
+              >
+                {lang === 'hi' ? 'नई बुकिंग करें' : 'Book Transport'}
+              </button>
+            </motion.div>
+          )}
+
+          {step === 'confirmed' && activeBooking && (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -742,7 +822,8 @@ export default function TransportPage() {
               className="mb-8 rounded-xl border-2 p-8 md:p-10 text-center"
               style={{ borderColor: '#7FB069', backgroundColor: '#FFFFFF' }}
             >
-              <div className="mb-6">
+              {!isReceiptRoute && (
+              <div className="mb-6 transport-no-print">
                 <div className="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center text-4xl" style={{ backgroundColor: '#7FB069' }}>
                   ✓
                 </div>
@@ -753,42 +834,87 @@ export default function TransportPage() {
                   {lang === 'hi' ? 'आपकी बुकिंग की पुष्टि हो गई है' : 'Your booking has been confirmed'}
                 </p>
               </div>
+              )}
 
-              <div className="max-w-2xl mx-auto text-left space-y-4">
+              <div id="transport-receipt" className="max-w-2xl mx-auto text-left space-y-4 rounded-lg border-2 p-6" style={{ borderColor: '#E8DCC8' }}>
+                <div className="text-center border-b pb-4" style={{ borderColor: '#E8DCC8' }}>
+                  <h3 className="text-2xl font-bold" style={{ color: '#1F3C88' }}>
+                    KrishiKonnect Transport Receipt
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {lang === 'hi' ? 'परिवहन सेवा रसीद' : 'Transport Service Receipt'}
+                  </p>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
-                    <p className="text-sm text-gray-600 mb-1">{lang === 'hi' ? 'पिकअप' : 'Pickup'}</p>
-                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{formData.pickupVillage}</p>
+                    <p className="text-sm text-gray-600 mb-1">Booking ID</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.id}</p>
                   </div>
                   <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
-                    <p className="text-sm text-gray-600 mb-1">{lang === 'hi' ? 'गंतव्य' : 'Destination'}</p>
-                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{formData.destinationMandi}</p>
+                    <p className="text-sm text-gray-600 mb-1">Date</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.createdAt}</p>
                   </div>
                   <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
-                    <p className="text-sm text-gray-600 mb-1">{lang === 'hi' ? 'फसल' : 'Crop'}</p>
-                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{selectedCropLabel}</p>
+                    <p className="text-sm text-gray-600 mb-1">Pickup Village</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.pickupVillage}</p>
                   </div>
                   <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
-                    <p className="text-sm text-gray-600 mb-1">{lang === 'hi' ? 'मात्रा' : 'Quantity'}</p>
-                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{formData.quantity} {lang === 'hi' ? 'क्विंटल' : 'quintals'}</p>
+                    <p className="text-sm text-gray-600 mb-1">Destination Mandi</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.destinationMandi}</p>
+                  </div>
+                  <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
+                    <p className="text-sm text-gray-600 mb-1">Crop</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.crop}</p>
+                  </div>
+                  <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
+                    <p className="text-sm text-gray-600 mb-1">Quantity</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>
+                      {activeBooking.quantity} {lang === 'hi' ? 'क्विंटल' : 'quintals'}
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
+                    <p className="text-sm text-gray-600 mb-1">Transport Provider</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.provider}</p>
+                  </div>
+                  <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
+                    <p className="text-sm text-gray-600 mb-1">Driver Contact</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.driverContact}</p>
+                  </div>
+                  <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
+                    <p className="text-sm text-gray-600 mb-1">Pickup Date</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.pickupDate}</p>
+                  </div>
+                  <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
+                    <p className="text-sm text-gray-600 mb-1">Estimated Arrival</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.estimatedArrival}</p>
                   </div>
                 </div>
 
                 <div className="p-6 rounded-lg" style={{ backgroundColor: '#E8F5E9', border: '2px solid #7FB069' }}>
-                  <h3 className="font-bold mb-3 text-lg" style={{ color: '#1F3C88' }}>
-                    {lang === 'hi' ? 'वाहन प्रदाता विवरण' : 'Vehicle Provider Details'}
-                  </h3>
-                  <div className="space-y-2">
-                    <p><span className="text-gray-600">{lang === 'hi' ? 'कंपनी:' : 'Company:'}</span> <span className="font-semibold">{selectedTransporter.name}</span></p>
-                    <p><span className="text-gray-600">{lang === 'hi' ? 'ड्राइवर संपर्क:' : 'Driver Contact:'}</span> <span className="font-semibold">{selectedTransporter.driverContact}</span></p>
-                    <p><span className="text-gray-600">{lang === 'hi' ? 'पिकअप तारीख:' : 'Pickup Date:'}</span> <span className="font-semibold">{new Date(formData.preferredDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</span></p>
-                    <p><span className="text-gray-600">{lang === 'hi' ? 'अनुमानित आगमन:' : 'Estimated Arrival:'}</span> <span className="font-semibold">{getTomorrowArrivalTime()}</span></p>
-                    <p><span className="text-gray-600">{lang === 'hi' ? 'कुल लागत:' : 'Total Cost:'}</span> <span className="font-semibold text-2xl" style={{ color: '#7FB069' }}>₹{selectedTransporter.price.toLocaleString('en-IN')}</span></p>
+                  <div className="flex items-center justify-between gap-4">
+                    <p className="font-semibold text-gray-700">Total Cost</p>
+                    <p className="font-bold text-3xl" style={{ color: '#7FB069' }}>
+                      ₹{activeBooking.cost.toLocaleString('en-IN')}
+                    </p>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between gap-4 text-sm">
+                    <p className="text-gray-600">Status</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>
+                      {lang === 'hi' ? 'पुष्टि की गई' : 'Confirmed'}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-8 flex flex-col md:flex-row gap-4 justify-center">
+              <div className="mt-8 flex flex-col md:flex-row gap-4 justify-center transport-no-print">
+                <button
+                  onClick={handlePrintReceipt}
+                  className="px-8 py-3 rounded-lg font-semibold transition-all hover:scale-105"
+                  style={{ backgroundColor: '#B85C38', color: '#FFFFFF' }}
+                >
+                  {lang === 'hi' ? 'रसीद प्रिंट करें' : 'Print Receipt'}
+                </button>
                 <button
                   onClick={handleBackToMandi}
                   className="px-8 py-3 rounded-lg font-semibold transition-all hover:scale-105"
@@ -809,6 +935,35 @@ export default function TransportPage() {
 
         <Footer />
       </div>
+
+      <style jsx global>{`
+        @media print {
+          body.transport-receipt-print * {
+            visibility: hidden;
+          }
+
+          body.transport-receipt-print #transport-receipt,
+          body.transport-receipt-print #transport-receipt * {
+            visibility: visible;
+          }
+
+          body.transport-receipt-print #transport-receipt {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            margin: 0;
+            padding: 24px;
+            border: 0;
+            box-shadow: none;
+            background: #ffffff;
+          }
+
+          body.transport-receipt-print .transport-no-print {
+            display: none !important;
+          }
+        }
+      `}</style>
     </FeaturePageLayout>
   )
 }

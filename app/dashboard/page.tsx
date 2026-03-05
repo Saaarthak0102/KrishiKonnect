@@ -2,14 +2,13 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useStarredCrops } from '@/lib/useStarredCrops'
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
 import MyCropsWithPrices from '@/components/MyCropsWithPrices'
-import cropsData from '@/data/crops.json'
+import { getTransportBookings, type TransportBookingRecord } from '@/lib/transportBookings'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -17,6 +16,7 @@ export default function DashboardPage() {
   const { lang } = useLanguage()
   const { starredCrops } = useStarredCrops()
   const [dashboardLoading, setDashboardLoading] = useState(true)
+  const [transportBookings, setTransportBookings] = useState<TransportBookingRecord[]>([])
 
   // Handle redirect in useEffect to avoid React render phase error
   useEffect(() => {
@@ -35,10 +35,15 @@ export default function DashboardPage() {
     }
   }, [loading, user])
 
-  // Get starred crops data
-  const starredCropsData = useMemo(() => {
-    return cropsData.filter((crop) => starredCrops.includes(crop.id)).slice(0, 5)
-  }, [starredCrops])
+  // Load transport bookings only once on mount.
+  useEffect(() => {
+    setTransportBookings(getTransportBookings())
+  }, [])
+
+  const latestTransportBookings = useMemo(
+    () => transportBookings.filter((booking) => booking.type === 'transport').slice(0, 3),
+    [transportBookings]
+  )
 
   if (loading) {
     return (
@@ -74,11 +79,18 @@ export default function DashboardPage() {
       humidity: 'नमी',
       wind: 'हवा',
       recentServices: 'हाल की सेवाएं',
+      yourServices: 'आपकी सेवाएं',
       myCrops: 'मेरी फसलें',
       transportPickup: 'परिवहन पिकअप',
+      transportBooked: 'परिवहन बुक किया गया',
       status: 'स्थिति',
       confirmed: 'पुष्टि की गई',
       pickupTime: 'पिकअप समय',
+      pickupDate: 'पिकअप',
+      provider: 'प्रदाता',
+      cost: 'लागत',
+      viewReceipt: 'रसीद देखें',
+      noServices: 'अभी तक कोई परिवहन बुकिंग नहीं है। मंडी से परिवहन बुक करें।',
       tomorrow: 'कल',
       communityActivity: 'समुदाय गतिविधि',
       replies: 'उत्तर',
@@ -105,11 +117,18 @@ export default function DashboardPage() {
       humidity: 'Humidity',
       wind: 'Wind',
       recentServices: 'Recent Services',
+      yourServices: 'Your Services',
       myCrops: 'My Crops',
       transportPickup: 'Transport Pickup',
+      transportBooked: 'Transport Booked',
       status: 'Status',
       confirmed: 'Confirmed',
       pickupTime: 'Pickup Time',
+      pickupDate: 'Pickup',
+      provider: 'Provider',
+      cost: 'Cost',
+      viewReceipt: 'View Receipt',
+      noServices: 'No transport bookings yet. Book transport from mandi flow.',
       tomorrow: 'Tomorrow',
       communityActivity: 'Community Activity',
       replies: 'Replies',
@@ -126,35 +145,6 @@ export default function DashboardPage() {
   }
 
   const t = translations[lang]
-
-  // Sample service activity data (set to empty array to demonstrate empty state)
-  const serviceActivities = [
-    {
-      type: 'transport',
-      icon: '🚚',
-      title: t.transportPickup,
-      details: [
-        { label: t.status, value: t.confirmed, highlight: true },
-        { label: t.pickupTime, value: `${t.tomorrow} 6 AM`, highlight: false },
-      ],
-    },
-    {
-      type: 'community',
-      icon: '🤝',
-      title: t.communityActivity,
-      details: [
-        { label: `${t.replies}: 2 ${t.responsesOnQuestion}`, value: '', highlight: false },
-      ],
-    },
-    {
-      type: 'aiAdvisor',
-      icon: '🤖',
-      title: t.aiAdvisor,
-      details: [
-        { label: `${t.lastAdvice}: ${t.fertilizerRecommendation}`, value: '', highlight: false },
-      ],
-    },
-  ]
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
@@ -260,7 +250,7 @@ export default function DashboardPage() {
         </div>
       </motion.div>
 
-      {/* Row 4 - Two Column Layout: My Crops (Left) & Recent Services (Right) */}
+      {/* Row 4 - Two Column Layout: My Crops (Left) & Your Services (Right) */}
       <div className="dashboard-sections">
         {/* Left Column - My Crops with Mandi Prices */}
         <MyCropsWithPrices
@@ -268,7 +258,7 @@ export default function DashboardPage() {
           starredCrops={starredCrops}
         />
 
-        {/* Right Column - Recent Services Card */}
+        {/* Right Column - Your Services Card */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -276,35 +266,41 @@ export default function DashboardPage() {
           className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
         >
           <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
-            🚚 {t.recentServices}
+            🚚 {t.yourServices}
           </h3>
         
         <div className="space-y-4">
-          {serviceActivities.length === 0 ? (
+          {latestTransportBookings.length === 0 ? (
             <p className="text-sm text-gray-500 py-4">
-              {lang === 'hi' 
-                ? 'अभी तक कोई सेवा का उपयोग नहीं किया गया। परिवहन बुक करें या AI सलाहकार से पूछें।'
-                : 'No services used yet. Book transport or ask the AI advisor.'}
+              {t.noServices}
             </p>
           ) : (
-            serviceActivities.map((activity, index) => (
-              <div key={index} className="p-4 bg-[#FAF3E0]/50 rounded-lg border border-gray-200">
+            latestTransportBookings.map((booking) => (
+              <div key={booking.id} className="p-4 bg-[#FAF3E0]/50 rounded-lg border border-gray-200">
                 <div className="flex items-start gap-3">
-                  <span className="text-2xl">{activity.icon}</span>
+                  <span className="text-2xl">🚚</span>
                   <div className="flex-1">
                     <p className="font-semibold text-krishi-heading mb-1">
-                      {activity.title}
+                      {t.transportBooked}
                     </p>
-                    {activity.details.map((detail, idx) => (
-                      <p key={idx} className="text-sm text-gray-600">
-                        {detail.label}
-                        {detail.value && (
-                          <>
-                            : <span className={detail.highlight ? 'text-[#7FB069] font-semibold' : ''}>{detail.value}</span>
-                          </>
-                        )}
-                      </p>
-                    ))}
+                    <p className="text-xs text-gray-500 mb-1">ID: {booking.id}</p>
+                    <p className="text-sm text-gray-700 mb-1">
+                      {booking.crop} {'→'} {booking.destinationMandi}
+                    </p>
+                    <p className="text-sm text-gray-600">{t.pickupDate}: {booking.pickupDate}</p>
+                    <p className="text-sm text-gray-600">{t.provider}: {booking.provider}</p>
+                    <p className="text-sm text-gray-600">{t.cost}: ₹{booking.cost.toLocaleString('en-IN')}</p>
+                    <p className="text-sm text-gray-600 mb-3">
+                      {t.status}: <span className="text-[#7FB069] font-semibold">{t.confirmed}</span>
+                    </p>
+
+                    <button
+                      onClick={() => router.push(`/transport?bookingId=${booking.id}`)}
+                      className="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all hover:scale-105"
+                      style={{ backgroundColor: '#1F3C88' }}
+                    >
+                      {t.viewReceipt}
+                    </button>
                   </div>
                 </div>
               </div>
