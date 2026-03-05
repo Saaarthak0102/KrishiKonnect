@@ -4,6 +4,7 @@ import './globals.css'
 import { LanguageProvider } from '@/lib/LanguageContext'
 import { AuthWrapper } from '@/components/AuthProvider'
 import { MandiProvider } from '@/lib/MandiContext'
+import { StarredCropsProvider } from '@/context/StarredCropsContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,7 +24,9 @@ export default function RootLayout({
         <LanguageProvider>
           <AuthWrapper>
             <MandiProvider>
-              {children}
+              <StarredCropsProvider>
+                {children}
+              </StarredCropsProvider>
             </MandiProvider>
           </AuthWrapper>
         </LanguageProvider>

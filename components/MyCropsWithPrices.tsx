@@ -54,11 +54,10 @@ export default function MyCropsWithPrices({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Combine primary crop with starred crops, limit to 5
+  // Use only starred crops, limit to 5
   const allCrops = useMemo(() => {
-    const cropsList = [primaryCrop, ...starredCrops]
-    return [...new Set(cropsList)].slice(0, 5)
-  }, [primaryCrop, starredCrops])
+    return starredCrops.slice(0, 5)
+  }, [starredCrops])
 
   // Get crop display names from crops.json
   const getCropInfo = (cropId: string) => {
