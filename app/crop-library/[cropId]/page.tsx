@@ -195,12 +195,6 @@ export default function CropDetailPage() {
               >
                 {lang === 'hi' ? 'मंडी भाव देखें' : 'View Mandi Prices →'}
               </Link>
-              <Link
-                href={`/transport?crop=${cropId}`}
-                className="bg-krishi-primary hover:bg-krishi-primary/90 text-white font-semibold px-6 py-2 rounded-lg transition-colors duration-200 text-center whitespace-nowrap"
-              >
-                {lang === 'hi' ? 'ट्रांसपोर्ट अनुरोध' : 'Request Transport'}
-              </Link>
             </div>
           </div>
         </motion.div>
