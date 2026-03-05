@@ -27,23 +27,6 @@ interface MandiPriceData {
   lastUpdated: string
 }
 
-// Component interface (matches MandiPriceCard props)
-interface MandiPrice {
-  id: string
-  cropEn: string
-  cropHi: string
-  mandiEn: string
-  mandiHi: string
-  state: string
-  district: string
-  minPrice: number
-  maxPrice: number
-  modalPrice: number
-  trend: 'up' | 'down' | 'stable'
-  source: string
-  date: string
-}
-
 interface GroupedByState {
   [state: string]: MandiPrice[]
 }

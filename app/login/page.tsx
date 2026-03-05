@@ -44,11 +44,9 @@ export default function LoginPage() {
             size: 'invisible',
             callback: (response: string) => {
               // reCAPTCHA verification succeeded silently
-              console.log('reCAPTCHA verified silently')
             },
             'expired-callback': () => {
               // reCAPTCHA token expired
-              console.warn('reCAPTCHA token expired')
               resetRecaptcha()
             },
             'error-callback': () => {
@@ -71,7 +69,7 @@ export default function LoginPage() {
           wCleanup.recaptchaVerifier.clear()
           delete wCleanup.recaptchaVerifier
         } catch (error) {
-          console.warn('Error clearing reCAPTCHA:', error)
+          // Silent fail on cleanup error
         }
       }
     }
@@ -93,7 +91,7 @@ export default function LoginPage() {
           {
             size: 'invisible',
             callback: (response: string) => {
-              console.log('reCAPTCHA verified silently')
+              // Verification succeeded
             },
           }
         )
@@ -184,6 +182,10 @@ export default function LoginPage() {
       }
 
       try {
+        if (!confirmationResult) {
+          throw new Error('OTP verification failed: confirmation result missing')
+        }
+        
         const signedInUser = await verifyOTP(confirmationResult, otp)
 
         // Check if profile exists in users/{uid}

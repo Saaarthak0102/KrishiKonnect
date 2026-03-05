@@ -9,6 +9,7 @@ import {
   getBestPriceForCrop,
   PriceTrend,
 } from '@/lib/mandiService'
+import { getTrendColorClass, getTrendBgColorClass, getTrendIcon } from '@/lib/trendUtils'
 import cropsData from '@/data/crops.json'
 import MandiTrendChart from '@/components/MandiTrendChart'
 
@@ -29,36 +30,7 @@ interface MyCropsWithPricesProps {
 }
 
 const getTrendArrow = (trend: 'up' | 'down' | 'stable'): string => {
-  switch (trend) {
-    case 'up':
-      return '↑'
-    case 'down':
-      return '↓'
-    case 'stable':
-      return '→'
-  }
-}
-
-const getTrendColor = (trend: 'up' | 'down' | 'stable'): string => {
-  switch (trend) {
-    case 'up':
-      return 'text-[#7FB069]'
-    case 'down':
-      return 'text-[#B85C38]'
-    case 'stable':
-      return 'text-gray-500'
-  }
-}
-
-const getTrendBgColor = (trend: 'up' | 'down' | 'stable'): string => {
-  switch (trend) {
-    case 'up':
-      return 'bg-[#7FB069]/10'
-    case 'down':
-      return 'bg-[#B85C38]/10'
-    case 'stable':
-      return 'bg-gray-100'
-  }
+  return getTrendIcon(trend)
 }
 
 const getTrendText = (trend: 'up' | 'down' | 'stable', lang: 'en' | 'hi') => {
@@ -259,8 +231,8 @@ export default function MyCropsWithPrices({
 
           const cropName = lang === 'hi' ? cropData.cropNameHi : cropData.cropNameEn
           const trendArrow = getTrendArrow(cropData.trend)
-          const trendColor = getTrendColor(cropData.trend)
-          const bgColor = getTrendBgColor(cropData.trend)
+          const trendColor = getTrendColorClass(cropData.trend)
+          const bgColor = getTrendBgColorClass(cropData.trend)
           const trendText = getTrendText(cropData.trend, lang)
 
           return (
@@ -288,7 +260,7 @@ export default function MyCropsWithPrices({
                 <div className="mb-3">
                   <p className="text-3xl font-bold text-[#7FB069]">
                     ₹{cropData.price?.toLocaleString()}
-                  </p>
+                  </p>Class
                   <p className="text-xs text-gray-600">
                     / {t.quintal}
                   </p>

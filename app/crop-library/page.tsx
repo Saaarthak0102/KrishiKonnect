@@ -92,7 +92,7 @@ export default function CropLibraryPage() {
       return season.toLowerCase().replace(/\s+/g, '')
     }
 
-    let crops = [...cropsData]
+    let crops = cropsData ? [...cropsData] : []
 
     // Step 1: Apply "My Crops" filter first
     if (selectedSeason === 'my-crops') {

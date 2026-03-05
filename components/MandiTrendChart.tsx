@@ -2,6 +2,7 @@
 
 import { memo, useMemo } from 'react'
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
+import { getTrendColor } from '@/lib/trendUtils'
 
 interface MandiTrendPoint {
   date: string
@@ -28,7 +29,7 @@ function MandiTrendChartComponent({ data, crop, trend = 'stable', mandi = 'Mandi
     // Generate 7 days of mock data based on trend
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     const basePrice = 2000
-    const mockData = []
+    const mockData: { day: string; price: number }[] = []
 
     let currentPrice = basePrice
     for (let i = 0; i < days.length; i++) {
@@ -50,19 +51,6 @@ function MandiTrendChartComponent({ data, crop, trend = 'stable', mandi = 'Mandi
         No trend data available
       </div>
     )
-  }
-
-  const getTrendColor = (direction: string): string => {
-    switch (direction) {
-      case 'up':
-        return '#7FB069'
-      case 'down':
-        return '#B85C38'
-      case 'stable':
-        return '#F2A541'
-      default:
-        return '#666'
-    }
   }
 
   const minPrice = Math.min(...chartData.map((d) => d.price))

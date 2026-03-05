@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useStarredCrops } from '@/lib/useStarredCrops'
 import Toast from '@/components/Toast'
@@ -31,7 +31,7 @@ const getSeasonBadgeClass = (seasonEn: string) => {
   return 'bg-[#D8CFC0] text-[#1D1D1D]'
 }
 
-export default function CropCard({ crop }: CropCardProps) {
+export default memo(function CropCard({ crop }: CropCardProps) {
   const { lang } = useLanguage()
   const { isStarred, toggleStar } = useStarredCrops()
   const [toastMessage, setToastMessage] = useState('')
@@ -62,6 +62,7 @@ export default function CropCard({ crop }: CropCardProps) {
             <img
               src={crop.image}
               alt={cropName}
+              loading="lazy"
               className="w-full h-full object-cover"
               onError={(e) => {
                 // Fallback if image doesn't exist
@@ -113,5 +114,5 @@ export default function CropCard({ crop }: CropCardProps) {
       />
     </>
   )
-}
+})
  

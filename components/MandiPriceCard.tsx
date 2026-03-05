@@ -4,6 +4,7 @@ import { MandiPrice } from '@/lib/mandiService'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
+import { getTrendColor } from '@/lib/trendUtils'
 
 interface MandiPriceCardProps {
   price: MandiPrice
@@ -27,19 +28,6 @@ export default function MandiPriceCard({
         return '⬇'
       default:
         return '→'
-    }
-  }
-
-  const getTrendColor = (trend: string) => {
-    switch (trend) {
-      case 'up':
-        return '#7FB069'
-      case 'down':
-        return '#B85C38'
-      case 'stable':
-        return '#F2A541'
-      default:
-        return '#666'
     }
   }
 
