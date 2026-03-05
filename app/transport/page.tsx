@@ -7,6 +7,8 @@ import FeaturePageLayout from '@/components/FeaturePageLayout'
 import Footer from '@/components/Footer'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useAuth } from '@/context/AuthContext'
+import cropsData from '@/data/crops.json'
+import { useMandiPrices } from '@/lib/MandiContext'
 
 interface TransportRequest {
   farmerId: string
@@ -77,6 +79,7 @@ const mockTransporters: Transporter[] = [
 export default function TransportPage() {
   const { lang } = useLanguage()
   const { farmerProfile } = useAuth()
+  const { prices } = useMandiPrices()
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -87,10 +90,10 @@ export default function TransportPage() {
   // Form state
   const [formData, setFormData] = useState<TransportRequest>({
     farmerId: '',
-    crop: cropFromUrl,
+    crop: '',
     quantity: '',
     pickupVillage: '',
-    destinationMandi: mandiFromUrl,
+    destinationMandi: '',
     preferredDate: '',
     phoneNumber: '',
     status: 'pending'
@@ -99,6 +102,43 @@ export default function TransportPage() {
   const [step, setStep] = useState<'form' | 'estimate' | 'transporters' | 'confirmed'>('form')
   const [selectedTransporter, setSelectedTransporter] = useState<Transporter | null>(null)
   const [estimatedCost, setEstimatedCost] = useState<{ min: number; max: number }>({ min: 0, max: 0 })
+
+  const cropOptions = useMemo(
+    () =>
+      cropsData.map((crop) => ({
+        id: crop.id,
+        nameEn: crop.name_en,
+        nameHi: crop.name_hi
+      })),
+    []
+  )
+
+  const mandiOptions = useMemo(() => {
+    const uniqueMandis = new Map<string, { mandi: string; state: string; value: string }>()
+
+    prices.forEach((price) => {
+      const key = `${price.mandi.toLowerCase()}|${price.state.toLowerCase()}`
+      if (!uniqueMandis.has(key)) {
+        uniqueMandis.set(key, {
+          mandi: price.mandi,
+          state: price.state,
+          value: `${price.mandi} (${price.state})`
+        })
+      }
+    })
+
+    return Array.from(uniqueMandis.values()).sort((a, b) => a.mandi.localeCompare(b.mandi))
+  }, [prices])
+
+  const selectedCropLabel = useMemo(() => {
+    const selectedCrop = cropOptions.find((crop) => crop.id === formData.crop)
+    if (!selectedCrop) return formData.crop
+    return lang === 'hi' ? selectedCrop.nameHi : selectedCrop.nameEn
+  }, [cropOptions, formData.crop, lang])
+
+  const isFormValid = Boolean(
+    formData.crop && formData.destinationMandi && formData.quantity && formData.preferredDate
+  )
 
   // Auto-fill from farmer profile when available
   useEffect(() => {
@@ -111,6 +151,49 @@ export default function TransportPage() {
       }))
     }
   }, [farmerProfile])
+
+  const normalizeValue = (value: string) => value.trim().toLowerCase()
+
+  // Map URL params to valid dropdown option values once options are available.
+  useEffect(() => {
+    if (!cropFromUrl && !mandiFromUrl) return
+
+    setFormData((prev) => {
+      let resolvedCrop = prev.crop
+      let resolvedMandi = prev.destinationMandi
+
+      if (cropFromUrl) {
+        const normalizedCropParam = normalizeValue(cropFromUrl)
+        const matchedCrop = cropOptions.find(
+          (crop) =>
+            normalizeValue(crop.id) === normalizedCropParam ||
+            normalizeValue(crop.nameEn) === normalizedCropParam ||
+            normalizeValue(crop.nameHi) === normalizedCropParam
+        )
+        resolvedCrop = matchedCrop?.id || prev.crop
+      }
+
+      if (mandiFromUrl && mandiOptions.length > 0) {
+        const normalizedMandiParam = normalizeValue(mandiFromUrl)
+        const matchedMandi = mandiOptions.find(
+          (mandiOption) =>
+            normalizeValue(mandiOption.mandi) === normalizedMandiParam ||
+            normalizeValue(mandiOption.value) === normalizedMandiParam
+        )
+        resolvedMandi = matchedMandi?.value || prev.destinationMandi
+      }
+
+      if (resolvedCrop === prev.crop && resolvedMandi === prev.destinationMandi) {
+        return prev
+      }
+
+      return {
+        ...prev,
+        crop: resolvedCrop,
+        destinationMandi: resolvedMandi
+      }
+    })
+  }, [cropFromUrl, mandiFromUrl, cropOptions, mandiOptions])
 
   // Calculate estimated cost based on destination
   const calculateEstimatedCost = useMemo(() => {
@@ -145,14 +228,14 @@ export default function TransportPage() {
     setEstimatedCost(calculateEstimatedCost)
   }, [calculateEstimatedCost])
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault()
-    if (formData.quantity && formData.preferredDate) {
+    if (isFormValid) {
       setStep('estimate')
       setTimeout(() => setStep('transporters'), 500)
     }
@@ -238,43 +321,51 @@ export default function TransportPage() {
                 {/* Destination Mandi */}
                 <div>
                   <label className="block text-sm font-semibold mb-2" style={{ color: '#1F3C88' }}>
-                    {lang === 'hi' ? 'गंतव्य मंडी' : 'Destination Mandi'}
+                    {lang === 'hi' ? 'गंतव्य मंडी' : 'Destination Mandi'} *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="destinationMandi"
                     value={formData.destinationMandi}
                     onChange={handleInputChange}
-                    placeholder={lang === 'hi' ? 'मंडी का नाम' : 'Mandi name'}
-                    className="w-full rounded-lg border-2 px-4 py-3 outline-none transition-colors"
+                    className="h-12 w-full rounded-md border px-4 py-3 outline-none transition-colors"
                     style={{
                       borderColor: '#D8CFC0',
                       color: '#1F3C88',
                       backgroundColor: '#FFFFFF'
                     }}
-                    readOnly={!!cropFromUrl && !!mandiFromUrl}
-                  />
+                  >
+                    <option value="">{lang === 'hi' ? 'मंडी चुनें' : 'Select Mandi'}</option>
+                    {mandiOptions.map((mandiOption) => (
+                      <option key={mandiOption.value} value={mandiOption.value}>
+                        {mandiOption.value}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* Crop */}
                 <div>
                   <label className="block text-sm font-semibold mb-2" style={{ color: '#1F3C88' }}>
-                    {lang === 'hi' ? 'फसल' : 'Crop'}
+                    {lang === 'hi' ? 'फसल' : 'Crop'} *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="crop"
                     value={formData.crop}
                     onChange={handleInputChange}
-                    placeholder={lang === 'hi' ? 'फसल का नाम' : 'Crop name'}
-                    className="w-full rounded-lg border-2 px-4 py-3 outline-none transition-colors"
+                    className="h-12 w-full rounded-md border px-4 py-3 outline-none transition-colors"
                     style={{
                       borderColor: '#D8CFC0',
                       color: '#1F3C88',
                       backgroundColor: '#FFFFFF'
                     }}
-                    readOnly={!!cropFromUrl}
-                  />
+                  >
+                    <option value="">{lang === 'hi' ? 'फसल चुनें' : 'Select Crop'}</option>
+                    {cropOptions.map((crop) => (
+                      <option key={crop.id} value={crop.id}>
+                        {lang === 'hi' ? crop.nameHi : crop.nameEn}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* Quantity */}
@@ -358,16 +449,18 @@ export default function TransportPage() {
               {step === 'form' && (
                 <motion.button
                   type="submit"
+                  disabled={!isFormValid}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="w-full md:w-auto px-8 py-4 rounded-lg font-bold text-white text-lg transition-all hover:scale-105 active:scale-95"
-                  style={{ backgroundColor: '#1F3C88' }}
+                  className="w-full md:w-auto px-8 py-4 rounded-lg font-bold text-white text-lg transition-all hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:active:scale-100"
+                  style={{ backgroundColor: isFormValid ? '#1F3C88' : '#94A3B8' }}
                   onMouseEnter={(e) => {
+                    if (!isFormValid) return
                     e.currentTarget.style.backgroundColor = '#162847'
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#1F3C88'
+                    e.currentTarget.style.backgroundColor = isFormValid ? '#1F3C88' : '#94A3B8'
                   }}
                 >
                   {lang === 'hi' ? 'परिवहन खोजें' : 'Find Transport'}
@@ -518,7 +611,7 @@ export default function TransportPage() {
                   </div>
                   <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
                     <p className="text-sm text-gray-600 mb-1">{lang === 'hi' ? 'फसल' : 'Crop'}</p>
-                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{formData.crop}</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{selectedCropLabel}</p>
                   </div>
                   <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
                     <p className="text-sm text-gray-600 mb-1">{lang === 'hi' ? 'मात्रा' : 'Quantity'}</p>
