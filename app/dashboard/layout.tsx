@@ -22,6 +22,8 @@ export default function DashboardLayout({
       await logout()
       router.push('/')
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Logout failed'
+      alert(`Error logging out: ${errorMessage}`)
       console.error('Logout error:', error)
     }
   }

@@ -228,8 +228,8 @@ export default function MandiPage() {
                           </p>
                         </div>
                       </div>
-                      <button
-                        className="mt-4 inline-flex items-center font-semibold px-4 py-2 rounded-lg transition-all"
+                      <div
+                        className="mt-4 inline-flex items-center font-semibold px-4 py-2 rounded-lg transition-all cursor-pointer"
                         style={{
                           color: '#1F3C88',
                           backgroundColor: 'rgba(31, 60, 136, 0.1)',
@@ -243,7 +243,7 @@ export default function MandiPage() {
                       >
                         {lang === 'hi' ? 'भाव देखें' : 'View Prices'}
                         <span className="ml-2">→</span>
-                      </button>
+                      </div>
                     </motion.button>
                   )
                 })}

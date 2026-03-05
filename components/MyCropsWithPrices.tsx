@@ -52,6 +52,7 @@ export default function MyCropsWithPrices({
   const { lang } = useLanguage()
   const [pricesData, setPricesData] = useState<Record<string, CropPriceData | null>>({})
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   // Combine primary crop with starred crops, limit to 5
   const allCrops = useMemo(() => {
@@ -72,16 +73,22 @@ export default function MyCropsWithPrices({
   useEffect(() => {
     const fetchAllPrices = async () => {
       setLoading(true)
+      setError(null)
       try {
         const prices: Record<string, CropPriceData | null> = {}
         const entries = await Promise.all(
           allCrops.map(async (cropId) => {
-            const [bestPrice, history] = await Promise.all([
-              getBestPriceForCrop(cropId),
-              fetchCropPriceHistory(cropId),
-            ])
+            try {
+              const [bestPrice, history] = await Promise.all([
+                getBestPriceForCrop(cropId),
+                fetchCropPriceHistory(cropId),
+              ])
 
-            return [cropId, bestPrice, history] as const
+              return [cropId, bestPrice, history] as const
+            } catch (cropError) {
+              console.error(`Error fetching data for crop ${cropId}:`, cropError)
+              return [cropId, null, []] as const
+            }
           })
         )
 
@@ -106,6 +113,8 @@ export default function MyCropsWithPrices({
 
         setPricesData(prices)
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch crop prices'
+        setError(errorMessage)
         console.error('Error fetching crop prices:', error)
       } finally {
         setLoading(false)
