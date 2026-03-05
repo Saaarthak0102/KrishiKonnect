@@ -1,17 +1,18 @@
 
 {
-  "crops": ["Wheat", "Rice", "Maize", "Barley", "Bajra", "Jowar", "Cotton", "Sugarcane", "Groundnut", "Mustard", "Soybean", "Sunflower", "Potato", "Onion", "Tomato", "Chickpea", "Lentil", "Tur"],
+  "crops": ["Wheat", "Rice", "Maize", "Barley", "Bajra", "Jowar", "Cotton", "Sugarcane", "Groundnut", "Mustard", "Soybean", "Sunflower", "Potato", "Onion", "Tomato", "Chickpea", "Lentil", "Tur", "Cucumber", "Millet", "Muskmelon", "Peanut", "Watermelon"],
   "states": {
     "Punjab": ["Ludhiana Mandi", "Amritsar Mandi", "Patiala Mandi", "Bathinda Mandi"],
     "Haryana": ["Karnal Mandi", "Hisar Mandi", "Rohtak Mandi", "Ambala Mandi"],
     "Uttar Pradesh": ["Kanpur Mandi", "Lucknow Mandi", "Varanasi Mandi", "Meerut Mandi"],
     "Rajasthan": ["Jaipur Mandi", "Kota Mandi", "Bikaner Mandi", "Ajmer Mandi"],
     "Madhya Pradesh": ["Indore Mandi", "Bhopal Mandi", "Gwalior Mandi", "Jabalpur Mandi"],
-    "Maharashtra": ["Pune Mandi", "Nashik Mandi", "Nagpur Mandi", "Aurangabad Mandi"],
+    "Maharashtra": ["Pune Mandi", "Nashik Mandi", "Nagpur Mandi", "Aurangabad Mandi", "Vashi Mandi", "Lasalgaon Mandi"],
     "Gujarat": ["Ahmedabad Mandi", "Rajkot Mandi", "Surat Mandi", "Vadodara Mandi"],
     "Karnataka": ["Bangalore Mandi", "Mysore Mandi", "Hubli Mandi", "Belgaum Mandi"],
     "Telangana": ["Hyderabad Mandi", "Warangal Mandi", "Nizamabad Mandi", "Karimnagar Mandi"],
-    "Tamil Nadu": ["Chennai Mandi", "Coimbatore Mandi", "Madurai Mandi", "Salem Mandi"]
+    "Tamil Nadu": ["Chennai Mandi", "Coimbatore Mandi", "Madurai Mandi", "Salem Mandi"],
+    "Delhi": ["Azadpur Mandi", "Ghazipur Mandi"]
   },
   "cropBasePrices": {
     "Wheat": { "min": 2100, "max": 2300 },
@@ -31,7 +32,12 @@
     "Tomato": { "min": 800, "max": 1500 },
     "Chickpea": { "min": 4800, "max": 5600 },
     "Lentil": { "min": 5200, "max": 6000 },
-    "Tur": { "min": 6500, "max": 7500 }
+    "Tur": { "min": 6500, "max": 7500 },
+    "Cucumber": { "min": 1500, "max": 2200 },
+    "Millet": { "min": 2000, "max": 2800 },
+    "Muskmelon": { "min": 1200, "max": 2000 },
+    "Peanut": { "min": 4500, "max": 6000 },
+    "Watermelon": { "min": 900, "max": 1600 }
   },
   "prices": [
     {
@@ -591,6 +597,356 @@
       "trend": {
         "direction": "up",
         "change": "+2.2%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "cucumber-delhi-azadpur",
+      "crop": "Cucumber",
+      "state": "Delhi",
+      "mandi": "Azadpur Mandi",
+      "minPrice": 1500,
+      "maxPrice": 2100,
+      "modalPrice": 1800,
+      "trend": {
+        "direction": "up",
+        "change": "+3.5%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "cucumber-maharashtra-vashi",
+      "crop": "Cucumber",
+      "state": "Maharashtra",
+      "mandi": "Vashi Mandi",
+      "minPrice": 1600,
+      "maxPrice": 2200,
+      "modalPrice": 1900,
+      "trend": {
+        "direction": "stable",
+        "change": "0%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "cucumber-maharashtra-lasalgaon",
+      "crop": "Cucumber",
+      "state": "Maharashtra",
+      "mandi": "Lasalgaon Mandi",
+      "minPrice": 1550,
+      "maxPrice": 2000,
+      "modalPrice": 1775,
+      "trend": {
+        "direction": "down",
+        "change": "-1.2%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "cucumber-madhya-pradesh-indore",
+      "crop": "Cucumber",
+      "state": "Madhya Pradesh",
+      "mandi": "Indore Mandi",
+      "minPrice": 1650,
+      "maxPrice": 2150,
+      "modalPrice": 1900,
+      "trend": {
+        "direction": "up",
+        "change": "+2.8%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "cucumber-haryana-karnal",
+      "crop": "Cucumber",
+      "state": "Haryana",
+      "mandi": "Karnal Mandi",
+      "minPrice": 1700,
+      "maxPrice": 2200,
+      "modalPrice": 1950,
+      "trend": {
+        "direction": "up",
+        "change": "+1.5%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "millet-delhi-azadpur",
+      "crop": "Millet",
+      "state": "Delhi",
+      "mandi": "Azadpur Mandi",
+      "minPrice": 2100,
+      "maxPrice": 2700,
+      "modalPrice": 2400,
+      "trend": {
+        "direction": "up",
+        "change": "+4.2%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "millet-maharashtra-vashi",
+      "crop": "Millet",
+      "state": "Maharashtra",
+      "mandi": "Vashi Mandi",
+      "minPrice": 2050,
+      "maxPrice": 2650,
+      "modalPrice": 2350,
+      "trend": {
+        "direction": "stable",
+        "change": "+0.5%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "millet-maharashtra-lasalgaon",
+      "crop": "Millet",
+      "state": "Maharashtra",
+      "mandi": "Lasalgaon Mandi",
+      "minPrice": 2000,
+      "maxPrice": 2600,
+      "modalPrice": 2300,
+      "trend": {
+        "direction": "up",
+        "change": "+1.8%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "millet-madhya-pradesh-indore",
+      "crop": "Millet",
+      "state": "Madhya Pradesh",
+      "mandi": "Indore Mandi",
+      "minPrice": 2150,
+      "maxPrice": 2800,
+      "modalPrice": 2475,
+      "trend": {
+        "direction": "up",
+        "change": "+3.1%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "millet-haryana-karnal",
+      "crop": "Millet",
+      "state": "Haryana",
+      "mandi": "Karnal Mandi",
+      "minPrice": 2200,
+      "maxPrice": 2750,
+      "modalPrice": 2475,
+      "trend": {
+        "direction": "stable",
+        "change": "-0.3%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "muskmelon-delhi-azadpur",
+      "crop": "Muskmelon",
+      "state": "Delhi",
+      "mandi": "Azadpur Mandi",
+      "minPrice": 1250,
+      "maxPrice": 1900,
+      "modalPrice": 1575,
+      "trend": {
+        "direction": "up",
+        "change": "+5.5%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "muskmelon-maharashtra-vashi",
+      "crop": "Muskmelon",
+      "state": "Maharashtra",
+      "mandi": "Vashi Mandi",
+      "minPrice": 1300,
+      "maxPrice": 2000,
+      "modalPrice": 1650,
+      "trend": {
+        "direction": "up",
+        "change": "+2.9%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "muskmelon-maharashtra-lasalgaon",
+      "crop": "Muskmelon",
+      "state": "Maharashtra",
+      "mandi": "Lasalgaon Mandi",
+      "minPrice": 1200,
+      "maxPrice": 1850,
+      "modalPrice": 1525,
+      "trend": {
+        "direction": "stable",
+        "change": "0%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "muskmelon-madhya-pradesh-indore",
+      "crop": "Muskmelon",
+      "state": "Madhya Pradesh",
+      "mandi": "Indore Mandi",
+      "minPrice": 1350,
+      "maxPrice": 1950,
+      "modalPrice": 1650,
+      "trend": {
+        "direction": "down",
+        "change": "-1.8%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "muskmelon-haryana-karnal",
+      "crop": "Muskmelon",
+      "state": "Haryana",
+      "mandi": "Karnal Mandi",
+      "minPrice": 1400,
+      "maxPrice": 2000,
+      "modalPrice": 1700,
+      "trend": {
+        "direction": "up",
+        "change": "+3.2%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "peanut-delhi-azadpur",
+      "crop": "Peanut",
+      "state": "Delhi",
+      "mandi": "Azadpur Mandi",
+      "minPrice": 4600,
+      "maxPrice": 5800,
+      "modalPrice": 5200,
+      "trend": {
+        "direction": "up",
+        "change": "+2.5%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "peanut-maharashtra-vashi",
+      "crop": "Peanut",
+      "state": "Maharashtra",
+      "mandi": "Vashi Mandi",
+      "minPrice": 4700,
+      "maxPrice": 5900,
+      "modalPrice": 5300,
+      "trend": {
+        "direction": "stable",
+        "change": "+0.2%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "peanut-maharashtra-lasalgaon",
+      "crop": "Peanut",
+      "state": "Maharashtra",
+      "mandi": "Lasalgaon Mandi",
+      "minPrice": 4500,
+      "maxPrice": 5700,
+      "modalPrice": 5100,
+      "trend": {
+        "direction": "down",
+        "change": "-1.5%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "peanut-madhya-pradesh-indore",
+      "crop": "Peanut",
+      "state": "Madhya Pradesh",
+      "mandi": "Indore Mandi",
+      "minPrice": 4800,
+      "maxPrice": 6000,
+      "modalPrice": 5400,
+      "trend": {
+        "direction": "up",
+        "change": "+3.8%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "peanut-haryana-karnal",
+      "crop": "Peanut",
+      "state": "Haryana",
+      "mandi": "Karnal Mandi",
+      "minPrice": 4900,
+      "maxPrice": 5950,
+      "modalPrice": 5425,
+      "trend": {
+        "direction": "up",
+        "change": "+1.9%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "watermelon-delhi-azadpur",
+      "crop": "Watermelon",
+      "state": "Delhi",
+      "mandi": "Azadpur Mandi",
+      "minPrice": 950,
+      "maxPrice": 1550,
+      "modalPrice": 1250,
+      "trend": {
+        "direction": "up",
+        "change": "+4.8%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "watermelon-maharashtra-vashi",
+      "crop": "Watermelon",
+      "state": "Maharashtra",
+      "mandi": "Vashi Mandi",
+      "minPrice": 1000,
+      "maxPrice": 1600,
+      "modalPrice": 1300,
+      "trend": {
+        "direction": "stable",
+        "change": "+0.5%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "watermelon-maharashtra-lasalgaon",
+      "crop": "Watermelon",
+      "state": "Maharashtra",
+      "mandi": "Lasalgaon Mandi",
+      "minPrice": 900,
+      "maxPrice": 1500,
+      "modalPrice": 1200,
+      "trend": {
+        "direction": "down",
+        "change": "-2.1%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "watermelon-madhya-pradesh-indore",
+      "crop": "Watermelon",
+      "state": "Madhya Pradesh",
+      "mandi": "Indore Mandi",
+      "minPrice": 1050,
+      "maxPrice": 1600,
+      "modalPrice": 1325,
+      "trend": {
+        "direction": "up",
+        "change": "+3.5%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "watermelon-haryana-karnal",
+      "crop": "Watermelon",
+      "state": "Haryana",
+      "mandi": "Karnal Mandi",
+      "minPrice": 1100,
+      "maxPrice": 1550,
+      "modalPrice": 1325,
+      "trend": {
+        "direction": "stable",
+        "change": "-0.8%"
       },
       "lastUpdated": "Today"
     }
