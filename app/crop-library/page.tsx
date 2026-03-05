@@ -222,7 +222,7 @@ export default function CropLibraryPage() {
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
-                    ⭐ {lang === 'hi' ? 'मेरी फसलें' : 'My Crops'}
+                    ⭐ {lang === 'hi' ? 'मेरी फसलें' : 'My Crops'} ({starredCrops.length})
                   </button>
                 </div>
               </div>

@@ -114,7 +114,7 @@ export default function DashboardSkeleton() {
           </div>
         </div>
 
-        {/* Starred Crops Skeleton */}
+        {/* My Crops Skeleton */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="animate-pulse space-y-4">
             <div className="h-7 bg-gray-200 w-40 rounded"></div>

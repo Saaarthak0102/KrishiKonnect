@@ -107,9 +107,11 @@ export default function SetupPage() {
         return
       }
 
-      // Create farmer profile
-      const phoneNumber = user.phoneNumber || ''
-      await createFarmerProfile(phoneNumber, formData)
+      // Create or update profile fields on users/{uid} while preserving existing fields.
+      await createFarmerProfile(user.uid, {
+        ...formData,
+        phoneNumber: user.phoneNumber || '',
+      })
 
       // Redirect to dashboard
       router.push('/dashboard')

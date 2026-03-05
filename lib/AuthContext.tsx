@@ -20,6 +20,16 @@ interface FarmerProfile {
   createdAt?: any
 }
 
+const hasCompleteFarmerProfile = (profile: Partial<FarmerProfile>): profile is FarmerProfile => {
+  return Boolean(
+    profile.name &&
+    profile.village &&
+    profile.state &&
+    profile.primaryCrop &&
+    profile.phoneNumber
+  )
+}
+
 interface AuthContextType {
   user: User | null
   farmerProfile: FarmerProfile | null
@@ -40,14 +50,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(currentUser)
 
       if (currentUser) {
-        // Get farmer profile from Firestore
+        // Get profile from users/{uid}
         try {
-          const farmerRef = doc(db, 'farmers', currentUser.phoneNumber || '')
-          const farmerSnap = await getDoc(farmerRef)
-          if (farmerSnap.exists()) {
-            const profile = farmerSnap.data() as FarmerProfile
-            setFarmerProfile(profile)
-            localStorage.setItem('farmer_profile', JSON.stringify(profile))
+          const userRef = doc(db, 'users', currentUser.uid)
+          const userSnap = await getDoc(userRef)
+          if (userSnap.exists()) {
+            const profile = userSnap.data() as Partial<FarmerProfile>
+            if (hasCompleteFarmerProfile(profile)) {
+              setFarmerProfile(profile)
+              localStorage.setItem('farmer_profile', JSON.stringify(profile))
+            } else {
+              setFarmerProfile(null)
+              localStorage.removeItem('farmer_profile')
+            }
+          } else {
+            setFarmerProfile(null)
+            localStorage.removeItem('farmer_profile')
           }
         } catch (error) {
           console.error('Error fetching farmer profile:', error)

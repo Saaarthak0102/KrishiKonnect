@@ -74,7 +74,7 @@ export default function DashboardPage() {
       humidity: 'नमी',
       wind: 'हवा',
       recentServices: 'हाल की सेवाएं',
-      starredCrops: 'पसंदीदा फसलें',
+      myCrops: 'मेरी फसलें',
       transportPickup: 'परिवहन पिकअप',
       status: 'स्थिति',
       confirmed: 'पुष्टि की गई',
@@ -104,7 +104,7 @@ export default function DashboardPage() {
       humidity: 'Humidity',
       wind: 'Wind',
       recentServices: 'Recent Services',
-      starredCrops: 'Starred Crops',
+      myCrops: 'My Crops',
       transportPickup: 'Transport Pickup',
       status: 'Status',
       confirmed: 'Confirmed',
@@ -312,7 +312,7 @@ export default function DashboardPage() {
           </div>
         </motion.div>
 
-        {/* Starred Crops Card */}
+        {/* My Crops Card */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -320,22 +320,26 @@ export default function DashboardPage() {
           className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
         >
           <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
-            ⭐ {t.starredCrops}
+            🌾 {t.myCrops}
           </h3>
           
           <div className="space-y-3">
             {starredCropsData.length === 0 ? (
-              <div className="py-6 text-center">
-                <p className="text-gray-500 mb-3">
+              <div className="py-12 px-6 text-center">
+                <div className="mb-4 text-4xl">🌾</div>
+                <h4 className="text-lg font-bold text-krishi-heading mb-2">
+                  {lang === 'hi' ? 'अभी कोई फसल सहेजी नहीं गई' : 'No crops saved yet'}
+                </h4>
+                <p className="text-gray-600 mb-6 max-w-sm mx-auto">
                   {lang === 'hi'
-                    ? 'अभी कोई फसल सहेजी नहीं गई'
-                    : 'No crops saved yet'}
+                    ? 'बाजार सतर्कताएं, मौसम सतर्कताएं और सिफारिशों तक जल्दी पहुंचने के लिए फसलें सहेजें।'
+                    : 'Save crops to quickly access their guides, weather alerts, and recommendations.'}
                 </p>
                 <Link
                   href="/crop-library"
-                  className="inline-block bg-[#F2A541] hover:bg-[#F2A541]/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors"
+                  className="inline-block bg-[#1F3C88] hover:bg-[#1F3C88]/80 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
                 >
-                  {lang === 'hi' ? 'फसलें सहेजें' : 'Save Crops'}
+                  {lang === 'hi' ? 'फसल पुस्तकालय देखें' : 'Browse Crop Library'}
                 </Link>
               </div>
             ) : (

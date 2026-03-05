@@ -184,12 +184,10 @@ export default function LoginPage() {
       }
 
       try {
-        await verifyOTP(confirmationResult, otp)
+        const signedInUser = await verifyOTP(confirmationResult, otp)
 
-        // Check if farmer profile exists
-        const cleanPhone = phoneNumber.replace(/\D/g, '')
-        const formattedPhone = '+91' + cleanPhone.slice(-10)
-        const profileExists = await checkFarmerProfile(formattedPhone)
+        // Check if profile exists in users/{uid}
+        const profileExists = await checkFarmerProfile(signedInUser.uid)
 
         if (profileExists) {
           router.push('/dashboard')

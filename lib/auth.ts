@@ -6,6 +6,24 @@ import {
 } from 'firebase/auth'
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
 
+type FarmerProfileData = {
+  name?: string
+  phoneNumber?: string
+  village?: string
+  state?: string
+  primaryCrop?: string
+}
+
+const hasCompleteFarmerProfile = (data: FarmerProfileData): boolean => {
+  return Boolean(
+    data.name &&
+    data.phoneNumber &&
+    data.village &&
+    data.state &&
+    data.primaryCrop
+  )
+}
+
 /**
  * NOTE: reCAPTCHA initialization and phone authentication is now handled directly in login/page.tsx
  * to ensure a single RecaptchaVerifier instance is maintained throughout the login flow.
@@ -25,12 +43,17 @@ export const verifyOTP = async (confirmationResult: ConfirmationResult, otp: str
 
 // Check if farmer profile exists
 export const checkFarmerProfile = async (
-  phoneNumber: string
+  uid: string
 ): Promise<boolean> => {
   try {
-    const farmerRef = doc(db, 'farmers', phoneNumber)
-    const farmerSnap = await getDoc(farmerRef)
-    return farmerSnap.exists()
+    const userRef = doc(db, 'users', uid)
+    const userSnap = await getDoc(userRef)
+
+    if (!userSnap.exists()) {
+      return false
+    }
+
+    return hasCompleteFarmerProfile(userSnap.data() as FarmerProfileData)
   } catch (error) {
     console.error('Error checking farmer profile:', error)
     throw error
@@ -38,12 +61,15 @@ export const checkFarmerProfile = async (
 }
 
 // Get farmer profile
-export const getFarmerProfile = async (phoneNumber: string) => {
+export const getFarmerProfile = async (uid: string) => {
   try {
-    const farmerRef = doc(db, 'farmers', phoneNumber)
-    const farmerSnap = await getDoc(farmerRef)
-    if (farmerSnap.exists()) {
-      return farmerSnap.data()
+    const userRef = doc(db, 'users', uid)
+    const userSnap = await getDoc(userRef)
+    if (userSnap.exists()) {
+      const profile = userSnap.data() as FarmerProfileData
+      if (hasCompleteFarmerProfile(profile)) {
+        return profile
+      }
     }
     return null
   } catch (error) {
@@ -54,21 +80,21 @@ export const getFarmerProfile = async (phoneNumber: string) => {
 
 // Create farmer profile
 export const createFarmerProfile = async (
-  phoneNumber: string,
+  uid: string,
   profileData: {
     name: string
+    phoneNumber: string
     village: string
     state: string
     primaryCrop: string
   }
 ) => {
   try {
-    const farmerRef = doc(db, 'farmers', phoneNumber)
-    await setDoc(farmerRef, {
+    const userRef = doc(db, 'users', uid)
+    await setDoc(userRef, {
       ...profileData,
-      phoneNumber,
       createdAt: serverTimestamp(),
-    })
+    }, { merge: true })
   } catch (error) {
     console.error('Error creating farmer profile:', error)
     throw error

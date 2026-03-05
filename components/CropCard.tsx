@@ -57,15 +57,7 @@ export default function CropCard({ crop }: CropCardProps) {
           whileTap={{ scale: 0.98 }}
           className="relative h-full bg-white border-2 border-krishi-border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 cursor-pointer"
         >
-          <button
-            onClick={handleStarClick}
-            className="absolute top-3 right-3 text-2xl z-10 hover:scale-110 transition-transform"
-            aria-label={isStarred(crop.id) ? 'Unstar crop' : 'Star crop'}
-          >
-            {isStarred(crop.id) ? '⭐' : '☆'}
-          </button>
-
-          {/* Crop Image */}
+          {/* Crop Image with Star Overlay */}
           <div className="relative w-full h-48 bg-gradient-to-br from-krishi-bg to-krishi-agriculture overflow-hidden">
             <img
               src={crop.image}
@@ -81,9 +73,24 @@ export default function CropCard({ crop }: CropCardProps) {
             <div className="absolute inset-0 bg-gradient-to-br from-krishi-agriculture/80 to-krishi-primary/80 flex items-center justify-center text-5xl font-bold opacity-0 hover:opacity-100 transition-opacity">
               {cropName.charAt(0)}
             </div>
+
+            {/* Star Button Overlay */}
+            <motion.button
+              onClick={handleStarClick}
+              onMouseDown={(e) => e.preventDefault()}
+              whileTap={{ scale: 1.15 }}
+              whileHover={{ scale: 1.1 }}
+              className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:shadow-lg hover:bg-gray-50 transition-all duration-200"
+              aria-label={isStarred(crop.id) ? 'Remove from My Crops' : 'Add to My Crops'}
+              title={isStarred(crop.id) ? 'Remove from My Crops' : 'Add to My Crops'}
+            >
+              <span className={`text-xl ${isStarred(crop.id) ? 'text-[#F2A541]' : 'text-gray-400'}`}>
+                {isStarred(crop.id) ? '⭐' : '☆'}
+              </span>
+            </motion.button>
           </div>
 
-          {/* Content */}
+          {/* Content Section */}
           <div className="p-4">
             {/* Crop Name */}
             <h3 className="text-xl font-bold text-krishi-heading mb-2 truncate">
@@ -96,10 +103,6 @@ export default function CropCard({ crop }: CropCardProps) {
                 {seasonName}
               </span>
             </div>
-
-            <p className="mt-3 text-sm font-medium text-krishi-heading">
-              {isStarred(crop.id) ? '⭐ Starred' : '☆ Star Crop'}
-            </p>
           </div>
         </motion.div>
       </Link>
@@ -111,3 +114,4 @@ export default function CropCard({ crop }: CropCardProps) {
     </>
   )
 }
+ 
