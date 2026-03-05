@@ -2,8 +2,10 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
+import { useStarredCrops } from '@/lib/useStarredCrops'
+import Toast from '@/components/Toast'
 
 interface Crop {
   id: string
@@ -16,14 +18,6 @@ interface Crop {
 
 interface CropCardProps {
   crop: Crop
-}
-
-// Season color mapping - consistent across the app
-const SEASON_COLORS: Record<string, string> = {
-  'Rabi': '#7FB069',
-  'Kharif': '#F2A541',
-  'Zaid': '#B85C38',
-  'Year-round': '#1F3C88',
 }
 
 // Helper function to get badge color and classes based on season
@@ -39,95 +33,81 @@ const getSeasonBadgeClass = (seasonEn: string) => {
 
 export default function CropCard({ crop }: CropCardProps) {
   const { lang } = useLanguage()
-  const [isStarred, setIsStarred] = useState(false)
+  const { isStarred, toggleStar } = useStarredCrops()
+  const [toastMessage, setToastMessage] = useState('')
+  const [showToast, setShowToast] = useState(false)
+
   const cropName = lang === 'hi' ? crop.name_hi : crop.name_en
   const seasonName = lang === 'hi' ? crop.season_hi : crop.season_en
 
-  useEffect(() => {
-    try {
-      const starred = JSON.parse(localStorage.getItem('starredCrops') || '[]')
-      setIsStarred(Array.isArray(starred) && starred.includes(crop.id))
-    } catch {
-      setIsStarred(false)
-    }
-  }, [crop.id])
-
-  const toggleStar = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleStarClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     e.stopPropagation()
 
-    let starred: string[] = []
-
-    try {
-      const stored = JSON.parse(localStorage.getItem('starredCrops') || '[]')
-      starred = Array.isArray(stored) ? stored : []
-    } catch {
-      starred = []
-    }
-
-    if (starred.includes(crop.id)) {
-      starred = starred.filter((id) => id !== crop.id)
-      setIsStarred(false)
-    } else {
-      starred.push(crop.id)
-      setIsStarred(true)
-    }
-
-    localStorage.setItem('starredCrops', JSON.stringify(starred))
+    const result = await toggleStar(crop.id)
+    setToastMessage(result.message || '')
+    setShowToast(true)
   }
 
   return (
-    <Link href={`/crop-library/${crop.id}`}>
-      <motion.div
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.98 }}
-        className="relative h-full bg-white border-2 border-krishi-border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-      >
-        <button
-          onClick={toggleStar}
-          className="absolute top-3 right-3 text-xl z-10"
-          aria-label={isStarred ? 'Unstar crop' : 'Star crop'}
+    <>
+      <Link href={`/crop-library/${crop.id}`}>
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.98 }}
+          className="relative h-full bg-white border-2 border-krishi-border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 cursor-pointer"
         >
-          {isStarred ? '⭐' : '☆'}
-        </button>
+          <button
+            onClick={handleStarClick}
+            className="absolute top-3 right-3 text-2xl z-10 hover:scale-110 transition-transform"
+            aria-label={isStarred(crop.id) ? 'Unstar crop' : 'Star crop'}
+          >
+            {isStarred(crop.id) ? '⭐' : '☆'}
+          </button>
 
-        {/* Crop Image */}
-        <div className="relative w-full h-48 bg-gradient-to-br from-krishi-bg to-krishi-agriculture overflow-hidden">
-          <img
-            src={crop.image}
-            alt={cropName}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              // Fallback if image doesn't exist
-              const target = e.target as HTMLImageElement
-              target.style.display = 'none'
-            }}
-          />
-          {/* Fallback gradient if image fails */}
-          <div className="absolute inset-0 bg-gradient-to-br from-krishi-agriculture/80 to-krishi-primary/80 flex items-center justify-center text-5xl font-bold opacity-0 hover:opacity-100 transition-opacity">
-            {cropName.charAt(0)}
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="p-4">
-          {/* Crop Name */}
-          <h3 className="text-xl font-bold text-krishi-heading mb-2 truncate">
-            {cropName}
-          </h3>
-
-          {/* Season Badge */}
-          <div className="inline-block">
-            <span className={`${getSeasonBadgeClass(crop.season_en)} rounded-full px-3 py-1 text-sm font-medium`}>
-              {seasonName}
-            </span>
+          {/* Crop Image */}
+          <div className="relative w-full h-48 bg-gradient-to-br from-krishi-bg to-krishi-agriculture overflow-hidden">
+            <img
+              src={crop.image}
+              alt={cropName}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                // Fallback if image doesn't exist
+                const target = e.target as HTMLImageElement
+                target.style.display = 'none'
+              }}
+            />
+            {/* Fallback gradient if image fails */}
+            <div className="absolute inset-0 bg-gradient-to-br from-krishi-agriculture/80 to-krishi-primary/80 flex items-center justify-center text-5xl font-bold opacity-0 hover:opacity-100 transition-opacity">
+              {cropName.charAt(0)}
+            </div>
           </div>
 
-          <p className="mt-3 text-sm font-medium text-krishi-heading">
-            {isStarred ? '⭐ Starred' : '☆ Star Crop'}
-          </p>
-        </div>
-      </motion.div>
-    </Link>
+          {/* Content */}
+          <div className="p-4">
+            {/* Crop Name */}
+            <h3 className="text-xl font-bold text-krishi-heading mb-2 truncate">
+              {cropName}
+            </h3>
+
+            {/* Season Badge */}
+            <div className="inline-block">
+              <span className={`${getSeasonBadgeClass(crop.season_en)} rounded-full px-3 py-1 text-sm font-medium`}>
+                {seasonName}
+              </span>
+            </div>
+
+            <p className="mt-3 text-sm font-medium text-krishi-heading">
+              {isStarred(crop.id) ? '⭐ Starred' : '☆ Star Crop'}
+            </p>
+          </div>
+        </motion.div>
+      </Link>
+      <Toast
+        message={toastMessage}
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+      />
+    </>
   )
 }

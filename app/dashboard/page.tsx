@@ -1,16 +1,20 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
+import { useStarredCrops } from '@/lib/useStarredCrops'
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
+import cropsData from '@/data/crops.json'
 
 export default function DashboardPage() {
   const router = useRouter()
   const { user, farmerProfile, loading } = useAuth()
   const { lang } = useLanguage()
+  const { starredCrops } = useStarredCrops()
   const [dashboardLoading, setDashboardLoading] = useState(true)
 
   // Handle redirect in useEffect to avoid React render phase error
@@ -29,6 +33,11 @@ export default function DashboardPage() {
       return () => clearTimeout(timer)
     }
   }, [loading, user])
+
+  // Get starred crops data
+  const starredCropsData = useMemo(() => {
+    return cropsData.filter((crop) => starredCrops.includes(crop.id)).slice(0, 5)
+  }, [starredCrops])
 
   if (loading) {
     return (
@@ -114,13 +123,6 @@ export default function DashboardPage() {
   }
 
   const t = translations[lang]
-
-  // Sample data for starred crops (set to empty array to demonstrate empty state)
-  const starredCrops = [
-    { name: lang === 'hi' ? 'गेहूं' : 'Wheat', name_en: 'Wheat', price: 2350, trend: 2.3 },
-    { name: lang === 'hi' ? 'मक्का' : 'Maize', name_en: 'Maize', price: 2100, trend: -1.1 },
-    { name: lang === 'hi' ? 'मूंगफली' : 'Groundnut', name_en: 'Groundnut', price: 5200, trend: 0.8 },
-  ]
 
   // Sample service activity data (set to empty array to demonstrate empty state)
   const serviceActivities = [
@@ -318,38 +320,50 @@ export default function DashboardPage() {
           className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
         >
           <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
-            📈 {t.starredCrops}
+            ⭐ {t.starredCrops}
           </h3>
           
           <div className="space-y-3">
-            {starredCrops.length === 0 ? (
-              <p className="text-sm text-gray-500 py-4">
-                {lang === 'hi'
-                  ? 'अभी तक कोई फसल तारांकित नहीं की गई। मंडी की कीमतों को ट्रैक करने के लिए फसल पुस्तकालय से फसलों को तारांकित करें।'
-                  : 'No starred crops yet. Star crops from the Crop Library to track mandi prices.'}
-              </p>
-            ) : (
-              starredCrops.map((crop, index) => (
-                <div
-                  key={index}
-                  className="p-4 bg-gradient-to-r from-[#FAF3E0]/50 to-white rounded-lg border border-gray-200 hover:border-[#B85C38]/30 transition-colors"
+            {starredCropsData.length === 0 ? (
+              <div className="py-6 text-center">
+                <p className="text-gray-500 mb-3">
+                  {lang === 'hi'
+                    ? 'अभी कोई फसल सहेजी नहीं गई'
+                    : 'No crops saved yet'}
+                </p>
+                <Link
+                  href="/crop-library"
+                  className="inline-block bg-[#F2A541] hover:bg-[#F2A541]/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors"
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="font-semibold text-krishi-heading text-lg">
-                      {crop.name}
-                    </p>
-                    <span
-                      className={`text-sm font-bold ${
-                        crop.trend > 0 ? 'text-[#7FB069]' : 'text-red-500'
-                      }`}
-                    >
-                      {crop.trend > 0 ? '↗' : '↘'} {Math.abs(crop.trend)}%
-                    </span>
-                  </div>
-                  <p className="text-xl font-bold text-[#1F3C88]">
-                    ₹{crop.price.toLocaleString()} <span className="text-sm font-normal text-gray-600">/ {t.quintal}</span>
-                  </p>
-                </div>
+                  {lang === 'hi' ? 'फसलें सहेजें' : 'Save Crops'}
+                </Link>
+              </div>
+            ) : (
+              starredCropsData.map((crop, index) => (
+                <Link
+                  key={crop.id}
+                  href={`/crop-library/${crop.id}`}
+                  className="block"
+                >
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="p-4 bg-gradient-to-r from-[#FAF3E0]/50 to-white rounded-lg border border-gray-200 hover:border-[#F2A541]/50 hover:shadow-md transition-all duration-200 cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold text-krishi-heading text-lg">
+                          {lang === 'hi' ? crop.name_hi : crop.name_en}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {lang === 'hi' ? crop.season_hi : crop.season_en}
+                        </p>
+                      </div>
+                      <p className="text-2xl">🌾</p>
+                    </div>
+                  </motion.div>
+                </Link>
               ))
             )}
           </div>

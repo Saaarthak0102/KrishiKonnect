@@ -6,6 +6,7 @@ import CropCard from '@/components/CropCard'
 import FeaturePageLayout from '@/components/FeaturePageLayout'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
+import { useStarredCrops } from '@/lib/useStarredCrops'
 import { translations } from '@/lib/translations'
 import cropsData from '@/data/crops.json'
 
@@ -33,6 +34,12 @@ const getFilterButtonClass = (season: string, isSelected: boolean): string => {
       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
   }
 
+  if (season === 'my-crops') {
+    return isSelected
+      ? 'bg-[#F2A541] text-white shadow-md'
+      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+  }
+
   if (isSelected) {
     const color = SEASON_COLORS[season]
     return `text-white shadow-md`
@@ -47,6 +54,10 @@ const getFilterBackgroundStyle = (season: string, isSelected: boolean): string =
     return isSelected ? 'bg-gray-800' : 'bg-gray-100'
   }
 
+  if (season === 'my-crops') {
+    return isSelected ? 'bg-[#F2A541]' : 'bg-gray-100'
+  }
+
   if (isSelected) {
     const color = SEASON_COLORS[season]
     return `bg-[${color}]`
@@ -58,6 +69,7 @@ const getFilterBackgroundStyle = (season: string, isSelected: boolean): string =
 export default function CropLibraryPage() {
   const { lang } = useLanguage()
   const t = translations[lang]
+  const { starredCrops } = useStarredCrops()
 
   // State Management
   const [searchTerm, setSearchTerm] = useState('')
@@ -82,8 +94,11 @@ export default function CropLibraryPage() {
 
     let crops = [...cropsData]
 
-    // Step 1: Apply season filter
-    if (selectedSeason !== 'all') {
+    // Step 1: Apply "My Crops" filter first
+    if (selectedSeason === 'my-crops') {
+      crops = crops.filter((crop) => starredCrops.includes(crop.id))
+    } else if (selectedSeason !== 'all') {
+      // Step 2: Apply season filter
       crops = crops.filter((crop) => {
         // Get the season value to compare based on current language
         const compareValue = lang === 'hi' ? SEASON_MAPPING[selectedSeason] : selectedSeason
@@ -98,7 +113,7 @@ export default function CropLibraryPage() {
       })
     }
 
-    // Step 2: Apply search filter (case insensitive)
+    // Step 3: Apply search filter (case insensitive)
     if (searchTerm.trim()) {
       const lowerSearchTerm = searchTerm.toLowerCase()
       crops = crops.filter((crop) => {
@@ -108,7 +123,7 @@ export default function CropLibraryPage() {
       })
     }
 
-    // Step 3: Apply sorting
+    // Step 4: Apply sorting
     crops.sort((a, b) => {
       const nameA = lang === 'hi' ? a.name_hi : a.name_en
       const nameB = lang === 'hi' ? b.name_hi : b.name_en
@@ -121,7 +136,7 @@ export default function CropLibraryPage() {
     })
 
     return crops
-  }, [searchTerm, selectedSeason, sortOrder, lang])
+  }, [searchTerm, selectedSeason, sortOrder, lang, starredCrops])
 
   return (
     <FeaturePageLayout>
@@ -197,6 +212,18 @@ export default function CropLibraryPage() {
                       </button>
                     )
                   })}
+                  {/* My Crops Filter Button */}
+                  <button
+                    onClick={() => setSelectedSeason('my-crops')}
+                    style={selectedSeason === 'my-crops' ? { backgroundColor: '#F2A541' } : {}}
+                    className={`px-4 py-2 rounded-full font-semibold transition-all duration-200 ${
+                      selectedSeason === 'my-crops'
+                        ? 'bg-[#F2A541] text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    ⭐ {lang === 'hi' ? 'मेरी फसलें' : 'My Crops'}
+                  </button>
                 </div>
               </div>
 
@@ -225,7 +252,9 @@ export default function CropLibraryPage() {
           transition={{ delay: 0.3, duration: 0.5 }}
           className="mb-6 text-krishi-text/70 text-sm"
         >
-          {filteredAndSortedCrops.length === 0 ? (
+          {selectedSeason === 'my-crops' && starredCrops.length === 0 ? (
+            <span>{lang === 'hi' ? 'आपने कोई फसल सहेजी नहीं है' : "You haven't saved any crops yet"}</span>
+          ) : filteredAndSortedCrops.length === 0 ? (
             <span>{t.noCropsFound}</span>
           ) : (
             <span>
@@ -263,12 +292,22 @@ export default function CropLibraryPage() {
             transition={{ duration: 0.5 }}
             className="text-center py-16"
           >
-            <div className="text-5xl mb-4">🔍</div>
+            <div className="text-5xl mb-4">
+              {selectedSeason === 'my-crops' ? '⭐' : '🔍'}
+            </div>
             <h3 className="text-2xl font-bold text-krishi-heading mb-2">
-              {t.noCropsFound}
+              {selectedSeason === 'my-crops'
+                ? lang === 'hi'
+                  ? 'कोई फसल सहेजी नहीं'
+                  : 'No Crops Saved'
+                : t.noCropsFound}
             </h3>
             <p className="text-krishi-text/70">
-              {lang === 'hi'
+              {selectedSeason === 'my-crops'
+                ? lang === 'hi'
+                  ? 'अपनी फसल को सहेजने के लिए किसी भी कार्ड पर ⭐ दबाएं'
+                  : 'Tap ⭐ on a crop to add it to My Crops'
+                : lang === 'hi'
                 ? 'अलग सर्च या फिल्टर कोशिश करें'
                 : 'Try a different search or filter'}
             </p>

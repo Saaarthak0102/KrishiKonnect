@@ -107,6 +107,16 @@ export const translations = {
     getAdvice: 'सलाह लें',
     exampleQuestion: 'उदाहरण सवाल:',
     sampleAiQuestion: 'टमाटर की पत्तियाँ पीली हो रही हैं, क्या करूँ?',
+
+    // My Crops Feature
+    myCrops: 'मेरी फसलें',
+    saveCrops: 'फसलें सहेजें',
+    noSavedCrops: 'कोई फसल सहेजी नहीं गई',
+    tapToAddCrops: 'अपनी फसल को सहेजने के लिए किसी भी कार्ड पर ⭐ दबाएं',
+    maxCropsReached: 'आप 5 फसलें सहेज सकते हैं। एक अलग करने के लिए एक को हटाएं।',
+    cropAddedSuccess: '⭐ फसल मेरी फसलों में जोड़ी गई',
+    cropRemovedSuccess: 'मेरी फसलों से हटाई गई',
+    noSavedCropsInLibrary: 'आपने कोई फसल सहेजी नहीं है। अपनी फसल को सहेजने के लिए किसी भी कार्ड पर ⭐ दबाएं।',
   },
   
   en: {
@@ -217,6 +227,16 @@ export const translations = {
     getAdvice: 'Get Advice',
     exampleQuestion: 'Example question:',
     sampleAiQuestion: 'Tomato leaves are turning yellow, what should I do?',
+
+    // My Crops Feature
+    myCrops: 'My Crops',
+    saveCrops: 'Save Crops',
+    noSavedCrops: 'No crops saved yet',
+    tapToAddCrops: 'Tap ⭐ on a crop to add it to My Crops',
+    maxCropsReached: 'You can save up to 5 crops. Remove one to add another.',
+    cropAddedSuccess: '⭐ Crop added to My Crops',
+    cropRemovedSuccess: 'Removed from My Crops',
+    noSavedCropsInLibrary: "You haven't saved any crops yet. Tap ⭐ on a crop to add it to My Crops.",
   }
 }
 

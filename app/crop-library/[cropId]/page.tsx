@@ -4,8 +4,10 @@ import { useState, useMemo } from 'react'
 import { useParams } from 'next/navigation'
 import Footer from '@/components/Footer'
 import FeaturePageLayout from '@/components/FeaturePageLayout'
+import Toast from '@/components/Toast'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
+import { useStarredCrops } from '@/lib/useStarredCrops'
 import Link from 'next/link'
 import cropsData from '@/data/crops.json'
 
@@ -21,12 +23,21 @@ const getSeasonBadgeClass = (season: string) => {
 export default function CropDetailPage() {
   const params = useParams() as { cropId: string }
   const { lang } = useLanguage()
+  const { isStarred, toggleStar } = useStarredCrops()
+  const [toastMessage, setToastMessage] = useState('')
+  const [showToast, setShowToast] = useState(false)
   const cropId = params.cropId
 
   // Find crop data
   const crop = useMemo(() => {
     return cropsData.find((c) => c.id === cropId)
   }, [cropId])
+
+  const handleStarClick = async () => {
+    const result = await toggleStar(cropId)
+    setToastMessage(result.message || '')
+    setShowToast(true)
+  }
 
   if (!crop) {
     return (
@@ -152,9 +163,18 @@ export default function CropDetailPage() {
           <div className="p-8 flex flex-col md:flex-row md:justify-between md:items-start gap-6">
             {/* Left Side - Crop Details */}
             <div className="flex-1">
-              <h1 className="text-4xl md:text-5xl font-bold text-krishi-heading mb-4">
-                {cropName}
-              </h1>
+              <div className="flex items-center gap-4 mb-4">
+                <h1 className="text-4xl md:text-5xl font-bold text-krishi-heading">
+                  {cropName}
+                </h1>
+                <button
+                  onClick={handleStarClick}
+                  className="text-4xl hover:scale-110 transition-transform"
+                  aria-label={isStarred(cropId) ? 'Unstar crop' : 'Star crop'}
+                >
+                  {isStarred(cropId) ? '⭐' : '☆'}
+                </button>
+              </div>
               <div className="flex flex-wrap gap-4 items-center">
                 <span className={`${getSeasonBadgeClass(crop.season_en)} px-4 py-2 rounded-full font-semibold`}>
                   {seasonName}
@@ -247,6 +267,12 @@ export default function CropDetailPage() {
 
       <Footer />
       </div>
+
+      <Toast
+        message={toastMessage}
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+      />
     </FeaturePageLayout>
   )
 }
