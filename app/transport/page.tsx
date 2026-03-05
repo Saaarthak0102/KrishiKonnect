@@ -1,5 +1,7 @@
 'use client'
 
+import { useMemo } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Footer from '@/components/Footer'
 import FeaturePageLayout from '@/components/FeaturePageLayout'
 import { motion } from 'framer-motion'
@@ -9,6 +11,15 @@ import { translations } from '@/lib/translations'
 export default function TransportPage() {
   const { lang } = useLanguage()
   const t = translations[lang]
+  const searchParams = useSearchParams()
+
+  const crop = searchParams.get('crop') || ''
+  const mandi = searchParams.get('mandi') || ''
+
+  const destinationPlaceholder = useMemo(() => {
+    if (!mandi) return t.destinationPlaceholder
+    return `${mandi} ${lang === 'hi' ? 'मंडी' : 'Mandi'}`
+  }, [lang, mandi, t.destinationPlaceholder])
 
   return (
     <FeaturePageLayout>
@@ -37,6 +48,24 @@ export default function TransportPage() {
               <h3 className="text-xl font-semibold text-krishi-heading mb-4">
                 {t.bookTransport}
               </h3>
+
+              {(crop || mandi) && (
+                <div className="mb-4 rounded-lg bg-krishi-bg p-3 text-sm text-krishi-text">
+                  {crop && (
+                    <p>
+                      <span className="font-semibold">{lang === 'hi' ? 'फसल:' : 'Crop:'}</span>{' '}
+                      {crop}
+                    </p>
+                  )}
+                  {mandi && (
+                    <p>
+                      <span className="font-semibold">{lang === 'hi' ? 'मंडी:' : 'Mandi:'}</span>{' '}
+                      {mandi}
+                    </p>
+                  )}
+                </div>
+              )}
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-krishi-text mb-2">
@@ -55,7 +84,8 @@ export default function TransportPage() {
                   <input
                     type="text"
                     className="w-full px-4 py-2 border-2 border-krishi-border rounded-lg focus:border-krishi-primary outline-none"
-                    placeholder={t.destinationPlaceholder}
+                    placeholder={destinationPlaceholder}
+                    defaultValue={mandi}
                   />
                 </div>
                 <button className="w-full bg-krishi-primary text-white py-3 rounded-lg font-semibold hover:scale-105 transition-transform">

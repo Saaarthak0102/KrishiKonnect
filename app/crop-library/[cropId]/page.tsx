@@ -190,10 +190,10 @@ export default function CropDetailPage() {
             {/* Right Side - Action Buttons */}
             <div className="flex flex-col gap-3 w-full md:w-auto">
               <Link
-                href={`/mandi?crop=${cropId}`}
+                href={`/mandi?crop=${encodeURIComponent(crop.id)}`}
                 className="bg-krishi-agriculture hover:bg-krishi-agriculture/90 text-white font-semibold px-6 py-2 rounded-lg transition-colors duration-200 text-center whitespace-nowrap"
               >
-                {lang === 'hi' ? 'मंडी भाव देखें' : 'Check Mandi Prices'}
+                {lang === 'hi' ? 'मंडी भाव देखें' : 'View Mandi Prices →'}
               </Link>
               <Link
                 href={`/transport?crop=${cropId}`}

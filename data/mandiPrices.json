@@ -1,0 +1,598 @@
+
+{
+  "crops": ["Wheat", "Rice", "Maize", "Barley", "Bajra", "Jowar", "Cotton", "Sugarcane", "Groundnut", "Mustard", "Soybean", "Sunflower", "Potato", "Onion", "Tomato", "Chickpea", "Lentil", "Tur"],
+  "states": {
+    "Punjab": ["Ludhiana Mandi", "Amritsar Mandi", "Patiala Mandi", "Bathinda Mandi"],
+    "Haryana": ["Karnal Mandi", "Hisar Mandi", "Rohtak Mandi", "Ambala Mandi"],
+    "Uttar Pradesh": ["Kanpur Mandi", "Lucknow Mandi", "Varanasi Mandi", "Meerut Mandi"],
+    "Rajasthan": ["Jaipur Mandi", "Kota Mandi", "Bikaner Mandi", "Ajmer Mandi"],
+    "Madhya Pradesh": ["Indore Mandi", "Bhopal Mandi", "Gwalior Mandi", "Jabalpur Mandi"],
+    "Maharashtra": ["Pune Mandi", "Nashik Mandi", "Nagpur Mandi", "Aurangabad Mandi"],
+    "Gujarat": ["Ahmedabad Mandi", "Rajkot Mandi", "Surat Mandi", "Vadodara Mandi"],
+    "Karnataka": ["Bangalore Mandi", "Mysore Mandi", "Hubli Mandi", "Belgaum Mandi"],
+    "Telangana": ["Hyderabad Mandi", "Warangal Mandi", "Nizamabad Mandi", "Karimnagar Mandi"],
+    "Tamil Nadu": ["Chennai Mandi", "Coimbatore Mandi", "Madurai Mandi", "Salem Mandi"]
+  },
+  "cropBasePrices": {
+    "Wheat": { "min": 2100, "max": 2300 },
+    "Rice": { "min": 2200, "max": 2500 },
+    "Maize": { "min": 1700, "max": 2000 },
+    "Barley": { "min": 1800, "max": 2100 },
+    "Bajra": { "min": 1900, "max": 2200 },
+    "Jowar": { "min": 2000, "max": 2300 },
+    "Cotton": { "min": 6500, "max": 7500 },
+    "Sugarcane": { "min": 300, "max": 350 },
+    "Groundnut": { "min": 5000, "max": 6000 },
+    "Mustard": { "min": 5200, "max": 6100 },
+    "Soybean": { "min": 4200, "max": 5000 },
+    "Sunflower": { "min": 4800, "max": 5600 },
+    "Potato": { "min": 900, "max": 1400 },
+    "Onion": { "min": 1200, "max": 1800 },
+    "Tomato": { "min": 800, "max": 1500 },
+    "Chickpea": { "min": 4800, "max": 5600 },
+    "Lentil": { "min": 5200, "max": 6000 },
+    "Tur": { "min": 6500, "max": 7500 }
+  },
+  "prices": [
+    {
+      "id": "wheat-punjab-ludhiana",
+      "crop": "Wheat",
+      "state": "Punjab",
+      "mandi": "Ludhiana Mandi",
+      "minPrice": 2105,
+      "maxPrice": 2285,
+      "modalPrice": 2195,
+      "trend": {
+        "direction": "up",
+        "change": "+2.1%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "wheat-punjab-amritsar",
+      "crop": "Wheat",
+      "state": "Punjab",
+      "mandi": "Amritsar Mandi",
+      "minPrice": 2110,
+      "maxPrice": 2290,
+      "modalPrice": 2200,
+      "trend": {
+        "direction": "up",
+        "change": "+1.8%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "wheat-punjab-patiala",
+      "crop": "Wheat",
+      "state": "Punjab",
+      "mandi": "Patiala Mandi",
+      "minPrice": 2100,
+      "maxPrice": 2280,
+      "modalPrice": 2190,
+      "trend": {
+        "direction": "stable",
+        "change": "0%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "wheat-punjab-bathinda",
+      "crop": "Wheat",
+      "state": "Punjab",
+      "mandi": "Bathinda Mandi",
+      "minPrice": 2108,
+      "maxPrice": 2288,
+      "modalPrice": 2198,
+      "trend": {
+        "direction": "down",
+        "change": "-0.9%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "wheat-haryana-karnal",
+      "crop": "Wheat",
+      "state": "Haryana",
+      "mandi": "Karnal Mandi",
+      "minPrice": 2103,
+      "maxPrice": 2283,
+      "modalPrice": 2193,
+      "trend": {
+        "direction": "up",
+        "change": "+1.5%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "wheat-haryana-hisar",
+      "crop": "Wheat",
+      "state": "Haryana",
+      "mandi": "Hisar Mandi",
+      "minPrice": 2112,
+      "maxPrice": 2292,
+      "modalPrice": 2202,
+      "trend": {
+        "direction": "up",
+        "change": "+2.3%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "wheat-haryana-rohtak",
+      "crop": "Wheat",
+      "state": "Haryana",
+      "mandi": "Rohtak Mandi",
+      "minPrice": 2107,
+      "maxPrice": 2287,
+      "modalPrice": 2197,
+      "trend": {
+        "direction": "stable",
+        "change": "0%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "wheat-haryana-ambala",
+      "crop": "Wheat",
+      "state": "Haryana",
+      "mandi": "Ambala Mandi",
+      "minPrice": 2101,
+      "maxPrice": 2281,
+      "modalPrice": 2191,
+      "trend": {
+        "direction": "down",
+        "change": "-1.2%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "rice-punjab-ludhiana",
+      "crop": "Rice",
+      "state": "Punjab",
+      "mandi": "Ludhiana Mandi",
+      "minPrice": 2210,
+      "maxPrice": 2490,
+      "modalPrice": 2350,
+      "trend": {
+        "direction": "up",
+        "change": "+1.9%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "rice-punjab-amritsar",
+      "crop": "Rice",
+      "state": "Punjab",
+      "mandi": "Amritsar Mandi",
+      "minPrice": 2215,
+      "maxPrice": 2495,
+      "modalPrice": 2355,
+      "trend": {
+        "direction": "stable",
+        "change": "0%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "rice-punjab-patiala",
+      "crop": "Rice",
+      "state": "Punjab",
+      "mandi": "Patiala Mandi",
+      "minPrice": 2205,
+      "maxPrice": 2485,
+      "modalPrice": 2345,
+      "trend": {
+        "direction": "down",
+        "change": "-0.7%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "rice-punjab-bathinda",
+      "crop": "Rice",
+      "state": "Punjab",
+      "mandi": "Bathinda Mandi",
+      "minPrice": 2220,
+      "maxPrice": 2500,
+      "modalPrice": 2360,
+      "trend": {
+        "direction": "up",
+        "change": "+2.1%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "maize-haryana-karnal",
+      "crop": "Maize",
+      "state": "Haryana",
+      "mandi": "Karnal Mandi",
+      "minPrice": 1710,
+      "maxPrice": 1990,
+      "modalPrice": 1850,
+      "trend": {
+        "direction": "up",
+        "change": "+1.3%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "maize-haryana-hisar",
+      "crop": "Maize",
+      "state": "Haryana",
+      "mandi": "Hisar Mandi",
+      "minPrice": 1715,
+      "maxPrice": 1995,
+      "modalPrice": 1855,
+      "trend": {
+        "direction": "stable",
+        "change": "0%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "maize-haryana-rohtak",
+      "crop": "Maize",
+      "state": "Haryana",
+      "mandi": "Rohtak Mandi",
+      "minPrice": 1708,
+      "maxPrice": 1988,
+      "modalPrice": 1848,
+      "trend": {
+        "direction": "down",
+        "change": "-0.8%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "maize-haryana-ambala",
+      "crop": "Maize",
+      "state": "Haryana",
+      "mandi": "Ambala Mandi",
+      "minPrice": 1720,
+      "maxPrice": 2000,
+      "modalPrice": 1860,
+      "trend": {
+        "direction": "up",
+        "change": "+1.8%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "barley-rajasthan-jaipur",
+      "crop": "Barley",
+      "state": "Rajasthan",
+      "mandi": "Jaipur Mandi",
+      "minPrice": 1810,
+      "maxPrice": 2090,
+      "modalPrice": 1950,
+      "trend": {
+        "direction": "down",
+        "change": "-1.1%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "barley-rajasthan-kota",
+      "crop": "Barley",
+      "state": "Rajasthan",
+      "mandi": "Kota Mandi",
+      "minPrice": 1815,
+      "maxPrice": 2095,
+      "modalPrice": 1955,
+      "trend": {
+        "direction": "up",
+        "change": "+2.0%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "bajra-uttar-pradesh-kanpur",
+      "crop": "Bajra",
+      "state": "Uttar Pradesh",
+      "mandi": "Kanpur Mandi",
+      "minPrice": 1905,
+      "maxPrice": 2195,
+      "modalPrice": 2050,
+      "trend": {
+        "direction": "up",
+        "change": "+1.6%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "bajra-uttar-pradesh-lucknow",
+      "crop": "Bajra",
+      "state": "Uttar Pradesh",
+      "mandi": "Lucknow Mandi",
+      "minPrice": 1910,
+      "maxPrice": 2200,
+      "modalPrice": 2055,
+      "trend": {
+        "direction": "stable",
+        "change": "0%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "cotton-maharashtra-pune",
+      "crop": "Cotton",
+      "state": "Maharashtra",
+      "mandi": "Pune Mandi",
+      "minPrice": 6510,
+      "maxPrice": 7490,
+      "modalPrice": 7000,
+      "trend": {
+        "direction": "up",
+        "change": "+2.4%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "cotton-maharashtra-nashik",
+      "crop": "Cotton",
+      "state": "Maharashtra",
+      "mandi": "Nashik Mandi",
+      "minPrice": 6520,
+      "maxPrice": 7500,
+      "modalPrice": 7010,
+      "trend": {
+        "direction": "down",
+        "change": "-0.5%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "sugarcane-maharashtra-aurangabad",
+      "crop": "Sugarcane",
+      "state": "Maharashtra",
+      "mandi": "Aurangabad Mandi",
+      "minPrice": 305,
+      "maxPrice": 345,
+      "modalPrice": 325,
+      "trend": {
+        "direction": "up",
+        "change": "+1.5%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "groundnut-gujarat-ahmedabad",
+      "crop": "Groundnut",
+      "state": "Gujarat",
+      "mandi": "Ahmedabad Mandi",
+      "minPrice": 5010,
+      "maxPrice": 5990,
+      "modalPrice": 5500,
+      "trend": {
+        "direction": "up",
+        "change": "+1.8%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "groundnut-gujarat-rajkot",
+      "crop": "Groundnut",
+      "state": "Gujarat",
+      "mandi": "Rajkot Mandi",
+      "minPrice": 5020,
+      "maxPrice": 6000,
+      "modalPrice": 5510,
+      "trend": {
+        "direction": "stable",
+        "change": "0%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "mustard-madhya-pradesh-indore",
+      "crop": "Mustard",
+      "state": "Madhya Pradesh",
+      "mandi": "Indore Mandi",
+      "minPrice": 5210,
+      "maxPrice": 6090,
+      "modalPrice": 5650,
+      "trend": {
+        "direction": "down",
+        "change": "-1.2%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "mustard-madhya-pradesh-bhopal",
+      "crop": "Mustard",
+      "state": "Madhya Pradesh",
+      "mandi": "Bhopal Mandi",
+      "minPrice": 5220,
+      "maxPrice": 6100,
+      "modalPrice": 5660,
+      "trend": {
+        "direction": "up",
+        "change": "+2.1%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "soybean-madhya-pradesh-gwalior",
+      "crop": "Soybean",
+      "state": "Madhya Pradesh",
+      "mandi": "Gwalior Mandi",
+      "minPrice": 4210,
+      "maxPrice": 4990,
+      "modalPrice": 4600,
+      "trend": {
+        "direction": "up",
+        "change": "+1.4%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "sunflower-karnataka-bangalore",
+      "crop": "Sunflower",
+      "state": "Karnataka",
+      "mandi": "Bangalore Mandi",
+      "minPrice": 4810,
+      "maxPrice": 5590,
+      "modalPrice": 5200,
+      "trend": {
+        "direction": "stable",
+        "change": "0%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "sunflower-karnataka-mysore",
+      "crop": "Sunflower",
+      "state": "Karnataka",
+      "mandi": "Mysore Mandi",
+      "minPrice": 4820,
+      "maxPrice": 5600,
+      "modalPrice": 5210,
+      "trend": {
+        "direction": "down",
+        "change": "-0.9%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "potato-karnataka-hubli",
+      "crop": "Potato",
+      "state": "Karnataka",
+      "mandi": "Hubli Mandi",
+      "minPrice": 910,
+      "maxPrice": 1390,
+      "modalPrice": 1150,
+      "trend": {
+        "direction": "up",
+        "change": "+2.6%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "onion-karnataka-belgaum",
+      "crop": "Onion",
+      "state": "Karnataka",
+      "mandi": "Belgaum Mandi",
+      "minPrice": 1210,
+      "maxPrice": 1790,
+      "modalPrice": 1500,
+      "trend": {
+        "direction": "down",
+        "change": "-1.8%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "tomato-telangana-hyderabad",
+      "crop": "Tomato",
+      "state": "Telangana",
+      "mandi": "Hyderabad Mandi",
+      "minPrice": 810,
+      "maxPrice": 1490,
+      "modalPrice": 1150,
+      "trend": {
+        "direction": "up",
+        "change": "+1.7%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "tomato-telangana-warangal",
+      "crop": "Tomato",
+      "state": "Telangana",
+      "mandi": "Warangal Mandi",
+      "minPrice": 820,
+      "maxPrice": 1500,
+      "modalPrice": 1160,
+      "trend": {
+        "direction": "stable",
+        "change": "0%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "chickpea-telangana-nizamabad",
+      "crop": "Chickpea",
+      "state": "Telangana",
+      "mandi": "Nizamabad Mandi",
+      "minPrice": 4810,
+      "maxPrice": 5590,
+      "modalPrice": 5200,
+      "trend": {
+        "direction": "down",
+        "change": "-0.6%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "chickpea-telangana-karimnagar",
+      "crop": "Chickpea",
+      "state": "Telangana",
+      "mandi": "Karimnagar Mandi",
+      "minPrice": 4820,
+      "maxPrice": 5600,
+      "modalPrice": 5210,
+      "trend": {
+        "direction": "up",
+        "change": "+1.9%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "lentil-tamil-nadu-chennai",
+      "crop": "Lentil",
+      "state": "Tamil Nadu",
+      "mandi": "Chennai Mandi",
+      "minPrice": 5210,
+      "maxPrice": 5990,
+      "modalPrice": 5600,
+      "trend": {
+        "direction": "up",
+        "change": "+2.0%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "lentil-tamil-nadu-coimbatore",
+      "crop": "Lentil",
+      "state": "Tamil Nadu",
+      "mandi": "Coimbatore Mandi",
+      "minPrice": 5220,
+      "maxPrice": 6000,
+      "modalPrice": 5610,
+      "trend": {
+        "direction": "stable",
+        "change": "0%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "tur-tamil-nadu-madurai",
+      "crop": "Tur",
+      "state": "Tamil Nadu",
+      "mandi": "Madurai Mandi",
+      "minPrice": 6510,
+      "maxPrice": 7490,
+      "modalPrice": 7000,
+      "trend": {
+        "direction": "down",
+        "change": "-1.3%"
+      },
+      "lastUpdated": "Today"
+    },
+    {
+      "id": "tur-tamil-nadu-salem",
+      "crop": "Tur",
+      "state": "Tamil Nadu",
+      "mandi": "Salem Mandi",
+      "minPrice": 6520,
+      "maxPrice": 7500,
+      "modalPrice": 7010,
+      "trend": {
+        "direction": "up",
+        "change": "+2.2%"
+      },
+      "lastUpdated": "Today"
+    }
+  ]
+}

@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useStarredCrops } from '@/lib/useStarredCrops'
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
+import MyCropsWithPrices from '@/components/MyCropsWithPrices'
 import cropsData from '@/data/crops.json'
 
 export default function DashboardPage() {
@@ -65,7 +66,6 @@ export default function DashboardPage() {
       primaryCrop: 'मुख्य फसल',
       location: 'स्थान',
       season: 'मौसम',
-      latestMandiPrice: 'नवीनतम मंडी भाव',
       marketTrend: 'बाजार रुझान',
       estimatedHarvest: 'अनुमानित कटाई',
       weatherToday: 'आज का मौसम',
@@ -87,7 +87,9 @@ export default function DashboardPage() {
       lastAdvice: 'अंतिम सलाह',
       fertilizerRecommendation: 'उर्वरक सिफारिश',
       days: 'दिन',
-      rising: 'बढ़ रहा है',
+      rising: 'बढ़ रहा है ↑',
+      falling: 'गिर रहा है ↓',
+      stable: 'स्थिर →',
       quintal: 'क्विंटल',
     },
     en: {
@@ -95,7 +97,6 @@ export default function DashboardPage() {
       primaryCrop: 'Primary Crop',
       location: 'Location',
       season: 'Season',
-      latestMandiPrice: 'Latest Mandi Price',
       marketTrend: 'Market Trend',
       estimatedHarvest: 'Estimated Harvest',
       weatherToday: 'Weather Today',
@@ -117,7 +118,9 @@ export default function DashboardPage() {
       lastAdvice: 'Last Advice',
       fertilizerRecommendation: 'Fertilizer recommendation',
       days: 'days',
-      rising: 'Rising',
+      rising: 'Rising ↑',
+      falling: 'Falling ↓',
+      stable: 'Stable →',
       quintal: 'quintal',
     },
   }
@@ -199,16 +202,8 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Column 2 - Market Info */}
+          {/* Column 2 - Market Trend */}
           <div className="space-y-4">
-            <div>
-              <p className="text-sm text-gray-500 mb-1">
-                {t.latestMandiPrice}
-              </p>
-              <p className="text-2xl font-bold text-[#7FB069]">
-                ₹2,350 <span className="text-base font-normal text-gray-600">/ {t.quintal}</span>
-              </p>
-            </div>
             <div>
               <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
                 <span>📈</span>
@@ -234,7 +229,7 @@ export default function DashboardPage() {
         </div>
       </motion.div>
 
-      {/* Row 2 - Weather Card */}
+      {/* Row 3 - Weather Card */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -265,114 +260,56 @@ export default function DashboardPage() {
         </div>
       </motion.div>
 
-      {/* Row 3 - Two Cards Side by Side */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Service Activity Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
-        >
-          <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
-            🚚 {t.recentServices}
-          </h3>
-          
-          <div className="space-y-4">
-            {serviceActivities.length === 0 ? (
-              <p className="text-sm text-gray-500 py-4">
-                {lang === 'hi' 
-                  ? 'अभी तक कोई सेवा का उपयोग नहीं किया गया। परिवहन बुक करें या AI सलाहकार से पूछें।'
-                  : 'No services used yet. Book transport or ask the AI advisor.'}
-              </p>
-            ) : (
-              serviceActivities.map((activity, index) => (
-                <div key={index} className="p-4 bg-[#FAF3E0]/50 rounded-lg border border-gray-200">
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl">{activity.icon}</span>
-                    <div className="flex-1">
-                      <p className="font-semibold text-krishi-heading mb-1">
-                        {activity.title}
+      {/* Row 4 - My Crops with Mandi Prices Section (Full Width) */}
+      <MyCropsWithPrices
+        primaryCrop={farmerProfile.primaryCrop.toLowerCase()}
+        starredCrops={starredCrops}
+      />
+
+      {/* Row 5 - Recent Services Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.3 }}
+        className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+      >
+        <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
+          🚚 {t.recentServices}
+        </h3>
+        
+        <div className="space-y-4">
+          {serviceActivities.length === 0 ? (
+            <p className="text-sm text-gray-500 py-4">
+              {lang === 'hi' 
+                ? 'अभी तक कोई सेवा का उपयोग नहीं किया गया। परिवहन बुक करें या AI सलाहकार से पूछें।'
+                : 'No services used yet. Book transport or ask the AI advisor.'}
+            </p>
+          ) : (
+            serviceActivities.map((activity, index) => (
+              <div key={index} className="p-4 bg-[#FAF3E0]/50 rounded-lg border border-gray-200">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">{activity.icon}</span>
+                  <div className="flex-1">
+                    <p className="font-semibold text-krishi-heading mb-1">
+                      {activity.title}
+                    </p>
+                    {activity.details.map((detail, idx) => (
+                      <p key={idx} className="text-sm text-gray-600">
+                        {detail.label}
+                        {detail.value && (
+                          <>
+                            : <span className={detail.highlight ? 'text-[#7FB069] font-semibold' : ''}>{detail.value}</span>
+                          </>
+                        )}
                       </p>
-                      {activity.details.map((detail, idx) => (
-                        <p key={idx} className="text-sm text-gray-600">
-                          {detail.label}
-                          {detail.value && (
-                            <>
-                              : <span className={detail.highlight ? 'text-[#7FB069] font-semibold' : ''}>{detail.value}</span>
-                            </>
-                          )}
-                        </p>
-                      ))}
-                    </div>
+                    ))}
                   </div>
                 </div>
-              ))
-            )}
-          </div>
-        </motion.div>
-
-        {/* My Crops Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
-        >
-          <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
-            🌾 {t.myCrops}
-          </h3>
-          
-          <div className="space-y-3">
-            {starredCropsData.length === 0 ? (
-              <div className="py-12 px-6 text-center">
-                <div className="mb-4 text-4xl">🌾</div>
-                <h4 className="text-lg font-bold text-krishi-heading mb-2">
-                  {lang === 'hi' ? 'अभी कोई फसल सहेजी नहीं गई' : 'No crops saved yet'}
-                </h4>
-                <p className="text-gray-600 mb-6 max-w-sm mx-auto">
-                  {lang === 'hi'
-                    ? 'बाजार सतर्कताएं, मौसम सतर्कताएं और सिफारिशों तक जल्दी पहुंचने के लिए फसलें सहेजें।'
-                    : 'Save crops to quickly access their guides, weather alerts, and recommendations.'}
-                </p>
-                <Link
-                  href="/crop-library"
-                  className="inline-block bg-[#1F3C88] hover:bg-[#1F3C88]/80 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
-                >
-                  {lang === 'hi' ? 'फसल पुस्तकालय देखें' : 'Browse Crop Library'}
-                </Link>
               </div>
-            ) : (
-              starredCropsData.map((crop, index) => (
-                <Link
-                  key={crop.id}
-                  href={`/crop-library/${crop.id}`}
-                  className="block"
-                >
-                  <motion.div
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="p-4 bg-gradient-to-r from-[#FAF3E0]/50 to-white rounded-lg border border-gray-200 hover:border-[#F2A541]/50 hover:shadow-md transition-all duration-200 cursor-pointer"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-semibold text-krishi-heading text-lg">
-                          {lang === 'hi' ? crop.name_hi : crop.name_en}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {lang === 'hi' ? crop.season_hi : crop.season_en}
-                        </p>
-                      </div>
-                      <p className="text-2xl">🌾</p>
-                    </div>
-                  </motion.div>
-                </Link>
-              ))
-            )}
-          </div>
-        </motion.div>
-      </div>
+            ))
+          )}
+        </div>
+      </motion.div>
     </div>
   )
 }
