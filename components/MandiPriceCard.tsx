@@ -2,6 +2,7 @@
 
 import { MandiPrice } from '@/lib/mandiService'
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import { getTrendColor } from '@/lib/trendUtils'
@@ -17,8 +18,15 @@ export default function MandiPriceCard({
   isHighlighted = false,
   onViewTrend,
 }: MandiPriceCardProps) {
+  const router = useRouter()
   const { lang } = useLanguage()
   const t = translations[lang]
+
+  const handleRequestTransport = () => {
+    router.push(
+      `/transport?crop=${encodeURIComponent(price.cropEn)}&mandi=${encodeURIComponent(price.mandiEn)}`
+    )
+  }
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
@@ -188,6 +196,23 @@ export default function MandiPriceCard({
             {lang === 'hi' ? 'चार्ट देखें' : 'View Chart'}
           </button>
         )}
+      </div>
+
+      {/* Request Transport Button */}
+      <div className="mt-6">
+        <button
+          onClick={handleRequestTransport}
+          className="w-full font-semibold py-3 px-4 rounded-lg text-white transition-all hover:scale-105 active:scale-95"
+          style={{ backgroundColor: '#1F3C88' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#162847'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#1F3C88'
+          }}
+        >
+          {lang === 'hi' ? 'परिवहन का अनुरोध करें' : 'Request Transport'}
+        </button>
       </div>
     </motion.div>
   )
