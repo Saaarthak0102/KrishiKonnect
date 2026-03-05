@@ -9,6 +9,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { MandiPrice } from '@/lib/mandiService'
 import MandiPriceCard from '@/components/MandiPriceCard'
 import MandiTrendChart from '@/components/MandiTrendChart'
+import { useStarredCrops } from '@/lib/useStarredCrops'
 import cropsData from '@/data/crops.json'
 import mandiPricesData from '@/data/mandiPrices.json'
 
@@ -58,6 +59,7 @@ export default function MandiPage() {
   const { lang } = useLanguage()
   const searchParams = useSearchParams()
   const cropIdFromParam = searchParams.get('crop')
+  const { starredCrops } = useStarredCrops()
   
   // Get crop name from ID when navigated from crop detail page
   const initialCropName = useMemo(() => {
@@ -68,6 +70,8 @@ export default function MandiPage() {
   
   const [selectedCrop, setSelectedCrop] = useState<string | null>(initialCropName)
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedState, setSelectedState] = useState('')
+  const [showMyCrops, setShowMyCrops] = useState(false)
   const [prices, setPrices] = useState<MandiPrice[]>([])
   const [loading, setLoading] = useState(false)
   const [expandedMandi, setExpandedMandi] = useState<string | null>(null)
@@ -135,20 +139,37 @@ export default function MandiPage() {
     }
   }, [shouldScroll, selectedCrop])
   const filteredCrops = useMemo(() => {
-    return cropsData
-      .filter((crop) => {
-        if (!searchTerm.trim()) return true
-        const term = searchTerm.toLowerCase()
-        return crop.name_en.toLowerCase().includes(term) || crop.name_hi.toLowerCase().includes(term)
-      })
-      .sort((a, b) => a.name_en.localeCompare(b.name_en))
-  }, [searchTerm])
+    let crops = cropsData
 
-  // Get mandis for selected crop grouped by state
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase()
+      crops = crops.filter(
+        (crop) =>
+          crop.name_en.toLowerCase().includes(term) ||
+          crop.name_hi.toLowerCase().includes(term)
+      )
+    }
+
+    // Filter by "My Crops" - show only starred crops
+    if (showMyCrops) {
+      crops = crops.filter((crop) => starredCrops.includes(crop.id))
+    }
+
+    return crops.sort((a, b) => a.name_en.localeCompare(b.name_en))
+  }, [searchTerm, showMyCrops, starredCrops])
+
+  // Get mandis for selected crop grouped by state, filtered by selectedState
   const mandisGroupedByState = useMemo((): GroupedByState => {
     if (!selectedCrop) return {}
 
-    const filtered = prices.filter((p) => p.cropEn === selectedCrop)
+    let filtered = prices.filter((p) => p.cropEn === selectedCrop)
+    
+    // Apply state filter
+    if (selectedState) {
+      filtered = filtered.filter((p) => p.state === selectedState)
+    }
+
     const grouped: GroupedByState = {}
 
     filtered.forEach((price) => {
@@ -159,6 +180,15 @@ export default function MandiPage() {
     })
 
     return grouped
+  }, [selectedCrop, prices, selectedState])
+
+  // Get all available states for selected crop
+  const availableStates = useMemo(() => {
+    if (!selectedCrop) return []
+    const states = prices
+      .filter((p) => p.cropEn === selectedCrop)
+      .map((p) => p.state)
+    return [...new Set(states)].sort()
   }, [selectedCrop, prices])
 
   // Sort states for display
@@ -203,24 +233,83 @@ export default function MandiPage() {
                 className="mb-8 rounded-xl border-2 p-5"
                 style={{ borderColor: '#E8DCC8', backgroundColor: '#FAF3E0' }}
               >
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder={lang === 'hi' ? 'फसल खोजें... जैसे गेहूं, चावल' : 'Search crops... e.g. Wheat, Rice'}
-                  className="w-full rounded-lg border-2 px-4 py-3 outline-none transition-colors"
-                  style={{
-                    borderColor: '#D8CFC0',
-                    color: '#1F3C88',
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#1F3C88'
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = '#D8CFC0'
-                  }}
-                />
+                <div className="flex flex-col gap-4">
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder={lang === 'hi' ? 'फसल खोजें... जैसे गेहूं, चावल' : 'Search crops... e.g. Wheat, Rice'}
+                    className="w-full rounded-lg border-2 px-4 py-3 outline-none transition-colors"
+                    style={{
+                      borderColor: '#D8CFC0',
+                      color: '#1F3C88',
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#1F3C88'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#D8CFC0'
+                    }}
+                  />
+                  
+                  {/* Reset My Crops Filter Button */}
+                  {showMyCrops && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center gap-3 rounded-lg p-3"
+                      style={{ backgroundColor: 'rgba(242, 165, 65, 0.1)' }}
+                    >
+                      <span style={{ color: '#F2A541', fontWeight: 'bold' }}>
+                        {lang === 'hi' ? 'मेरी फसलें दिखा रहे हैं' : 'Showing My Crops'}
+                      </span>
+                      <button
+                        onClick={() => setShowMyCrops(false)}
+                        className="ml-auto px-3 py-1 rounded-lg font-semibold text-sm transition-all"
+                        style={{
+                          color: '#FFFFFF',
+                          backgroundColor: '#F2A541',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#E89B2E'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = '#F2A541'
+                        }}
+                      >
+                        {lang === 'hi' ? 'साफ करें' : 'Clear'}
+                      </button>
+                    </motion.div>
+                  )}
+                </div>
               </motion.div>
+
+              {/* My Crops Quick Filter Button */}
+              {starredCrops.length > 0 && !showMyCrops && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, duration: 0.4 }}
+                  className="mb-8 flex justify-center"
+                >
+                  <button
+                    onClick={() => setShowMyCrops(true)}
+                    className="px-8 py-3 rounded-lg font-semibold transition-all transform hover:scale-105"
+                    style={{
+                      color: '#FFFFFF',
+                      backgroundColor: '#F2A541',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#E89B2E'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#F2A541'
+                    }}
+                  >
+                    ⭐ {lang === 'hi' ? 'मेरी फसलें दिखाएं' : 'Show My Crops'} ({starredCrops.length})
+                  </button>
+                </motion.div>
+              )}
 
               {/* Crop Cards Grid */}
               <section className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -297,6 +386,7 @@ export default function MandiPage() {
                   onClick={() => {
                     setSelectedCrop(null)
                     setExpandedMandi(null)
+                    setSelectedState('')
                   }}
                   className="px-4 py-2 rounded-lg font-semibold transition-all"
                   style={{
@@ -315,6 +405,75 @@ export default function MandiPage() {
                 <h2 className="text-3xl font-bold" style={{ color: '#1F3C88' }}>
                   {selectedCrop} {lang === 'hi' ? 'भाव' : 'Prices'}
                 </h2>
+              </motion.div>
+
+              {/* Search and Filter Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1, duration: 0.4 }}
+                className="mb-8 rounded-xl border-2 p-5"
+                style={{ borderColor: '#E8DCC8', backgroundColor: '#FAF3E0' }}
+              >
+                <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-3">
+                  {/* State Filter Dropdown */}
+                  <div className="flex-1">
+                    <label className="block text-sm font-semibold mb-2" style={{ color: '#1F3C88' }}>
+                      {lang === 'hi' ? 'राज्य' : 'State'}
+                    </label>
+                    <select
+                      value={selectedState}
+                      onChange={(e) => setSelectedState(e.target.value)}
+                      className="w-full rounded-lg border-2 px-4 py-2 outline-none transition-colors"
+                      style={{
+                        borderColor: '#D8CFC0',
+                        color: '#1F3C88',
+                        backgroundColor: '#FFFFFF',
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#1F3C88'
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = '#D8CFC0'
+                      }}
+                    >
+                      <option value="">
+                        {lang === 'hi' ? 'सभी राज्य' : 'All States'}
+                      </option>
+                      {availableStates.map((state) => (
+                        <option key={state} value={state}>
+                          {state}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* My Crops Button */}
+                  {starredCrops.length > 0 && (
+                    <div className="flex items-end">
+                      <button
+                        onClick={() => {
+                          setSelectedCrop(null)
+                          setShowMyCrops(true)
+                          setSelectedState('')
+                        }}
+                        className="w-full md:w-auto px-6 py-2 rounded-lg font-semibold transition-all transform hover:scale-105"
+                        style={{
+                          color: '#FFFFFF',
+                          backgroundColor: '#F2A541',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#E89B2E'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = '#F2A541'
+                        }}
+                      >
+                        ⭐ {lang === 'hi' ? 'मेरी फसलें' : 'My Crops'}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </motion.div>
 
               {/* States with Mandis */}
