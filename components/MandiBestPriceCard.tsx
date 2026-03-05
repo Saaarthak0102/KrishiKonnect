@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { memo } from 'react'
 import type { MandiPrice } from '@/lib/mandiService'
+import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
 
 interface MandiBestPriceCardProps {
   bestMandi: MandiPrice | null
@@ -10,6 +11,20 @@ interface MandiBestPriceCardProps {
 }
 
 function MandiBestPriceCard({ bestMandi, lang }: MandiBestPriceCardProps) {
+  const getTimestamp = (): string => {
+    if (!bestMandi) return ''
+    const timestamp = (bestMandi as any).date || (bestMandi as any).lastUpdated
+    if (!timestamp) return ''
+    return getRelativeTime(timestamp, lang === 'hi' ? 'hi' : 'en')
+  }
+
+  const isLive = (): boolean => {
+    if (!bestMandi) return false
+    const timestamp = (bestMandi as any).date || (bestMandi as any).lastUpdated
+    if (!timestamp) return false
+    return isLivePrice(timestamp)
+  }
+
   return (
     <section className="rounded-xl border-2 border-krishi-border bg-white p-5">
       <p className="text-sm font-bold text-krishi-primary">
@@ -23,6 +38,20 @@ function MandiBestPriceCard({ bestMandi, lang }: MandiBestPriceCardProps) {
           <p className="mt-2 text-3xl font-extrabold text-krishi-agriculture">
             ₹{bestMandi.modalPrice.toLocaleString('en-IN')} / quintal
           </p>
+          
+          {/* Timestamp and Live Indicator */}
+          <div className="mt-2 flex items-center gap-2">
+            {isLive() && (
+              <div className="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs">
+                <span className="inline-block w-1.5 h-1.5 bg-green-600 rounded-full animate-pulse"></span>
+                <span className="font-medium">{lang === 'hi' ? 'लाइव' : 'Live'}</span>
+              </div>
+            )}
+            <p className="text-xs text-krishi-text/70">
+              {getTimestamp()}
+            </p>
+          </div>
+
           <p className="mt-2 text-sm font-semibold text-krishi-text/80">
             {lang === 'hi' ? 'ट्रेंड' : 'Trend'}: {bestMandi.trend.toUpperCase()}
           </p>

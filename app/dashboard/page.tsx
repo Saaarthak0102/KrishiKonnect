@@ -10,11 +10,19 @@ import { useStarredCrops } from '@/lib/useStarredCrops'
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
 import MarketInsightCard from '@/components/dashboard/MarketInsightCard'
 import { getTransportBookings, type TransportBookingRecord } from '@/lib/transportBookings'
+import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
 import cropsData from '@/data/crops.json'
 import mandiPricesData from '@/data/mandiPrices.json'
 
+interface BestPriceData {
+  price: number
+  mandi: string
+  trend: 'up' | 'down' | 'stable'
+  lastUpdated?: string
+}
+
 // Helper function to get best price for a crop from local dataset
-function getBestPriceForCrop(cropId: string) {
+function getBestPriceForCrop(cropId: string): BestPriceData | null {
   const crop = cropsData.find(c => c.id === cropId)
   if (!crop) return null
   
@@ -33,7 +41,8 @@ function getBestPriceForCrop(cropId: string) {
   return {
     price: bestPrice.modalPrice,
     mandi: bestPrice.mandi,
-    trend: bestPrice.trend.direction as 'up' | 'down' | 'stable'
+    trend: bestPrice.trend.direction as 'up' | 'down' | 'stable',
+    lastUpdated: bestPrice.lastUpdated
   }
 }
 
@@ -54,7 +63,7 @@ export default function DashboardPage() {
 
   // Compute best prices for all starred crops (optimized with useMemo)
   const bestPrices = useMemo(() => {
-    const pricesMap: Record<string, { price: number; mandi: string; trend: 'up' | 'down' | 'stable' } | null> = {}
+    const pricesMap: Record<string, BestPriceData | null> = {}
     
     myCrops.forEach(crop => {
       pricesMap[crop.id] = getBestPriceForCrop(crop.id)
@@ -389,6 +398,16 @@ export default function DashboardPage() {
                             <p className={`text-sm font-medium ${getTrendColor(priceData.trend)}`}>
                               {getTrendIcon(priceData.trend)} {getTrendText(priceData.trend)}
                             </p>
+                            {priceData.lastUpdated && (
+                              <div className="flex items-center gap-1 mt-1">
+                                {isLivePrice(priceData.lastUpdated) && (
+                                  <span className="inline-block w-1.5 h-1.5 bg-green-600 rounded-full animate-pulse"></span>
+                                )}
+                                <p className="text-xs text-gray-500">
+                                  {getRelativeTime(priceData.lastUpdated, lang === 'hi' ? 'hi' : 'en')}
+                                </p>
+                              </div>
+                            )}
                           </>
                         ) : (
                           <p className="text-sm text-gray-500">—</p>

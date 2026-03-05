@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import { getTrendColor } from '@/lib/trendUtils'
+import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
 
 interface MandiPriceCardProps {
   price: MandiPrice
@@ -54,39 +55,25 @@ function MandiPriceCard({
   }
 
   const getLastUpdatedLabel = (): string => {
-    try {
-      const dateObj = new Date(price.date)
-      if (Number.isNaN(dateObj.getTime())) {
-        return lang === 'hi' ? 'आज अपडेट' : 'Updated Today'
-      }
-
-      const now = new Date()
-      const diffMs = now.getTime() - dateObj.getTime()
-      const diffMinutes = Math.floor(diffMs / 60000)
-      const diffHours = Math.floor(diffMs / 3600000)
-      const diffDays = Math.floor(diffMs / 86400000)
-
-      if (diffMinutes < 1) {
-        return lang === 'hi' ? 'अभी अपडेट' : 'Just now'
-      } else if (diffMinutes < 60) {
-        const mins = diffMinutes
-        return lang === 'hi'
-          ? `${mins} ${mins === 1 ? 'मिनट' : 'मिनट'} पहले अपडेट`
-          : `Updated ${mins} ${mins === 1 ? 'minute' : 'minutes'} ago`
-      } else if (diffHours < 24) {
-        const hours = diffHours
-        return lang === 'hi'
-          ? `${hours} ${hours === 1 ? 'घंटा' : 'घंटे'} पहले अपडेट`
-          : `Updated ${hours} ${hours === 1 ? 'hour' : 'hours'} ago`
-      } else {
-        const days = diffDays
-        return lang === 'hi'
-          ? `${days} ${days === 1 ? 'दिन' : 'दिन'} पहले अपडेट`
-          : `Updated ${days} ${days === 1 ? 'day' : 'days'} ago`
-      }
-    } catch {
-      return lang === 'hi' ? 'आज अपडेट' : 'Updated Today'
+    // Try both possible field names for timestamp
+    const timestamp = (price as any).date || (price as any).lastUpdated
+    
+    if (!timestamp) {
+      return lang === 'hi' ? 'आज अपडेट' : 'Updated today'
     }
+    
+    return getRelativeTime(timestamp, lang === 'hi' ? 'hi' : 'en')
+  }
+
+  const getLiveIndicator = (): boolean => {
+    // Try both possible field names for timestamp
+    const timestamp = (price as any).date || (price as any).lastUpdated
+    
+    if (!timestamp) {
+      return false
+    }
+    
+    return isLivePrice(timestamp)
   }
 
   return (
@@ -172,12 +159,24 @@ function MandiPriceCard({
         </div>
       </div>
 
+      {/* Last Updated with Live Indicator */}
+      <div className="mb-4 flex items-center gap-2">
+        {getLiveIndicator() && (
+          <div className="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-1 rounded-md">
+            <span className="inline-block w-2 h-2 bg-green-600 rounded-full animate-pulse"></span>
+            <span className="text-xs font-medium">
+              {lang === 'hi' ? 'लाइव भाव' : 'Live price'}
+            </span>
+          </div>
+        )}
+        <p className="text-xs text-gray-600">
+          {getLastUpdatedLabel()}
+        </p>
+      </div>
+
       {/* Last Updated & Action */}
       <div className="flex items-center justify-between pt-3 border-t border-gray-300">
-        <p className="text-xs text-gray-600">
-          {lang === 'hi' ? 'अपडेट' : 'Updated'}:{' '}
-          <span className="font-medium">{getLastUpdatedLabel()}</span>
-        </p>
+        <div></div>
         {onViewTrend && (
           <button
             onClick={() => onViewTrend(price.id)}
