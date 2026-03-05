@@ -260,22 +260,24 @@ export default function DashboardPage() {
         </div>
       </motion.div>
 
-      {/* Row 4 - My Crops with Mandi Prices Section (Full Width) */}
-      <MyCropsWithPrices
-        primaryCrop={farmerProfile.primaryCrop.toLowerCase()}
-        starredCrops={starredCrops}
-      />
+      {/* Row 4 - Two Column Layout: My Crops (Left) & Recent Services (Right) */}
+      <div className="dashboard-sections">
+        {/* Left Column - My Crops with Mandi Prices */}
+        <MyCropsWithPrices
+          primaryCrop={farmerProfile.primaryCrop.toLowerCase()}
+          starredCrops={starredCrops}
+        />
 
-      {/* Row 5 - Recent Services Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.3 }}
-        className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
-      >
-        <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
-          🚚 {t.recentServices}
-        </h3>
+        {/* Right Column - Recent Services Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+        >
+          <h3 className="text-xl font-bold text-krishi-heading mb-4 flex items-center gap-2">
+            🚚 {t.recentServices}
+          </h3>
         
         <div className="space-y-4">
           {serviceActivities.length === 0 ? (
@@ -309,7 +311,8 @@ export default function DashboardPage() {
             ))
           )}
         </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   )
 }

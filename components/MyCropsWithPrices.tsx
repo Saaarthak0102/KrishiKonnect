@@ -204,11 +204,11 @@ export default function MyCropsWithPrices({
           <span>🌾</span>
           {t.myCrops}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           {allCrops.map((_, index) => (
             <div
               key={index}
-              className="animate-pulse bg-gray-100 rounded-2xl h-52"
+              className="animate-pulse bg-gray-100 rounded-lg h-16"
             ></div>
           ))}
         </div>
@@ -233,16 +233,18 @@ export default function MyCropsWithPrices({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="my-crops-list">
         {validCrops.map((cropId, index) => {
           const cropData = pricesData[cropId]
           if (!cropData) return null
 
           const cropName = lang === 'hi' ? cropData.cropNameHi : cropData.cropNameEn
           const trendArrow = getTrendArrow(cropData.trend)
-          const trendColor = getTrendColorClass(cropData.trend)
-          const bgColor = getTrendBgColorClass(cropData.trend)
           const trendText = getTrendText(cropData.trend, lang)
+          const trendColorClass = 
+            cropData.trend === 'up' ? 'crop-trend-up' : 
+            cropData.trend === 'down' ? 'crop-trend-down' : 
+            'crop-trend-stable'
 
           return (
             <Link
@@ -251,42 +253,24 @@ export default function MyCropsWithPrices({
               className="block"
             >
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className={`${bgColor} rounded-2xl border border-gray-200 p-4 hover:shadow-md transition-shadow duration-300 cursor-pointer h-full`}
+                className="crop-row"
               >
-                <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-lg font-bold text-krishi-heading">
-                    {cropName}
-                  </h3>
-                  <div className={`text-right ${trendColor}`}>
-                    <span className="text-2xl font-bold">{trendArrow}</span>
-                    <p className="text-xs font-semibold">{trendText}</p>
+                <div className="crop-row-info">
+                  <span className="crop-name">{cropName}</span>
+                  <span className="crop-mandi">{cropData.mandiName}</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="crop-price">
+                      ₹{cropData.price?.toLocaleString()}
+                    </p>
+                    <p className={`crop-trend ${trendColorClass}`}>
+                      {trendArrow} {trendText}
+                    </p>
                   </div>
-                </div>
-
-                <div className="mb-3">
-                  <p className="text-3xl font-bold text-[#7FB069]">
-                    ₹{cropData.price?.toLocaleString()}
-                  </p>Class
-                  <p className="text-xs text-gray-600">
-                    / {t.quintal}
-                  </p>
-                </div>
-
-                <div className="mb-3">
-                  <MandiTrendChart crop={cropId} data={cropData.history} />
-                </div>
-
-                <div className="pt-3 border-t border-gray-200">
-                  <p className="text-xs text-gray-600 mb-1">
-                    <strong>{t.topMandi}:</strong> {cropData.mandiName}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    <strong>{t.updated}:</strong>{' '}
-                    {lang === 'hi' ? t.today : cropData.lastUpdated}
-                  </p>
                 </div>
               </motion.div>
             </Link>
