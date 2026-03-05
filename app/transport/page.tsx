@@ -1,100 +1,564 @@
 'use client'
 
-import { useMemo } from 'react'
-import { useSearchParams } from 'next/navigation'
-import Footer from '@/components/Footer'
-import FeaturePageLayout from '@/components/FeaturePageLayout'
+import { useEffect, useState, useMemo } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
+import FeaturePageLayout from '@/components/FeaturePageLayout'
+import Footer from '@/components/Footer'
 import { useLanguage } from '@/lib/LanguageContext'
-import { translations } from '@/lib/translations'
+import { useAuth } from '@/context/AuthContext'
+
+interface TransportRequest {
+  farmerId: string
+  crop: string
+  quantity: string
+  pickupVillage: string
+  destinationMandi: string
+  preferredDate: string
+  phoneNumber: string
+  transporter?: Transporter
+  estimatedPrice?: number
+  status: 'pending' | 'confirmed' | 'completed'
+}
+
+interface Transporter {
+  id: string
+  name: string
+  rating: number
+  price: number
+  availability: string
+  driverContact: string
+}
+
+// Mock transporter data
+const mockTransporters: Transporter[] = [
+  {
+    id: 'raj-truck',
+    name: 'Raj Truck Service',
+    rating: 4.5,
+    price: 1200,
+    availability: 'Available Today',
+    driverContact: '9812345621'
+  },
+  {
+    id: 'singh-transport',
+    name: 'Singh Transport Co.',
+    rating: 4.8,
+    price: 1350,
+    availability: 'Available Tomorrow',
+    driverContact: '9823456732'
+  },
+  {
+    id: 'farmers-logistics',
+    name: 'Farmers Logistics',
+    rating: 4.3,
+    price: 1150,
+    availability: 'Available Today',
+    driverContact: '9834567843'
+  },
+  {
+    id: 'green-wheels',
+    name: 'Green Wheels Transport',
+    rating: 4.6,
+    price: 1280,
+    availability: 'Available in 2 days',
+    driverContact: '9845678954'
+  },
+  {
+    id: 'fast-cargo',
+    name: 'Fast Cargo Services',
+    rating: 4.4,
+    price: 1220,
+    availability: 'Available Today',
+    driverContact: '9856789065'
+  }
+]
 
 export default function TransportPage() {
   const { lang } = useLanguage()
-  const t = translations[lang]
+  const { farmerProfile } = useAuth()
   const searchParams = useSearchParams()
+  const router = useRouter()
 
-  const crop = searchParams.get('crop') || ''
-  const mandi = searchParams.get('mandi') || ''
+  // Get URL parameters
+  const cropFromUrl = searchParams.get('crop') || ''
+  const mandiFromUrl = searchParams.get('mandi') || ''
 
-  const destinationPlaceholder = useMemo(() => {
-    if (!mandi) return t.destinationPlaceholder
-    return `${mandi} ${lang === 'hi' ? 'मंडी' : 'Mandi'}`
-  }, [lang, mandi, t.destinationPlaceholder])
+  // Form state
+  const [formData, setFormData] = useState<TransportRequest>({
+    farmerId: '',
+    crop: cropFromUrl,
+    quantity: '',
+    pickupVillage: '',
+    destinationMandi: mandiFromUrl,
+    preferredDate: '',
+    phoneNumber: '',
+    status: 'pending'
+  })
+
+  const [step, setStep] = useState<'form' | 'estimate' | 'transporters' | 'confirmed'>('form')
+  const [selectedTransporter, setSelectedTransporter] = useState<Transporter | null>(null)
+  const [estimatedCost, setEstimatedCost] = useState<{ min: number; max: number }>({ min: 0, max: 0 })
+
+  // Auto-fill from farmer profile when available
+  useEffect(() => {
+    if (farmerProfile) {
+      setFormData(prev => ({
+        ...prev,
+        farmerId: farmerProfile.name,
+        pickupVillage: farmerProfile.village,
+        phoneNumber: farmerProfile.phoneNumber
+      }))
+    }
+  }, [farmerProfile])
+
+  // Calculate estimated cost based on destination
+  const calculateEstimatedCost = useMemo(() => {
+    if (!formData.destinationMandi || !farmerProfile?.state) {
+      return { min: 500, max: 2000 }
+    }
+
+    // Extract state from mandi name if it contains state info in parentheses
+    const mandiStateName = formData.destinationMandi.match(/\(([^)]+)\)/)?.[1] || ''
+    const userState = farmerProfile.state
+
+    // Determine distance type
+    let basePrice = 1000
+    if (mandiStateName.toLowerCase().includes(userState.toLowerCase())) {
+      // Same state
+      basePrice = 1000
+    } else if (mandiStateName) {
+      // Different state
+      basePrice = 2000
+    } else {
+      // Assume local if no state info
+      basePrice = 500
+    }
+
+    return {
+      min: basePrice - 200,
+      max: basePrice + 300
+    }
+  }, [formData.destinationMandi, farmerProfile?.state])
+
+  useEffect(() => {
+    setEstimatedCost(calculateEstimatedCost)
+  }, [calculateEstimatedCost])
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmitForm = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (formData.quantity && formData.preferredDate) {
+      setStep('estimate')
+      setTimeout(() => setStep('transporters'), 500)
+    }
+  }
+
+  const handleBookTransport = (transporter: Transporter) => {
+    setSelectedTransporter(transporter)
+    setFormData(prev => ({
+      ...prev,
+      transporter,
+      estimatedPrice: transporter.price,
+      status: 'confirmed'
+    }))
+    setStep('confirmed')
+  }
+
+  const handleBackToMandi = () => {
+    router.push('/mandi')
+  }
+
+  const getTomorrowArrivalTime = () => {
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    return `${tomorrow.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })} 7 AM`
+  }
 
   return (
     <FeaturePageLayout>
-      <div className="min-h-screen">
-        <main className="container mx-auto px-4 py-16">
+      <div className="min-h-screen" style={{ backgroundColor: '#F9F6F0' }}>
+        <main className="container mx-auto px-4 py-12 md:py-16">
+          {/* Header */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            transition={{ duration: 0.4 }}
+            className="mb-10 text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-krishi-heading mb-4">
-              {t.transportTitle}
+            <h1 className="mb-3 text-4xl font-bold md:text-5xl" style={{ color: '#1F3C88' }}>
+              {lang === 'hi' ? '🚛 परिवहन बुकिंग' : '🚛 Transport Booking'}
             </h1>
-            <p className="text-xl text-krishi-text mb-2">{t.transportSubtitle}</p>
-            <p className="text-krishi-text/80 max-w-2xl mx-auto">{t.transportDescription}</p>
+            <p className="mx-auto max-w-3xl text-gray-700">
+              {lang === 'hi'
+                ? 'अपनी फसल को मंडी तक पहुंचाने के लिए परिवहन बुक करें'
+                : 'Book transport to send your crops to the mandi'}
+            </p>
           </motion.div>
 
+          {/* Step 1: Transport Request Form */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.4 }}
+            className="mb-8 rounded-xl border-2 p-6 md:p-8"
+            style={{ borderColor: '#E8DCC8', backgroundColor: '#FAF3E0' }}
           >
-            <div className="bg-white border-2 border-krishi-border rounded-lg p-6 shadow-sm">
-              <h3 className="text-xl font-semibold text-krishi-heading mb-4">
-                {t.bookTransport}
-              </h3>
+            <h2 className="text-2xl font-bold mb-6" style={{ color: '#1F3C88' }}>
+              {lang === 'hi' ? 'परिवहन विवरण' : 'Transport Details'}
+            </h2>
 
-              {(crop || mandi) && (
-                <div className="mb-4 rounded-lg bg-krishi-bg p-3 text-sm text-krishi-text">
-                  {crop && (
-                    <p>
-                      <span className="font-semibold">{lang === 'hi' ? 'फसल:' : 'Crop:'}</span>{' '}
-                      {crop}
-                    </p>
-                  )}
-                  {mandi && (
-                    <p>
-                      <span className="font-semibold">{lang === 'hi' ? 'मंडी:' : 'Mandi:'}</span>{' '}
-                      {mandi}
-                    </p>
-                  )}
+            <form onSubmit={handleSubmitForm} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Pickup Village */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#1F3C88' }}>
+                    {lang === 'hi' ? 'पिकअप गाँव' : 'Pickup Village'}
+                  </label>
+                  <input
+                    type="text"
+                    name="pickupVillage"
+                    value={formData.pickupVillage}
+                    onChange={handleInputChange}
+                    placeholder={lang === 'hi' ? 'गाँव का नाम' : 'Village name'}
+                    className="w-full rounded-lg border-2 px-4 py-3 outline-none transition-colors"
+                    style={{
+                      borderColor: '#D8CFC0',
+                      color: '#1F3C88',
+                      backgroundColor: '#FFFFFF'
+                    }}
+                    readOnly={!!farmerProfile?.village}
+                  />
                 </div>
+
+                {/* Destination Mandi */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#1F3C88' }}>
+                    {lang === 'hi' ? 'गंतव्य मंडी' : 'Destination Mandi'}
+                  </label>
+                  <input
+                    type="text"
+                    name="destinationMandi"
+                    value={formData.destinationMandi}
+                    onChange={handleInputChange}
+                    placeholder={lang === 'hi' ? 'मंडी का नाम' : 'Mandi name'}
+                    className="w-full rounded-lg border-2 px-4 py-3 outline-none transition-colors"
+                    style={{
+                      borderColor: '#D8CFC0',
+                      color: '#1F3C88',
+                      backgroundColor: '#FFFFFF'
+                    }}
+                    readOnly={!!cropFromUrl && !!mandiFromUrl}
+                  />
+                </div>
+
+                {/* Crop */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#1F3C88' }}>
+                    {lang === 'hi' ? 'फसल' : 'Crop'}
+                  </label>
+                  <input
+                    type="text"
+                    name="crop"
+                    value={formData.crop}
+                    onChange={handleInputChange}
+                    placeholder={lang === 'hi' ? 'फसल का नाम' : 'Crop name'}
+                    className="w-full rounded-lg border-2 px-4 py-3 outline-none transition-colors"
+                    style={{
+                      borderColor: '#D8CFC0',
+                      color: '#1F3C88',
+                      backgroundColor: '#FFFFFF'
+                    }}
+                    readOnly={!!cropFromUrl}
+                  />
+                </div>
+
+                {/* Quantity */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#1F3C88' }}>
+                    {lang === 'hi' ? 'मात्रा (क्विंटल)' : 'Quantity (Quintals)'} *
+                  </label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    value={formData.quantity}
+                    onChange={handleInputChange}
+                    placeholder={lang === 'hi' ? 'क्विंटल में मात्रा' : 'Quantity in quintals'}
+                    required
+                    min="1"
+                    className="w-full rounded-lg border-2 px-4 py-3 outline-none transition-colors"
+                    style={{
+                      borderColor: '#D8CFC0',
+                      color: '#1F3C88',
+                      backgroundColor: '#FFFFFF'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#1F3C88'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#D8CFC0'
+                    }}
+                  />
+                </div>
+
+                {/* Preferred Pickup Date */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#1F3C88' }}>
+                    {lang === 'hi' ? 'पिकअप की तारीख' : 'Preferred Pickup Date'} *
+                  </label>
+                  <input
+                    type="date"
+                    name="preferredDate"
+                    value={formData.preferredDate}
+                    onChange={handleInputChange}
+                    required
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full rounded-lg border-2 px-4 py-3 outline-none transition-colors"
+                    style={{
+                      borderColor: '#D8CFC0',
+                      color: '#1F3C88',
+                      backgroundColor: '#FFFFFF'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#1F3C88'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#D8CFC0'
+                    }}
+                  />
+                </div>
+
+                {/* Phone Number */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#1F3C88' }}>
+                    {lang === 'hi' ? 'फ़ोन नंबर' : 'Phone Number'}
+                  </label>
+                  <input
+                    type="tel"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    placeholder={lang === 'hi' ? 'फ़ोन नंबर' : 'Phone number'}
+                    className="w-full rounded-lg border-2 px-4 py-3 outline-none transition-colors"
+                    style={{
+                      borderColor: '#D8CFC0',
+                      color: '#1F3C88',
+                      backgroundColor: '#FFFFFF'
+                    }}
+                    readOnly={!!farmerProfile?.phoneNumber}
+                  />
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              {step === 'form' && (
+                <motion.button
+                  type="submit"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="w-full md:w-auto px-8 py-4 rounded-lg font-bold text-white text-lg transition-all hover:scale-105 active:scale-95"
+                  style={{ backgroundColor: '#1F3C88' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#162847'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#1F3C88'
+                  }}
+                >
+                  {lang === 'hi' ? 'परिवहन खोजें' : 'Find Transport'}
+                </motion.button>
               )}
+            </form>
+          </motion.div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-krishi-text mb-2">
-                    {t.pickupLocation}
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-2 border-2 border-krishi-border rounded-lg focus:border-krishi-primary outline-none"
-                    placeholder={t.pickupPlaceholder}
-                  />
+          {/* Step 2: Transport Cost Estimate */}
+          {(step === 'estimate' || step === 'transporters' || step === 'confirmed') && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="mb-8 rounded-xl border-2 p-6 md:p-8"
+              style={{ borderColor: '#E8DCC8', backgroundColor: '#FFFFFF' }}
+            >
+              <h2 className="text-2xl font-bold mb-4" style={{ color: '#1F3C88' }}>
+                {lang === 'hi' ? '💰 अनुमानित परिवहन लागत' : '💰 Estimated Transport Cost'}
+              </h2>
+              <p className="text-gray-600 mb-4">
+                {lang === 'hi'
+                  ? `${formData.pickupVillage} से ${formData.destinationMandi} के लिए`
+                  : `From ${formData.pickupVillage} to ${formData.destinationMandi}`}
+              </p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-bold" style={{ color: '#7FB069' }}>
+                  ₹{estimatedCost.min.toLocaleString('en-IN')}
+                </span>
+                <span className="text-2xl text-gray-600">-</span>
+                <span className="text-4xl font-bold" style={{ color: '#7FB069' }}>
+                  ₹{estimatedCost.max.toLocaleString('en-IN')}
+                </span>
+              </div>
+              <p className="text-sm text-gray-500 mt-2">
+                {lang === 'hi' ? 'परिवहन प्रदाता के आधार पर कीमत भिन्न हो सकती है' : 'Price may vary based on transport provider'}
+              </p>
+            </motion.div>
+          )}
+
+          {/* Step 3: Available Transporters */}
+          {(step === 'transporters' || step === 'confirmed') && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+              className="mb-8"
+            >
+              <h2 className="text-2xl font-bold mb-6" style={{ color: '#1F3C88' }}>
+                {lang === 'hi' ? '🚚 उपलब्ध परिवहन सेवाएं' : '🚚 Available Transporters'}
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {mockTransporters.map((transporter, idx) => (
+                  <motion.div
+                    key={transporter.id}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: idx * 0.05, duration: 0.3 }}
+                    className="rounded-xl border-2 p-6 transition-all hover:shadow-lg"
+                    style={{
+                      borderColor: step === 'confirmed' && selectedTransporter?.id === transporter.id ? '#7FB069' : '#E8DCC8',
+                      backgroundColor: '#FAF3E0'
+                    }}
+                  >
+                    <div className="mb-4">
+                      <h3 className="text-xl font-bold mb-2" style={{ color: '#1F3C88' }}>
+                        🚛 {transporter.name}
+                      </h3>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-yellow-500">⭐</span>
+                        <span className="font-semibold" style={{ color: '#1F3C88' }}>
+                          {transporter.rating}
+                        </span>
+                        <span className="text-gray-500 text-sm">/5.0</span>
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        {transporter.availability}
+                      </p>
+                    </div>
+
+                    <div className="mb-4 pb-4 border-b border-gray-300">
+                      <p className="text-3xl font-bold" style={{ color: '#7FB069' }}>
+                        ₹{transporter.price.toLocaleString('en-IN')}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {lang === 'hi' ? 'कुल लागत' : 'Total cost'}
+                      </p>
+                    </div>
+
+                    {step === 'transporters' && (
+                      <button
+                        onClick={() => handleBookTransport(transporter)}
+                        className="w-full py-3 rounded-lg font-semibold text-white transition-all hover:scale-105 active:scale-95"
+                        style={{ backgroundColor: '#B85C38' }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#A04D2F'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = '#B85C38'
+                        }}
+                      >
+                        {lang === 'hi' ? 'बुक करें' : 'Book Transport'}
+                      </button>
+                    )}
+
+                    {step === 'confirmed' && selectedTransporter?.id === transporter.id && (
+                      <div className="py-3 px-4 rounded-lg font-semibold text-center" style={{ backgroundColor: '#7FB069', color: '#FFFFFF' }}>
+                        ✓ {lang === 'hi' ? 'बुक किया गया' : 'Booked'}
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Step 4: Booking Confirmation */}
+          {step === 'confirmed' && selectedTransporter && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4 }}
+              className="mb-8 rounded-xl border-2 p-8 md:p-10 text-center"
+              style={{ borderColor: '#7FB069', backgroundColor: '#FFFFFF' }}
+            >
+              <div className="mb-6">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center text-4xl" style={{ backgroundColor: '#7FB069' }}>
+                  ✓
                 </div>
-                <div>
-                  <label className="block text-krishi-text mb-2">
-                    {t.destination}
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-2 border-2 border-krishi-border rounded-lg focus:border-krishi-primary outline-none"
-                    placeholder={destinationPlaceholder}
-                    defaultValue={mandi}
-                  />
+                <h2 className="text-3xl font-bold mb-2" style={{ color: '#7FB069' }}>
+                  {lang === 'hi' ? 'परिवहन सफलतापूर्वक बुक किया गया!' : 'Transport Booked Successfully!'}
+                </h2>
+                <p className="text-gray-600">
+                  {lang === 'hi' ? 'आपकी बुकिंग की पुष्टि हो गई है' : 'Your booking has been confirmed'}
+                </p>
+              </div>
+
+              <div className="max-w-2xl mx-auto text-left space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
+                    <p className="text-sm text-gray-600 mb-1">{lang === 'hi' ? 'पिकअप' : 'Pickup'}</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{formData.pickupVillage}</p>
+                  </div>
+                  <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
+                    <p className="text-sm text-gray-600 mb-1">{lang === 'hi' ? 'गंतव्य' : 'Destination'}</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{formData.destinationMandi}</p>
+                  </div>
+                  <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
+                    <p className="text-sm text-gray-600 mb-1">{lang === 'hi' ? 'फसल' : 'Crop'}</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{formData.crop}</p>
+                  </div>
+                  <div className="p-4 rounded-lg" style={{ backgroundColor: '#FAF3E0' }}>
+                    <p className="text-sm text-gray-600 mb-1">{lang === 'hi' ? 'मात्रा' : 'Quantity'}</p>
+                    <p className="font-semibold" style={{ color: '#1F3C88' }}>{formData.quantity} {lang === 'hi' ? 'क्विंटल' : 'quintals'}</p>
+                  </div>
                 </div>
-                <button className="w-full bg-krishi-primary text-white py-3 rounded-lg font-semibold hover:scale-105 transition-transform">
-                  {t.findTransport}
+
+                <div className="p-6 rounded-lg" style={{ backgroundColor: '#E8F5E9', border: '2px solid #7FB069' }}>
+                  <h3 className="font-bold mb-3 text-lg" style={{ color: '#1F3C88' }}>
+                    {lang === 'hi' ? 'वाहन प्रदाता विवरण' : 'Vehicle Provider Details'}
+                  </h3>
+                  <div className="space-y-2">
+                    <p><span className="text-gray-600">{lang === 'hi' ? 'कंपनी:' : 'Company:'}</span> <span className="font-semibold">{selectedTransporter.name}</span></p>
+                    <p><span className="text-gray-600">{lang === 'hi' ? 'ड्राइवर संपर्क:' : 'Driver Contact:'}</span> <span className="font-semibold">{selectedTransporter.driverContact}</span></p>
+                    <p><span className="text-gray-600">{lang === 'hi' ? 'पिकअप तारीख:' : 'Pickup Date:'}</span> <span className="font-semibold">{new Date(formData.preferredDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</span></p>
+                    <p><span className="text-gray-600">{lang === 'hi' ? 'अनुमानित आगमन:' : 'Estimated Arrival:'}</span> <span className="font-semibold">{getTomorrowArrivalTime()}</span></p>
+                    <p><span className="text-gray-600">{lang === 'hi' ? 'कुल लागत:' : 'Total Cost:'}</span> <span className="font-semibold text-2xl" style={{ color: '#7FB069' }}>₹{selectedTransporter.price.toLocaleString('en-IN')}</span></p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex flex-col md:flex-row gap-4 justify-center">
+                <button
+                  onClick={handleBackToMandi}
+                  className="px-8 py-3 rounded-lg font-semibold transition-all hover:scale-105"
+                  style={{ backgroundColor: '#1F3C88', color: '#FFFFFF' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#162847'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#1F3C88'
+                  }}
+                >
+                  {lang === 'hi' ? 'मंडी भाव पर वापस जाएं' : 'Back to Mandi Prices'}
                 </button>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          )}
         </main>
+
         <Footer />
       </div>
     </FeaturePageLayout>
