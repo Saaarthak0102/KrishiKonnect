@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import FeaturePageLayout from '@/components/FeaturePageLayout'
 import Footer from '@/components/Footer'
+import RecommendedMandiCard from '@/components/RecommendedMandiCard'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useAuth } from '@/context/AuthContext'
 import cropsData from '@/data/crops.json'
@@ -30,6 +31,67 @@ interface Transporter {
   price: number
   availability: string
   driverContact: string
+}
+
+interface MandiPriceRecord {
+  id: string
+  crop: string
+  state: string
+  mandi: string
+  modalPrice: number
+  trend: {
+    direction: 'up' | 'down' | 'stable'
+  }
+}
+
+interface RecommendedMandi extends MandiPriceRecord {
+  score: number
+  isHighestPrice: boolean
+  isNearbyState: boolean
+  trendScore: number
+}
+
+function calculateRecommendedMandi(
+  crop: string,
+  farmerState: string | undefined,
+  prices: MandiPriceRecord[]
+): RecommendedMandi | null {
+  if (!crop) return null
+
+  const normalizedCrop = crop.trim().toLowerCase()
+  const normalizedFarmerState = farmerState?.trim().toLowerCase() || ''
+
+  const cropMandis = prices.filter((price) => price.crop.trim().toLowerCase() === normalizedCrop)
+  if (cropMandis.length === 0) return null
+
+  const sortedByPrice = [...cropMandis].sort((a, b) => b.modalPrice - a.modalPrice)
+  const highestModalPrice = sortedByPrice[0].modalPrice
+
+  const scoredMandis = sortedByPrice.map((price) => {
+    const isHighestPrice = price.modalPrice === highestModalPrice
+    const isNearbyState =
+      normalizedFarmerState.length > 0 && price.state.trim().toLowerCase() === normalizedFarmerState
+
+    const priceScore = isHighestPrice ? 50 : 0
+    const proximityScore = isNearbyState ? 30 : 0
+    const trendScore =
+      price.trend.direction === 'up' ? 20 : price.trend.direction === 'stable' ? 10 : 0
+
+    return {
+      ...price,
+      score: priceScore + proximityScore + trendScore,
+      isHighestPrice,
+      isNearbyState,
+      trendScore
+    }
+  })
+
+  scoredMandis.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score
+    return b.modalPrice - a.modalPrice
+  })
+
+  return scoredMandis[0]
 }
 
 // Mock transporter data
@@ -113,28 +175,89 @@ export default function TransportPage() {
     []
   )
 
+  const selectedCropMarketName = useMemo(() => {
+    const selectedCrop = cropOptions.find((crop) => crop.id === formData.crop)
+    return selectedCrop?.nameEn || formData.crop
+  }, [cropOptions, formData.crop])
+
+  const getRecommendedMandi = (crop: string, farmerState: string | undefined) =>
+    calculateRecommendedMandi(crop, farmerState, prices)
+
+  const recommendedMandi = useMemo(
+    () => getRecommendedMandi(selectedCropMarketName, farmerProfile?.state),
+    [selectedCropMarketName, farmerProfile?.state, prices]
+  )
+
+  const recommendationReasons = useMemo(() => {
+    if (!recommendedMandi) return []
+
+    const reasons: string[] = []
+    if (recommendedMandi.isHighestPrice) {
+      reasons.push(lang === 'hi' ? 'सबसे बेहतर बाजार भाव' : 'Highest market price')
+    }
+    if (recommendedMandi.isNearbyState) {
+      reasons.push(lang === 'hi' ? 'नजदीकी राज्य की मंडी' : 'Nearby state mandi')
+    }
+    if (recommendedMandi.trendScore === 20) {
+      reasons.push(lang === 'hi' ? 'बाजार रुझान ऊपर जा रहा है' : 'Market trend rising')
+    } else if (recommendedMandi.trendScore === 10) {
+      reasons.push(lang === 'hi' ? 'बाजार रुझान स्थिर है' : 'Market trend stable')
+    }
+
+    if (reasons.length === 0) {
+      reasons.push(lang === 'hi' ? 'भाव और दूरी के आधार पर बेहतर विकल्प' : 'Balanced score for price and distance')
+    }
+
+    return reasons
+  }, [recommendedMandi, lang])
+
   const mandiOptions = useMemo(() => {
-    const uniqueMandis = new Map<string, { mandi: string; state: string; value: string }>()
+    if (!selectedCropMarketName) return []
 
-    prices.forEach((price) => {
-      const key = `${price.mandi.toLowerCase()}|${price.state.toLowerCase()}`
-      if (!uniqueMandis.has(key)) {
-        uniqueMandis.set(key, {
-          mandi: price.mandi,
-          state: price.state,
-          value: `${price.mandi} (${price.state})`
-        })
-      }
-    })
+    const filteredByCrop = prices.filter(
+      (price) => price.crop.trim().toLowerCase() === selectedCropMarketName.trim().toLowerCase()
+    )
 
-    return Array.from(uniqueMandis.values()).sort((a, b) => a.mandi.localeCompare(b.mandi))
-  }, [prices])
+    const sortedByPrice = [...filteredByCrop].sort((a, b) => b.modalPrice - a.modalPrice)
+
+    const options = sortedByPrice.map((price) => ({
+      id: price.id,
+      mandi: price.mandi,
+      state: price.state,
+      modalPrice: price.modalPrice,
+      value: `${price.mandi} (${price.state})`,
+      label: `${price.mandi} — ₹${price.modalPrice.toLocaleString('en-IN')}`
+    }))
+
+    if (!recommendedMandi) return options
+
+    const recommendedIndex = options.findIndex((option) => option.id === recommendedMandi.id)
+    if (recommendedIndex <= 0) return options
+
+    const recommendedOption = options[recommendedIndex]
+    const remainingOptions = options.filter((option) => option.id !== recommendedMandi.id)
+    return [recommendedOption, ...remainingOptions]
+  }, [prices, selectedCropMarketName, recommendedMandi])
 
   const selectedCropLabel = useMemo(() => {
     const selectedCrop = cropOptions.find((crop) => crop.id === formData.crop)
     if (!selectedCrop) return formData.crop
     return lang === 'hi' ? selectedCrop.nameHi : selectedCrop.nameEn
   }, [cropOptions, formData.crop, lang])
+
+  useEffect(() => {
+    if (!formData.crop && formData.destinationMandi) {
+      setFormData((prev) => ({ ...prev, destinationMandi: '' }))
+      return
+    }
+
+    if (!formData.destinationMandi) return
+
+    const selectedMandiExists = mandiOptions.some((option) => option.value === formData.destinationMandi)
+    if (!selectedMandiExists) {
+      setFormData((prev) => ({ ...prev, destinationMandi: '' }))
+    }
+  }, [formData.crop, formData.destinationMandi, mandiOptions])
 
   const isFormValid = Boolean(
     formData.crop && formData.destinationMandi && formData.quantity && formData.preferredDate
@@ -256,6 +379,14 @@ export default function TransportPage() {
     router.push('/mandi')
   }
 
+  const handleUseRecommendedMandi = () => {
+    if (!recommendedMandi) return
+    setFormData((prev) => ({
+      ...prev,
+      destinationMandi: `${recommendedMandi.mandi} (${recommendedMandi.state})`
+    }))
+  }
+
   const getTomorrowArrivalTime = () => {
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
@@ -318,31 +449,6 @@ export default function TransportPage() {
                   />
                 </div>
 
-                {/* Destination Mandi */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2" style={{ color: '#1F3C88' }}>
-                    {lang === 'hi' ? 'गंतव्य मंडी' : 'Destination Mandi'} *
-                  </label>
-                  <select
-                    name="destinationMandi"
-                    value={formData.destinationMandi}
-                    onChange={handleInputChange}
-                    className="h-12 w-full rounded-md border px-4 py-3 outline-none transition-colors"
-                    style={{
-                      borderColor: '#D8CFC0',
-                      color: '#1F3C88',
-                      backgroundColor: '#FFFFFF'
-                    }}
-                  >
-                    <option value="">{lang === 'hi' ? 'मंडी चुनें' : 'Select Mandi'}</option>
-                    {mandiOptions.map((mandiOption) => (
-                      <option key={mandiOption.value} value={mandiOption.value}>
-                        {mandiOption.value}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
                 {/* Crop */}
                 <div>
                   <label className="block text-sm font-semibold mb-2" style={{ color: '#1F3C88' }}>
@@ -363,6 +469,55 @@ export default function TransportPage() {
                     {cropOptions.map((crop) => (
                       <option key={crop.id} value={crop.id}>
                         {lang === 'hi' ? crop.nameHi : crop.nameEn}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Recommendation Card */}
+                {formData.crop && recommendedMandi && (
+                  <div className="md:col-span-2">
+                    <RecommendedMandiCard
+                      cropLabel={selectedCropLabel}
+                      mandiName={recommendedMandi.mandi}
+                      state={recommendedMandi.state}
+                      modalPrice={recommendedMandi.modalPrice}
+                      reasons={recommendationReasons}
+                      onUse={handleUseRecommendedMandi}
+                      lang={lang}
+                    />
+                  </div>
+                )}
+
+                {/* Destination Mandi */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#1F3C88' }}>
+                    {lang === 'hi' ? 'गंतव्य मंडी' : 'Destination Mandi'} *
+                  </label>
+                  <select
+                    name="destinationMandi"
+                    value={formData.destinationMandi}
+                    onChange={handleInputChange}
+                    className="h-12 w-full rounded-md border px-4 py-3 outline-none transition-colors"
+                    style={{
+                      borderColor: '#D8CFC0',
+                      color: '#1F3C88',
+                      backgroundColor: '#FFFFFF'
+                    }}
+                    disabled={!formData.crop}
+                  >
+                    <option value="">
+                      {lang === 'hi'
+                        ? formData.crop
+                          ? 'मंडी चुनें'
+                          : 'पहले फसल चुनें'
+                        : formData.crop
+                          ? 'Select Mandi'
+                          : 'Select crop first'}
+                    </option>
+                    {mandiOptions.map((mandiOption) => (
+                      <option key={mandiOption.id} value={mandiOption.value}>
+                        {mandiOption.label}
                       </option>
                     ))}
                   </select>
