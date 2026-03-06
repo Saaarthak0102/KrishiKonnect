@@ -10,7 +10,7 @@ import { useStarredCrops } from '@/lib/useStarredCrops'
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
 import MarketInsightCard from '@/components/dashboard/MarketInsightCard'
 import LatestCommunityQuestionCard from '@/components/dashboard/LatestCommunityQuestionCard'
-import { getTransportBookings, type TransportBookingRecord } from '@/lib/transportBookings'
+import { getTransportBookings, getLatestTransportBooking, type TransportBookingRecord } from '@/lib/transportBookings'
 import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
 import { getWeatherForLocation, type WeatherData } from '@/lib/weatherService'
 import { fetchCropPriceHistory, getBestPriceForCrop as getBestMandiPriceFromService } from '@/lib/mandiService'
@@ -456,8 +456,8 @@ export default function DashboardPage() {
     }
   }, [farmerProfile?.primaryCrop, farmerProfile?.state])
 
-  const latestTransportBookings = useMemo(
-    () => transportBookings.filter((booking) => booking.type === 'transport').slice(0, 3),
+  const latestTransportBooking = useMemo(
+    () => getLatestTransportBooking(),
     [transportBookings]
   )
 
@@ -832,45 +832,43 @@ export default function DashboardPage() {
           </h3>
         
         <div className="space-y-4">
-          {latestTransportBookings.length === 0 ? (
+          {!latestTransportBooking ? (
             <p className="text-sm text-gray-500 py-4">
               {t.noServices}
             </p>
           ) : (
-            latestTransportBookings.map((booking) => (
-              <div key={booking.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl">🚚</span>
-                  <div className="flex-1">
-                    <p className="font-semibold text-gray-900 mb-1">
-                      {t.transportBooked}
-                    </p>
-                    <p className="text-xs text-gray-500 mb-1">ID: {booking.id}</p>
-                    <p className="text-sm text-gray-700 mb-1">
-                      {booking.crop} {'→'} {booking.destinationMandi}
-                    </p>
-                    <p className="text-sm text-gray-600">{t.pickupDate}: {booking.pickupDate}</p>
-                    <p className="text-sm text-gray-600">{t.provider}: {booking.provider}</p>
-                    <p className="text-sm text-gray-600">{t.cost}: ₹{booking.cost.toLocaleString('en-IN')}</p>
-                    <p className="text-sm text-gray-600 mb-3">
-                      {t.status}: <span className="text-[#7FB069] font-semibold">{t.confirmed}</span>
-                    </p>
+            <div key={latestTransportBooking.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">🚚</span>
+                <div className="flex-1">
+                  <p className="font-semibold text-gray-900 mb-1">
+                    {t.transportBooked}
+                  </p>
+                  <p className="text-xs text-gray-500 mb-1">ID: {latestTransportBooking.id}</p>
+                  <p className="text-sm text-gray-700 mb-1">
+                    {latestTransportBooking.crop} {'→'} {latestTransportBooking.destinationMandi}
+                  </p>
+                  <p className="text-sm text-gray-600">{t.pickupDate}: {latestTransportBooking.pickupDate}</p>
+                  <p className="text-sm text-gray-600">{t.provider}: {latestTransportBooking.provider}</p>
+                  <p className="text-sm text-gray-600">{t.cost}: ₹{latestTransportBooking.cost.toLocaleString('en-IN')}</p>
+                  <p className="text-sm text-gray-600 mb-3">
+                    {t.status}: <span className="text-[#7FB069] font-semibold">{t.confirmed}</span>
+                  </p>
 
-                    <button
-                      onClick={() => router.push(`/transport?bookingId=${booking.id}`)}
-                      className="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all hover:scale-105"
-                      style={{ backgroundColor: '#1F3C88' }}
-                    >
-                      {t.viewReceipt}
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => router.push(`/transport?bookingId=${latestTransportBooking.id}`)}
+                    className="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all hover:scale-105"
+                    style={{ backgroundColor: '#1F3C88' }}
+                  >
+                    {t.viewReceipt}
+                  </button>
                 </div>
               </div>
-            ))
+            </div>
           )}
 
           {/* Divider */}
-          {latestTransportBookings.length > 0 && (
+          {latestTransportBooking && (
             <div className="border-t border-gray-200 my-2"></div>
           )}
 

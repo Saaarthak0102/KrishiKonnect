@@ -12,7 +12,7 @@ import {
   deleteDoc
 } from 'firebase/firestore'
 
-export const TRANSPORT_BOOKINGS_STORAGE_KEY = 'transportBooking'
+export const TRANSPORT_BOOKINGS_STORAGE_KEY = 'transportBookings'
 
 export interface TransportBookingRecord {
   id: string
@@ -36,79 +36,99 @@ export function generateBookingId() {
 }
 
 /**
- * Get the current transport booking from localStorage
- * Returns a single booking or null (only one booking per user)
+ * Get all transport bookings from localStorage
+ * Returns array of bookings (multiple bookings per user supported)
  */
-export function getTransportBooking(): TransportBookingRecord | null {
+export function getTransportBookings(): TransportBookingRecord[] {
   if (typeof window === 'undefined') {
-    return null
+    return []
   }
 
   try {
     const stored = localStorage.getItem(TRANSPORT_BOOKINGS_STORAGE_KEY)
     if (!stored) {
-      return null
+      return []
     }
 
     const parsed = JSON.parse(stored)
-    return parsed as TransportBookingRecord
+    return Array.isArray(parsed) ? parsed : []
   } catch {
-    return null
+    return []
   }
 }
 
 /**
- * Legacy function for backward compatibility
- * Returns array with single booking or empty array
+ * Get the latest transport booking from localStorage
+ * Returns the most recent booking or null
  */
-export function getTransportBookings(): TransportBookingRecord[] {
-  const booking = getTransportBooking()
-  return booking ? [booking] : []
+export function getLatestTransportBooking(): TransportBookingRecord | null {
+  const bookings = getTransportBookings()
+  if (bookings.length === 0) return null
+  
+  // Sort by createdAt descending and return the first (newest) one
+  const sorted = [...bookings].sort((a, b) => {
+    const dateA = new Date(a.createdAt).getTime()
+    const dateB = new Date(b.createdAt).getTime()
+    return dateB - dateA
+  })
+  
+  return sorted[0]
 }
 
 /**
  * Save booking to both localStorage (instant) and Firestore (persistent)
- * Uses user.uid as document ID to ensure only one booking per user
- * Automatically replaces any previous booking
- * Returns the booking record
+ * Supports multiple bookings per user
+ * Uses addDoc() for Firestore to create separate documents for each booking
+ * Returns the booking record with firestoreId if saved to Firestore
  */
 export async function saveTransportBooking(
   booking: TransportBookingRecord,
   userId?: string
 ): Promise<TransportBookingRecord> {
-  // Save to localStorage for instant UI update (single booking, not array)
-  localStorage.setItem(TRANSPORT_BOOKINGS_STORAGE_KEY, JSON.stringify(booking))
-
-  // Save to Firestore if userId is provided
-  // Using setDoc with user.uid as document ID automatically overwrites previous booking
+  // Get existing bookings and add the new one
+  let bookingWithId = booking
+  
   if (userId) {
     try {
-      const bookingRef = doc(db, 'bookings', userId)
-      await setDoc(bookingRef, {
+      // Save to Firestore using addDoc to create a new document (allows multiple bookings)
+      const bookingsCollection = collection(db, 'bookings')
+      const docRef = await addDoc(bookingsCollection, {
+        userId,
         ...booking,
         createdAtTimestamp: new Date(booking.createdAt),
-        updatedAt: new Date()
+        savedAt: new Date()
       })
+      bookingWithId = {
+        ...booking,
+        firestoreId: docRef.id
+      }
     } catch (error) {
       console.error('Error saving booking to Firestore:', error)
       // Continue anyway - localStorage fallback is active
     }
   }
 
-  return booking
+  // Save to localStorage - store as array of bookings
+  const existingBookings = getTransportBookings()
+  const updatedBookings = [bookingWithId, ...existingBookings]
+  localStorage.setItem(TRANSPORT_BOOKINGS_STORAGE_KEY, JSON.stringify(updatedBookings))
+
+  return bookingWithId
 }
 
 /**
  * Get transport booking by ID from localStorage
  */
 export function getTransportBookingById(bookingId: string): TransportBookingRecord | null {
-  const booking = getTransportBooking()
-  return booking && booking.id === bookingId ? booking : null
+  const bookings = getTransportBookings()
+  const booking = bookings.find(b => b.id === bookingId)
+  return booking || null
 }
 
 /**
- * Load transport booking from Firestore for a specific user
- * Returns the single booking document for the user
+ * Load all transport bookings from Firestore for a specific user
+ * Queries all booking documents where userId matches
+ * Returns array of bookings sorted by newest first
  */
 export async function loadTransportBookingsFromFirestore(
   userId: string
@@ -118,43 +138,48 @@ export async function loadTransportBookingsFromFirestore(
   }
 
   try {
-    const bookingRef = doc(db, 'bookings', userId)
-    const docSnap = await getDoc(bookingRef)
+    const bookingsCollection = collection(db, 'bookings')
+    const q = query(
+      bookingsCollection,
+      where('userId', '==', userId),
+      orderBy('createdAtTimestamp', 'desc')
+    )
+    const querySnapshot = await getDocs(q)
 
-    if (!docSnap.exists()) {
-      return []
-    }
+    const bookings: TransportBookingRecord[] = []
+    querySnapshot.forEach(doc => {
+      const data = doc.data()
+      const booking: TransportBookingRecord = {
+        id: data.id,
+        type: 'transport',
+        crop: data.crop,
+        quantity: data.quantity,
+        pickupVillage: data.pickupVillage,
+        destinationMandi: data.destinationMandi,
+        provider: data.provider,
+        driverContact: data.driverContact,
+        pickupDate: data.pickupDate,
+        estimatedArrival: data.estimatedArrival,
+        cost: data.cost,
+        status: 'confirmed',
+        createdAt: data.createdAt,
+        firestoreId: doc.id
+      }
+      bookings.push(booking)
+    })
 
-    const data = docSnap.data()
-    const booking: TransportBookingRecord = {
-      id: data.id,
-      type: 'transport',
-      crop: data.crop,
-      quantity: data.quantity,
-      pickupVillage: data.pickupVillage,
-      destinationMandi: data.destinationMandi,
-      provider: data.provider,
-      driverContact: data.driverContact,
-      pickupDate: data.pickupDate,
-      estimatedArrival: data.estimatedArrival,
-      cost: data.cost,
-      status: 'confirmed',
-      createdAt: data.createdAt,
-      firestoreId: docSnap.id
-    }
+    // Update localStorage with fetched bookings (preserving array)
+    localStorage.setItem(TRANSPORT_BOOKINGS_STORAGE_KEY, JSON.stringify(bookings))
 
-    // Update localStorage with fetched data (single booking)
-    localStorage.setItem(TRANSPORT_BOOKINGS_STORAGE_KEY, JSON.stringify(booking))
-
-    return [booking]
+    return bookings
   } catch (error) {
-    console.error('Error loading booking from Firestore:', error)
+    console.error('Error loading bookings from Firestore:', error)
     return getTransportBookings() // Fallback to localStorage
   }
 }
 
 /**
- * Get a specific booking from Firestore
+ * Get a specific booking from Firestore by booking ID
  */
 export async function getTransportBookingFromFirestore(
   userId: string,
@@ -165,36 +190,38 @@ export async function getTransportBookingFromFirestore(
   }
 
   try {
-    const bookingRef = doc(db, 'bookings', userId)
-    const docSnap = await getDoc(bookingRef)
+    // Load all user bookings and find the one with matching bookingId
+    const bookingsCollection = collection(db, 'bookings')
+    const q = query(
+      bookingsCollection,
+      where('userId', '==', userId)
+    )
+    const querySnapshot = await getDocs(q)
 
-    if (!docSnap.exists()) {
-      return getTransportBookingById(bookingId)
-    }
+    let foundBooking: TransportBookingRecord | null = null
+    querySnapshot.forEach(doc => {
+      const data = doc.data()
+      if (data.id === bookingId) {
+        foundBooking = {
+          id: data.id,
+          type: 'transport',
+          crop: data.crop,
+          quantity: data.quantity,
+          pickupVillage: data.pickupVillage,
+          destinationMandi: data.destinationMandi,
+          provider: data.provider,
+          driverContact: data.driverContact,
+          pickupDate: data.pickupDate,
+          estimatedArrival: data.estimatedArrival,
+          cost: data.cost,
+          status: 'confirmed',
+          createdAt: data.createdAt,
+          firestoreId: doc.id
+        }
+      }
+    })
 
-    const data = docSnap.data()
-    
-    // Verify this is the booking we're looking for
-    if (data.id !== bookingId) {
-      return null
-    }
-
-    return {
-      id: data.id || bookingId,
-      type: 'transport',
-      crop: data.crop,
-      quantity: data.quantity,
-      pickupVillage: data.pickupVillage,
-      destinationMandi: data.destinationMandi,
-      provider: data.provider,
-      driverContact: data.driverContact,
-      pickupDate: data.pickupDate,
-      estimatedArrival: data.estimatedArrival,
-      cost: data.cost,
-      status: 'confirmed',
-      createdAt: data.createdAt,
-      firestoreId: docSnap.id
-    }
+    return foundBooking || getTransportBookingById(bookingId)
   } catch (error) {
     console.error('Error getting booking from Firestore:', error)
     return getTransportBookingById(bookingId)
@@ -202,17 +229,19 @@ export async function getTransportBookingFromFirestore(
 }
 
 /**
- * Delete the current booking for a user
- * Used when user wants to cancel their booking
+ * Delete a specific booking by ID from localStorage and Firestore
+ * If firestoreId is provided, deletes from Firestore
  */
-export async function deleteTransportBooking(userId?: string): Promise<void> {
+export async function deleteTransportBooking(bookingId: string, firestoreId?: string): Promise<void> {
   // Remove from localStorage
-  localStorage.removeItem(TRANSPORT_BOOKINGS_STORAGE_KEY)
+  const existingBookings = getTransportBookings()
+  const updatedBookings = existingBookings.filter(b => b.id !== bookingId)
+  localStorage.setItem(TRANSPORT_BOOKINGS_STORAGE_KEY, JSON.stringify(updatedBookings))
 
-  // Remove from Firestore if userId is provided
-  if (userId) {
+  // Remove from Firestore if firestoreId is provided
+  if (firestoreId) {
     try {
-      const bookingRef = doc(db, 'bookings', userId)
+      const bookingRef = doc(db, 'bookings', firestoreId)
       await deleteDoc(bookingRef)
     } catch (error) {
       console.error('Error deleting booking from Firestore:', error)
