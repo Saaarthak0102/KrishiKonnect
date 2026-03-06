@@ -28,17 +28,17 @@ interface QuestionData {
 
 const translations = {
   en: {
-    title: 'Latest Community Question',
-    message: 'No community question yet.',
-    button: 'Ask the Community',
+    title: 'Latest Krishi Sangh Question',
+    message: 'No Krishi Sangh question yet.',
+    button: 'Ask Krishi Sangh',
     viewDiscussion: 'View Discussion →',
     replies: 'replies',
     reply: 'reply',
   },
   hi: {
-    title: 'नवीनतम समुदाय प्रश्न',
-    message: 'अभी तक कोई समुदाय प्रश्न नहीं है।',
-    button: 'समुदाय से पूछें',
+    title: 'नवीनतम कृषि संघ प्रश्न',
+    message: 'अभी तक कोई कृषि संघ प्रश्न नहीं है।',
+    button: 'कृषि संघ से पूछें',
     viewDiscussion: 'चर्चा देखें →',
     replies: 'उत्तर',
     reply: 'उत्तर',

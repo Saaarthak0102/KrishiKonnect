@@ -2,18 +2,18 @@ export const translations = {
   hi: {
     // Navigation
     home: 'होम',
-    cropLibrary: 'फसल पुस्तकालय',
-    mandiPrices: 'मंडी भाव',
-    community: 'समुदाय',
-    transport: 'परिवहन',
-    aiAdvisor: 'AI सलाहकार',
-    dataAnalytics: 'डेटा विश्लेषण',
+    cropLibrary: 'कृषि फसल',
+    mandiPrices: 'कृषि बाजार',
+    community: 'कृषि संघ',
+    transport: 'कृषि सेतु',
+    aiAdvisor: 'कृषि सहायक',
+    dataAnalytics: 'कृषि दृष्टि',
     
     // Hero Section
     heroTitle: 'नमस्ते किसान 🌾',
     heroHeadline: 'नमस्ते किसान 🌾',
-    heroDesc: 'आपकी खेती, हमारी प्राथमिकता। KrishiKonnect के साथ पाएं मंडी भाव, फसल सलाह, समुदाय सहयोग और AI-आधारित खेती के टिप्स - सब एक जगह।',
-    heroSubtext: 'आपकी खेती, हमारी प्राथमिकता। KrishiKonnect के साथ पाएं मंडी भाव, फसल सलाह, समुदाय सहयोग और AI-आधारित खेती के टिप्स - सब एक जगह।',
+    heroDesc: 'आपकी खेती, हमारी प्राथमिकता। KrishiKonnect के साथ पाएं कृषि बाजार भाव, कृषि फसल सलाह, कृषि संघ सहयोग और कृषि सहायक टिप्स - सब एक जगह।',
+    heroSubtext: 'आपकी खेती, हमारी प्राथमिकता। KrishiKonnect के साथ पाएं कृषि बाजार भाव, कृषि फसल सलाह, कृषि संघ सहयोग और कृषि सहायक टिप्स - सब एक जगह।',
     startUsing: 'शुरू करें',
     exploreFeatures: 'सुविधाएं देखें',
     harvestSuccess: 'आपकी सफलता की फसल',
@@ -21,29 +21,29 @@ export const translations = {
     // Features
     featuresTitle: 'हमारी सुविधाएं',
     featuresHeading: 'हमारी सुविधाएं',
-    cropLibraryDesc: 'सभी फसलों की विस्तृत जानकारी और खेती के तरीके',
-    mandiPricesDesc: 'रोज़ाना अपडेट होने वाले मंडी दरें और बाजार की जानकारी',
-    communityDesc: 'अन्य किसानों से जुड़ें, अनुभव साझा करें',
-    transportDesc: 'फसल को मंडी तक पहुंचाने के लिए भरोसेमंद परिवहन',
-    aiAdvisorDesc: 'कृत्रिम बुद्धिमत्ता से पाएं विशेषज्ञ सलाह',
-    dataAnalyticsDesc: 'अपनी खेती के आंकड़े और ट्रेंड देखें',
+    cropLibraryDesc: 'कृषि फसल में सभी फसलों की विस्तृत जानकारी और खेती के तरीके',
+    mandiPricesDesc: 'कृषि बाजार में रोज़ाना अपडेट होने वाले मंडी दरें और बाजार की जानकारी',
+    communityDesc: 'कृषि संघ में अन्य किसानों से जुड़ें और अनुभव साझा करें',
+    transportDesc: 'कृषि सेतु से फसल को मंडी तक पहुंचाने के लिए भरोसेमंद परिवहन',
+    aiAdvisorDesc: 'कृषि सहायक से कृत्रिम बुद्धिमत्ता आधारित विशेषज्ञ सलाह पाएं',
+    dataAnalyticsDesc: 'कृषि दृष्टि में अपनी खेती के आंकड़े और ट्रेंड देखें',
     
     // How It Works
     howItWorksHeading: 'कैसे काम करता है?',
     step1Title: 'भाषा चुनें',
     step1Desc: 'हिंदी या अंग्रेजी में प्लेटफॉर्म का उपयोग करें',
     step2Title: 'जानकारी प्राप्त करें',
-    step2Desc: 'मंडी भाव, फसल सलाह और समुदाय से जुड़ें',
+    step2Desc: 'कृषि बाजार भाव, कृषि फसल सलाह और कृषि संघ से जुड़ें',
     step3Title: 'सफल बनें',
     step3Desc: 'बेहतर निर्णय लें और अपनी आय बढ़ाएं',
     
     // AI Highlight
-    aiHighlightHeading: 'AI सलाहकार - आपका डिजिटल कृषि विशेषज्ञ 🤖',
+    aiHighlightHeading: 'कृषि सहायक - आपका डिजिटल कृषि विशेषज्ञ 🤖',
     aiHighlightSubtext: 'कृत्रिम बुद्धिमत्ता की शक्ति से पाएं विशेषज्ञ सलाह',
     aiExampleTitle: 'उदाहरण सलाह:',
     aiExampleQuestion: 'सवाल: मेरी गेहूं की फसल में पीली पत्तियाँ दिख रही हैं',
     aiExampleAnswer: 'जवाब: यह नाइट्रोजन की कमी हो सकती है। यूरिया खाद डालें और पानी की मात्रा जांचें।',
-    aiTryButton: 'AI सलाहकार आज़माएं',
+    aiTryButton: 'कृषि सहायक आज़माएं',
     
     // CTA
     ctaHeading: 'आज ही शुरू करें अपनी खेती का डिजिटल सफर',
@@ -56,7 +56,7 @@ export const translations = {
     allRightsReserved: '© 2026 KrishiKonnect. सर्वाधिकार सुरक्षित।',
     
     // Crop Library Page
-    cropLibraryTitle: 'फसल पुस्तकालय 🌾',
+    cropLibraryTitle: 'कृषि फसल 🌾',
     cropLibrarySubtitle: 'हर फसल के बारे में विस्तृत जानकारी',
     cropLibraryDescription: 'यहाँ आपको विभिन्न फसलों की जानकारी, खेती के तरीके, और बेहतर उपज के टिप्स मिलेंगे।',
     wheat: 'गेहूँ',
@@ -71,11 +71,11 @@ export const translations = {
     sortAZ: 'अ से ज्ञ',
     sortZA: 'ज्ञ से अ',
     noCropsFound: 'कोई फसल नहीं मिली',
-    checkMandiPrices: 'मंडी भाव देखें',
+    checkMandiPrices: 'कृषि बाजार देखें',
     requestTransport: 'ट्रांसपोर्ट अनुरोध',
     
     // Mandi Page
-    mandiTitle: 'मंडी भाव 💰',
+    mandiTitle: 'कृषि बाजार 💰',
     mandiSubtitle: 'आज के ताजा मंडी दरें',
     mandiDescription: 'अपने क्षेत्र की मंडी में फसलों के वर्तमान भाव जानें और सही समय पर बेचें।',
     crop: 'फसल',
@@ -111,7 +111,7 @@ export const translations = {
     lastUpdated: 'अंतिम अपडेट',
     
     // Community Page
-    communityTitle: 'किसान समुदाय 🤝',
+    communityTitle: 'कृषि संघ 🤝',
     communitySubtitle: 'अपने साथी किसानों से जुड़ें',
     communityDescription: 'अनुभव साझा करें, सवाल पूछें, और एक-दूसरे की मदद करें।',
     farmerName: 'राज कुमार',
@@ -135,16 +135,16 @@ export const translations = {
     fruits: 'फल',
     irrigation: 'सिंचाई',
     pestControl: 'कीट नियंत्रण',
-    communityDiscussions: 'समुदाय की चर्चा',
+    communityDiscussions: 'कृषि संघ की चर्चा',
     questionNotFound: 'प्रश्न नहीं मिला',
     questionNotFoundDesc: "जो प्रश्न आप ढूंढ रहे हैं वह मौजूद नहीं है या हटा दिया गया है।",
-    backToCommunity: 'समुदाय पर वापस जाएं',
+    backToCommunity: 'कृषि संघ पर वापस जाएं',
     pleaseSignInToUpvote: 'अपवोट करने के लिए कृपया साइन इन करें',
     pleaseSignInToReply: 'उत्तर पोस्ट करने के लिए कृपया साइन इन करें',
     failedToPostReply: 'उत्तर पोस्ट करने में विफल। कृपया फिर से प्रयास करें।',
     
     // Transport Page
-    transportTitle: 'परिवहन सेवा 🚚',
+    transportTitle: 'कृषि सेतु 🚚',
     transportSubtitle: 'अपनी फसल को मंडी तक पहुंचाएं',
     transportDescription: 'किफायती और भरोसेमंद परिवहन सेवाएं खोजें।',
     bookTransport: 'परिवहन बुक करें',
@@ -155,7 +155,7 @@ export const translations = {
     findTransport: 'परिवहन खोजें',
     
     // AI Advisor Page
-    aiAdvisorTitle: 'AI सलाहकार 🤖',
+    aiAdvisorTitle: 'कृषि सहायक 🤖',
     aiAdvisorSubtitle: 'कृषि विशेषज्ञ की तरह सलाह पाएं',
     aiAdvisorDescription: 'अपनी फसल, मिट्टी, और खेती से जुड़े सवाल पूछें।',
     aiAskQuestionPlaceholder: 'अपना सवाल यहाँ लिखें...',
@@ -177,18 +177,18 @@ export const translations = {
   en: {
     // Navigation
     home: 'Home',
-    cropLibrary: 'Crop Library',
-    mandiPrices: 'Mandi Prices',
-    community: 'Community',
-    transport: 'Transport',
-    aiAdvisor: 'AI Advisor',
-    dataAnalytics: 'Data Analytics',
+    cropLibrary: 'Krishi Fasal',
+    mandiPrices: 'Krishi Bazaar',
+    community: 'Krishi Sangh',
+    transport: 'Krishi Setu',
+    aiAdvisor: 'Krishi Sahayak',
+    dataAnalytics: 'Krishi Drishti',
     
     // Hero Section
     heroTitle: 'Namaste Farmer 🌾',
     heroHeadline: 'Namaste Farmer 🌾',
-    heroDesc: 'Your farming, our priority. Get mandi prices, crop advice, community support, and AI-powered farming tips - all in one place with KrishiKonnect.',
-    heroSubtext: 'Your farming, our priority. Get mandi prices, crop advice, community support, and AI-powered farming tips - all in one place with KrishiKonnect.',
+    heroDesc: 'Your farming, our priority. Get Krishi Bazaar rates, Krishi Fasal guidance, Krishi Sangh support, and Krishi Sahayak tips - all in one place with KrishiKonnect.',
+    heroSubtext: 'Your farming, our priority. Get Krishi Bazaar rates, Krishi Fasal guidance, Krishi Sangh support, and Krishi Sahayak tips - all in one place with KrishiKonnect.',
     startUsing: 'Start Using',
     exploreFeatures: 'Explore Features',
     harvestSuccess: 'Harvest Your Success',
@@ -196,29 +196,29 @@ export const translations = {
     // Features
     featuresTitle: 'Our Features',
     featuresHeading: 'Our Features',
-    cropLibraryDesc: 'Detailed information and cultivation methods for all crops',
-    mandiPricesDesc: 'Daily updated market rates and market information',
-    communityDesc: 'Connect with other farmers, share experiences',
-    transportDesc: 'Reliable transport to get your crops to market',
-    aiAdvisorDesc: 'Get expert advice from artificial intelligence',
-    dataAnalyticsDesc: 'View your farming statistics and trends',
+    cropLibraryDesc: 'Krishi Fasal provides detailed information and cultivation methods for all crops',
+    mandiPricesDesc: 'Krishi Bazaar provides daily updated market rates and market information',
+    communityDesc: 'Connect with other farmers in Krishi Sangh and share experiences',
+    transportDesc: 'Krishi Setu offers reliable transport to get your crops to market',
+    aiAdvisorDesc: 'Get expert advice from Krishi Sahayak powered by artificial intelligence',
+    dataAnalyticsDesc: 'View your farming statistics and trends with Krishi Drishti',
     
     // How It Works
     howItWorksHeading: 'How It Works?',
     step1Title: 'Choose Language',
     step1Desc: 'Use the platform in Hindi or English',
     step2Title: 'Get Information',
-    step2Desc: 'Access mandi prices, crop advice and connect with community',
+    step2Desc: 'Access Krishi Bazaar prices, Krishi Fasal advice and connect with Krishi Sangh',
     step3Title: 'Succeed',
     step3Desc: 'Make better decisions and increase your income',
     
     // AI Highlight
-    aiHighlightHeading: 'AI Advisor - Your Digital Agriculture Expert 🤖',
+    aiHighlightHeading: 'Krishi Sahayak - Your Digital Agriculture Expert 🤖',
     aiHighlightSubtext: 'Get expert advice powered by artificial intelligence',
     aiExampleTitle: 'Example Advice:',
     aiExampleQuestion: 'Question: Yellow leaves appearing on my wheat crop',
     aiExampleAnswer: 'Answer: This could be nitrogen deficiency. Apply urea fertilizer and check water levels.',
-    aiTryButton: 'Try AI Advisor',
+    aiTryButton: 'Try Krishi Sahayak',
     
     // CTA
     ctaHeading: 'Start Your Digital Farming Journey Today',
@@ -231,7 +231,7 @@ export const translations = {
     allRightsReserved: '© 2026 KrishiKonnect. All rights reserved.',
     
     // Crop Library Page
-    cropLibraryTitle: 'Crop Library 🌾',
+    cropLibraryTitle: 'Krishi Fasal 🌾',
     cropLibrarySubtitle: 'Detailed information about every crop',
     cropLibraryDescription: 'Find information about different crops, cultivation methods, and tips for better yield.',
     wheat: 'Wheat',
@@ -246,11 +246,11 @@ export const translations = {
     sortAZ: 'Sort A–Z',
     sortZA: 'Sort Z–A',
     noCropsFound: 'No crops found',
-    checkMandiPrices: 'Check Mandi Prices',
+    checkMandiPrices: 'Check Krishi Bazaar',
     requestTransport: 'Request Transport',
     
     // Mandi Page
-    mandiTitle: 'Mandi Prices 💰',
+    mandiTitle: 'Krishi Bazaar 💰',
     mandiSubtitle: "Today's fresh market rates",
     mandiDescription: 'Know the current prices of crops in your area market and sell at the right time.',
     crop: 'Crop',
@@ -286,7 +286,7 @@ export const translations = {
     lastUpdated: 'Last Updated',
     
     // Community Page
-    communityTitle: 'Farmer Community 🤝',
+    communityTitle: 'Krishi Sangh 🤝',
     communitySubtitle: 'Connect with fellow farmers',
     communityDescription: 'Share experiences, ask questions, and help each other.',
     farmerName: 'Raj Kumar',
@@ -310,16 +310,16 @@ export const translations = {
     fruits: 'Fruits',
     irrigation: 'Irrigation',
     pestControl: 'Pest Control',
-    communityDiscussions: 'Community Discussions',
+    communityDiscussions: 'Krishi Sangh Discussions',
     questionNotFound: 'Question Not Found',
     questionNotFoundDesc: "The question you're looking for doesn't exist or has been removed.",
-    backToCommunity: 'Back to Community',
+    backToCommunity: 'Back to Krishi Sangh',
     pleaseSignInToUpvote: 'Please sign in to upvote',
     pleaseSignInToReply: 'Please sign in to post a reply',
     failedToPostReply: 'Failed to post reply. Please try again.',
     
     // Transport Page
-    transportTitle: 'Transport Service 🚚',
+    transportTitle: 'Krishi Setu 🚚',
     transportSubtitle: 'Get your crops to the market',
     transportDescription: 'Find affordable and reliable transport services.',
     bookTransport: 'Book Transport',
@@ -330,7 +330,7 @@ export const translations = {
     findTransport: 'Find Transport',
     
     // AI Advisor Page
-    aiAdvisorTitle: 'AI Advisor 🤖',
+    aiAdvisorTitle: 'Krishi Sahayak 🤖',
     aiAdvisorSubtitle: 'Get expert agricultural advice',
     aiAdvisorDescription: 'Ask questions about your crops, soil, and farming.',
     aiAskQuestionPlaceholder: 'Type your question here...',

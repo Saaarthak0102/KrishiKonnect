@@ -21,32 +21,32 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
   const menuItems = [
     {
       icon: '🏠',
-      label: lang === 'hi' ? 'डैशबोर्ड' : 'Dashboard',
+      label: lang === 'hi' ? 'कृषि दृष्टि' : 'Krishi Drishti',
       href: '/dashboard',
     },
     {
       icon: '📚',
-      label: lang === 'hi' ? 'फसल पुस्तकालय' : 'Crop Library',
+      label: lang === 'hi' ? 'कृषि फसल' : 'Krishi Fasal',
       href: '/crop-library',
     },
     {
       icon: '💰',
-      label: lang === 'hi' ? 'मंडी भाव' : 'Mandi Prices',
+      label: lang === 'hi' ? 'कृषि बाजार' : 'Krishi Bazaar',
       href: '/mandi',
     },
     {
       icon: '🤝',
-      label: lang === 'hi' ? 'समुदाय' : 'Community',
+      label: lang === 'hi' ? 'कृषि संघ' : 'Krishi Sangh',
       href: '/community',
     },
     {
       icon: '🤖',
-      label: lang === 'hi' ? 'AI सलाहकार' : 'AI Advisor',
+      label: lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak',
       href: '/ai-advisor',
     },
     {
       icon: '🚚',
-      label: lang === 'hi' ? 'परिवहन' : 'Transport',
+      label: lang === 'hi' ? 'कृषि सेतु' : 'Krishi Setu',
       href: '/transport',
     },
   ]

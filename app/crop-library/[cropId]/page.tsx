@@ -193,7 +193,7 @@ export default function CropDetailPage() {
                 href={`/mandi?crop=${encodeURIComponent(crop.id)}`}
                 className="bg-krishi-agriculture hover:bg-krishi-agriculture/90 text-white font-semibold px-6 py-2 rounded-lg transition-colors duration-200 text-center whitespace-nowrap"
               >
-                {lang === 'hi' ? 'मंडी भाव देखें' : 'View Mandi Prices →'}
+                {lang === 'hi' ? 'कृषि बाजार देखें' : 'View Krishi Bazaar →'}
               </Link>
             </div>
           </div>
@@ -247,14 +247,14 @@ export default function CropDetailPage() {
           </h3>
           <p className="text-white/90 mb-6 text-lg">
             {lang === 'hi'
-              ? 'AI सलाहकार से अपने खेती के सवाल पूछें'
-              : 'Ask our AI Advisor your farming questions'}
+              ? 'कृषि सहायक से अपने खेती के सवाल पूछें'
+              : 'Ask Krishi Sahayak your farming questions'}
           </p>
           <Link
             href="/ai-advisor"
             className="inline-block bg-white text-krishi-primary font-bold px-8 py-3 rounded-lg hover:bg-white/90 transition-colors"
           >
-            {lang === 'hi' ? 'AI सलाहकार से पूछें' : 'Ask AI Advisor'}
+            {lang === 'hi' ? 'कृषि सहायक से पूछें' : 'Ask Krishi Sahayak'}
           </Link>
         </motion.div>
       </main>

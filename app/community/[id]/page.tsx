@@ -359,7 +359,7 @@ export default function ThreadPage() {
                 onClick={() => router.push('/community')}
                 className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
               >
-                {t('backToCommunity') || 'Back to Community'}
+                {t('backToCommunity') || 'Back to Krishi Sangh'}
               </button>
             </div>
           </main>
@@ -378,7 +378,7 @@ export default function ThreadPage() {
             className="mb-6 flex items-center gap-2 text-green-600 hover:text-green-700 font-medium transition-colors"
           >
             <span>←</span>
-            <span>{t('backToCommunity') || 'Back to Community'}</span>
+            <span>{t('backToCommunity') || 'Back to Krishi Sangh'}</span>
           </button>
 
           {/* Thread View */}

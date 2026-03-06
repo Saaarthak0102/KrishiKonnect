@@ -12,9 +12,9 @@ interface LatestAIChatCardProps {
 
 const translations = {
   en: {
-    title: 'Latest KrishiSahayak Chat',
+    title: 'Latest Krishi Sahayak Chat',
     subtitle: 'Your last AI farming consultation',
-    emptyLine1: "You haven't asked KrishiSahayak yet.",
+    emptyLine1: "You haven't asked Krishi Sahayak yet.",
     emptyLine2: 'Get instant farming advice from AI.',
     continueChat: 'Continue Chat →',
     startChat: 'Start Chat →',

@@ -14,11 +14,11 @@ export default function DataSources({ lang = 'en' }: DataSourcesProps) {
     },
     {
       icon: '💰',
-      label: lang === 'hi' ? 'मंडी मूल्य' : 'Mandi Prices',
+      label: lang === 'hi' ? 'कृषि बाजार' : 'Krishi Bazaar',
     },
     {
       icon: '🌾',
-      label: lang === 'hi' ? 'फसल पुस्तकालय' : 'Crop Library',
+      label: lang === 'hi' ? 'कृषि फसल' : 'Krishi Fasal',
     },
     {
       icon: '📅',

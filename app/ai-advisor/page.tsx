@@ -320,9 +320,9 @@ export default function AIAdvisorPage() {
         </div>
       </header>
 
-      {/* 3-Column Layout: Dashboard Sidebar | Chat Window | Chat History Sidebar */}
+      {/* 3-Column Layout: Krishi Drishti Sidebar | Chat Window | Chat History Sidebar */}
       <div className="flex flex-1 overflow-hidden">
-        {/* LEFT COLUMN: Dashboard Sidebar */}
+        {/* LEFT COLUMN: Krishi Drishti Sidebar */}
         <Sidebar defaultExpanded={true} />
 
         {/* CENTER COLUMN: Chat Window */}
@@ -351,8 +351,8 @@ export default function AIAdvisorPage() {
                 </h2>
                 <p className="text-krishi-text mb-6">
                   {lang === 'hi'
-                    ? 'अपनी खेती से जुड़े सवालों के लिए AI सलाहकार से बात करें'
-                    : 'Talk to your AI farming advisor'}
+                    ? 'अपनी खेती से जुड़े सवालों के लिए कृषि सहायक से बात करें'
+                    : 'Talk to Krishi Sahayak for your farming questions'}
                 </p>
                 <button
                   onClick={handleNewChat}

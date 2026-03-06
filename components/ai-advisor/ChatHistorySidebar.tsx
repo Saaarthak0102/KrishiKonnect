@@ -58,7 +58,7 @@ export default function ChatHistorySidebar({
               {lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak'}
             </h2>
             <p className="text-xs text-krishi-text/60">
-              {lang === 'hi' ? 'AI सलाहकार' : 'AI Advisor'}
+              {lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak'}
             </p>
           </div>
         </div>

@@ -278,7 +278,7 @@ export default function MandiPage() {
             className="mb-10 text-center"
           >
             <h1 className="mb-3 text-4xl font-bold md:text-5xl" style={{ color: '#1F3C88' }}>
-              {lang === 'hi' ? 'मंडी भाव' : 'Mandi Prices'}
+              {lang === 'hi' ? 'कृषि बाजार' : 'Krishi Bazaar'}
             </h1>
             <p className="mx-auto max-w-3xl text-gray-700">
               {lang === 'hi'

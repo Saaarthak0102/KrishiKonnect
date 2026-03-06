@@ -1174,7 +1174,7 @@ function TransportForm({
                 e.currentTarget.style.backgroundColor = '#1F3C88'
               }}
             >
-              {lang === 'hi' ? 'मंडी भाव पर वापस जाएं' : 'Back to Mandi Prices'}
+              {lang === 'hi' ? 'कृषि बाजार पर वापस जाएं' : 'Back to Krishi Bazaar'}
             </button>
           </div>
         </motion.div>

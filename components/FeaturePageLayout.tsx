@@ -16,11 +16,11 @@ export default function FeaturePageLayout({ children }: FeaturePageLayoutProps) 
 
   // Get page title based on current route
   const getPageTitle = () => {
-    if (pathname.startsWith('/crop-library')) return lang === 'hi' ? 'फसल पुस्तकालय' : 'Crop Library'
-    if (pathname === '/mandi') return lang === 'hi' ? 'मंडी भाव' : 'Mandi Prices'
-    if (pathname === '/community') return lang === 'hi' ? 'समुदाय' : 'Community'
-    if (pathname === '/ai-advisor') return lang === 'hi' ? 'AI सलाहकार' : 'AI Advisor'
-    if (pathname === '/transport') return lang === 'hi' ? 'परिवहन' : 'Transport'
+    if (pathname.startsWith('/crop-library')) return lang === 'hi' ? 'कृषि फसल' : 'Krishi Fasal'
+    if (pathname === '/mandi') return lang === 'hi' ? 'कृषि बाजार' : 'Krishi Bazaar'
+    if (pathname === '/community') return lang === 'hi' ? 'कृषि संघ' : 'Krishi Sangh'
+    if (pathname === '/ai-advisor') return lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak'
+    if (pathname === '/transport') return lang === 'hi' ? 'कृषि सेतु' : 'Krishi Setu'
     return 'KrishiKonnect'
   }
 

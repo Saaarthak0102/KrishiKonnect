@@ -138,7 +138,7 @@ export default function SetupPage() {
       statePlaceholder: 'राज्य चुनें',
       cropLabel: 'प्राथमिक फसल',
       cropPlaceholder: 'अपनी मुख्य फसल चुनें',
-      continueButton: 'डैशबोर्ड पर जाएं',
+      continueButton: 'कृषि दृष्टि पर जाएं',
       subtitle: 'अपनी कृषि प्रोफाइल पूरी करें',
     },
     en: {
@@ -151,7 +151,7 @@ export default function SetupPage() {
       statePlaceholder: 'Select state',
       cropLabel: 'Primary Crop',
       cropPlaceholder: 'Select your primary crop',
-      continueButton: 'Continue to Dashboard',
+      continueButton: 'Continue to Krishi Drishti',
       subtitle: 'Complete your farming profile',
     },
   }
