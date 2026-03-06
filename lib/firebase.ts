@@ -23,15 +23,17 @@ const requiredEnvVars = [
   'NEXT_PUBLIC_FIREBASE_APP_ID',
 ]
 
-const missingEnvVars = requiredEnvVars.filter(
-  (envVar) => !process.env[envVar]
-)
-
-if (missingEnvVars.length > 0) {
-  throw new Error(
-    `Missing required Firebase environment variables: ${missingEnvVars.join(', ')}. ` +
-    `Please check your .env.local file and ensure all variables are set.`
+if (typeof window !== "undefined") {
+  const missingEnvVars = requiredEnvVars.filter(
+    (envVar) => !process.env[envVar]
   )
+
+  if (missingEnvVars.length > 0) {
+    console.error(
+      "Missing Firebase env variables:",
+      missingEnvVars.join(", ")
+    )
+  }
 }
 
 // Firebase configuration
