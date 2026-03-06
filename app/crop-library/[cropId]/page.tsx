@@ -193,7 +193,21 @@ export default function CropDetailPage() {
                 href={`/mandi?crop=${encodeURIComponent(crop.id)}`}
                 className="bg-krishi-agriculture hover:bg-krishi-agriculture/90 text-white font-semibold px-6 py-2 rounded-lg transition-colors duration-200 text-center whitespace-nowrap"
               >
-                {lang === 'hi' ? 'कृषि बाजार देखें' : 'View Krishi Bazaar →'}
+                {lang === 'hi' ? (
+                  <>
+                    <span className="text-white">कृषि</span>
+                    {' '}
+                    <span className="text-white">बाजार देखें</span>
+                  </>
+                ) : (
+                  <>
+                    {'View '}
+                    <span className="text-white">Krishi</span>
+                    {' '}
+                    <span className="text-white">Bazaar</span>
+                    {' →'}
+                  </>
+                )}
               </Link>
             </div>
           </div>
@@ -252,9 +266,23 @@ export default function CropDetailPage() {
           </p>
           <Link
             href="/ai-advisor"
-            className="inline-block bg-white text-krishi-primary font-bold px-8 py-3 rounded-lg hover:bg-white/90 transition-colors"
+            className="inline-block bg-white font-bold px-8 py-3 rounded-lg hover:bg-white/90 transition-colors"
           >
-            {lang === 'hi' ? 'कृषि सहायक से पूछें' : 'Ask Krishi Sahayak'}
+            {lang === 'hi' ? (
+              <>
+                <span className="text-[#2D4B8C]">कृषि</span>
+                {' '}
+                <span className="text-[#C96A3A]">सहायक</span>
+                {' से पूछें'}
+              </>
+            ) : (
+              <>
+                {'Ask '}
+                <span className="text-[#2D4B8C]">Krishi</span>
+                {' '}
+                <span className="text-[#C96A3A]">Sahayak</span>
+              </>
+            )}
           </Link>
         </motion.div>
       </main>

@@ -149,8 +149,22 @@ export default function CropLibraryPage() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-krishi-heading mb-4">
-            {t.cropLibraryTitle}
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            {lang === 'hi' ? (
+              <>
+                <span className="text-[#2D4B8C]">कृषि</span>
+                {' '}
+                <span className="text-[#C96A3A]">फसल</span>
+                {' 🌾'}
+              </>
+            ) : (
+              <>
+                <span className="text-[#2D4B8C]">Krishi</span>
+                {' '}
+                <span className="text-[#C96A3A]">Fasal</span>
+                {' 🌾'}
+              </>
+            )}
           </h1>
           <p className="text-xl text-krishi-text mb-2">{t.cropLibrarySubtitle}</p>
           <p className="text-krishi-text/80 max-w-2xl mx-auto">{t.cropLibraryDescription}</p>

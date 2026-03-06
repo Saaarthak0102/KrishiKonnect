@@ -136,13 +136,21 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
             {t.noInsightTitle}
           </h4>
           <p className="text-gray-600 mb-6 max-w-sm mx-auto">
-            {t.noInsightMessage}
+            {lang === 'hi' ? (
+              <>कीमत अंतर्दृष्टि के लिए <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">फसल</span> में फसलें सहेजें।</>
+            ) : (
+              <>Save crops in <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Fasal</span> to get price insights.</>
+            )}
           </p>
           <Link
             href="/crop-library"
             className="inline-block bg-[#1F3C88] hover:bg-[#1F3C88]/80 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
           >
-            {t.exploreCropLibrary}
+            {lang === 'hi' ? (
+              <><span className="text-white">कृषि</span>{' '}<span className="text-white">फसल</span> खोजें →</>
+            ) : (
+              <>Explore <span className="text-white">Krishi</span>{' '}<span className="text-white">Fasal</span> →</>
+            )}
           </Link>
         </div>
       </motion.div>
@@ -185,7 +193,11 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
         {/* Best mandi section */}
         <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
           <p className="text-sm text-gray-600 mb-2">
-            {t.bestMandiToday}
+            {lang === 'hi' ? (
+              <>आज का सर्वश्रेष्ठ <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">बाजार</span></>
+            ) : (
+              <>Best <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Bazaar</span> today</>
+            )}
           </p>
           <div className="flex items-baseline justify-between">
             <h4 className="text-lg font-bold text-gray-900">

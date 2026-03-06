@@ -8,6 +8,22 @@ interface FeatureCardProps {
   description: string
 }
 
+// Helper function to render two-colored Krishi titles
+function renderKrishiTitle(title: string) {
+  // Check if title starts with "Krishi"
+  if (title.startsWith('Krishi ')) {
+    const parts = title.split(' ')
+    return (
+      <>
+        <span className="text-[#2D4B8C]">Krishi</span>
+        {' '}
+        <span className="text-[#C96A3A]">{parts.slice(1).join(' ')}</span>
+      </>
+    )
+  }
+  return <span className="text-krishi-heading">{title}</span>
+}
+
 export default function FeatureCard({ icon, title, description }: FeatureCardProps) {
   return (
     <motion.div
@@ -19,8 +35,8 @@ export default function FeatureCard({ icon, title, description }: FeatureCardPro
       className="bg-white border-2 border-krishi-border rounded-lg p-6 shadow-sm hover:shadow-md"
     >
       <div className="text-5xl mb-4">{icon}</div>
-      <h3 className="text-xl font-semibold text-krishi-heading mb-3">
-        {title}
+      <h3 className="text-xl font-semibold mb-3">
+        {renderKrishiTitle(title)}
       </h3>
       <p className="text-krishi-text/80">
         {description}

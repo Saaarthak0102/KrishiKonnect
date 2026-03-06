@@ -54,11 +54,35 @@ export default function ChatHistorySidebar({
         <div className="flex items-center space-x-2 mb-3">
           <span className="text-2xl">🌾</span>
           <div>
-            <h2 className="font-bold text-krishi-heading text-sm">
-              {lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak'}
+            <h2 className="font-bold text-sm">
+              {lang === 'hi' ? (
+                <>
+                  <span className="text-[#2D4B8C]">कृषि</span>
+                  {' '}
+                  <span className="text-[#C96A3A]">सहायक</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-[#2D4B8C]">Krishi</span>
+                  {' '}
+                  <span className="text-[#C96A3A]">Sahayak</span>
+                </>
+              )}
             </h2>
             <p className="text-xs text-krishi-text/60">
-              {lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak'}
+              {lang === 'hi' ? (
+                <>
+                  <span className="text-[#2D4B8C]">कृषि</span>
+                  {' '}
+                  <span className="text-[#C96A3A]">सहायक</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-[#2D4B8C]">Krishi</span>
+                  {' '}
+                  <span className="text-[#C96A3A]">Sahayak</span>
+                </>
+              )}
             </p>
           </div>
         </div>

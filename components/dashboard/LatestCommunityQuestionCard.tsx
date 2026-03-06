@@ -140,7 +140,15 @@ export default function LatestCommunityQuestionCard({
       <div className="bg-white/80 backdrop-blur-sm border border-green-100 rounded-xl shadow-sm p-4">
         <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
           <span>🌾</span>
-          {t.title}
+          {lang === 'hi' ? (
+            <>
+              नवीनतम <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">संघ</span> प्रश्न
+            </>
+          ) : (
+            <>
+              Latest <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Sangh</span> Question
+            </>
+          )}
         </h3>
         <p className="text-sm text-gray-600 mb-4">
           {t.message}
@@ -149,7 +157,15 @@ export default function LatestCommunityQuestionCard({
           onClick={handleClick}
           className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
         >
-          {t.button}
+          {lang === 'hi' ? (
+            <>
+              <span className="text-white">कृषि</span>{' '}<span className="text-white">संघ</span> से पूछें
+            </>
+          ) : (
+            <>
+              Ask <span className="text-white">Krishi</span>{' '}<span className="text-white">Sangh</span>
+            </>
+          )}
         </button>
       </div>
     )
@@ -160,7 +176,15 @@ export default function LatestCommunityQuestionCard({
     <div className="bg-white/80 backdrop-blur-sm border border-green-100 rounded-xl shadow-sm p-4">
       <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
         <span>🌾</span>
-        {t.title}
+        {lang === 'hi' ? (
+          <>
+            नवीनतम <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">संघ</span> प्रश्न
+          </>
+        ) : (
+          <>
+            Latest <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Sangh</span> Question
+          </>
+        )}
       </h3>
 
       <div className="space-y-3">

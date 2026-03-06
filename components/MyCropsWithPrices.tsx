@@ -183,7 +183,11 @@ export default function MyCropsWithPrices({
             href="/crop-library"
             className="inline-block bg-[#1F3C88] hover:bg-[#1F3C88]/80 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
           >
-            {t.exploreCrops}
+            {lang === 'hi' ? (
+              <><span className="text-white">कृषि</span>{' '}<span className="text-white">फसल</span> खोजें</>
+            ) : (
+              <>Explore <span className="text-white">Krishi</span>{' '}<span className="text-white">Fasal</span> →</>
+            )}
           </Link>
         </div>
       </motion.div>
@@ -228,7 +232,11 @@ export default function MyCropsWithPrices({
           {t.myCrops}
         </h2>
         <p className="text-sm text-gray-600">
-          {t.latestMandiPrices}
+          {lang === 'hi' ? (
+            <>आपकी फसलों के लिए नवीनतम <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">बाजार</span> भाव</>
+          ) : (
+            <>Latest <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Bazaar</span> prices for your crops</>
+          )}
         </p>
       </div>
 

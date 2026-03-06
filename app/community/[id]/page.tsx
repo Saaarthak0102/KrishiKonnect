@@ -85,7 +85,7 @@ export default function ThreadPage() {
   const router = useRouter();
   const questionId = params.id as string;
   const { user } = useAuth();
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
 
   const [question, setQuestion] = useState<Question | null>(null);
   const [replies, setReplies] = useState<Reply[]>([]);
@@ -359,7 +359,11 @@ export default function ThreadPage() {
                 onClick={() => router.push('/community')}
                 className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
               >
-                {t('backToCommunity') || 'Back to Krishi Sangh'}
+                {lang === 'hi' ? (
+                  <>कृषि संघ पर वापस जाएं</>
+                ) : (
+                  <>Back to <span className="text-white">Krishi</span>{' '}<span className="text-white">Sangh</span></>
+                )}
               </button>
             </div>
           </main>
@@ -378,7 +382,13 @@ export default function ThreadPage() {
             className="mb-6 flex items-center gap-2 text-green-600 hover:text-green-700 font-medium transition-colors"
           >
             <span>←</span>
-            <span>{t('backToCommunity') || 'Back to Krishi Sangh'}</span>
+            {lang === 'hi' ? (
+              <span>कृषि संघ पर वापस जाएं</span>
+            ) : (
+              <span>
+                Back to <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Sangh</span>
+              </span>
+            )}
           </button>
 
           {/* Thread View */}

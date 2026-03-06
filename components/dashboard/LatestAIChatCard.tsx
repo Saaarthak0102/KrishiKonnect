@@ -111,7 +111,15 @@ export default function LatestAIChatCard({
         <div className="mb-3">
           <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             <span>🤖</span>
-            {t.title}
+            {lang === 'hi' ? (
+              <>
+                नवीनतम <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">सहायक</span> चैट
+              </>
+            ) : (
+              <>
+                Latest <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Sahayak</span> Chat
+              </>
+            )}
           </h3>
           <p className="text-xs text-gray-500 mt-1">{t.subtitle}</p>
         </div>
@@ -139,7 +147,15 @@ export default function LatestAIChatCard({
         <div className="mb-3">
           <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             <span>🤖</span>
-            {t.title}
+            {lang === 'hi' ? (
+              <>
+                नवीनतम <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">सहायक</span> चैट
+              </>
+            ) : (
+              <>
+                Latest <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Sahayak</span> Chat
+              </>
+            )}
           </h3>
           <p className="text-xs text-gray-500 mt-1">{t.subtitle}</p>
         </div>
@@ -172,7 +188,15 @@ export default function LatestAIChatCard({
       <div className="mb-3">
         <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
           <span>🤖</span>
-          {t.title}
+          {lang === 'hi' ? (
+            <>
+              नवीनतम <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">सहायक</span> चैट
+            </>
+          ) : (
+            <>
+              Latest <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Sahayak</span> Chat
+            </>
+          )}
         </h3>
         <p className="text-xs text-gray-500 mt-1">{t.subtitle}</p>
       </div>

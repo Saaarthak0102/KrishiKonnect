@@ -11,18 +11,24 @@ export default function DataSources({ lang = 'en' }: DataSourcesProps) {
     {
       icon: '🌤️',
       label: lang === 'hi' ? 'मौसम API' : 'Weather API',
+      isKrishi: false,
     },
     {
       icon: '💰',
-      label: lang === 'hi' ? 'कृषि बाजार' : 'Krishi Bazaar',
+      labelPart1: lang === 'hi' ? 'कृषि' : 'Krishi',
+      labelPart2: lang === 'hi' ? 'बाजार' : 'Bazaar',
+      isKrishi: true,
     },
     {
       icon: '🌾',
-      label: lang === 'hi' ? 'कृषि फसल' : 'Krishi Fasal',
+      labelPart1: lang === 'hi' ? 'कृषि' : 'Krishi',
+      labelPart2: lang === 'hi' ? 'फसल' : 'Fasal',
+      isKrishi: true,
     },
     {
       icon: '📅',
       label: lang === 'hi' ? 'मौसमी कैलेंडर' : 'Seasonal Calendar',
+      isKrishi: false,
     },
   ]
 
@@ -47,7 +53,15 @@ export default function DataSources({ lang = 'en' }: DataSourcesProps) {
           >
             <span className="text-green-600">✓</span>
             <span>{source.icon}</span>
-            <span>{source.label}</span>
+            {source.isKrishi ? (
+              <span>
+                <span className="text-[#2D4B8C]">{source.labelPart1}</span>
+                {' '}
+                <span className="text-[#C96A3A]">{source.labelPart2}</span>
+              </span>
+            ) : (
+              <span>{source.label}</span>
+            )}
           </motion.div>
         ))}
       </div>

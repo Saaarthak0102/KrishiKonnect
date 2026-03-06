@@ -36,8 +36,8 @@ export default function AIThinking({ lang = 'en' }: AIThinkingProps) {
 
   const headerText =
     lang === 'hi'
-      ? '🌾 कृषि सहायक आपकी खेती की स्थिति का विश्लेषण कर रहा है...'
-      : '🌾 Krishi Sahayak is analyzing your farm conditions...'
+      ? (<>🌾 <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">सहायक</span> आपकी खेती की स्थिति का विश्लेषण कर रहा है...</>)
+      : (<>🌾 <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Sahayak</span> is analyzing your farm conditions...</>)
 
   return (
     <motion.div

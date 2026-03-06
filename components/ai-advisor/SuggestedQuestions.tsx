@@ -66,8 +66,20 @@ export default function SuggestedQuestions({
       className="w-full max-w-2xl"
     >
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-krishi-heading mb-2">
-          {lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak'}
+        <h2 className="text-2xl font-bold mb-2">
+          {lang === 'hi' ? (
+            <>
+              <span className="text-[#2D4B8C]">कृषि</span>
+              {' '}
+              <span className="text-[#C96A3A]">सहायक</span>
+            </>
+          ) : (
+            <>
+              <span className="text-[#2D4B8C]">Krishi</span>
+              {' '}
+              <span className="text-[#C96A3A]">Sahayak</span>
+            </>
+          )}
         </h2>
         <p className="text-krishi-text/70">
           {lang === 'hi'

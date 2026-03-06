@@ -19,8 +19,22 @@ export default function AIHighlight() {
         className="bg-gradient-to-br from-krishi-agriculture/20 to-krishi-highlight/20 border-2 border-krishi-agriculture rounded-2xl p-8 md:p-12"
       >
         <div className="text-center mb-8">
-          <h2 className="text-4xl md:text-5xl font-bold text-krishi-heading mb-4">
-            {t.aiHighlightHeading}
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            {lang === 'hi' ? (
+              <>
+                <span className="text-[#2D4B8C]">कृषि</span>
+                {' '}
+                <span className="text-[#C96A3A]">सहायक</span>
+                {' - आपका डिजिटल कृषि विशेषज्ञ 🤖'}
+              </>
+            ) : (
+              <>
+                <span className="text-[#2D4B8C]">Krishi</span>
+                {' '}
+                <span className="text-[#C96A3A]">Sahayak</span>
+                {' - Your Digital Agriculture Expert 🤖'}
+              </>
+            )}
           </h2>
           <p className="text-lg text-krishi-text/80">
             {t.aiHighlightSubtext}

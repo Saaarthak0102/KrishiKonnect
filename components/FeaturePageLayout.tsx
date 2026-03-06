@@ -10,6 +10,36 @@ interface FeaturePageLayoutProps {
   children: React.ReactNode
 }
 
+// Helper function to render two-colored Krishi titles
+function renderKrishiTitle(title: string, lang: 'hi' | 'en') {
+  if (lang === 'hi') {
+    // Hindi titles: कृषि X
+    if (title.startsWith('कृषि ')) {
+      const parts = title.split(' ')
+      return (
+        <>
+          <span className="text-[#2D4B8C]">कृषि</span>
+          {' '}
+          <span className="text-[#C96A3A]">{parts.slice(1).join(' ')}</span>
+        </>
+      )
+    }
+  } else {
+    // English titles: Krishi X
+    if (title.startsWith('Krishi ')) {
+      const parts = title.split(' ')
+      return (
+        <>
+          <span className="text-[#2D4B8C]">Krishi</span>
+          {' '}
+          <span className="text-[#C96A3A]">{parts.slice(1).join(' ')}</span>
+        </>
+      )
+    }
+  }
+  return <span className="text-krishi-heading">{title}</span>
+}
+
 export default function FeaturePageLayout({ children }: FeaturePageLayoutProps) {
   const pathname = usePathname()
   const { lang } = useLanguage()
@@ -24,6 +54,8 @@ export default function FeaturePageLayout({ children }: FeaturePageLayoutProps) 
     return 'KrishiKonnect'
   }
 
+  const pageTitle = getPageTitle()
+
   return (
     <div className="min-h-screen bg-krishi-bg flex flex-col">
       {/* Sticky Navbar */}
@@ -36,8 +68,8 @@ export default function FeaturePageLayout({ children }: FeaturePageLayoutProps) 
               <span className="font-bold text-krishi-heading text-lg hidden sm:inline">KrishiKonnect</span>
             </Link>
             <span className="text-gray-300 hidden sm:inline">|</span>
-            <h1 className="text-lg md:text-xl font-semibold text-krishi-heading">
-              {getPageTitle()}
+            <h1 className="text-lg md:text-xl font-semibold">
+              {renderKrishiTitle(pageTitle, lang)}
             </h1>
           </div>
 

@@ -11,6 +11,36 @@ interface SidebarProps {
   defaultExpanded?: boolean
 }
 
+// Helper function to render two-colored Krishi titles
+function renderKrishiLabel(label: string, lang: 'hi' | 'en') {
+  if (lang === 'hi') {
+    // Hindi labels: कृषि X
+    if (label.startsWith('कृषि ')) {
+      const parts = label.split(' ')
+      return (
+        <>
+          <span className="text-[#2D4B8C]">कृषि</span>
+          {' '}
+          <span className="text-[#C96A3A]">{parts.slice(1).join(' ')}</span>
+        </>
+      )
+    }
+  } else {
+    // English labels: Krishi X
+    if (label.startsWith('Krishi ')) {
+      const parts = label.split(' ')
+      return (
+        <>
+          <span className="text-[#2D4B8C]">Krishi</span>
+          {' '}
+          <span className="text-[#C96A3A]">{parts.slice(1).join(' ')}</span>
+        </>
+      )
+    }
+  }
+  return <span>{label}</span>
+}
+
 export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
   const [expanded, setExpanded] = useState(defaultExpanded)
   const { lang } = useLanguage()
@@ -117,7 +147,7 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
             <span className="text-xl flex-shrink-0">{item.icon}</span>
             {expanded && (
               <span className="font-semibold text-sm whitespace-nowrap">
-                {item.label}
+                {renderKrishiLabel(item.label, lang)}
               </span>
             )}
           </Link>

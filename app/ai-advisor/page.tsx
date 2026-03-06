@@ -311,8 +311,20 @@ export default function AIAdvisorPage() {
       <header className="sticky top-0 z-50 bg-white shadow-sm border-b-2 border-gray-200">
         <div className="px-4 py-4 flex items-center justify-between">
           <div className="w-28" />
-          <h1 className="text-lg md:text-xl font-bold text-krishi-heading">
-            {lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak'} 🌾
+          <h1 className="text-lg md:text-xl font-bold">
+            {lang === 'hi' ? (
+              <>
+                <span className="text-[#2D4B8C]">कृषि</span>
+                {' '}
+                <span className="text-[#C96A3A]">सहायक</span>
+              </>
+            ) : (
+              <>
+                <span className="text-[#2D4B8C]">Krishi</span>
+                {' '}
+                <span className="text-[#C96A3A]">Sahayak</span>
+              </>
+            )} 🌾
           </h1>
           <div className="w-28 flex justify-end">
             <LanguageToggle />
@@ -346,8 +358,20 @@ export default function AIAdvisorPage() {
                 className="text-center"
               >
                 <div className="text-6xl mb-4">🌾</div>
-                <h2 className="text-2xl font-bold text-krishi-heading mb-2">
-                  {lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak'}
+                <h2 className="text-2xl font-bold mb-2">
+                  {lang === 'hi' ? (
+                    <>
+                      <span className="text-[#2D4B8C]">कृषि</span>
+                      {' '}
+                      <span className="text-[#C96A3A]">सहायक</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-[#2D4B8C]">Krishi</span>
+                      {' '}
+                      <span className="text-[#C96A3A]">Sahayak</span>
+                    </>
+                  )}
                 </h2>
                 <p className="text-krishi-text mb-6">
                   {lang === 'hi'
