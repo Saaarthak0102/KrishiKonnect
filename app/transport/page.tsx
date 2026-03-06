@@ -407,7 +407,8 @@ export default function TransportPage() {
     }
 
     saveTransportBooking(booking, user?.uid)
-    setBookings([booking, ...bookings])
+    // Only keep the latest booking (replaces any previous booking)
+    setBookings([booking])
     setActiveBooking(booking)
     setSelectedTransporter(transporter)
     setFormData(prev => ({

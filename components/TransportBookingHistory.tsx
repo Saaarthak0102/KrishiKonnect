@@ -12,8 +12,8 @@ interface TransportBookingHistoryProps {
 
 const translations = {
   hi: {
-    yourTransportBookings: 'आपकी परिवहन बुकिंग',
-    noBookings: 'अभी तक कोई परिवहन बुकिंग नहीं है। मंडी से परिवहन बुक करें।',
+    yourTransportBookings: 'आपकी वर्तमान परिवहन बुकिंग',
+    noBookings: 'अभी तक कोई सक्रिय सेवा बुकिंग नहीं है। मंडी से परिवहन बुक करें।',
     crop: 'फसल',
     destination: 'गंतव्य',
     pickup: 'पिकअप',
@@ -26,8 +26,8 @@ const translations = {
     requestNewTransport: 'नई परिवहन बुक करें'
   },
   en: {
-    yourTransportBookings: 'Your Transport Bookings',
-    noBookings: 'No transport bookings yet. Book transport from mandi flow.',
+    yourTransportBookings: 'Your Current Booking',
+    noBookings: 'No active service bookings yet. Book transport from mandi flow.',
     crop: 'Crop',
     destination: 'Destination',
     pickup: 'Pickup',

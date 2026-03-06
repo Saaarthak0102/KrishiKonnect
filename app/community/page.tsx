@@ -1,29 +1,51 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import FeaturePageLayout from '@/components/FeaturePageLayout';
 import AskQuestionBox from '@/components/community/AskQuestionBox';
 import { mockCommunityPosts, Post, Reply } from '@/data/mockCommunityPosts';
+import { useTranslation } from '@/hooks/useTranslation';
 
-const FILTER_CATEGORIES = [
-  'All',
-  'Wheat',
-  'Rice',
-  'Vegetables',
-  'Fruits',
-  'Irrigation',
-  'Pest Control'
-];
+const FILTER_CATEGORIES_EN = ['All', 'Wheat', 'Rice', 'Vegetables', 'Fruits', 'Irrigation', 'Pest Control'];
+const FILTER_CATEGORIES_HI = ['सभी', 'गेहूँ', 'धान', 'सब्जियाँ', 'फल', 'सिंचाई', 'कीट नियंत्रण'];
+const FILTER_CATEGORIES_MAP = {
+  'All': 'All',
+  'Wheat': 'Wheat',
+  'Rice': 'Rice',
+  'Vegetables': 'Vegetables',
+  'Fruits': 'Fruits',
+  'Irrigation': 'Irrigation',
+  'Pest Control': 'Pest Control',
+  'सभी': 'All',
+  'गेहूँ': 'Wheat',
+  'धान': 'Rice',
+  'सब्जियाँ': 'Vegetables',
+  'फल': 'Fruits',
+  'सिंचाई': 'Irrigation',
+  'कीट नियंत्रण': 'Pest Control',
+};
 
 export default function CommunityPage() {
+  const { t, lang } = useTranslation();
   const [globalPosts, setGlobalPosts] = useState<Post[]>(mockCommunityPosts);
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
 
+  const FILTER_CATEGORIES = lang === 'en' ? FILTER_CATEGORIES_EN : FILTER_CATEGORIES_HI;
+
   // Filter posts based on selected category
-  const filteredPosts = selectedFilter === 'All'
-    ? globalPosts
-    : globalPosts.filter(post => post.cropTag === selectedFilter);
+  const filteredPosts = useMemo(() => {
+    const filterKey = FILTER_CATEGORIES_MAP[selectedFilter as keyof typeof FILTER_CATEGORIES_MAP] || 'All';
+    
+    if (filterKey === 'All') {
+      return globalPosts;
+    }
+    
+    return globalPosts.filter(post => {
+      const cropTagToMatch = lang === 'en' ? post.cropTag_en : post.cropTag_hi;
+      return cropTagToMatch === filterKey;
+    });
+  }, [globalPosts, selectedFilter, lang]);
 
   // Handle upvote
   const handleUpvote = (postId: string) => {
@@ -48,12 +70,14 @@ export default function CommunityPage() {
   };
 
   // Handle new post submission
-  const handleCreatePost = (content: string, cropTag: string) => {
+  const handleCreatePost = (contentText: string, cropTagValue: string) => {
     const newPost: Post = {
       id: Date.now().toString(),
-      author: 'Current User', // Replace with actual user name
-      content,
-      cropTag,
+      author: 'Current User',
+      content_en: lang === 'en' ? contentText : '',
+      content_hi: lang === 'hi' ? contentText : '',
+      cropTag_en: cropTagValue,
+      cropTag_hi: cropTagValue,
       upvotes: 0,
       replies: [],
       createdAt: 'Just now'
@@ -68,10 +92,10 @@ export default function CommunityPage() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-2xl md:text-3xl font-bold text-krishi-heading mb-2">
-              Community Discussions
+              {t('communityDiscussions')}
             </h1>
             <p className="text-krishi-text/80 mt-1">
-              Ask questions, share farming tips, and help fellow farmers.
+              {t('communityDescription')}
             </p>
           </div>
 
@@ -100,7 +124,7 @@ export default function CommunityPage() {
                   <div className="text-center">
                     <div className="text-6xl mb-4 text-krishi-highlight">💬</div>
                     <p className="text-krishi-text/70 text-lg">
-                      No posts found for this category.
+                      {t('noQuestionsFound')}
                     </p>
                   </div>
                 </div>
@@ -133,15 +157,17 @@ export default function CommunityPage() {
                         </div>
                       </div>
                       {/* Crop Tag */}
-                      {post.cropTag && (
+                      {(post.cropTag_en || post.cropTag_hi) && (
                         <span className="px-3 py-1 bg-krishi-primary/10 text-krishi-primary rounded-full text-sm font-medium">
-                          {post.cropTag}
+                          {lang === 'en' ? post.cropTag_en : post.cropTag_hi}
                         </span>
                       )}
                     </div>
 
                     {/* Post Content */}
-                    <p className="text-krishi-text mb-4">{post.content}</p>
+                    <p className="text-krishi-text mb-4">
+                      {lang === 'en' ? post.content_en : post.content_hi}
+                    </p>
 
                     {/* Actions */}
                     <div className="flex items-center gap-4 text-sm">
@@ -157,7 +183,9 @@ export default function CommunityPage() {
                         className="flex items-center gap-1 text-krishi-text hover:text-krishi-primary transition-colors"
                       >
                         <span className="text-lg">💬</span>
-                        <span>{post.replies.length} {post.replies.length === 1 ? 'Reply' : 'Replies'}</span>
+                        <span>
+                          {post.replies.length} {post.replies.length === 1 ? t('reply') : t('replies')}
+                        </span>
                       </button>
                     </div>
 
@@ -169,7 +197,9 @@ export default function CommunityPage() {
                             <p className="font-semibold text-sm text-krishi-heading mb-1">
                               {reply.author}
                             </p>
-                            <p className="text-sm text-krishi-text">{reply.content}</p>
+                            <p className="text-sm text-krishi-text">
+                              {lang === 'en' ? reply.content_en : reply.content_hi}
+                            </p>
                           </div>
                         ))}
                       </div>

@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import FeaturePageLayout from '@/components/FeaturePageLayout';
 import ThreadView from '@/components/community/ThreadView';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from '@/hooks/useTranslation';
 import {
   subscribeToReplies,
   addReply,
@@ -84,6 +85,7 @@ export default function ThreadPage() {
   const router = useRouter();
   const questionId = params.id as string;
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const [question, setQuestion] = useState<Question | null>(null);
   const [replies, setReplies] = useState<Reply[]>([]);
@@ -147,7 +149,7 @@ export default function ThreadPage() {
 
   const handleUpvoteQuestion = async (id: string) => {
     if (!user) {
-      alert('Please sign in to upvote');
+      alert(t('pleaseSignInToUpvote') || 'Please sign in to upvote');
       return;
     }
 
@@ -203,7 +205,7 @@ export default function ThreadPage() {
 
   const handleUpvoteReply = async (id: string) => {
     if (!user) {
-      alert('Please sign in to upvote');
+      alert(t('pleaseSignInToUpvote') || 'Please sign in to upvote');
       return;
     }
 
@@ -286,7 +288,7 @@ export default function ThreadPage() {
 
   const handlePostReply = async (replyText: string) => {
     if (!user) {
-      alert('Please sign in to post a reply');
+      alert(t('pleaseSignInToReply') || 'Please sign in to post a reply');
       return;
     }
 
@@ -321,7 +323,7 @@ export default function ThreadPage() {
       setReplies((prev) => prev.filter((r) => r.id !== optimisticReply.id));
     } catch (error) {
       console.error('Error posting reply:', error);
-      alert('Failed to post reply. Please try again.');
+      alert(t('failedToPostReply') || 'Failed to post reply. Please try again.');
       // Remove optimistic update on error
       setReplies((prev) => prev.filter((r) => !r.id.startsWith('temp-')));
     } finally {
@@ -349,15 +351,15 @@ export default function ThreadPage() {
         <div className="min-h-screen bg-gradient-to-b from-green-50 to-white py-8">
           <main className="container mx-auto px-4 max-w-5xl">
             <div className="bg-white rounded-2xl shadow-md p-12 text-center">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Question Not Found</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('questionNotFound') || 'Question Not Found'}</h2>
               <p className="text-gray-600 mb-6">
-                The question you're looking for doesn't exist or has been removed.
+                {t('questionNotFoundDesc') || "The question you're looking for doesn't exist or has been removed."}
               </p>
               <button
                 onClick={() => router.push('/community')}
                 className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
               >
-                Back to Community
+                {t('backToCommunity') || 'Back to Community'}
               </button>
             </div>
           </main>
@@ -376,7 +378,7 @@ export default function ThreadPage() {
             className="mb-6 flex items-center gap-2 text-green-600 hover:text-green-700 font-medium transition-colors"
           >
             <span>←</span>
-            <span>Back to Community</span>
+            <span>{t('backToCommunity') || 'Back to Community'}</span>
           </button>
 
           {/* Thread View */}
