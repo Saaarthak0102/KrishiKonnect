@@ -12,6 +12,12 @@ import { getFirestore } from 'firebase/firestore'
 // - NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
 // - NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
 // - NEXT_PUBLIC_FIREBASE_APP_ID
+// 
+// Additional optional variables:
+// - NEXT_PUBLIC_WEATHER_API_KEY (for weather data - public API)
+// 
+// Server-only variables (NOT prefixed with NEXT_PUBLIC_):
+// - GEMINI_API_KEY (for AI services - server-side only, never expose to client)
 
 // Validate required environment variables at startup
 const requiredEnvVars = [
@@ -29,9 +35,11 @@ if (typeof window !== "undefined") {
   )
 
   if (missingEnvVars.length > 0) {
-    console.error(
-      "Missing Firebase env variables:",
-      missingEnvVars.join(", ")
+    console.warn(
+      "⚠️ Missing Firebase environment variables:",
+      missingEnvVars.join(", "),
+      "\nThe application may not work correctly without these variables.",
+      "Please check your .env.local file."
     )
   }
 }

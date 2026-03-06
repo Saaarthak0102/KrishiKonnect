@@ -1,10 +1,4 @@
-// Mandi Service - crop-first Agmarknet integration with state-level caching
-
-// SECURITY NOTE:
-// The Data.gov API key must be stored in environment variables.
-// Never commit secrets directly into the repository.
-// Required environment variable:
-// - NEXT_PUBLIC_DATA_GOV_API_KEY
+// Mandi Service - Mock data provider for crop price information
 
 import cropsData from '@/data/crops.json'
 
@@ -32,30 +26,7 @@ export interface PriceTrend {
   modalPrice: number
 }
 
-interface AgmarknetApiResponse {
-  records?: Record<string, string>[]
-}
-
-interface StateCacheEntry {
-  data: MandiPrice[]
-  timestamp: number
-}
-
-const AGMARKNET_RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070'
-const AGMARKNET_BASE_URL = 'https://api.data.gov.in/resource'
-const DEFAULT_FETCH_LIMIT = 500
-const CACHE_TTL_MS = 5 * 60 * 1000
 const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-
-const DATA_GOV_API_KEY = process.env.NEXT_PUBLIC_DATA_GOV_API_KEY!
-
-// Validate required environment variables at startup
-if (!DATA_GOV_API_KEY) {
-  throw new Error(
-    'Missing required environment variable: NEXT_PUBLIC_DATA_GOV_API_KEY. ' +
-    'Please check your .env.local file and ensure the variable is set.'
-  )
-}
 
 const KNOWN_STATES = [
   'Andhra Pradesh',
@@ -184,185 +155,13 @@ const FALLBACK_MANDI_DATA: MandiPrice[] = [
   },
 ]
 
-const stateCache: Partial<Record<string, StateCacheEntry>> = {}
-const inFlightRequests: Partial<Record<string, Promise<MandiPrice[]>>> = {}
-
-// localStorage Cache Configuration
-const MANDI_CACHE_KEY = 'mandi_prices_cache'
-const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
-
-interface LocalStorageCachePayload {
-  state: string
-  data: MandiPrice[]
-  timestamp: number
-}
-
-/**
- * Save mandi price data to localStorage with timestamp
- * @param state The state to cache data for
- * @param data Array of mandi price records
- */
-function saveMandiCache(state: string, data: MandiPrice[]): void {
-  try {
-    if (typeof window === 'undefined') return // Not in browser
-
-    const cachePayload: LocalStorageCachePayload = {
-      state,
-      data,
-      timestamp: Date.now(),
-    }
-    localStorage.setItem(MANDI_CACHE_KEY, JSON.stringify(cachePayload))
-  } catch (error) {
-    // Silently fail if localStorage is unavailable
-    console.debug('Failed to save mandi cache:', error)
-  }
-}
-
-/**
- * Load mandi price data from localStorage if it exists and is valid
- * @param state The state to verify the cache matches
- * @returns Cached mandi price data or null if cache is invalid/expired
- */
-function loadMandiCache(state: string): MandiPrice[] | null {
-  try {
-    if (typeof window === 'undefined') return null // Not in browser
-
-    const cached = localStorage.getItem(MANDI_CACHE_KEY)
-    if (!cached) return null
-
-    const parsed = JSON.parse(cached) as LocalStorageCachePayload
-
-    // Verify this cache is for the requested state
-    if (parsed.state !== state) return null
-
-    // Check if cache has expired
-    const isExpired = Date.now() - parsed.timestamp > CACHE_DURATION
-    if (isExpired) return null
-
-    return parsed.data
-  } catch (error) {
-    // Silently fail if cache is corrupted
-    console.debug('Failed to load mandi cache:', error)
-    return null
-  }
-}
-
-function normalizeText(value: string | undefined | null): string {
-  return (value || '').trim()
-}
+// Helper functions
 
 function slugify(value: string): string {
-  return normalizeText(value)
+  return (value || '').trim()
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '')
-}
-
-function normalizeCropId(commodity: string): string {
-  const normalized = slugify(commodity)
-  if (!normalized) return ''
-
-  const exactIdMatch = cropsData.find((crop) => crop.id.toLowerCase() === normalized)
-  if (exactIdMatch) return exactIdMatch.id
-
-  const byEnglishName = cropsData.find(
-    (crop) => slugify(crop.name_en) === normalized
-  )
-
-  if (byEnglishName) return byEnglishName.id
-
-  return normalized
-}
-
-function parsePrice(value: string | undefined): number {
-  const parsed = Number.parseFloat((value || '').replace(/,/g, ''))
-  return Number.isFinite(parsed) ? Math.round(parsed) : 0
-}
-
-function parseDate(value: string | undefined): string {
-  const raw = normalizeText(value)
-  if (!raw) return new Date().toISOString().slice(0, 10)
-
-  const normalized = raw.includes('/') ? raw.split('/').reverse().join('-') : raw
-  const parsed = new Date(normalized)
-
-  if (Number.isNaN(parsed.getTime())) {
-    return new Date().toISOString().slice(0, 10)
-  }
-
-  return parsed.toISOString().slice(0, 10)
-}
-
-function getCropNames(cropId: string, commodity: string): { cropEn: string; cropHi: string } {
-  const fromCatalog = cropsData.find((crop) => crop.id === cropId)
-  if (fromCatalog) {
-    return {
-      cropEn: fromCatalog.name_en,
-      cropHi: fromCatalog.name_hi,
-    }
-  }
-
-  return {
-    cropEn: commodity,
-    cropHi: commodity,
-  }
-}
-
-function mapAgmarknetRecordToPrice(
-  row: Record<string, string>,
-  index: number,
-  requestedState: string
-): MandiPrice | null {
-  const commodity = normalizeText(row.commodity)
-  const market = normalizeText(row.market)
-  const state = normalizeText(row.state) || requestedState
-
-  if (!commodity || !market || !state) {
-    return null
-  }
-
-  const cropId = normalizeCropId(commodity)
-  if (!cropId) {
-    return null
-  }
-
-  const { cropEn, cropHi } = getCropNames(cropId, commodity)
-  const minPrice = parsePrice(row.min_price)
-  const maxPrice = parsePrice(row.max_price)
-  const modalPrice = parsePrice(row.modal_price)
-
-  return {
-    id: `${slugify(state)}-${slugify(market)}-${cropId}-${index}`,
-    crop: cropId,
-    cropEn,
-    cropHi,
-    mandi: market,
-    mandiEn: market,
-    mandiHi: market,
-    district: normalizeText(row.district) || state,
-    state,
-    minPrice,
-    maxPrice,
-    modalPrice,
-    date: parseDate(row.arrival_date),
-    trend: 'stable',
-    unit: 'quintal',
-    source: 'Agmarknet',
-  }
-}
-
-function dedupeMandiRows(rows: MandiPrice[]): MandiPrice[] {
-  const bucket = new Map<string, MandiPrice>()
-
-  for (const row of rows) {
-    const key = `${row.crop}-${row.mandiEn}-${row.date}`.toLowerCase()
-    const existing = bucket.get(key)
-    if (!existing || row.modalPrice > existing.modalPrice) {
-      bucket.set(key, row)
-    }
-  }
-
-  return Array.from(bucket.values())
 }
 
 function fallbackRowsForState(state: string): MandiPrice[] {
@@ -376,21 +175,6 @@ function fallbackRowsForState(state: string): MandiPrice[] {
   }
 
   return FALLBACK_MANDI_DATA
-}
-
-function buildAgmarknetUrl(state: string, limit: number): string {
-  const url = new URL(`${AGMARKNET_BASE_URL}/${AGMARKNET_RESOURCE_ID}`)
-  url.searchParams.set('api-key', DATA_GOV_API_KEY)
-  url.searchParams.set('format', 'json')
-  url.searchParams.set('limit', String(limit))
-  url.searchParams.set('offset', '0')
-  url.searchParams.set('filters[state]', state)
-  return url.toString()
-}
-
-function isCacheFresh(entry?: StateCacheEntry): boolean {
-  if (!entry) return false
-  return Date.now() - entry.timestamp < CACHE_TTL_MS
 }
 
 function toWeekdayLabel(dateText: string): string {
@@ -417,9 +201,15 @@ function makeSyntheticTrend(basePrice: number): PriceTrend[] {
   })
 }
 
+/**
+ * Fetch mandi prices from mock data
+ * @param state The state to filter prices for (optional)
+ * @param limit Not used - kept for API compatibility
+ * @returns Array of mandi prices
+ */
 export async function fetchMandiPrices(
   state?: string,
-  limit: number = DEFAULT_FETCH_LIMIT
+  limit?: number
 ): Promise<MandiPrice[]> {
   if (!state) {
     return FALLBACK_MANDI_DATA
@@ -430,109 +220,23 @@ export async function fetchMandiPrices(
     return FALLBACK_MANDI_DATA
   }
 
-  const cached = stateCache[stateKey]
-  if (cached && isCacheFresh(cached)) {
-    return cached.data
-  }
-
-  if (inFlightRequests[stateKey]) {
-    return inFlightRequests[stateKey]
-  }
-
-  inFlightRequests[stateKey] = (async () => {
-    try {
-      const response = await fetch(buildAgmarknetUrl(stateKey, limit), {
-        method: 'GET',
-        cache: 'no-store',
-      })
-
-      if (!response.ok) {
-        throw new Error(`Agmarknet request failed with status ${response.status}`)
-      }
-
-      const payload = (await response.json()) as AgmarknetApiResponse
-      const mappedRows = (payload.records || [])
-        .map((row, index) => mapAgmarknetRecordToPrice(row, index, stateKey))
-        .filter((row): row is MandiPrice => Boolean(row))
-
-      const normalizedRows = dedupeMandiRows(mappedRows)
-      const rowsToUse = normalizedRows.length > 0 ? normalizedRows : fallbackRowsForState(stateKey)
-
-      stateCache[stateKey] = {
-        data: rowsToUse,
-        timestamp: Date.now(),
-      }
-
-      return rowsToUse
-    } catch (error) {
-      console.error('Error fetching mandi prices:', error)
-      const fallbackRows = fallbackRowsForState(stateKey)
-
-      stateCache[stateKey] = {
-        data: fallbackRows,
-        timestamp: Date.now(),
-      }
-
-      return fallbackRows
-    } finally {
-      delete inFlightRequests[stateKey]
-    }
-  })()
-
-  return inFlightRequests[stateKey]
+  return fallbackRowsForState(stateKey)
 }
 
 /**
- * Fetch mandi prices with localStorage caching and background refresh.
- * Returns cached data immediately, then fetches fresh data in background.
- * Best used with callbacks to update UI when fresh data arrives.
+ * Fetch mandi prices with cache support
+ * Note: Caching is not needed for mock data, but kept for API compatibility
  * @param state The state to fetch prices for
- * @param limit The number of records to fetch
- * @param onFresh Callback invoked when fresh data is fetched (for background updates)
- * @returns Cached data immediately, fresh data via onFresh callback
+ * @param limit Not used - kept for API compatibility
+ * @param onFresh Not used - kept for API compatibility
+ * @returns Mock mandi price data
  */
 export async function fetchMandiPricesWithCache(
   state?: string,
-  limit: number = DEFAULT_FETCH_LIMIT,
+  limit?: number,
   onFresh?: (data: MandiPrice[]) => void
 ): Promise<MandiPrice[]> {
-  if (!state) {
-    return FALLBACK_MANDI_DATA
-  }
-
-  const stateKey = state.trim()
-  if (!stateKey) {
-    return FALLBACK_MANDI_DATA
-  }
-
-  // Try to load from localStorage first
-  const cachedData = loadMandiCache(stateKey)
-  if (cachedData) {
-    // If we have cached data, fetch fresh data in background
-    fetchMandiPrices(stateKey, limit)
-      .then((freshData) => {
-        saveMandiCache(stateKey, freshData)
-        if (onFresh) {
-          onFresh(freshData)
-        }
-      })
-      .catch((error) => {
-        console.debug('Background mandi fetch failed:', error)
-      })
-
-    // Return cached data immediately
-    return cachedData
-  }
-
-  // No cache exists, fetch from API and save to cache
-  try {
-    const freshData = await fetchMandiPrices(stateKey, limit)
-    saveMandiCache(stateKey, freshData)
-    return freshData
-  } catch (error) {
-    console.error('Failed to fetch mandi prices:', error)
-    return fallbackRowsForState(stateKey)
-  }
+  return fetchMandiPrices(state, limit)
 }
 
 export async function fetchPricesByCrop(
@@ -682,10 +386,4 @@ export function searchCrops<T extends { name_en?: string; name_hi?: string }>(
     const nameHi = (item.name_hi || '').toLowerCase()
     return nameEn.includes(term) || nameHi.includes(term)
   })
-}
-
-export function clearMandiStateCache(): void {
-  for (const key of Object.keys(stateCache)) {
-    delete stateCache[key]
-  }
 }
