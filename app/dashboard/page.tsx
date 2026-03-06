@@ -11,6 +11,7 @@ import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
 import MarketInsightCard from '@/components/dashboard/MarketInsightCard'
 import { getTransportBookings, type TransportBookingRecord } from '@/lib/transportBookings'
 import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
+import { getWeatherForLocation, type WeatherData } from '@/lib/weatherService'
 import cropsData from '@/data/crops.json'
 import mandiPricesData from '@/data/mandiPrices.json'
 
@@ -53,6 +54,7 @@ export default function DashboardPage() {
   const { starredCrops } = useStarredCrops()
   const [dashboardLoading, setDashboardLoading] = useState(true)
   const [transportBookings, setTransportBookings] = useState<TransportBookingRecord[]>([])
+  const [weather, setWeather] = useState<WeatherData | null>(null)
 
   // Compute My Crops from starred crops
   const myCrops = useMemo(() => {
@@ -93,6 +95,33 @@ export default function DashboardPage() {
   useEffect(() => {
     setTransportBookings(getTransportBookings())
   }, [])
+
+  // Fetch weather for the farmer's selected location with half-day cache support.
+  useEffect(() => {
+    if (!farmerProfile?.village || !farmerProfile?.state) {
+      setWeather(null)
+      return
+    }
+
+    let isMounted = true
+    const location = `${farmerProfile.village}, ${farmerProfile.state}`
+
+    getWeatherForLocation(location)
+      .then((data) => {
+        if (isMounted) {
+          setWeather(data)
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setWeather(null)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [farmerProfile?.village, farmerProfile?.state])
 
   const latestTransportBookings = useMemo(
     () => transportBookings.filter((booking) => booking.type === 'transport').slice(0, 3),
@@ -280,19 +309,19 @@ export default function DashboardPage() {
             <div className="grid grid-cols-2 gap-6 flex-1">
               <div>
                 <p className="text-sm text-gray-600 mb-1">{t.temperature}</p>
-                <p className="text-2xl font-bold text-[#B85C38]">28°C</p>
+                <p className="text-2xl font-bold text-[#B85C38]">{weather ? `${weather.temperatureC}°C` : '--'}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600 mb-1">{t.rainChance}</p>
-                <p className="text-2xl font-bold text-[#1F3C88]">20%</p>
+                <p className="text-2xl font-bold text-[#1F3C88]">{weather ? `${weather.rainChancePercent}%` : '--'}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600 mb-1">{t.humidity}</p>
-                <p className="text-2xl font-bold text-[#7FB069]">65%</p>
+                <p className="text-2xl font-bold text-[#7FB069]">{weather ? `${weather.humidityPercent}%` : '--'}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600 mb-1">{t.wind}</p>
-                <p className="text-2xl font-bold text-gray-700">10 km/h</p>
+                <p className="text-2xl font-bold text-gray-700">{weather ? `${weather.windSpeedKmh} km/h` : '--'}</p>
               </div>
             </div>
           </div>
