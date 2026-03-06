@@ -262,35 +262,59 @@ export default function CommunityPage() {
 
   return (
     <FeaturePageLayout>
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white py-8">
-        <main className="container mx-auto px-4 max-w-5xl">
+      <div className="min-h-screen bg-gradient-to-b from-[#f8f6ef] to-[#eef5ea] py-8 px-4">
+        <main className="max-w-5xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-              🌾 Community Discussions
+            <div className="flex justify-center mb-4">
+              <span className="text-4xl">🌾</span>
+            </div>
+            <h1 className="text-3xl font-semibold text-gray-800 mb-2">
+              Community Discussions
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <div className="w-16 h-1 bg-green-500 mx-auto mb-4 rounded-full"></div>
+            <p className="text-sm text-gray-600 max-w-2xl mx-auto">
               Ask questions, share farming tips, and help fellow farmers
             </p>
           </div>
 
           {/* Ask Question Box */}
-          <AskQuestionBox onSubmit={handleAskQuestion} isPosting={isPosting} />
+          <div className="mb-6">
+            <AskQuestionBox onSubmit={handleAskQuestion} isPosting={isPosting} />
+          </div>
 
           {/* Filter Bar */}
-          <FilterBar activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+          <div className="mb-6">
+            <FilterBar activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+          </div>
 
           {/* Questions Feed */}
-          <div className="space-y-4 mb-6">
+          <div className="space-y-6 mb-6">
             {filteredQuestions.length === 0 ? (
-              <div className="bg-white rounded-2xl shadow-md p-12 text-center">
-                <p className="text-gray-500 text-lg">
-                  {activeFilter === 'myCrops'
-                    ? '⭐ No questions about your starred crops yet. Try asking one!'
-                    : activeFilter === 'unanswered'
-                    ? '❓ All questions have been answered!'
-                    : '📋 No questions yet. Be the first to ask!'}
+              <div className="bg-white/80 backdrop-blur-sm border border-green-100 rounded-xl p-12 text-center">
+                <div className="inline-block mb-4">
+                  <span className="text-6xl">🌱</span>
+                </div>
+                <p className="text-gray-700 text-lg font-medium mb-2">
+                  Community is just getting started
                 </p>
+                <p className="text-gray-600 text-base mb-6">
+                  {activeFilter === 'myCrops'
+                    ? 'No questions about your starred crops yet. Ask the first question and help fellow farmers!'
+                    : activeFilter === 'unanswered'
+                    ? 'All questions have been answered! Great work helping the community.'
+                    : 'Ask the first question and help fellow farmers!'}
+                </p>
+                <button
+                  onClick={() => {
+                    const element = document.querySelector('[class*="ask-question"]');
+                    element?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors inline-flex items-center gap-2"
+                >
+                  <span>🌱</span>
+                  Ask a Question
+                </button>
               </div>
             ) : (
               filteredQuestions.slice(0, visibleCount).map((question) => (

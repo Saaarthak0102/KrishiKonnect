@@ -55,10 +55,10 @@ export default function AskQuestionBox({ onSubmit, isPosting = false }: AskQuest
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-6 mb-6">
+    <div className="bg-white/80 backdrop-blur-sm border border-green-100 rounded-xl shadow-sm p-6 mb-6 ask-question">
       <div className="mb-4">
         <h2 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
-          💬 Ask the Community
+          🌱 Ask the Community
         </h2>
         <p className="text-sm text-gray-600">Share your farming questions and get help from experienced farmers</p>
       </div>

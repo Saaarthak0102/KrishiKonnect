@@ -19,16 +19,16 @@ export default function FilterBar({ activeFilter, onFilterChange }: FilterBarPro
   ];
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-4 mb-6">
-      <div className="flex flex-wrap gap-3">
+    <div className="bg-white/80 backdrop-blur-sm border border-green-100 rounded-xl shadow-sm p-4 mb-6">
+      <div className="flex flex-wrap gap-2">
         {filters.map((filter) => (
           <button
             key={filter.id}
             onClick={() => onFilterChange(filter.id)}
-            className={`px-5 py-2.5 rounded-full font-medium transition-all ${
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${
               activeFilter === filter.id
-                ? 'bg-green-600 text-white shadow-md'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-green-600 text-white shadow-sm'
+                : 'bg-green-50 text-green-800 hover:bg-green-100'
             }`}
           >
             <span className="mr-1.5">{filter.icon}</span>
