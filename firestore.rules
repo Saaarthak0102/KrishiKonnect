@@ -2,6 +2,21 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Users Collection - Store farmer profiles and starred crops
+    match /users/{userId} {
+      // Only authenticated users can read their own profile
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // Only authenticated users can write their own profile
+      allow write: if request.auth != null && request.auth.uid == userId;
+      
+      // Transport Bookings Subcollection
+      match /transportBookings/{bookingId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
     match /community_feed/{docId} {
       allow read: if true;
       allow write: if request.auth != null;
