@@ -20,55 +20,299 @@ const GEMINI_MODELS = ['gemini-pro', 'gemini-2.0-flash', 'gemini-2.5-flash']
 const FALLBACK_REPLY =
   'The AI Advisor is currently unavailable. Please try again later or ask your question in the community forum.'
 
-const FARMING_KEYWORDS = [
-  'crop',
-  'farm',
-  'farming',
-  'farmer',
-  'soil',
-  'irrigation',
-  'water',
-  'rain',
-  'fertilizer',
-  'manure',
-  'pest',
-  'disease',
-  'seed',
-  'harvest',
-  'mandi',
-  'price',
-  'weather',
+// Common crop names for fallback detection
+const COMMON_CROPS = [
+  // English names
   'wheat',
   'rice',
   'maize',
+  'corn',
+  'banana',
+  'mango',
+  'sugarcane',
   'cotton',
+  'potato',
+  'tomato',
+  'onion',
+  'garlic',
+  'carrot',
+  'cabbage',
+  'lettuce',
+  'spinach',
+  'broccoli',
+  'cauliflower',
+  'peas',
+  'beans',
+  'lentil',
+  'chickpea',
+  'barley',
+  'oats',
+  'rye',
+  'sorghum',
+  'millets',
   'mustard',
-  'vegetable',
-  'kheti',
+  'rapeseed',
+  'sesame',
+  'groundnut',
+  'coconut',
+  'palm',
+  'tea',
+  'coffee',
+  'cocoa',
+  'spices',
+  'chili',
+  'cumin',
+  'coriander',
+  'turmeric',
+  'ginger',
+  'eggplant',
+  'cucumber',
+  'squash',
+  'melon',
+  'watermelon',
+  'papaya',
+  'guava',
+  'apple',
+  'grapes',
+  'citrus',
+  'orange',
+  'lemon',
+  'lime',
+  'strawberry',
+  'blueberry',
+  'raspberry',
+  'brinjal',
+  'okra',
+  'turnip',
+  'radish',
+  'beet',
+  // Hinglish (Roman script Hindi)
+  'gehun',
+  'gehu',
+  'chawal',
+  'makka',
+  'kela',
+  'aam',
+  'ganna',
+  'kapas',
+  'aloo',
+  'tamatar',
+  'pyaz',
+  'lahsun',
+  'gajar',
+  'gobhi',
+  'patta gobhi',
+  'pulak',
+  'broccoli',
+  'gobi',
+  'baigan',
+  'khire',
+  'kaddu',
+  'kharbuza',
+  'tarbooz',
+  'papita',
+  'amrud',
+  'seba',
+  'angoor',
+  'santra',
+  'nimbu',
+  'khatte nimbu',
+  'dal',
+  'masoor',
+  'arhar',
+  'moong',
+  'urad',
+  'chana',
+  'urad dal',
+  'moong dal',
+  'matar',
+  'rajma',
+  'sem',
+  'sarso',
+  'tel',
+  'tilhan',
+  'mungfali',
+  'mungphali',
+  'til',
+  'gul',
+  'chai',
+  'kopi',
+  'kakao',
+  'masala',
+  'mirch',
+  'jeera',
+  'dhania',
+  'dhaniya',
+  'haldi',
+  'adrak',
+  'sukha adrak',
+  'bath',
+  'bjra',
+  'jowar',
+  'bajri',
+  'barley',
+  'jau',
+  'oat',
+  'rai',
+  'kharif',
+  'rabi',
   'fasal',
-  'beej',
-  'mitti',
-  'sinchai',
-  'mausam',
-  'urvarak',
-  'bimari',
-  'rog',
-  'kisan',
-  'mandi bhav',
-  'खेत',
-  'खेती',
+  'fasl',
+  'kheti',
+  'kheth',
+  'farming',
+  'farm',
+  'crop',
+  // Hindi Devanagari names
+  'गेहूं',
+  'गेहु',
+  'चावल',
+  'मक्का',
+  'केला',
+  'आम',
+  'गन्ना',
+  'कपास',
+  'आलू',
+  'टमाटर',
+  'प्याज',
+  'लहसुन',
+  'गाजर',
+  'पत्तागोभी',
+  'पालक',
+  'ब्रोकली',
+  'फूलगोभी',
+  'मिर्च',
+  'बैंगन',
+  'खीरा',
+  'कद्दू',
+  'खरबूजा',
+  'तरबूज',
+  'पपीता',
+  'अमरूद',
+  'सेब',
+  'अंगूर',
+  'संतरा',
+  'नींबू',
+  'दाल',
+  'मसूर',
+  'अरहर',
+  'मूंग',
+  'उड़द',
+  'चना',
+  'मटर',
+  'राजमा',
+  'सेम',
+  'सरसों',
+  'तेल',
+  'तिल',
+  'मूंगफली',
+  'नारियल',
+  'चाय',
+  'कॉफी',
+  'कोको',
+  'मसाला',
+  'जीरा',
+  'धनिया',
+  'हल्दी',
+  'अदरक',
+  'हरड़',
+  'ज्वार',
+  'बाजरा',
+  'जौ',
+  'राई',
+  'खरीफ',
+  'रबी',
   'फसल',
-  'बीज',
-  'मंडी',
-  'मौसम',
+  'खेती',
   'सिंचाई',
+  'मिट्टी',
+  'मंडी',
+  'कीट',
+  'रोग',
+  'बीमारी',
+  'दवा',
+  'खाद',
   'उर्वरक',
-  'किसान',
+  'बीज',
 ]
 
-function isLikelyFarmingQuestion(question: string): boolean {
+/**
+ * Check if question contains any crop names (fast local check)
+ */
+function containsCropName(question: string): boolean {
   const lowerQuestion = question.toLowerCase()
-  return FARMING_KEYWORDS.some((keyword) => lowerQuestion.includes(keyword))
+  return COMMON_CROPS.some((crop) => lowerQuestion.includes(crop))
+}
+
+/**
+ * Use Gemini to classify if a question is farming-related
+ * Returns true if farming-related, false otherwise
+ */
+async function classifyQuestionWithGemini(
+  question: string,
+  apiKey: string
+): Promise<boolean> {
+  const classificationPrompt = `You are Krishi Sahayak, an agriculture advisor for Indian farmers.
+
+First determine if the following question is related to farming, agriculture, crops, irrigation, soil, weather, fertilizers, pests, mandi prices, or farm management.
+
+If it is farming related respond with:
+FARMING: YES
+
+If it is unrelated respond with:
+FARMING: NO
+
+Question:
+${question}`
+
+  try {
+    const requestBody = {
+      contents: [
+        {
+          parts: [{ text: classificationPrompt }],
+        },
+      ],
+    }
+
+    for (const model of GEMINI_MODELS) {
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`
+
+      const response = await fetch(`${endpoint}?key=${apiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      })
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          continue
+        }
+        continue
+      }
+
+      const data = await response.json()
+      const responseText = data?.candidates?.[0]?.content?.parts?.[0]?.text
+
+      if (typeof responseText === 'string' && responseText.includes('FARMING: YES')) {
+        return true
+      }
+
+      if (typeof responseText === 'string' && responseText.includes('FARMING: NO')) {
+        return false
+      }
+    }
+
+    // If classification fails, return false to be safe
+    return false
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[AI Advisor] Classification API error:', error)
+    }
+    // Default to false if classification fails
+    return false
+  }
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse<AIResponseBody>> {
@@ -108,13 +352,23 @@ export async function POST(req: NextRequest): Promise<NextResponse<AIResponseBod
 
     const responseLanguage = toResponseLanguage(detectedLanguage)
 
-    if (!isLikelyFarmingQuestion(userQuestion)) {
+    // Step 1: Check if question contains a crop name (fast local check)
+    const hasCropName = containsCropName(userQuestion)
+
+    // Step 2: If no crop name, use AI classification
+    let isFarmingRelated = hasCropName
+    if (!hasCropName) {
+      isFarmingRelated = await classifyQuestionWithGemini(userQuestion, geminiApiKey)
+    }
+
+    // Step 3: If not farming-related, return out-of-scope message
+    if (!isFarmingRelated) {
       const outOfScopeReply =
         responseLanguage === 'hindi'
-          ? 'कृषि सहायक मुख्य रूप से खेती से जुड़े सवालों में मदद करता है। कृपया फसल, कीट, सिंचाई, उर्वरक, मौसम या मंडी भाव से जुड़ा प्रश्न पूछें।'
+          ? '⚠️ कृषि सहायक केवल खेती से जुड़े सवालों का जवाब देता है।\n\nकृपया निम्न विषयों के बारे में पूछें:\n• फसलें और बीज\n• कीटों और बीमारियों का इलाज\n• सिंचाई और जल प्रबंधन\n• उर्वरक और खाद\n• मौसम और फसल की योजना\n• मंडी के भाव'
           : responseLanguage === 'hinglish'
-            ? 'Krishi Sahayak mainly kheti se jude sawalon me madad karta hai. Kripya fasal, keet, sinchai, khad, mausam, ya mandi bhav se juda sawal puchhein.'
-            : 'Krishi Sahayak focuses on farming advice. Please ask about crops, pests, irrigation, fertilizer, weather, or mandi prices.'
+            ? '⚠️ Krishi Sahayak sirf farming-related sawalon ka jawab deta hai.\n\nKripya in vishayon ke barein me puchhen:\n• Fasal aur beej\n• Keet aur bimari ka ilaj\n• Sinchai aur jal prabandhan\n• Khad aur khad\n• Mausam aur fasal ki yojana\n• Mandi ke bhav'
+            : '⚠️ Krishi Sahayak only answers farming-related questions.\n\nPlease ask about:\n• Crops and seeds\n• Pest and disease treatment\n• Irrigation and water management\n• Fertilizers and manure\n• Weather and crop planning\n• Mandi prices'
 
       return NextResponse.json({ reply: outOfScopeReply }, { status: 200 })
     }
