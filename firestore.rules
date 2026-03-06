@@ -112,21 +112,51 @@ service cloud.firestore {
 
       // Only authenticated users can write (via Cloud Functions or client-side updates)
       allow write: if isSignedIn();
+    }
 
-        // Bookings Collection - Transport and service bookings
-        match /bookings/{bookingId} {
-          // Users can only read their own bookings
-          allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+    // AI Advisor Chats Collection - Krishi Sahayak
+    match /ai_chats/{chatId} {
+      // Users can only read their own chats
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
 
-          // Users can only create bookings for themselves
-          allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      // Users can only create chats for themselves
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
 
-          // Users can only update their own bookings
-          allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      // Users can only update their own chats
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
 
-          // Users can only delete their own bookings
-          allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
-        }
+      // Users can only delete their own chats
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      // Messages Subcollection
+      match /messages/{messageId} {
+        // Users can only read messages from their own chats
+        allow read: if isSignedIn() && get(/databases/$(database)/documents/ai_chats/$(chatId)).data.userId == request.auth.uid;
+
+        // Users can only create messages in their own chats
+        allow create: if isSignedIn() && get(/databases/$(database)/documents/ai_chats/$(chatId)).data.userId == request.auth.uid;
+
+        // Users cannot update messages (messages are immutable)
+        allow update: if false;
+
+        // Users cannot delete messages (messages are immutable)
+        allow delete: if false;
+      }
+    }
+
+    // Bookings Collection - Transport and service bookings
+    match /bookings/{bookingId} {
+      // Users can only read their own bookings
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      // Users can only create bookings for themselves
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+
+      // Users can only update their own bookings
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      // Users can only delete their own bookings
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
   }
 }

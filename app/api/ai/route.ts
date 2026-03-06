@@ -12,6 +12,8 @@ import { NextRequest, NextResponse } from 'next/server'
 interface AIRequestBody {
   prompt: string
   language?: 'en' | 'hi'
+  imageUrl?: string
+  systemPrompt?: string
 }
 
 interface AIResponseBody {
@@ -28,7 +30,9 @@ interface AIResponseBody {
  * Request body:
  * {
  *   "prompt": "Your farming question here",
- *   "language": "en" or "hi"
+ *   "language": "en" or "hi",
+ *   "imageUrl": "optional image URL for crop analysis",
+ *   "systemPrompt": "optional custom system prompt"
  * }
  * 
  * Response:
@@ -54,7 +58,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<AIResponseBod
       )
     }
 
-    const { prompt, language = 'en' } = body
+    const { prompt, language = 'en', imageUrl, systemPrompt } = body
 
     // Validate prompt
     if (!prompt || typeof prompt !== 'string' || prompt.trim().length === 0) {
@@ -69,9 +73,13 @@ export async function POST(req: NextRequest): Promise<NextResponse<AIResponseBod
 
     // Check if Gemini API key is configured
     const geminiApiKey = process.env.GEMINI_API_KEY
+    
+    // Debug log to verify API key is loaded
+    console.log('Gemini API Key Loaded:', !!geminiApiKey)
 
     if (!geminiApiKey) {
-      console.warn('GEMINI_API_KEY is not configured. Using fallback response.')
+      console.error('GEMINI_API_KEY is not configured in environment variables.')
+      console.warn('Using fallback response instead of Gemini API.')
       return NextResponse.json(
         {
           success: true,
@@ -83,7 +91,15 @@ export async function POST(req: NextRequest): Promise<NextResponse<AIResponseBod
 
     // Call Gemini API
     try {
-      const response = await callGeminiAPI(prompt, geminiApiKey, language)
+      console.log('Calling Gemini API with prompt length:', prompt.length)
+      const response = await callGeminiAPI(
+        prompt,
+        geminiApiKey,
+        language,
+        imageUrl,
+        systemPrompt
+      )
+      console.log('Gemini API response received successfully')
       return NextResponse.json(
         {
           success: true,
@@ -93,6 +109,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<AIResponseBod
       )
     } catch (error) {
       console.error('Gemini API error:', error)
+      console.error('Full error details:', error instanceof Error ? error.message : String(error))
       
       // Fall back to canned response if Gemini fails
       console.warn('Gemini API call failed. Using fallback response.')
@@ -118,29 +135,65 @@ export async function POST(req: NextRequest): Promise<NextResponse<AIResponseBod
 
 /**
  * Calls the Google Gemini API with the provided prompt
+ * Supports text and image inputs for crop analysis
  */
 async function callGeminiAPI(
   prompt: string,
   apiKey: string,
-  language: 'en' | 'hi'
+  language: 'en' | 'hi',
+  imageUrl?: string,
+  systemPrompt?: string
 ): Promise<string> {
-  const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent'
+  // Use Gemini 1.5 model for better multimodal support
+  const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent'
 
-  // Add language context to the prompt
-  const enhancedPrompt = language === 'hi' 
-    ? `You are an agricultural expert helping Indian farmers. Respond in Hindi (Devanagari script). ${prompt}`
-    : `You are an agricultural expert helping farmers. ${prompt}`
+  // Build the request content with text and optionally image
+  const parts: any[] = []
+
+  // Add image if provided
+  if (imageUrl) {
+    try {
+      // Fetch image and convert to base64
+      const imageResponse = await fetch(imageUrl)
+      if (!imageResponse.ok) {
+        throw new Error(`Failed to fetch image: ${imageResponse.statusText}`)
+      }
+
+      const buffer = await imageResponse.arrayBuffer()
+      const base64Image = Buffer.from(buffer).toString('base64')
+      const mimeType = imageResponse.headers.get('content-type') || 'image/jpeg'
+
+      parts.push({
+        inlineData: {
+          mimeType,
+          data: base64Image,
+        },
+      })
+    } catch (error) {
+      console.warn('Could not process image, continuing with text only:', error)
+    }
+  }
+
+  // Add text prompt - create comprehensive agricultural context
+  const enhancedSystemPrompt = systemPrompt || buildDefaultSystemPrompt(language)
+  const fullPrompt = `${enhancedSystemPrompt}\n\nUser Question:\n${prompt}`
+
+  parts.push({
+    text: fullPrompt,
+  })
 
   const requestBody = {
     contents: [
       {
-        parts: [
-          {
-            text: enhancedPrompt,
-          },
-        ],
+        parts,
       },
     ],
+    generationConfig: {
+      temperature: 0.7,
+      topK: 40,
+      topP: 0.95,
+      maxOutputTokens: 1024,
+    },
   }
 
   const response = await fetch(`${apiUrl}?key=${apiKey}`, {
@@ -152,9 +205,14 @@ async function callGeminiAPI(
   })
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}))
+    // Log the full error response for debugging
+    const errorText = await response.text()
+    console.error(
+      `Gemini API responded with status ${response.status}:`,
+      errorText
+    )
     throw new Error(
-      `Gemini API responded with status ${response.status}: ${JSON.stringify(errorData)}`
+      `Gemini API responded with status ${response.status}: ${errorText}`
     )
   }
 
@@ -172,6 +230,50 @@ async function callGeminiAPI(
   }
 
   throw new Error('Invalid response format from Gemini API')
+}
+
+/**
+ * Builds a comprehensive default system prompt for agricultural advice
+ */
+function buildDefaultSystemPrompt(language: 'en' | 'hi'): string {
+  if (language === 'hi') {
+    return `आप कृषि सहायक हैं, भारतीय किसानों के लिए एक AI कृषि सलाहकार।
+
+आपकी भूमिका:
+- फसल रोगों और कीटों की पहचान करना
+- मिट्टी की तैयारी में मदद करना
+- सिंचाई की सलाह देना
+- उर्वरक की सिफारिश करना
+- कटाई के टिप्स देना
+- व्यावहारिक कृषि मार्गदर्शन प्रदान करना
+
+हमेशा निम्नलिखित प्रारूप में उत्तर दें:
+1. **संभावित समस्या**: समस्या की पहचान
+2. **तुरंत क्या करें**: तत्काल कार्रवाई
+3. **बचाव**: भविष्य में रोकथाम के उपाय
+
+सरल भाषा का उपयोग करें और किसान के अनुकूल बनें। बुलेट पॉइंट्स का उपयोग करें।`
+  }
+
+  return `You are Krishi Sahayak, an AI agricultural advisor for Indian farmers.
+
+Your role:
+- Help farmers identify crop diseases and pests
+- Provide advice on soil preparation
+- Give irrigation recommendations
+- Suggest fertilizer applications
+- Offer pest control solutions
+- Share harvesting tips
+- Provide practical agricultural guidance
+
+Always structure your responses as follows:
+1. **Possible Problem/Issue**: Identify the issue
+2. **Immediate Action**: What to do right now
+3. **Prevention**: How to prevent this in the future
+
+Keep the language simple and farmer-friendly. Use bullet points and avoid long paragraphs.
+
+IMPORTANT: Always respond in the SAME language as the farmer's question.`
 }
 
 /**

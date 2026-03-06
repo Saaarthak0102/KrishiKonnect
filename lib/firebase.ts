@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage'
 
 // SECURITY NOTE:
 // All Firebase API keys must be stored in environment variables.
@@ -68,5 +69,8 @@ auth.settings.appVerificationDisabledForTesting = false
 
 // Initialize Firestore
 export const db = getFirestore(app)
+
+// Initialize Storage
+export const storage = getStorage(app)
 
 export default app

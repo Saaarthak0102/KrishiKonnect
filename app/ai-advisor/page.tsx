@@ -1,160 +1,334 @@
 'use client'
 
-import Footer from '@/components/Footer'
-import FeaturePageLayout from '@/components/FeaturePageLayout'
+import { useEffect, useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
-import { translations } from '@/lib/translations'
+import {
+  createNewChat,
+  fetchUserChats,
+  subscribeToChat,
+  subscribeToChats,
+  addMessageToChat,
+  generateKrishiAdvice,
+  uploadImageToStorage,
+  deleteChat,
+  updateChatTitle,
+  getGreetingMessage,
+  getFarmerContext,
+  type AIChat,
+  type AIMessage,
+} from '@/lib/aiAdvisor'
+import Sidebar from '@/components/Sidebar'
+import ChatWindow from '@/components/ai-advisor/ChatWindow'
+import ChatHistorySidebar from '@/components/ai-advisor/ChatHistorySidebar'
 
 export default function AIAdvisorPage() {
+  const router = useRouter()
+  const { user, isAuthenticated, loading: authLoading } = useAuth()
   const { lang } = useLanguage()
-  const t = translations[lang]
-  const [query, setQuery] = useState('')
-  const [response, setResponse] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+
+  // State management
+  const [chats, setChats] = useState<AIChat[]>([])
+  const [currentChatId, setCurrentChatId] = useState<string | null>(null)
+  const [messages, setMessages] = useState<AIMessage[]>([])
+  const [loading, setLoading] = useState(true)
+  const [isLoadingChats, setIsLoadingChats] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const unsubscribeRef = useRef<(() => void) | null>(null)
 
-  const handleGetAdvice = async () => {
-    if (!query.trim()) {
-      setError(lang === 'hi' ? 'कृपया एक सवाल लिखें' : 'Please enter a question')
-      return
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push('/login')
     }
+  }, [authLoading, isAuthenticated, router])
 
-    setIsLoading(true)
-    setError(null)
-    setResponse(null)
+  // Subscribe to user chats in real-time
+  useEffect(() => {
+    if (!user?.uid) return
 
     try {
-      const res = await fetch('/api/ai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const unsubscribe = subscribeToChats(
+        user.uid,
+        (newChats) => {
+          setChats(newChats)
+          
+          // If no current chat selected and chats exist, select the most recent
+          if (!currentChatId && newChats.length > 0) {
+            setCurrentChatId(newChats[0].id)
+          }
+          
+          setIsLoadingChats(false)
         },
-        body: JSON.stringify({
-          prompt: query,
-          language: lang,
-        }),
-      })
-
-      if (!res.ok) {
-        throw new Error(
-          lang === 'hi' 
-            ? `त्रुटि: ${res.status}` 
-            : `Error: ${res.status}`
-        )
-      }
-
-      const data = await res.json()
-
-      if (data.success && data.text) {
-        setResponse(data.text)
-      } else {
-        throw new Error(data.error || (lang === 'hi' ? 'अनुत्तरदायी प्रतिक्रिया' : 'Invalid response'))
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error'
-      console.error('AI Advisor error:', errorMessage)
-      setError(
-        lang === 'hi'
-          ? `त्रुटि: ${errorMessage}\nकृपया बाद में कोशिश करें।`
-          : `Error: ${errorMessage}\nPlease try again later.`
+        (error) => {
+          console.error('Error subscribing to chats:', error)
+          setError('Failed to load chat list')
+          setIsLoadingChats(false)
+        }
       )
-    } finally {
-      setIsLoading(false)
+
+      return () => unsubscribe()
+    } catch (err) {
+      console.error('Error setting up chat subscription:', err)
+      setIsLoadingChats(false)
+    }
+  }, [user?.uid, currentChatId])
+
+  // Create first chat if user has no chats
+  useEffect(() => {
+    if (!user?.uid || chats.length > 0 || isLoadingChats) return
+
+    const createFirstChat = async () => {
+      try {
+        const newChatId = await createNewChat(user.uid, lang as 'en' | 'hi')
+        setCurrentChatId(newChatId)
+
+        // Add greeting message
+        await addMessageToChat(
+          newChatId,
+          'assistant',
+          getGreetingMessage(lang as 'en' | 'hi')
+        )
+      } catch (err) {
+        console.error('Error creating first chat:', err)
+        setError(err instanceof Error ? err.message : 'Failed to create chat')
+      }
+    }
+
+    createFirstChat()
+  }, [user?.uid, chats.length, isLoadingChats, lang])
+
+  // Subscribe to current chat messages
+  useEffect(() => {
+    if (!currentChatId) return
+
+    // Cleanup previous subscription
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current()
+    }
+
+    setLoading(true)
+    setMessages([])
+
+    try {
+      unsubscribeRef.current = subscribeToChat(
+        currentChatId,
+        (newMessages) => {
+          setMessages(newMessages)
+          setLoading(false)
+        },
+        (err) => {
+          console.error('Chat subscription error:', err)
+          setError('Failed to load messages')
+        }
+      )
+    } catch (err) {
+      console.error('Error subscribing to chat:', err)
+      setError('Failed to load messages')
+    }
+
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current()
+      }
+    }
+  }, [currentChatId])
+
+  const handleNewChat = async () => {
+    if (!user?.uid) return
+
+    try {
+      const newChatId = await createNewChat(user.uid, lang as 'en' | 'hi')
+      const newChat: AIChat = {
+        id: newChatId,
+        userId: user.uid,
+        title: lang === 'hi' ? 'नई चैट' : 'New Chat',
+        createdAt: new Date(),
+        language: lang as 'en' | 'hi',
+      }
+      setChats([newChat, ...chats])
+      setCurrentChatId(newChatId)
+      setMessages([])
+
+      // Add greeting message
+      await addMessageToChat(
+        newChatId,
+        'assistant',
+        getGreetingMessage(lang as 'en' | 'hi')
+      )
+    } catch (err) {
+      console.error('Error creating new chat:', err)
+      setError(err instanceof Error ? err.message : 'Failed to create chat')
     }
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Allow Ctrl+Enter to submit
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-      handleGetAdvice()
+  const handleSelectChat = (chatId: string) => {
+    setCurrentChatId(chatId)
+  }
+
+  const handleDeleteChat = async (chatId: string) => {
+    try {
+      await deleteChat(chatId)
+      setChats(chats.filter((c) => c.id !== chatId))
+      if (currentChatId === chatId) {
+        setCurrentChatId(null)
+        setMessages([])
+        if (chats.length > 1) {
+          const nextChat = chats.find((c) => c.id !== chatId)
+          if (nextChat) {
+            setCurrentChatId(nextChat.id)
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Error deleting chat:', err)
+      setError(err instanceof Error ? err.message : 'Failed to delete chat')
     }
+  }
+
+  const handleSendMessage = async (
+    content: string,
+    imageFile?: File,
+    imageUrl?: string
+  ) => {
+    if (!currentChatId || !user?.uid) return
+
+    try {
+      setError(null)
+
+      // Get current chat to check if we should auto-generate title
+      const currentChat = chats.find((c) => c.id === currentChatId)
+      const isFirstMessage = messages.length === 1 // Only greeting message
+      const isDefaultTitle = currentChat?.title === 'New Chat' || currentChat?.title === 'नई चैट'
+
+      // Handle image upload if file is provided
+      let finalImageUrl = imageUrl
+      if (imageFile) {
+        finalImageUrl = await uploadImageToStorage(imageFile, currentChatId, user.uid)
+      }
+
+      // Add user message
+      await addMessageToChat(currentChatId, 'user', content, finalImageUrl)
+
+      // Auto-generate title from first user message
+      if (isFirstMessage && isDefaultTitle) {
+        const autoTitle = content.substring(0, 40).trim()
+        if (autoTitle) {
+          try {
+            await updateChatTitle(currentChatId, autoTitle)
+          } catch (err) {
+            console.error('Error updating chat title:', err)
+          }
+        }
+      }
+
+      // Get farmer context for better advice
+      const farmerContext = await getFarmerContext(user.uid)
+
+      // Generate AI response
+      const aiResponse = await generateKrishiAdvice(
+        content,
+        finalImageUrl,
+        farmerContext || undefined,
+        lang as 'en' | 'hi'
+      )
+
+      // Add AI response
+      await addMessageToChat(currentChatId, 'assistant', aiResponse)
+    } catch (err) {
+      console.error('Error sending message:', err)
+      setError(err instanceof Error ? err.message : 'Failed to send message')
+    }
+  }
+
+  if (authLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-krishi-bg">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="w-12 h-12 border-4 border-krishi-primary border-t-krishi-agriculture rounded-full"
+        />
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return null
   }
 
   return (
-    <FeaturePageLayout>
-      <div className="min-h-screen">
-        <main className="container mx-auto px-4 py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h1 className="text-4xl md:text-5xl font-bold text-krishi-heading mb-4">
-              {t.aiAdvisorTitle}
-            </h1>
-            <p className="text-xl text-krishi-text mb-2">{t.aiAdvisorSubtitle}</p>
-            <p className="text-krishi-text/80 max-w-2xl mx-auto">{t.aiAdvisorDescription}</p>
-          </motion.div>
+    <div className="h-screen flex flex-col bg-krishi-bg overflow-hidden">
+      {/* Header - Provides spacing for sticky sidebar */}
+      <header className="sticky top-0 z-50 bg-white shadow-sm border-b-2 border-gray-200">
+        <div className="px-4 py-4 flex items-center justify-center">
+          <h1 className="text-lg md:text-xl font-bold text-krishi-heading">
+            {lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak'} 🌾
+          </h1>
+        </div>
+      </header>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="max-w-3xl mx-auto"
-          >
-            {/* Input Section */}
-            <div className="bg-white border-2 border-krishi-border rounded-lg p-6 shadow-sm mb-6">
-              <textarea
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyPress={handleKeyPress}
-                disabled={isLoading}
-                className="w-full px-4 py-3 border-2 border-krishi-border rounded-lg focus:border-krishi-primary outline-none resize-none disabled:bg-gray-100 disabled:cursor-not-allowed"
-                rows={4}
-                placeholder={t.askQuestion}
-              />
-              <button
-                onClick={handleGetAdvice}
-                disabled={isLoading}
-                className="mt-4 w-full bg-krishi-primary text-white py-3 rounded-lg font-semibold hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading
-                  ? lang === 'hi'
-                    ? 'प्रतीक्षा करें...'
-                    : 'Loading...'
-                  : t.getAdvice}
-              </button>
-            </div>
+      {/* 3-Column Layout: Dashboard Sidebar | Chat Window | Chat History Sidebar */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* LEFT COLUMN: Dashboard Sidebar */}
+        <Sidebar defaultExpanded={true} />
 
-            {/* Error Message */}
-            {error && (
+        {/* CENTER COLUMN: Chat Window */}
+        <div className="flex flex-1 flex-col overflow-hidden bg-white">
+          {/* Chat Area */}
+          {currentChatId ? (
+            <ChatWindow
+              messages={messages}
+              loading={loading}
+              onSendMessage={handleSendMessage}
+              error={error}
+              onErrorDismiss={() => setError(null)}
+              lang={lang}
+            />
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-red-50 border-2 border-red-300 rounded-lg p-4 mb-6 text-red-700 whitespace-pre-wrap"
+                className="text-center"
               >
-                {error}
-              </motion.div>
-            )}
-
-            {/* Response Section */}
-            {response && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-krishi-agriculture/10 border-2 border-krishi-agriculture rounded-lg p-6 mb-6"
-              >
-                <p className="text-sm text-krishi-text/70 mb-3 font-semibold">
-                  {lang === 'hi' ? 'AI सलाहकार का उत्तर:' : 'AI Advisor Response:'}
+                <div className="text-6xl mb-4">🌾</div>
+                <h2 className="text-2xl font-bold text-krishi-heading mb-2">
+                  {lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak'}
+                </h2>
+                <p className="text-krishi-text mb-6">
+                  {lang === 'hi'
+                    ? 'अपनी खेती से जुड़े सवालों के लिए AI सलाहकार से बात करें'
+                    : 'Talk to your AI farming advisor'}
                 </p>
-                <p className="text-krishi-text whitespace-pre-wrap">{response}</p>
+                <button
+                  onClick={handleNewChat}
+                  className="px-6 py-3 bg-krishi-primary text-white rounded-lg font-semibold hover:bg-krishi-primary/90 transition-all"
+                >
+                  {lang === 'hi' ? 'नई चैट शुरू करें' : 'Start New Chat'}
+                </button>
               </motion.div>
-            )}
+            </div>
+          )}
+        </div>
 
-            {/* Example Question */}
-            {!response && !isLoading && (
-              <div className="bg-krishi-agriculture/10 border-2 border-krishi-agriculture rounded-lg p-6">
-                <p className="text-sm text-krishi-text/70 mb-2">{t.exampleQuestion}</p>
-                <p className="text-krishi-text italic">"{t.sampleAiQuestion}"</p>
-              </div>
-            )}
-          </motion.div>
-        </main>
-        <Footer />
+        {/* RIGHT COLUMN: Chat History Sidebar */}
+        {/* Hidden on mobile, shown on larger screens */}
+        <div className="hidden lg:flex">
+          <ChatHistorySidebar
+            chats={chats}
+            currentChatId={currentChatId}
+            onNewChat={handleNewChat}
+            onSelectChat={handleSelectChat}
+            onDeleteChat={handleDeleteChat}
+            lang={lang}
+            userId={user?.uid}
+          />
+        </div>
       </div>
-    </FeaturePageLayout>
+    </div>
   )
 }

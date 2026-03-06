@@ -1,0 +1,149 @@
+'use client'
+
+import { useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
+import { AIMessage } from '@/lib/aiAdvisor'
+import MessageBubble from './MessageBubble'
+import ChatInput from './ChatInput'
+import SuggestedQuestions from './SuggestedQuestions'
+
+interface ChatWindowProps {
+  messages: AIMessage[]
+  loading: boolean
+  onSendMessage: (content: string, imageFile?: File, imageUrl?: string) => Promise<void>
+  error: string | null
+  onErrorDismiss: () => void
+  lang: string
+}
+
+export default function ChatWindow({
+  messages,
+  loading,
+  onSendMessage,
+  error,
+  onErrorDismiss,
+  lang,
+}: ChatWindowProps) {
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [isSending, setIsSending] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
+
+  const handleSendMessage = async (content: string) => {
+    if (!content.trim()) return
+
+    setIsSending(true)
+    try {
+      await onSendMessage(content, selectedImage || undefined)
+      setSelectedImage(null)
+      setImagePreview(null)
+    } catch (err) {
+      console.error('Error sending message:', err)
+    } finally {
+      setIsSending(false)
+    }
+  }
+
+  const handleImageSelect = (file: File, preview: string) => {
+    setSelectedImage(file)
+    setImagePreview(preview)
+  }
+
+  const handleClearImage = () => {
+    setSelectedImage(null)
+    setImagePreview(null)
+  }
+
+  return (
+    <div className="flex-1 flex flex-col bg-white overflow-hidden">
+      {/* Messages Container */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        {messages.length === 0 && !loading ? (
+          <div className="h-full flex items-center justify-center">
+            <SuggestedQuestions onSelectQuestion={handleSendMessage} lang={lang} />
+          </div>
+        ) : (
+          <>
+            {messages.map((message, idx) => (
+              <MessageBubble
+                key={message.id || idx}
+                message={message}
+                isUser={message.role === 'user'}
+              />
+            ))}
+
+            {isSending && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex justify-start"
+              >
+                <div className="flex items-center space-x-2 bg-krishi-agriculture/10 px-4 py-3 rounded-lg rounded-tl-none">
+                  <div className="w-2 h-2 bg-krishi-agriculture rounded-full animate-bounce" />
+                  <div className="w-2 h-2 bg-krishi-agriculture rounded-full animate-bounce delay-100" />
+                  <div className="w-2 h-2 bg-krishi-agriculture rounded-full animate-bounce delay-200" />
+                </div>
+              </motion.div>
+            )}
+
+            <div ref={messagesEndRef} />
+          </>
+        )}
+      </div>
+
+      {/* Error Message */}
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          className="mx-6 mb-4 p-3 bg-red-50 border border-red-300 rounded-lg flex items-start justify-between"
+        >
+          <span className="text-red-700 text-sm">{error}</span>
+          <button
+            onClick={onErrorDismiss}
+            className="text-red-700 hover:text-red-900 ml-2"
+          >
+            ✕
+          </button>
+        </motion.div>
+      )}
+
+      {/* Image Preview */}
+      {imagePreview && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mx-6 mb-4 relative inline-block"
+        >
+          <img
+            src={imagePreview}
+            alt="Preview"
+            className="max-h-32 rounded-lg border border-krishi-border"
+          />
+          <button
+            onClick={handleClearImage}
+            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 text-sm"
+          >
+            ✕
+          </button>
+        </motion.div>
+      )}
+
+      {/* Input Area */}
+      <div className="border-t border-krishi-border p-4 bg-white">
+        <ChatInput
+          onSendMessage={handleSendMessage}
+          onImageSelect={handleImageSelect}
+          disabled={isSending || loading}
+          lang={lang}
+        />
+      </div>
+    </div>
+  )
+}
