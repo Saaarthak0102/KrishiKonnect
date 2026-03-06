@@ -23,6 +23,7 @@ interface Reply {
   user: string;
   text: string;
   upvotes: number;
+  upvotedBy: string[];
   timestamp: string;
   image?: string | null;
 }
@@ -36,6 +37,7 @@ interface Question {
   user: string;
   userId: string;
   upvotes: number;
+  upvotedBy: string[];
   repliesCount: number;
   timestamp: string;
   image?: string | null;
@@ -70,6 +72,7 @@ function convertReply(r: CommunityReply): Reply {
     user: r.userName,
     text: r.replyText,
     upvotes: r.upvotes,
+    upvotedBy: r.upvotedBy || [],
     timestamp: formatTimestamp(r.createdAt),
     image: r.imageUrl,
   };
@@ -83,8 +86,6 @@ export default function ThreadPage() {
 
   const [question, setQuestion] = useState<Question | null>(null);
   const [replies, setReplies] = useState<Reply[]>([]);
-  const [upvotedQuestions, setUpvotedQuestions] = useState<Set<string>>(new Set());
-  const [upvotedReplies, setUpvotedReplies] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [isPosting, setIsPosting] = useState(false);
 
@@ -106,6 +107,7 @@ export default function ThreadPage() {
             user: data.userName,
             userId: data.userId,
             upvotes: data.upvotes || 0,
+            upvotedBy: data.upvotedBy || [],
             repliesCount: data.repliesCount || 0,
             timestamp: formatTimestamp(data.createdAt),
             image: data.imageUrl,
@@ -150,38 +152,49 @@ export default function ThreadPage() {
     if (!question) return;
 
     try {
-      if (upvotedQuestions.has(id)) {
+      const isUpvoted = question.upvotedBy.includes(user.uid);
+
+      if (isUpvoted) {
         // Optimistic update
-        setUpvotedQuestions((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(id);
-          return newSet;
+        setQuestion({
+          ...question,
+          upvotes: question.upvotes - 1,
+          upvotedBy: question.upvotedBy.filter((upvoterId) => upvoterId !== user.uid),
         });
-        setQuestion({ ...question, upvotes: question.upvotes - 1 });
 
         // Update Firestore
-        await removeUpvoteQuestion(id);
+        await removeUpvoteQuestion(id, user.uid);
       } else {
         // Optimistic update
-        setUpvotedQuestions((prev) => new Set(prev).add(id));
-        setQuestion({ ...question, upvotes: question.upvotes + 1 });
+        setQuestion({
+          ...question,
+          upvotes: question.upvotes + 1,
+          upvotedBy: question.upvotedBy.includes(user.uid)
+            ? question.upvotedBy
+            : [...question.upvotedBy, user.uid],
+        });
 
         // Update Firestore
-        await upvoteQuestion(id);
+        await upvoteQuestion(id, user.uid);
       }
     } catch (error) {
       console.error('Error upvoting question:', error);
       // Revert on error
-      if (upvotedQuestions.has(id)) {
-        setUpvotedQuestions((prev) => new Set(prev).add(id));
-        setQuestion({ ...question, upvotes: question.upvotes + 1 });
-      } else {
-        setUpvotedQuestions((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(id);
-          return newSet;
+      const isUpvoted = question.upvotedBy.includes(user.uid);
+      if (isUpvoted) {
+        setQuestion({
+          ...question,
+          upvotes: question.upvotes + 1,
+          upvotedBy: question.upvotedBy.includes(user.uid)
+            ? question.upvotedBy
+            : [...question.upvotedBy, user.uid],
         });
-        setQuestion({ ...question, upvotes: question.upvotes - 1 });
+      } else {
+        setQuestion({
+          ...question,
+          upvotes: question.upvotes - 1,
+          upvotedBy: question.upvotedBy.filter((upvoterId) => upvoterId !== user.uid),
+        });
       }
     }
   };
@@ -195,45 +208,75 @@ export default function ThreadPage() {
     if (!question) return;
 
     try {
-      if (upvotedReplies.has(id)) {
+      const selectedReply = replies.find((reply) => reply.id === id);
+      const isUpvoted = !!selectedReply && selectedReply.upvotedBy.includes(user.uid);
+
+      if (isUpvoted) {
         // Optimistic update
-        setUpvotedReplies((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(id);
-          return newSet;
-        });
         setReplies((prev) =>
-          prev.map((r) => (r.id === id ? { ...r, upvotes: r.upvotes - 1 } : r))
+          prev.map((r) =>
+            r.id === id
+              ? {
+                  ...r,
+                  upvotes: r.upvotes - 1,
+                  upvotedBy: r.upvotedBy.filter((upvoterId) => upvoterId !== user.uid),
+                }
+              : r
+          )
         );
 
         // Update Firestore
-        await removeUpvoteReply(questionId, id);
+        await removeUpvoteReply(questionId, id, user.uid);
       } else {
         // Optimistic update
-        setUpvotedReplies((prev) => new Set(prev).add(id));
         setReplies((prev) =>
-          prev.map((r) => (r.id === id ? { ...r, upvotes: r.upvotes + 1 } : r))
+          prev.map((r) =>
+            r.id === id
+              ? {
+                  ...r,
+                  upvotes: r.upvotes + 1,
+                  upvotedBy: r.upvotedBy.includes(user.uid)
+                    ? r.upvotedBy
+                    : [...r.upvotedBy, user.uid],
+                }
+              : r
+          )
         );
 
         // Update Firestore
-        await upvoteReply(questionId, id);
+        await upvoteReply(questionId, id, user.uid);
       }
     } catch (error) {
       console.error('Error upvoting reply:', error);
       // Revert on error
-      if (upvotedReplies.has(id)) {
-        setUpvotedReplies((prev) => new Set(prev).add(id));
+      const selectedReply = replies.find((reply) => reply.id === id);
+      const isUpvoted = !!selectedReply && selectedReply.upvotedBy.includes(user.uid);
+
+      if (isUpvoted) {
         setReplies((prev) =>
-          prev.map((r) => (r.id === id ? { ...r, upvotes: r.upvotes + 1 } : r))
+          prev.map((r) =>
+            r.id === id
+              ? {
+                  ...r,
+                  upvotes: r.upvotes + 1,
+                  upvotedBy: r.upvotedBy.includes(user.uid)
+                    ? r.upvotedBy
+                    : [...r.upvotedBy, user.uid],
+                }
+              : r
+          )
         );
       } else {
-        setUpvotedReplies((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(id);
-          return newSet;
-        });
         setReplies((prev) =>
-          prev.map((r) => (r.id === id ? { ...r, upvotes: r.upvotes - 1 } : r))
+          prev.map((r) =>
+            r.id === id
+              ? {
+                  ...r,
+                  upvotes: r.upvotes - 1,
+                  upvotedBy: r.upvotedBy.filter((upvoterId) => upvoterId !== user.uid),
+                }
+              : r
+          )
         );
       }
     }
@@ -257,6 +300,7 @@ export default function ThreadPage() {
         user: user.displayName || 'You',
         text: replyText,
         upvotes: 0,
+        upvotedBy: [],
         timestamp: 'Just now',
         image: null,
       };
@@ -341,8 +385,16 @@ export default function ThreadPage() {
             onUpvoteQuestion={handleUpvoteQuestion}
             onUpvoteReply={handleUpvoteReply}
             onPostReply={handlePostReply}
-            upvotedQuestions={upvotedQuestions}
-            upvotedReplies={upvotedReplies}
+            isQuestionUpvoted={!!user && question.upvotedBy.includes(user.uid)}
+            upvotedReplyIds={
+              !!user
+                ? new Set(
+                    replies
+                      .filter((reply) => reply.upvotedBy.includes(user.uid))
+                      .map((reply) => reply.id)
+                  )
+                : new Set<string>()
+            }
             isPosting={isPosting}
           />
         </main>

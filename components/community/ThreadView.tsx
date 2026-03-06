@@ -30,8 +30,8 @@ interface ThreadViewProps {
   onUpvoteQuestion: (id: string) => void;
   onUpvoteReply: (id: string) => void;
   onPostReply: (replyText: string) => void;
-  upvotedQuestions?: Set<string>;
-  upvotedReplies?: Set<string>;
+  isQuestionUpvoted?: boolean;
+  upvotedReplyIds?: Set<string>;
   isPosting?: boolean;
 }
 
@@ -41,8 +41,8 @@ export default function ThreadView({
   onUpvoteQuestion,
   onUpvoteReply,
   onPostReply,
-  upvotedQuestions = new Set(),
-  upvotedReplies = new Set(),
+  isQuestionUpvoted = false,
+  upvotedReplyIds = new Set(),
   isPosting = false,
 }: ThreadViewProps) {
   const [replyText, setReplyText] = useState('');
@@ -103,7 +103,7 @@ export default function ThreadView({
           <button
             onClick={() => onUpvoteQuestion(question.id)}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-colors ${
-              upvotedQuestions.has(question.id)
+              isQuestionUpvoted
                 ? 'bg-green-100 text-green-700'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
@@ -137,7 +137,7 @@ export default function ThreadView({
                 timestamp={reply.timestamp}
                 image={reply.image}
                 onUpvote={onUpvoteReply}
-                isUpvoted={upvotedReplies.has(reply.id)}
+                isUpvoted={upvotedReplyIds.has(reply.id)}
               />
             ))
           )}

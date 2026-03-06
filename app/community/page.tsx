@@ -13,8 +13,6 @@ import {
   upvoteQuestion,
   removeUpvoteQuestion,
   CommunityQuestion,
-  QuestionInput,
-  CachedQuestion,
 } from '@/lib/community';
 import { Timestamp } from 'firebase/firestore';
 
@@ -27,6 +25,7 @@ interface Question {
   user: string;
   userId: string;
   upvotes: number;
+  upvotedBy: string[];
   repliesCount: number;
   timestamp: string;
   image?: string | null;
@@ -64,6 +63,7 @@ function convertQuestion(q: CommunityQuestion): Question {
     user: q.userName,
     userId: q.userId,
     upvotes: q.upvotes,
+    upvotedBy: q.upvotedBy || [],
     repliesCount: q.repliesCount,
     timestamp: formatTimestamp(q.createdAt),
     image: q.imageUrl,
@@ -76,7 +76,6 @@ export default function CommunityPage() {
   const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [visibleCount, setVisibleCount] = useState(10);
-  const [upvotedQuestions, setUpvotedQuestions] = useState<Set<string>>(new Set());
   const { starredCrops } = useStarredCrops();
   const { user } = useAuth();
   const [isPosting, setIsPosting] = useState(false);
@@ -141,6 +140,7 @@ export default function CommunityPage() {
         user: user.displayName || 'You',
         userId: user.uid,
         upvotes: 0,
+        upvotedBy: [],
         repliesCount: 0,
         timestamp: 'Just now',
         image: newQuestion.image,
@@ -182,45 +182,75 @@ export default function CommunityPage() {
     }
 
     try {
-      if (upvotedQuestions.has(id)) {
+      const selectedQuestion = questions.find((q) => q.id === id);
+      const isUpvoted = !!selectedQuestion && selectedQuestion.upvotedBy.includes(user.uid);
+
+      if (isUpvoted) {
         // Optimistic update
-        setUpvotedQuestions((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(id);
-          return newSet;
-        });
         setQuestions((prev) =>
-          prev.map((q) => (q.id === id ? { ...q, upvotes: q.upvotes - 1 } : q))
+          prev.map((q) =>
+            q.id === id
+              ? {
+                  ...q,
+                  upvotes: q.upvotes - 1,
+                  upvotedBy: q.upvotedBy.filter((upvoterId) => upvoterId !== user.uid),
+                }
+              : q
+          )
         );
 
         // Update Firestore
-        await removeUpvoteQuestion(id);
+        await removeUpvoteQuestion(id, user.uid);
       } else {
         // Optimistic update
-        setUpvotedQuestions((prev) => new Set(prev).add(id));
         setQuestions((prev) =>
-          prev.map((q) => (q.id === id ? { ...q, upvotes: q.upvotes + 1 } : q))
+          prev.map((q) =>
+            q.id === id
+              ? {
+                  ...q,
+                  upvotes: q.upvotes + 1,
+                  upvotedBy: q.upvotedBy.includes(user.uid)
+                    ? q.upvotedBy
+                    : [...q.upvotedBy, user.uid],
+                }
+              : q
+          )
         );
 
         // Update Firestore
-        await upvoteQuestion(id);
+        await upvoteQuestion(id, user.uid);
       }
     } catch (error) {
       console.error('Error upvoting:', error);
       // Revert optimistic update on error
-      if (upvotedQuestions.has(id)) {
-        setUpvotedQuestions((prev) => new Set(prev).add(id));
+      const selectedQuestion = questions.find((q) => q.id === id);
+      const isUpvoted = !!selectedQuestion && selectedQuestion.upvotedBy.includes(user.uid);
+
+      if (isUpvoted) {
         setQuestions((prev) =>
-          prev.map((q) => (q.id === id ? { ...q, upvotes: q.upvotes + 1 } : q))
+          prev.map((q) =>
+            q.id === id
+              ? {
+                  ...q,
+                  upvotes: q.upvotes + 1,
+                  upvotedBy: q.upvotedBy.includes(user.uid)
+                    ? q.upvotedBy
+                    : [...q.upvotedBy, user.uid],
+                }
+              : q
+          )
         );
       } else {
-        setUpvotedQuestions((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(id);
-          return newSet;
-        });
         setQuestions((prev) =>
-          prev.map((q) => (q.id === id ? { ...q, upvotes: q.upvotes - 1 } : q))
+          prev.map((q) =>
+            q.id === id
+              ? {
+                  ...q,
+                  upvotes: q.upvotes - 1,
+                  upvotedBy: q.upvotedBy.filter((upvoterId) => upvoterId !== user.uid),
+                }
+              : q
+          )
         );
       }
     }
@@ -277,7 +307,7 @@ export default function CommunityPage() {
                   repliesCount={question.repliesCount}
                   image={question.image}
                   onUpvote={handleUpvote}
-                  isUpvoted={upvotedQuestions.has(question.id)}
+                  isUpvoted={!!user && question.upvotedBy.includes(user.uid)}
                 />
               ))
             )}

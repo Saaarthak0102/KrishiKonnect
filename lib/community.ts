@@ -16,6 +16,8 @@ import {
   getDocs,
   setDoc,
   getDoc,
+  arrayUnion,
+  arrayRemove,
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -32,6 +34,7 @@ export interface CommunityQuestion {
   description: string;
   imageUrl: string | null;
   upvotes: number;
+  upvotedBy: string[];
   repliesCount: number;
   createdAt: Timestamp;
 }
@@ -47,6 +50,7 @@ export interface CachedQuestion {
   description: string;
   imageUrl: string | null;
   upvotes: number;
+  upvotedBy: string[];
   repliesCount: number;
   createdAt: Timestamp;
 }
@@ -63,6 +67,7 @@ export interface CommunityReply {
   replyText: string;
   imageUrl: string | null;
   upvotes: number;
+  upvotedBy: string[];
   createdAt: Timestamp;
 }
 
@@ -159,6 +164,7 @@ export async function addCommunityQuestion(
       description: questionData.description,
       imageUrl: questionData.imageUrl || null,
       upvotes: 0,
+      upvotedBy: [],
       repliesCount: 0,
       createdAt: serverTimestamp(),
     });
@@ -175,6 +181,7 @@ export async function addCommunityQuestion(
       description: questionData.description,
       imageUrl: questionData.imageUrl || null,
       upvotes: 0,
+      upvotedBy: [],
       repliesCount: 0,
       createdAt: Timestamp.now(),
     };
@@ -230,6 +237,7 @@ export async function addReply(
       replyText: replyData.replyText,
       imageUrl: replyData.imageUrl || null,
       upvotes: 0,
+      upvotedBy: [],
       createdAt: serverTimestamp(),
     });
 
@@ -255,10 +263,23 @@ export async function addReply(
  * Note: The feed cache is not updated for upvotes as users can view the full question
  * for the most up-to-date count. Focus feed cache updates on content changes (replies).
  */
-export async function upvoteQuestion(questionId: string): Promise<void> {
+export async function upvoteQuestion(questionId: string, userId: string): Promise<void> {
   try {
-    await updateDoc(getQuestionRef(questionId), {
+    const questionRef = getQuestionRef(questionId);
+    const questionSnap = await getDoc(questionRef);
+
+    if (!questionSnap.exists()) {
+      throw new Error('Question not found');
+    }
+
+    const upvotedBy = (questionSnap.data().upvotedBy || []) as string[];
+    if (upvotedBy.includes(userId)) {
+      return;
+    }
+
+    await updateDoc(questionRef, {
       upvotes: increment(1),
+      upvotedBy: arrayUnion(userId),
     });
   } catch (error) {
     console.error('Error upvoting question:', error);
@@ -269,10 +290,11 @@ export async function upvoteQuestion(questionId: string): Promise<void> {
 /**
  * Remove upvote from a question
  */
-export async function removeUpvoteQuestion(questionId: string): Promise<void> {
+export async function removeUpvoteQuestion(questionId: string, userId: string): Promise<void> {
   try {
     await updateDoc(getQuestionRef(questionId), {
       upvotes: increment(-1),
+      upvotedBy: arrayRemove(userId),
     });
   } catch (error) {
     console.error('Error removing upvote from question:', error);
@@ -283,11 +305,27 @@ export async function removeUpvoteQuestion(questionId: string): Promise<void> {
 /**
  * Upvote a reply
  */
-export async function upvoteReply(questionId: string, replyId: string): Promise<void> {
+export async function upvoteReply(
+  questionId: string,
+  replyId: string,
+  userId: string
+): Promise<void> {
   try {
     const replyRef = doc(db, QUESTIONS_COLLECTION, questionId, 'replies', replyId);
+    const replySnap = await getDoc(replyRef);
+
+    if (!replySnap.exists()) {
+      throw new Error('Reply not found');
+    }
+
+    const upvotedBy = (replySnap.data().upvotedBy || []) as string[];
+    if (upvotedBy.includes(userId)) {
+      return;
+    }
+
     await updateDoc(replyRef, {
       upvotes: increment(1),
+      upvotedBy: arrayUnion(userId),
     });
   } catch (error) {
     console.error('Error upvoting reply:', error);
@@ -298,11 +336,16 @@ export async function upvoteReply(questionId: string, replyId: string): Promise<
 /**
  * Remove upvote from a reply
  */
-export async function removeUpvoteReply(questionId: string, replyId: string): Promise<void> {
+export async function removeUpvoteReply(
+  questionId: string,
+  replyId: string,
+  userId: string
+): Promise<void> {
   try {
     const replyRef = doc(db, QUESTIONS_COLLECTION, questionId, 'replies', replyId);
     await updateDoc(replyRef, {
       upvotes: increment(-1),
+      upvotedBy: arrayRemove(userId),
     });
   } catch (error) {
     console.error('Error removing upvote from reply:', error);
