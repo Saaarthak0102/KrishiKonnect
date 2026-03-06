@@ -16,7 +16,12 @@ interface MessageBubbleProps {
 export default function MessageBubble({ message, isUser, enableTypewriter = false }: MessageBubbleProps) {
   const detected = detectLanguage(message.content)
   const responseLanguage = toResponseLanguage(detected)
-  const languageLabel = responseLanguage === 'hindi' ? 'हिंदी' : 'English'
+  const languageLabel =
+    responseLanguage === 'hindi'
+      ? 'Hindi'
+      : responseLanguage === 'hinglish'
+        ? 'Hinglish'
+        : 'English'
   const lang = responseLanguage === 'hindi' ? 'hi' : 'en'
 
   // Typewriter effect state

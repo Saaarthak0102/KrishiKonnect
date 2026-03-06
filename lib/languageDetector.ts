@@ -1,5 +1,5 @@
 export type DetectedLanguage = 'english' | 'hindi' | 'hinglish'
-export type ResponseLanguage = 'english' | 'hindi'
+export type ResponseLanguage = 'english' | 'hindi' | 'hinglish'
 
 const HINDI_REGEX = /[\u0900-\u097F]/
 
@@ -51,6 +51,9 @@ export function toResponseLanguage(language: DetectedLanguage): ResponseLanguage
     return 'hindi'
   }
 
-  // Hinglish responses are intentionally served in English.
+  if (language === 'hinglish') {
+    return 'hinglish'
+  }
+
   return 'english'
 }

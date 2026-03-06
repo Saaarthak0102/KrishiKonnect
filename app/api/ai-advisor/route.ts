@@ -91,8 +91,6 @@ export async function POST(req: NextRequest): Promise<NextResponse<AIResponseBod
     const userId = typeof body.userId === 'string' && body.userId.trim() ? body.userId.trim() : 'demo-user'
     const location = typeof body.location === 'string' ? body.location.trim() : ''
     const crop = typeof body.crop === 'string' ? body.crop.trim() : ''
-    const userToggleLanguage: 'en' | 'hi' = body.language === 'hi' ? 'hi' : 'en'
-
     if (!userQuestion) {
       return NextResponse.json({ reply: FALLBACK_REPLY }, { status: 200 })
     }
@@ -108,15 +106,15 @@ export async function POST(req: NextRequest): Promise<NextResponse<AIResponseBod
 
     const detectedLanguage = detectLanguage(userQuestion)
 
-    // Priority rule: Hindi toggle forces Hindi response regardless of input.
-    const responseLanguage =
-      userToggleLanguage === 'hi' ? 'hindi' : toResponseLanguage(detectedLanguage)
+    const responseLanguage = toResponseLanguage(detectedLanguage)
 
     if (!isLikelyFarmingQuestion(userQuestion)) {
       const outOfScopeReply =
         responseLanguage === 'hindi'
           ? 'कृषि सहायक मुख्य रूप से खेती से जुड़े सवालों में मदद करता है। कृपया फसल, कीट, सिंचाई, उर्वरक, मौसम या मंडी भाव से जुड़ा प्रश्न पूछें।'
-          : 'Krishi Sahayak focuses on farming advice. Please ask about crops, pests, irrigation, fertilizer, weather, or mandi prices.'
+          : responseLanguage === 'hinglish'
+            ? 'Krishi Sahayak mainly kheti se jude sawalon me madad karta hai. Kripya fasal, keet, sinchai, khad, mausam, ya mandi bhav se juda sawal puchhein.'
+            : 'Krishi Sahayak focuses on farming advice. Please ask about crops, pests, irrigation, fertilizer, weather, or mandi prices.'
 
       return NextResponse.json({ reply: outOfScopeReply }, { status: 200 })
     }
@@ -247,9 +245,23 @@ function buildFarmerPrompt({
     }
   }
   question: string
-  responseLanguage: 'english' | 'hindi'
+  responseLanguage: 'english' | 'hindi' | 'hinglish'
 }): string {
+  const responseLanguageLabel =
+    responseLanguage === 'hindi'
+      ? 'Hindi'
+      : responseLanguage === 'hinglish'
+        ? 'Hinglish (Hindi written in English letters)'
+        : 'English'
+
   return `You are Krishi Sahayak, an AI agriculture advisor for Indian farmers.
+
+Language Rule:
+Respond strictly in ${responseLanguageLabel}.
+If responseLanguage = Hindi, use Devanagari script.
+If responseLanguage = Hinglish, write Hindi words using English letters.
+Use very simple farmer-friendly language.
+Do not switch to full English for Hinglish responses.
 
 Use the farmer's environment to give personalized advice.
 
@@ -279,7 +291,6 @@ Instructions:
 • Use bullet points for clarity
 • Always consider weather, crop stage, and location
 • Avoid generic chatbot answers
-• Respond strictly in ${responseLanguage}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

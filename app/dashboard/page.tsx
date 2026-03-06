@@ -10,6 +10,7 @@ import { useStarredCrops } from '@/lib/useStarredCrops'
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
 import MarketInsightCard from '@/components/dashboard/MarketInsightCard'
 import LatestCommunityQuestionCard from '@/components/dashboard/LatestCommunityQuestionCard'
+import LatestAIChatCard from '@/components/dashboard/LatestAIChatCard'
 import { subscribeToTransportBookings, type TransportBookingRecord } from '@/lib/transportBookings'
 import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
 import { getWeatherForLocation, type WeatherData } from '@/lib/weatherService'
@@ -886,6 +887,11 @@ export default function DashboardPage() {
           {/* Latest Community Question Card */}
           <LatestCommunityQuestionCard 
             farmerName={farmerProfile?.name || 'Ramesh Singh'}
+            lang={lang as 'en' | 'hi'}
+          />
+
+          <LatestAIChatCard
+            userId={user.uid}
             lang={lang as 'en' | 'hi'}
           />
         </div>

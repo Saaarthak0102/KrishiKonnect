@@ -21,6 +21,7 @@ import {
   Timestamp,
   getDocs,
   collectionGroup,
+  limit,
 } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db, storage } from './firebase'
@@ -43,6 +44,8 @@ export interface AIChat {
   createdAt: Date
   updatedAt?: Date
   language: 'en' | 'hi'
+  crop?: string
+  lastMessage?: string
 }
 
 export interface AIMessageWithTimestamp extends Omit<AIMessage, 'createdAt'> {
@@ -205,6 +208,8 @@ export function subscribeToChats(
           createdAt: doc.data().createdAt?.toDate() || new Date(),
           updatedAt: doc.data().updatedAt?.toDate() || doc.data().createdAt?.toDate() || new Date(),
           language: doc.data().language || 'en',
+          crop: doc.data().crop,
+          lastMessage: doc.data().lastMessage,
         })) as AIChat[]
         onUpdate(chats)
       },
@@ -218,6 +223,92 @@ export function subscribeToChats(
   } catch (error) {
     console.error('Error setting up chats subscription:', error)
     throw error
+  }
+}
+
+/**
+ * Subscribe to latest chat for a user and include first user question preview.
+ */
+export function subscribeToLatestAIChat(
+  userId: string,
+  onUpdate: (chat: AIChat | null, firstQuestion: string | null) => void,
+  onError?: (error: Error) => void
+): () => void {
+  if (!userId) {
+    onUpdate(null, null)
+    return () => {}
+  }
+
+  const chatsRef = collection(db, 'ai_chats')
+  const latestChatQuery = query(
+    chatsRef,
+    where('userId', '==', userId),
+    orderBy('updatedAt', 'desc'),
+    limit(1)
+  )
+
+  let unsubscribeMessages: (() => void) | null = null
+
+  const unsubscribeChats = onSnapshot(
+    latestChatQuery,
+    (snapshot) => {
+      if (unsubscribeMessages) {
+        unsubscribeMessages()
+        unsubscribeMessages = null
+      }
+
+      if (snapshot.empty) {
+        onUpdate(null, null)
+        return
+      }
+
+      const latestDoc = snapshot.docs[0]
+      const chatData = latestDoc.data()
+
+      const latestChat: AIChat = {
+        id: latestDoc.id,
+        userId: chatData.userId,
+        title: chatData.title || '',
+        createdAt: chatData.createdAt?.toDate() || new Date(),
+        updatedAt: chatData.updatedAt?.toDate() || chatData.createdAt?.toDate() || new Date(),
+        language: chatData.language || 'en',
+        crop: chatData.crop,
+        lastMessage: chatData.lastMessage,
+      }
+
+      const messagesRef = collection(db, 'ai_chats', latestDoc.id, 'messages')
+      const firstQuestionQuery = query(
+        messagesRef,
+        where('role', '==', 'user'),
+        orderBy('createdAt', 'asc'),
+        limit(1)
+      )
+
+      unsubscribeMessages = onSnapshot(
+        firstQuestionQuery,
+        (messagesSnapshot) => {
+          const firstQuestion = messagesSnapshot.empty
+            ? null
+            : (messagesSnapshot.docs[0].data().content as string) || null
+
+          onUpdate(latestChat, firstQuestion)
+        },
+        (error) => {
+          if (onError) onError(error as Error)
+          onUpdate(latestChat, null)
+        }
+      )
+    },
+    (error) => {
+      if (onError) onError(error as Error)
+    }
+  )
+
+  return () => {
+    unsubscribeChats()
+    if (unsubscribeMessages) {
+      unsubscribeMessages()
+    }
   }
 }
 
