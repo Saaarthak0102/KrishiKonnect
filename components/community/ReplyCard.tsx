@@ -25,30 +25,24 @@ export default function ReplyCard({
 }: ReplyCardProps) {
   return (
     <div className="bg-gray-50 rounded-xl p-5 border-2 border-gray-100">
-      {/* User Info */}
       <div className="flex items-center gap-2 mb-3">
         <span className="font-medium text-gray-800">👤 {user}</span>
         <span className="text-gray-400">•</span>
         <span className="text-sm text-gray-600">{timestamp}</span>
       </div>
 
-      {/* Reply Text */}
-      <p className="text-gray-700 mb-4 leading-relaxed">
-        {text}
-      </p>
+      <p className="text-gray-700 mb-4 leading-relaxed">{text}</p>
 
-      {/* Image if present */}
       {image && (
         <div className="mb-4">
-          <img 
-            src={image} 
-            alt="Reply image" 
+          <img
+            src={image}
+            alt="Reply image"
             className="w-full max-h-64 object-cover rounded-lg"
           />
         </div>
       )}
 
-      {/* Upvote Button */}
       <div className="flex items-center">
         <button
           onClick={() => onUpvote(id)}

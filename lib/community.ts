@@ -1,309 +1,352 @@
 import {
   collection,
+  doc,
   addDoc,
   updateDoc,
-  doc,
+  deleteDoc,
   increment,
-  serverTimestamp,
+  arrayUnion,
+  arrayRemove,
+  onSnapshot,
   query,
   orderBy,
   limit,
-  onSnapshot,
+  serverTimestamp,
   Timestamp,
   QuerySnapshot,
   DocumentData,
-  startAfter,
-  getDocs,
-  setDoc,
   getDoc,
-  arrayUnion,
-  arrayRemove,
+  setDoc,
 } from 'firebase/firestore';
 import { db } from './firebase';
 
-// ===== TYPES =====
-
+// Type definitions
 export interface CommunityQuestion {
   id: string;
   userId: string;
   userName: string;
-  userBadge: string;
   userLocation: string;
   cropTag: string;
   cropEmoji: string;
   questionText: string;
   description: string;
-  imageUrl: string | null;
   upvotes: number;
   upvotedBy: string[];
   repliesCount: number;
-  createdAt: Timestamp;
-}
-
-export interface CachedQuestion {
-  id: string;
-  userId: string;
-  userName: string;
-  userBadge: string;
-  userLocation: string;
-  cropTag: string;
-  cropEmoji: string;
-  questionText: string;
-  description: string;
-  imageUrl: string | null;
-  upvotes: number;
-  upvotedBy: string[];
-  repliesCount: number;
-  createdAt: Timestamp;
-}
-
-export interface FeedCache {
-  questions: CachedQuestion[];
+  createdAt: Date;
+  lastReplyAt: Date | null;
 }
 
 export interface CommunityReply {
   id: string;
   userId: string;
   userName: string;
-  userBadge: string;
+  userLocation: string;
   replyText: string;
-  imageUrl: string | null;
+  parentReplyId: string | null;
   upvotes: number;
   upvotedBy: string[];
-  createdAt: Timestamp;
+  imageUrl?: string | null;
+  createdAt: Date;
 }
 
-export interface QuestionInput {
-  questionText: string;
-  description: string;
+export interface CachedQuestion {
+  id: string;
+  userId: string;
+  userName: string;
+  userLocation: string;
   cropTag: string;
   cropEmoji: string;
-  imageUrl?: string | null;
+  questionText: string;
+  description: string;
+  upvotes: number;
+  upvotedBy: string[];
+  repliesCount: number;
+  createdAt: Date;
+  lastReplyAt: Date | null;
 }
 
-export interface ReplyInput {
-  replyText: string;
-  imageUrl?: string | null;
+// Helper to convert Firestore timestamp to Date
+function timestampToDate(timestamp: any): Date | null {
+  if (!timestamp) return null;
+  if (timestamp instanceof Date) return timestamp;
+  if (timestamp?.toDate) return timestamp.toDate();
+  return null;
 }
 
-// ===== COLLECTION REFERENCES =====
-
-const QUESTIONS_COLLECTION = 'community_questions';
-const FEED_CACHE_COLLECTION = 'community_feed';
-const FEED_CACHE_DOC = 'latest_questions';
-
-const getQuestionsRef = () => collection(db, QUESTIONS_COLLECTION);
-const getQuestionRef = (questionId: string) => doc(db, QUESTIONS_COLLECTION, questionId);
-const getRepliesRef = (questionId: string) =>
-  collection(db, QUESTIONS_COLLECTION, questionId, 'replies');
-
-// Feed cache references
-const getFeedCacheRef = () => doc(db, FEED_CACHE_COLLECTION, FEED_CACHE_DOC);
-
-// ===== FEED CACHE UTILITIES =====
+// Helper to calculate latest activity time
+function getLatestActivity(createdAt: Date, lastReplyAt: Date | null): Date {
+  if (!lastReplyAt) return createdAt;
+  return lastReplyAt > createdAt ? lastReplyAt : createdAt;
+}
 
 /**
- * Helper function to update a specific field of a question in the feed cache
- * Finds the question by ID and updates the field
+ * Subscribe to the feed cache (latest 50 questions)
+ * This reduces Firestore reads from 50 to 1 per page load
  */
-async function updateFeedCacheQuestionField(
-  questionId: string,
-  updateData: { upvotes?: number; repliesCount?: number }
-): Promise<void> {
-  try {
-    const feedRef = getFeedCacheRef();
-    const feedDoc = await getDoc(feedRef);
+export function subscribeToFeedCache(
+  onUpdate: (questions: CachedQuestion[]) => void,
+  onError?: (error: Error) => void
+): () => void {
+  const feedDocRef = doc(db, 'community_feed', 'latest_questions');
 
-    if (!feedDoc.exists()) {
-      return; // Cache doesn't exist yet, nothing to update
-    }
-
-    const feedData = feedDoc.data() as FeedCache;
-    const questions = feedData.questions || [];
-
-    // Find and update the question in the cache
-    const updatedQuestions = questions.map((q) => {
-      if (q.id === questionId) {
-        return {
+  return onSnapshot(
+    feedDocRef,
+    (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const data = docSnapshot.data();
+        const questions = (data?.questions || []).map((q: any) => ({
           ...q,
-          upvotes: updateData.upvotes !== undefined ? updateData.upvotes : q.upvotes,
-          repliesCount: updateData.repliesCount !== undefined ? updateData.repliesCount : q.repliesCount,
-        };
+          upvotedBy: q.upvotedBy || [],
+          createdAt: timestampToDate(q.createdAt) || new Date(),
+          lastReplyAt: timestampToDate(q.lastReplyAt),
+        }));
+        
+        // Sort by latest activity
+        questions.sort((a, b) => {
+          const aActivity = getLatestActivity(a.createdAt, a.lastReplyAt);
+          const bActivity = getLatestActivity(b.createdAt, b.lastReplyAt);
+          return bActivity.getTime() - aActivity.getTime();
+        });
+        
+        onUpdate(questions);
+      } else {
+        // No feed cache exists yet, return empty array
+        onUpdate([]);
       }
-      return q;
-    });
-
-    // Only write if we found and updated the question
-    if (updatedQuestions.some((q) => q.id === questionId)) {
-      await updateDoc(feedRef, { questions: updatedQuestions });
+    },
+    (error) => {
+      console.error('Error subscribing to feed cache:', error);
+      if (onError) onError(error);
     }
-  } catch (error) {
-    console.error('Error updating feed cache question field:', error);
-    // Don't throw - the cache update failure shouldn't break the main operation
-  }
+  );
 }
 
-// ===== ADD QUESTION =====
+/**
+ * Subscribe to all community questions (fallback if feed cache doesn't exist)
+ * Use this for the "My Crops" and "My State" tabs where we need full access
+ */
+export function subscribeToQuestions(
+  onUpdate: (questions: CommunityQuestion[]) => void,
+  onError?: (error: Error) => void,
+  limitCount: number = 50
+): () => void {
+  const questionsRef = collection(db, 'community_questions');
+  const q = query(questionsRef, orderBy('createdAt', 'desc'), limit(limitCount));
+
+  return onSnapshot(
+    q,
+    (snapshot: QuerySnapshot<DocumentData>) => {
+      const questions: CommunityQuestion[] = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        questions.push({
+          id: doc.id,
+          userId: data.userId,
+          userName: data.userName,
+          userLocation: data.userLocation,
+          cropTag: data.cropTag,
+          cropEmoji: data.cropEmoji,
+          questionText: data.questionText,
+          description: data.description,
+          upvotes: data.upvotes || 0,
+          upvotedBy: data.upvotedBy || [],
+          repliesCount: data.repliesCount || 0,
+          createdAt: timestampToDate(data.createdAt) || new Date(),
+          lastReplyAt: timestampToDate(data.lastReplyAt),
+        });
+      });
+
+      // Sort by latest activity
+      questions.sort((a, b) => {
+        const aActivity = getLatestActivity(a.createdAt, a.lastReplyAt);
+        const bActivity = getLatestActivity(b.createdAt, b.lastReplyAt);
+        return bActivity.getTime() - aActivity.getTime();
+      });
+
+      onUpdate(questions);
+    },
+    (error) => {
+      console.error('Error subscribing to questions:', error);
+      if (onError) onError(error);
+    }
+  );
+}
 
 /**
- * Add a new community question to Firestore and update the feed cache
+ * Add a new community question
  */
 export async function addCommunityQuestion(
-  userId: string,
-  userName: string,
-  userBadge: string,
-  questionData: QuestionInput
+  questionData: {
+    userId: string;
+    userName: string;
+    userLocation: string;
+    cropTag: string;
+    cropEmoji: string;
+    questionText: string;
+    description: string;
+  }
 ): Promise<string> {
   try {
-    // Fetch user's location from their profile
-    let userLocation = 'Unknown Location';
-    try {
-      const userRef = doc(db, 'users', userId);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        const village = userData.village || '';
-        const state = userData.state || '';
-        userLocation = [village, state].filter(Boolean).join(', ') || 'Unknown Location';
-      }
-    } catch (error) {
-      console.error('Error fetching user location:', error);
-      // Continue with default location if fetch fails
-    }
-
-    // Step 1: Add the question to community_questions collection
-    const questionRef = await addDoc(getQuestionsRef(), {
-      userId,
-      userName,
-      userBadge,
-      userLocation,
-      cropTag: questionData.cropTag,
-      cropEmoji: questionData.cropEmoji,
-      questionText: questionData.questionText,
-      description: questionData.description,
-      imageUrl: questionData.imageUrl || null,
+    const questionsRef = collection(db, 'community_questions');
+    const newQuestion = {
+      ...questionData,
       upvotes: 0,
       upvotedBy: [],
       repliesCount: 0,
       createdAt: serverTimestamp(),
-    });
-
-    // Step 2: Get the new question data with ID for feed cache
-    const newQuestion: CachedQuestion = {
-      id: questionRef.id,
-      userId,
-      userName,
-      userBadge,
-      userLocation,
-      cropTag: questionData.cropTag,
-      cropEmoji: questionData.cropEmoji,
-      questionText: questionData.questionText,
-      description: questionData.description,
-      imageUrl: questionData.imageUrl || null,
-      upvotes: 0,
-      upvotedBy: [],
-      repliesCount: 0,
-      createdAt: Timestamp.now(),
+      lastReplyAt: null,
     };
 
-    // Step 3: Update feed cache
-    const feedRef = getFeedCacheRef();
-    const feedDoc = await getDoc(feedRef);
+    // Add to main collection
+    const docRef = await addDoc(questionsRef, newQuestion);
 
-    if (feedDoc.exists()) {
-      // Cache exists - prepend new question and keep only latest 20
-      const existingQuestions = feedDoc.data().questions || [];
-      const updatedQuestions = [newQuestion, ...existingQuestions].slice(0, 20);
-      await updateDoc(feedRef, { questions: updatedQuestions });
-    } else {
-      // Cache doesn't exist - create it with the new question
-      await setDoc(feedRef, {
-        questions: [newQuestion],
-      });
-    }
+    // Update feed cache
+    await updateFeedCache(docRef.id, { ...newQuestion, createdAt: new Date(), lastReplyAt: null });
 
-    return questionRef.id;
+    return docRef.id;
   } catch (error) {
     console.error('Error adding question:', error);
-    throw new Error('Failed to post question');
+    throw error;
   }
 }
 
-// ===== ADD REPLY =====
+/**
+ * Update the feed cache with a new or updated question
+ */
+async function updateFeedCache(questionId: string, questionData: any): Promise<void> {
+  try {
+    const feedDocRef = doc(db, 'community_feed', 'latest_questions');
+    const feedDoc = await getDoc(feedDocRef);
+
+    let questions: any[] = [];
+    if (feedDoc.exists()) {
+      questions = feedDoc.data()?.questions || [];
+    }
+
+    // Remove old version if exists
+    questions = questions.filter((q) => q.id !== questionId);
+
+    // Add new version at the beginning
+    questions.unshift({
+      id: questionId,
+      ...questionData,
+    });
+
+    // Keep only latest 50 questions
+    questions = questions.slice(0, 50);
+
+    // Update feed cache
+    await setDoc(feedDocRef, { questions });
+  } catch (error) {
+    console.error('Error updating feed cache:', error);
+    // Don't throw - feed cache is optional optimization
+  }
+}
 
 /**
- * Add a reply to a question and increment reply count
- * Also updates the feed cache if the question is in the latest 20
+ * Subscribe to replies for a specific question
+ */
+export function subscribeToReplies(
+  questionId: string,
+  onUpdate: (replies: CommunityReply[]) => void,
+  onError?: (error: Error) => void
+): () => void {
+  const repliesRef = collection(db, 'community_questions', questionId, 'replies');
+  const q = query(repliesRef, orderBy('createdAt', 'asc'));
+
+  return onSnapshot(
+    q,
+    (snapshot: QuerySnapshot<DocumentData>) => {
+      const replies: CommunityReply[] = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        replies.push({
+          id: doc.id,
+          userId: data.userId,
+          userName: data.userName,
+          userLocation: data.userLocation,
+          replyText: data.replyText,
+          parentReplyId: data.parentReplyId || null,
+          upvotes: data.upvotes || 0,
+          upvotedBy: data.upvotedBy || [],
+          imageUrl: data.imageUrl || null,
+          createdAt: timestampToDate(data.createdAt) || new Date(),
+        });
+      });
+      onUpdate(replies);
+    },
+    (error) => {
+      console.error('Error subscribing to replies:', error);
+      if (onError) onError(error);
+    }
+  );
+}
+
+/**
+ * Add a reply to a question or another reply
  */
 export async function addReply(
   questionId: string,
-  userId: string,
-  userName: string,
-  userBadge: string,
-  replyData: ReplyInput
+  replyData: {
+    userId: string;
+    userName: string;
+    userLocation: string;
+    replyText: string;
+    parentReplyId?: string | null;
+  }
 ): Promise<string> {
   try {
-    // Get current reply count
-    const questionRef = getQuestionRef(questionId);
-    const questionSnap = await getDoc(questionRef);
-    const currentRepliesCount = questionSnap.exists() ? (questionSnap.data().repliesCount || 0) : 0;
-    const newRepliesCount = currentRepliesCount + 1;
-
-    // Add reply to subcollection
-    const replyRef = await addDoc(getRepliesRef(questionId), {
-      userId,
-      userName,
-      userBadge,
-      replyText: replyData.replyText,
-      imageUrl: replyData.imageUrl || null,
+    const repliesRef = collection(db, 'community_questions', questionId, 'replies');
+    const newReply = {
+      ...replyData,
+      parentReplyId: replyData.parentReplyId || null,
       upvotes: 0,
       upvotedBy: [],
       createdAt: serverTimestamp(),
-    });
+    };
 
-    // Increment reply count on question
+    // Add reply to subcollection
+    const docRef = await addDoc(repliesRef, newReply);
+
+    // Update question's reply count and lastReplyAt
+    const questionRef = doc(db, 'community_questions', questionId);
     await updateDoc(questionRef, {
       repliesCount: increment(1),
+      lastReplyAt: serverTimestamp(),
     });
 
-    // Update feed cache if question is in it
-    await updateFeedCacheQuestionField(questionId, { repliesCount: newRepliesCount });
+    // Update feed cache
+    const questionDoc = await getDoc(questionRef);
+    if (questionDoc.exists()) {
+      const questionData = questionDoc.data();
+      await updateFeedCache(questionId, {
+        ...questionData,
+        repliesCount: (questionData.repliesCount || 0) + 1,
+        lastReplyAt: new Date(),
+      });
+    }
 
-    return replyRef.id;
+    return docRef.id;
   } catch (error) {
     console.error('Error adding reply:', error);
-    throw new Error('Failed to post reply');
+    throw error;
   }
 }
 
-// ===== UPVOTE FUNCTIONS =====
-
 /**
  * Upvote a question
- * Note: The feed cache is not updated for upvotes as users can view the full question
- * for the most up-to-date count. Focus feed cache updates on content changes (replies).
  */
 export async function upvoteQuestion(questionId: string, userId: string): Promise<void> {
   try {
-    const questionRef = getQuestionRef(questionId);
-    const questionSnap = await getDoc(questionRef);
-
-    if (!questionSnap.exists()) {
-      throw new Error('Question not found');
-    }
-
-    const upvotedBy = (questionSnap.data().upvotedBy || []) as string[];
-    if (upvotedBy.includes(userId)) {
-      return;
-    }
-
+    const questionRef = doc(db, 'community_questions', questionId);
     await updateDoc(questionRef, {
       upvotes: increment(1),
       upvotedBy: arrayUnion(userId),
     });
   } catch (error) {
     console.error('Error upvoting question:', error);
-    throw new Error('Failed to upvote question');
+    throw error;
   }
 }
 
@@ -312,193 +355,86 @@ export async function upvoteQuestion(questionId: string, userId: string): Promis
  */
 export async function removeUpvoteQuestion(questionId: string, userId: string): Promise<void> {
   try {
-    await updateDoc(getQuestionRef(questionId), {
+    const questionRef = doc(db, 'community_questions', questionId);
+    await updateDoc(questionRef, {
       upvotes: increment(-1),
       upvotedBy: arrayRemove(userId),
     });
   } catch (error) {
     console.error('Error removing upvote from question:', error);
-    throw new Error('Failed to remove upvote');
+    throw error;
   }
 }
 
 /**
  * Upvote a reply
  */
-export async function upvoteReply(
-  questionId: string,
-  replyId: string,
-  userId: string
-): Promise<void> {
+export async function upvoteReply(questionId: string, replyId: string, userId: string): Promise<void> {
   try {
-    const replyRef = doc(db, QUESTIONS_COLLECTION, questionId, 'replies', replyId);
-    const replySnap = await getDoc(replyRef);
-
-    if (!replySnap.exists()) {
-      throw new Error('Reply not found');
-    }
-
-    const upvotedBy = (replySnap.data().upvotedBy || []) as string[];
-    if (upvotedBy.includes(userId)) {
-      return;
-    }
-
+    const replyRef = doc(db, 'community_questions', questionId, 'replies', replyId);
     await updateDoc(replyRef, {
       upvotes: increment(1),
       upvotedBy: arrayUnion(userId),
     });
   } catch (error) {
     console.error('Error upvoting reply:', error);
-    throw new Error('Failed to upvote reply');
+    throw error;
   }
 }
 
 /**
  * Remove upvote from a reply
  */
-export async function removeUpvoteReply(
-  questionId: string,
-  replyId: string,
-  userId: string
-): Promise<void> {
+export async function removeUpvoteReply(questionId: string, replyId: string, userId: string): Promise<void> {
   try {
-    const replyRef = doc(db, QUESTIONS_COLLECTION, questionId, 'replies', replyId);
+    const replyRef = doc(db, 'community_questions', questionId, 'replies', replyId);
     await updateDoc(replyRef, {
       upvotes: increment(-1),
       upvotedBy: arrayRemove(userId),
     });
   } catch (error) {
     console.error('Error removing upvote from reply:', error);
-    throw new Error('Failed to remove upvote');
+    throw error;
   }
 }
 
-// ===== REAL-TIME LISTENERS =====
-
 /**
- * Subscribe to real-time questions feed
- * Returns unsubscribe function
+ * Delete a question (and all its replies)
  */
-export function subscribeToQuestions(
-  onUpdate: (questions: CommunityQuestion[]) => void,
-  limitCount: number = 20
-): () => void {
-  const q = query(
-    getQuestionsRef(),
-    orderBy('createdAt', 'desc'),
-    limit(limitCount)
-  );
-
-  const unsubscribe = onSnapshot(
-    q,
-    (snapshot: QuerySnapshot<DocumentData>) => {
-      const questions: CommunityQuestion[] = [];
-      snapshot.forEach((doc) => {
-        questions.push({
-          id: doc.id,
-          ...doc.data(),
-        } as CommunityQuestion);
-      });
-      onUpdate(questions);
-    },
-    (error) => {
-      console.error('Error in questions subscription:', error);
-    }
-  );
-
-  return unsubscribe;
-}
-
-/**
- * Subscribe to real-time replies for a question
- * Returns unsubscribe function
- */
-export function subscribeToReplies(
-  questionId: string,
-  onUpdate: (replies: CommunityReply[]) => void
-): () => void {
-  const q = query(getRepliesRef(questionId), orderBy('createdAt', 'asc'));
-
-  const unsubscribe = onSnapshot(
-    q,
-    (snapshot: QuerySnapshot<DocumentData>) => {
-      const replies: CommunityReply[] = [];
-      snapshot.forEach((doc) => {
-        replies.push({
-          id: doc.id,
-          ...doc.data(),
-        } as CommunityReply);
-      });
-      onUpdate(replies);
-    },
-    (error) => {
-      console.error('Error in replies subscription:', error);
-    }
-  );
-
-  return unsubscribe;
-}
-
-/**
- * Subscribe to the cached feed from community_feed/latest_questions
- * This reads from a single cached document instead of loading 20+ documents
- * Drastically reduces Firestore reads from ~20 to 1
- * Returns unsubscribe function
- */
-export function subscribeToFeedCache(
-  onUpdate: (questions: CachedQuestion[]) => void
-): () => void {
-  const feedRef = getFeedCacheRef();
-
-  const unsubscribe = onSnapshot(
-    feedRef,
-    (snapshot) => {
-      if (snapshot.exists()) {
-        const feedData = snapshot.data() as FeedCache;
-        onUpdate(feedData.questions || []);
-      } else {
-        // If cache doesn't exist yet, return empty array
-        onUpdate([]);
-      }
-    },
-    (error) => {
-      console.error('Error in feed cache subscription:', error);
-    }
-  );
-
-  return unsubscribe;
-}
-
-// ===== PAGINATION SUPPORT =====
-
-/**
- * Load more questions with pagination
- */
-export async function loadMoreQuestions(
-  lastDoc: any,
-  limitCount: number = 20
-): Promise<CommunityQuestion[]> {
+export async function deleteQuestion(questionId: string): Promise<void> {
   try {
-    const q = query(
-      getQuestionsRef(),
-      orderBy('createdAt', 'desc'),
-      startAfter(lastDoc),
-      limit(limitCount)
-    );
+    const questionRef = doc(db, 'community_questions', questionId);
+    await deleteDoc(questionRef);
 
-    const snapshot = await getDocs(q);
-    const questions: CommunityQuestion[] = [];
-    
-    snapshot.forEach((doc) => {
-      questions.push({
-        id: doc.id,
-        ...doc.data(),
-      } as CommunityQuestion);
-    });
-
-    return questions;
+    // Remove from feed cache
+    const feedDocRef = doc(db, 'community_feed', 'latest_questions');
+    const feedDoc = await getDoc(feedDocRef);
+    if (feedDoc.exists()) {
+      let questions = feedDoc.data()?.questions || [];
+      questions = questions.filter((q: any) => q.id !== questionId);
+      await setDoc(feedDocRef, { questions });
+    }
   } catch (error) {
-    console.error('Error loading more questions:', error);
-    throw new Error('Failed to load more questions');
+    console.error('Error deleting question:', error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a reply
+ */
+export async function deleteReply(questionId: string, replyId: string): Promise<void> {
+  try {
+    const replyRef = doc(db, 'community_questions', questionId, 'replies', replyId);
+    await deleteDoc(replyRef);
+
+    // Update question's reply count
+    const questionRef = doc(db, 'community_questions', questionId);
+    await updateDoc(questionRef, {
+      repliesCount: increment(-1),
+    });
+  } catch (error) {
+    console.error('Error deleting reply:', error);
+    throw error;
   }
 }

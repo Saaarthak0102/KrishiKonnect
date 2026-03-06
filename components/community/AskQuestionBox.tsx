@@ -1,148 +1,75 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 interface AskQuestionBoxProps {
-  onSubmit: (question: {
-    questionText: string;
-    description: string;
-    cropTag: string;
-    cropEmoji: string;
-    image: string | null;
-  }) => void;
-  isPosting?: boolean;
+  onPostCreated?: (content: string, cropTag: string) => void;
 }
 
-const CROPS = [
-  { name: 'Tomato', emoji: '🍅' },
-  { name: 'Wheat', emoji: '🌾' },
-  { name: 'Rice', emoji: '🌾' },
-  { name: 'Potato', emoji: '🥔' },
-  { name: 'Onion', emoji: '🧅' },
-  { name: 'Maize', emoji: '🌽' },
-  { name: 'Cotton', emoji: '🌱' },
-  { name: 'Sugarcane', emoji: '🌾' },
-  { name: 'Chilli', emoji: '🌶️' },
-];
-
-export default function AskQuestionBox({ onSubmit, isPosting = false }: AskQuestionBoxProps) {
-  const [questionText, setQuestionText] = useState('');
-  const [description, setDescription] = useState('');
+export default function AskQuestionBox({ onPostCreated }: AskQuestionBoxProps) {
   const [selectedCrop, setSelectedCrop] = useState('');
-  const [selectedCropEmoji, setSelectedCropEmoji] = useState('');
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [questionText, setQuestionText] = useState('');
 
-  const handleSubmit = () => {
-    if (!questionText.trim() || !selectedCrop || !description.trim()) {
-      alert('Please fill in all required fields');
+  const handleAskQuestion = () => {
+    if (!questionText.trim()) {
+      alert('Please enter a question.');
       return;
     }
 
-    onSubmit({
-      questionText: questionText.trim(),
-      description: description.trim(),
-      cropTag: selectedCrop,
-      cropEmoji: selectedCropEmoji,
-      image: null,
-    });
+    if (!selectedCrop) {
+      alert('Please select a crop category.');
+      return;
+    }
 
-    // Reset form
+    // Call the callback to add to global feed
+    if (onPostCreated) {
+      onPostCreated(questionText.trim(), selectedCrop);
+    }
+
+    // Clear input fields
     setQuestionText('');
-    setDescription('');
     setSelectedCrop('');
-    setSelectedCropEmoji('');
-    setIsExpanded(false);
+
+    alert('Question posted successfully!');
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm border border-green-100 rounded-xl shadow-sm p-6 mb-6 ask-question">
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
-          🌱 Ask the Community
-        </h2>
-        <p className="text-sm text-gray-600">Share your farming questions and get help from experienced farmers</p>
-      </div>
+    <div className="bg-white border-2 border-krishi-border rounded-xl shadow-sm p-4">
+      <div className="flex flex-col gap-3">
+        {/* Crop Selector */}
+        <select
+          value={selectedCrop}
+          onChange={(e) => setSelectedCrop(e.target.value)}
+          className="w-full px-4 py-2.5 border border-krishi-border rounded-md focus:outline-none focus:ring-2 focus:ring-krishi-primary focus:border-krishi-primary bg-white"
+        >
+          <option value="">Select Category...</option>
+          <option value="Wheat">🌾 Wheat</option>
+          <option value="Rice">🌾 Rice</option>
+          <option value="Vegetables">🥬 Vegetables</option>
+          <option value="Fruits">🍎 Fruits</option>
+          <option value="Irrigation">💧 Irrigation</option>
+          <option value="Pest Control">🐛 Pest Control</option>
+        </select>
 
-      <div className="space-y-4">
-        {/* Question Title */}
-        <div>
-          <input
-            type="text"
-            placeholder="Ask the community a question..."
-            value={questionText}
-            onChange={(e) => setQuestionText(e.target.value)}
-            onFocus={() => setIsExpanded(true)}
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none text-base transition-colors"
-          />
+        {/* Question Input */}
+        <textarea
+          value={questionText}
+          onChange={(e) => setQuestionText(e.target.value)}
+          placeholder="Ask farmers about crop problems..."
+          className="w-full px-4 py-3 border border-krishi-border rounded-md focus:outline-none focus:ring-2 focus:ring-krishi-primary focus:border-krishi-primary resize-none"
+          rows={3}
+          maxLength={500}
+        />
+
+        <div className="flex justify-end">
+          <button
+            onClick={handleAskQuestion}
+            disabled={!questionText.trim() || !selectedCrop}
+            className="px-6 py-2.5 bg-krishi-primary text-white rounded-md font-medium hover:bg-krishi-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200"
+          >
+            Post to Global Feed
+          </button>
         </div>
-
-        {/* Expanded Section */}
-        {isExpanded && (
-          <>
-            {/* Description */}
-            <div>
-              <textarea
-                placeholder="Provide more details about your question..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={4}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none text-base resize-none transition-colors"
-              />
-            </div>
-
-            {/* Crop Selector */}
-            <div className="flex items-center gap-3">
-              <label className="text-sm font-medium text-gray-700">Select Crop:</label>
-              <select
-                value={selectedCrop}
-                onChange={(e) => {
-                  const crop = CROPS.find(c => c.name === e.target.value);
-                  setSelectedCrop(e.target.value);
-                  setSelectedCropEmoji(crop?.emoji || '');
-                }}
-                className="px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:outline-none text-base"
-              >
-                <option value="">Choose crop...</option>
-                {CROPS.map((crop) => (
-                  <option key={crop.name} value={crop.name}>
-                    {crop.emoji} {crop.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex items-center gap-3 pt-2">
-              <button
-                onClick={handleSubmit}
-                disabled={isPosting}
-                className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-              >
-                {isPosting ? 'Posting...' : 'Post Question'}
-              </button>
-              <button
-                onClick={() => {
-                  setIsExpanded(false);
-                  setQuestionText('');
-                  setDescription('');
-                  setSelectedCrop('');
-                  setSelectedCropEmoji('');
-                }}
-                disabled={isPosting}
-                className="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                disabled={isPosting}
-                className="ml-auto px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                📷 Add Photo
-              </button>
-            </div>
-          </>
-        )}
       </div>
     </div>
   );

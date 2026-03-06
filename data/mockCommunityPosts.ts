@@ -1,135 +1,142 @@
-export interface CommunityPost {
+export interface Reply {
   id: string;
-  farmerName: string;
-  crop: string;
-  location: string;
-  question: string;
-  replies: number;
-  upvotes: number;
-  timeAgo: string;
-  tags: string[];
-  avatarColor?: string;
+  author: string;
+  content: string;
 }
 
-export const mockCommunityPosts: CommunityPost[] = [
+export interface Post {
+  id: string;
+  author: string;
+  location?: string;
+  cropTag?: string;
+  content: string;
+  upvotes: number;
+  replies: Reply[];
+  createdAt: string;
+}
+
+export const mockCommunityPosts: Post[] = [
   {
-    id: '1',
-    farmerName: 'Ramesh Singh',
-    crop: 'Wheat',
-    location: 'Punjab',
-    question: 'Yellow spots appearing on wheat leaves. Is this rust disease? Should I apply fungicide or wait for natural recovery?',
-    replies: 5,
-    upvotes: 12,
-    timeAgo: '2 hours ago',
-    tags: ['pest', 'wheat', 'disease'],
-    avatarColor: '#FF6B6B',
+    id: "1",
+    author: "Ramesh Kumar",
+    location: "Punjab",
+    cropTag: "Wheat",
+    content: "Yellow spots appearing on wheat leaves. Is this rust disease?",
+    upvotes: 2,
+    createdAt: "2h ago",
+    replies: [
+      {
+        id: "r1",
+        author: "Agri Expert",
+        content: "Yes it looks like early rust. Spray propiconazole fungicide."
+      },
+      {
+        id: "r2",
+        author: "Farmer Raj",
+        content: "Same issue last year. Fungicide worked well."
+      }
+    ]
   },
   {
-    id: '2',
-    farmerName: 'Sunita Devi',
-    crop: 'Tomato',
-    location: 'Maharashtra',
-    question: 'Mandi price dropped today from ₹35 to ₹28 per kg. Should I store tomatoes for a few days hoping prices recover?',
-    replies: 3,
-    upvotes: 7,
-    timeAgo: '4 hours ago',
-    tags: ['market-price', 'tomato', 'storage'],
-    avatarColor: '#4ECDC4',
+    id: "2",
+    author: "Sunita Devi",
+    location: "UP",
+    cropTag: "Rice",
+    content: "Best time to transplant paddy in eastern UP?",
+    upvotes: 1,
+    createdAt: "4h ago",
+    replies: [
+      {
+        id: "r3",
+        author: "Krishi Advisor",
+        content: "Ideal time is late June to early July depending on rainfall."
+      }
+    ]
   },
   {
-    id: '3',
-    farmerName: 'Harish Patel',
-    crop: 'Cotton',
-    location: 'Gujarat',
-    question: 'How often should cotton be irrigated during the flowering stage? Currently doing it every 3 days. Is that enough?',
-    replies: 4,
-    upvotes: 9,
-    timeAgo: '6 hours ago',
-    tags: ['irrigation', 'cotton', 'flowering'],
-    avatarColor: '#95E1D3',
+    id: "3",
+    author: "Mahesh Patel",
+    location: "Gujarat",
+    cropTag: "Vegetables",
+    content: "Tomato plants are flowering but not fruiting properly. Any tips?",
+    upvotes: 0,
+    replies: [],
+    createdAt: "5h ago"
   },
   {
-    id: '4',
-    farmerName: 'Mohan Lal',
-    crop: 'Mustard',
-    location: 'Rajasthan',
-    question: 'Best fertilizer to apply during mustard flowering stage? Which NPK ratio would work best?',
-    replies: 2,
-    upvotes: 5,
-    timeAgo: '8 hours ago',
-    tags: ['fertilizer', 'mustard'],
-    avatarColor: '#FFE66D',
+    id: "4",
+    author: "Harpreet Singh",
+    location: "Punjab",
+    cropTag: "Irrigation",
+    content: "Is drip irrigation worth it for 2 acres of vegetables?",
+    upvotes: 1,
+    createdAt: "6h ago",
+    replies: [
+      {
+        id: "r4",
+        author: "Agri Officer",
+        content: "Yes, government subsidy can cover up to 60% cost."
+      }
+    ]
   },
   {
-    id: '5',
-    farmerName: 'Anil Kumar',
-    crop: 'Paddy',
-    location: 'UP',
-    question: 'When should I harvest paddy to avoid moisture issues? What\'s the ideal moisture percentage at harvest?',
-    replies: 6,
-    upvotes: 14,
-    timeAgo: '1 day ago',
-    tags: ['harvesting', 'paddy', 'moisture'],
-    avatarColor: '#C7CEEA',
+    id: "5",
+    author: "Ravi Sharma",
+    cropTag: "Pest Control",
+    content: "Best organic solution for aphids on chilli plants?",
+    upvotes: 0,
+    replies: [],
+    createdAt: "8h ago"
   },
   {
-    id: '6',
-    farmerName: 'Priya Sharma',
-    crop: 'Onion',
-    location: 'Karnataka',
-    question: 'Facing onion neck rot issues in storage. What\'s the best way to cure and store onions to prevent this?',
-    replies: 8,
-    upvotes: 18,
-    timeAgo: '1 day ago',
-    tags: ['onion', 'storage', 'disease', 'post-harvest'],
-    avatarColor: '#FF9E64',
+    id: "6",
+    author: "Sanjay Verma",
+    cropTag: "Rice",
+    content: "Which rice variety gives good yield in Bihar?",
+    upvotes: 1,
+    replies: [],
+    createdAt: "9h ago"
   },
   {
-    id: '7',
-    farmerName: 'Vikram Singh',
-    crop: 'Maize',
-    location: 'Madhya Pradesh',
-    question: 'Starting maize cultivation next season. What\'s the best variety for local climate? Open pollinated or hybrid?',
-    replies: 7,
-    upvotes: 11,
-    timeAgo: '2 days ago',
-    tags: ['maize', 'variety', 'planning'],
-    avatarColor: '#BB9AF7',
+    id: "7",
+    author: "Deepak Yadav",
+    cropTag: "Vegetables",
+    content: "How often should we water cucumber plants in summer?",
+    upvotes: 0,
+    replies: [],
+    createdAt: "10h ago"
   },
   {
-    id: '8',
-    farmerName: 'Deepa Nair',
-    crop: 'Coconut',
-    location: 'Kerala',
-    question: 'Brown leaf spot on coconut palms. Is this a fungal infection? What treatment would you recommend?',
-    replies: 4,
-    upvotes: 8,
-    timeAgo: '2 days ago',
-    tags: ['coconut', 'disease', 'pest', 'treatment'],
-    avatarColor: '#91D1FF',
+    id: "8",
+    author: "Lakshmi Nair",
+    cropTag: "Fruits",
+    content: "Any tips to improve mango flowering this season?",
+    upvotes: 1,
+    replies: [],
+    createdAt: "11h ago"
   },
   {
-    id: '9',
-    farmerName: 'Rajesh Verma',
-    crop: 'Sugarcane',
-    location: 'Bihar',
-    question: 'Red rot disease detected in sugarcane field. Should I cut affected plants or treat with fungicide?',
-    replies: 5,
-    upvotes: 10,
-    timeAgo: '3 days ago',
-    tags: ['sugarcane', 'disease', 'pest-control'],
-    avatarColor: '#E599F7',
+    id: "9",
+    author: "Farmer Raj",
+    cropTag: "Wheat",
+    content: "Which fertilizer is best during wheat tillering stage?",
+    upvotes: 0,
+    replies: [],
+    createdAt: "12h ago"
   },
   {
-    id: '10',
-    farmerName: 'Khushi Kaur',
-    crop: 'Groundnut',
-    location: 'Tamil Nadu',
-    question: 'Groundnut pods not filling properly this season. Soil pH is 6.8, should I add lime?',
-    replies: 3,
-    upvotes: 6,
-    timeAgo: '3 days ago',
-    tags: ['groundnut', 'soil', 'nutrients'],
-    avatarColor: '#F28482',
-  },
+    id: "10",
+    author: "Anil Kumar",
+    cropTag: "Pest Control",
+    content: "Whiteflies attacking cotton crop. What should I spray?",
+    upvotes: 2,
+    replies: [
+      {
+        id: "r5",
+        author: "Krishi Expert",
+        content: "Use imidacloprid spray early morning."
+      }
+    ],
+    createdAt: "1d ago"
+  }
 ];

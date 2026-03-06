@@ -47,10 +47,10 @@ interface Question {
 }
 
 // Helper function to format timestamp
-function formatTimestamp(timestamp: Timestamp | null): string {
-  if (!timestamp || !timestamp.toDate) return 'Just now';
-  
-  const date = timestamp.toDate();
+function formatTimestamp(timestamp: Timestamp | Date | null): string {
+  if (!timestamp) return 'Just now';
+
+  const date = timestamp instanceof Date ? timestamp : timestamp.toDate();
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffMins = Math.floor(diffMs / 60000);
@@ -74,7 +74,7 @@ function convertReply(r: CommunityReply): Reply {
     text: r.replyText,
     upvotes: r.upvotes,
     upvotedBy: r.upvotedBy || [],
-    timestamp: formatTimestamp(r.createdAt),
+    timestamp: formatTimestamp(r.createdAt as Date | Timestamp | null),
     image: r.imageUrl,
   };
 }
@@ -111,7 +111,7 @@ export default function ThreadPage() {
             upvotes: data.upvotes || 0,
             upvotedBy: data.upvotedBy || [],
             repliesCount: data.repliesCount || 0,
-            timestamp: formatTimestamp(data.createdAt),
+            timestamp: formatTimestamp(data.createdAt as Date | Timestamp | null),
             image: data.imageUrl,
             hasImage: !!data.imageUrl,
             replies: [],
@@ -310,13 +310,12 @@ export default function ThreadPage() {
       setReplies([...replies, optimisticReply]);
 
       // Add to Firestore (real-time listener will update with actual data)
-      await addReply(
-        questionId,
-        user.uid,
-        user.displayName || 'Anonymous',
-        '🌱', // Default badge
-        { replyText }
-      );
+      await addReply(questionId, {
+        userId: user.uid,
+        userName: user.displayName || 'Anonymous',
+        userLocation: question.location || 'Unknown',
+        replyText,
+      });
 
       // Remove optimistic update (real data will come from listener)
       setReplies((prev) => prev.filter((r) => r.id !== optimisticReply.id));

@@ -60,9 +60,7 @@ export default function ThreadView({
 
   return (
     <div className="space-y-6">
-      {/* Question Section */}
       <div className="bg-white rounded-2xl shadow-md p-6">
-        {/* Crop Tag */}
         <div className="mb-4">
           <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-green-50 text-green-700 rounded-lg font-medium">
             <span className="text-xl">{question.cropEmoji}</span>
@@ -70,21 +68,12 @@ export default function ThreadView({
           </span>
         </div>
 
-        {/* Question Title */}
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
-          {question.question}
-        </h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">{question.question}</h1>
 
-        {/* Description */}
-        <p className="text-gray-700 text-lg mb-6 leading-relaxed">
-          {question.description}
-        </p>
+        <p className="text-gray-700 text-lg mb-6 leading-relaxed">{question.description}</p>
 
-        {/* Identity Signals - Farmer Info */}
         <div className="mb-6 pb-6 border-b border-gray-200">
-          <div className="text-sm text-gray-700 font-semibold mb-3">
-            {question.user}
-          </div>
+          <div className="text-sm text-gray-700 font-semibold mb-3">{question.user}</div>
           <div className="flex flex-wrap gap-4 text-sm">
             <div className="flex items-center gap-2 text-gray-600">
               <span>📍</span>
@@ -97,25 +86,19 @@ export default function ThreadView({
           </div>
         </div>
 
-        {/* Image if present */}
         {question.image && (
           <div className="mb-6">
-            <img 
-              src={question.image} 
-              alt="Question image" 
+            <img
+              src={question.image}
+              alt="Question image"
               className="w-full max-h-96 object-cover rounded-lg"
             />
           </div>
         )}
 
-        {/* Footer */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-          {/* Timestamp */}
-          <div className="text-sm text-gray-600">
-            {question.timestamp}
-          </div>
+          <div className="text-sm text-gray-600">{question.timestamp}</div>
 
-          {/* Upvote Button */}
           <button
             onClick={() => onUpvoteQuestion(question.id)}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-colors ${
@@ -130,18 +113,14 @@ export default function ThreadView({
         </div>
       </div>
 
-      {/* Replies Section */}
       <div className="bg-white rounded-2xl shadow-md p-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
           💬 {replies.length} {replies.length === 1 ? 'Reply' : 'Replies'}
         </h2>
 
-        {/* Replies List */}
         <div className="space-y-4 mb-6">
           {replies.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">
-              No replies yet. Be the first to help!
-            </p>
+            <p className="text-gray-500 text-center py-8">No replies yet. Be the first to help!</p>
           ) : (
             replies.map((reply) => (
               <ReplyCard
@@ -159,11 +138,8 @@ export default function ThreadView({
           )}
         </div>
 
-        {/* Reply Input */}
         <div className="border-t border-gray-200 pt-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">
-            Your Answer
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">Your Answer</h3>
           <textarea
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
