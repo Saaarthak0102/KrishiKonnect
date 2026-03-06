@@ -28,7 +28,7 @@ export default function RootPage() {
       <main className="min-h-screen flex items-center justify-center bg-krishi-bg">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-krishi-primary border-t-krishi-heading"></div>
-          <p className="mt-4 text-krishi-text">Loading...</p>
+          <p className="mt-4 text-krishi-text">Loag...</p>
         </div>
       </main>
     )
