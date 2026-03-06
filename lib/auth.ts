@@ -1,5 +1,10 @@
 'use client'
 
+// SECURITY NOTE:
+// This file uses Firebase authentication which is initialized with
+// credentials from environment variables (see lib/firebase.ts).
+// Never add or log sensitive information in this file.
+
 import { auth, db } from './firebase'
 import {
   ConfirmationResult,

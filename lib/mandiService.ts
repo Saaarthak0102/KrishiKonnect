@@ -1,5 +1,11 @@
 // Mandi Service - crop-first Agmarknet integration with state-level caching
 
+// SECURITY NOTE:
+// The Data.gov API key must be stored in environment variables.
+// Never commit secrets directly into the repository.
+// Required environment variable:
+// - NEXT_PUBLIC_DATA_GOV_API_KEY
+
 import cropsData from '@/data/crops.json'
 
 export interface MandiPrice {
@@ -42,6 +48,14 @@ const CACHE_TTL_MS = 5 * 60 * 1000
 const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 const DATA_GOV_API_KEY = process.env.NEXT_PUBLIC_DATA_GOV_API_KEY!
+
+// Validate required environment variables at startup
+if (!DATA_GOV_API_KEY) {
+  throw new Error(
+    'Missing required environment variable: NEXT_PUBLIC_DATA_GOV_API_KEY. ' +
+    'Please check your .env.local file and ensure the variable is set.'
+  )
+}
 
 const KNOWN_STATES = [
   'Andhra Pradesh',
