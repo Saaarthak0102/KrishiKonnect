@@ -50,57 +50,6 @@ export interface AIMessageWithTimestamp extends Omit<AIMessage, 'createdAt'> {
 }
 
 /**
- * System prompt for Krishi Sahayak AI
- * Comprehensive agricultural advisor context with structured response format
- */
-const KRISHI_SAHAYAK_SYSTEM_PROMPT = `You are Krishi Sahayak, a friendly and knowledgeable AI agriculture advisor designed to help Indian farmers.
-
-Your expertise includes:
-- Crop disease identification and treatment
-- Pest management and control
-- Soil preparation and health
-- Irrigation scheduling and water management
-- Fertilizer recommendations (organic and chemical)
-- Seed selection and planting techniques
-- Harvesting best practices
-- Weather-based farming advice
-- Post-harvest storage and handling
-- Government schemes and subsidies awareness
-
-Your personality:
-- Friendly, respectful, and empathetic
-- Use simple, practical language that farmers can understand
-- Be helpful like an experienced agriculture expert
-- Consider Indian farming conditions and regional variations
-
-Response Structure:
-Always structure your responses as follows:
-1. **Possible Problem/Issue** (समभावित समस्या): Identify and explain the issue
-2. **Immediate Action** (तुरंत क्या करें): Provide step-by-step immediate actions
-3. **Prevention** (बचाव): Long-term prevention and best practices
-
-Guidelines:
-- Use bullet points for clarity
-- Avoid long paragraphs
-- Provide specific, actionable advice
-- Include both traditional and modern farming methods when relevant
-- Mention approximate costs when suggesting products
-- Always prioritize farmer safety and environmental sustainability
-
-Language Rule:
-CRITICAL: Always respond in the SAME language as the farmer's question.
-- If the question is in Hindi → Respond completely in Hindi
-- If the question is in English → Respond completely in English
-- If the question is in Hinglish → Use simple Hindi or English based on context
-
-Out-of-context handling:
-If the question is NOT related to agriculture, farming, crops, livestock, irrigation, pests, fertilizers, or rural livelihoods, respond:
-
-English: "I am Krishi Sahayak and I specialize in agriculture-related guidance. Please ask questions about farming, crops, irrigation, pests, fertilizers, or livestock."
-
-Hindi: "मैं कृषि सहायक हूँ और मैं केवल खेती और कृषि से जुड़ी समस्याओं में मदद कर सकता हूँ। कृपया खेती, फसल, सिंचाई, कीट, उर्वरक या पशुपालन से संबंधित प्रश्न पूछें।"`
-
-/**
  * Create a new chat in Firestore
  */
 export async function createNewChat(userId: string, language: 'en' | 'hi' = 'en'): Promise<string> {
@@ -338,24 +287,12 @@ export async function generateKrishiAdvice(
   language: 'en' | 'hi' = 'en'
 ): Promise<string> {
   try {
-    // Build the full prompt with context if available
-    let fullPrompt = message
+    const userQuestion = imageUrl
+      ? `[Farmer uploaded an image]
+${message}
 
-    if (farmerContext) {
-      let contextStr = ''
-      if (farmerContext.location) contextStr += `Location: ${farmerContext.location}\n`
-      if (farmerContext.crop) contextStr += `Crop: ${farmerContext.crop}\n`
-      if (farmerContext.season) contextStr += `Season: ${farmerContext.season}\n`
-
-      if (contextStr) {
-        fullPrompt = `Farmer Context:\n${contextStr}\nQuestion:\n${message}`
-      }
-    }
-
-    // If there's an image, add context about it
-    if (imageUrl) {
-      fullPrompt = `[Farmer uploaded an image]\n${fullPrompt}\n\nPlease analyze the image and provide diagnosis and solutions.`
-    }
+Please include image-based diagnosis or observations if relevant.`
+      : message
 
     const response = await fetch('/api/ai', {
       method: 'POST',
@@ -363,10 +300,10 @@ export async function generateKrishiAdvice(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        prompt: fullPrompt,
+        userQuestion,
+        location: farmerContext?.location,
+        crop: farmerContext?.crop,
         language,
-        imageUrl,
-        systemPrompt: KRISHI_SAHAYAK_SYSTEM_PROMPT,
       }),
     })
 
@@ -375,11 +312,13 @@ export async function generateKrishiAdvice(
     }
 
     const data = await response.json()
-    if (!data.success) {
-      throw new Error(data.error || 'Unknown error from AI API')
+    const reply = typeof data?.reply === 'string' ? data.reply : typeof data?.text === 'string' ? data.text : ''
+
+    if (!reply.trim()) {
+      throw new Error('AI API returned an empty response')
     }
 
-    return data.text
+    return reply
   } catch (error) {
     console.error('Error generating Krishi advice:', error)
     throw error
