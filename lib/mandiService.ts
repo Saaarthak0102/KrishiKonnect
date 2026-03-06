@@ -41,9 +41,7 @@ const DEFAULT_FETCH_LIMIT = 500
 const CACHE_TTL_MS = 5 * 60 * 1000
 const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-const DATA_GOV_API_KEY =
-  process.env.NEXT_PUBLIC_DATA_GOV_API_KEY ||
-  '579b464db66ec23bdd000001e2f8fdd6e6d7a3d7403f38f'
+const DATA_GOV_API_KEY = process.env.NEXT_PUBLIC_DATA_GOV_API_KEY!
 
 const KNOWN_STATES = [
   'Andhra Pradesh',
