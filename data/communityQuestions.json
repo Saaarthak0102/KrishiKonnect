@@ -1,0 +1,270 @@
+[
+  {
+    "id": "1",
+    "crop": "Tomato",
+    "cropEmoji": "🍅",
+    "question": "Why are my tomato leaves turning yellow?",
+    "description": "I noticed yellow leaves on the lower part of my tomato plants. They are about 45 days old. Is this normal or should I be worried?",
+    "user": "Ramesh Kumar",
+    "userId": "user1",
+    "upvotes": 24,
+    "repliesCount": 8,
+    "timestamp": "2h ago",
+    "image": null,
+    "hasImage": false,
+    "replies": [
+      {
+        "id": "r1",
+        "userId": "user2",
+        "user": "Mahesh Patil",
+        "text": "This is likely nitrogen deficiency. Apply urea fertilizer at 50kg per acre. Also ensure proper watering.",
+        "upvotes": 12,
+        "timestamp": "1h ago",
+        "image": null
+      },
+      {
+        "id": "r2",
+        "userId": "user3",
+        "user": "Lakshmi Devi",
+        "text": "I had the same problem last season. Use organic compost mixed with neem cake. It worked well for me.",
+        "upvotes": 8,
+        "timestamp": "45m ago",
+        "image": null
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "crop": "Wheat",
+    "cropEmoji": "🌾",
+    "question": "Best time to harvest wheat in North India?",
+    "description": "My wheat crop is 110 days old. When should I harvest for maximum yield? Weather has been dry lately.",
+    "user": "Suresh Singh",
+    "userId": "user4",
+    "upvotes": 18,
+    "repliesCount": 5,
+    "timestamp": "5h ago",
+    "image": null,
+    "hasImage": false,
+    "replies": [
+      {
+        "id": "r3",
+        "userId": "user5",
+        "user": "Rajesh Sharma",
+        "text": "Wait until grains are hard and golden. Usually 115-120 days. Check moisture content - should be around 12-14%.",
+        "upvotes": 15,
+        "timestamp": "4h ago",
+        "image": null
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "crop": "Rice",
+    "cropEmoji": "🌾",
+    "question": "How to control weeds in paddy field without chemicals?",
+    "description": "Looking for organic methods to control weeds. My field is 2 acres.",
+    "user": "Gopal Reddy",
+    "userId": "user6",
+    "upvotes": 32,
+    "repliesCount": 12,
+    "timestamp": "1d ago",
+    "image": null,
+    "hasImage": false,
+    "replies": [
+      {
+        "id": "r4",
+        "userId": "user7",
+        "user": "Anjali Verma",
+        "text": "Use cono weeder mechanical tool. Very effective and saves labor. I use it twice - at 20 and 35 days after transplanting.",
+        "upvotes": 20,
+        "timestamp": "20h ago",
+        "image": null
+      },
+      {
+        "id": "r5",
+        "userId": "user8",
+        "user": "Prakash Yadav",
+        "text": "Maintain 5-7cm water level continuously for first 30 days. This suppresses most weeds naturally.",
+        "upvotes": 16,
+        "timestamp": "18h ago",
+        "image": null
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "crop": "Potato",
+    "cropEmoji": "🥔",
+    "question": "Black spots on potato leaves - what is this disease?",
+    "description": "I see black circular spots on leaves. Plants are 40 days old. Please help identify.",
+    "user": "Vijay Patel",
+    "userId": "user9",
+    "upvotes": 15,
+    "repliesCount": 6,
+    "timestamp": "12h ago",
+    "image": null,
+    "hasImage": false,
+    "replies": [
+      {
+        "id": "r6",
+        "userId": "user10",
+        "user": "Dr. Sunita Joshi",
+        "text": "Looks like Early Blight (Alternaria solani). Spray Mancozeb fungicide immediately. Remove infected leaves.",
+        "upvotes": 18,
+        "timestamp": "10h ago",
+        "image": null
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "crop": "Onion",
+    "cropEmoji": "🧅",
+    "question": "When to stop watering onions before harvest?",
+    "description": "My onions are ready for harvest in 2 weeks. Should I stop irrigation now?",
+    "user": "Kiran Desai",
+    "userId": "user11",
+    "upvotes": 9,
+    "repliesCount": 4,
+    "timestamp": "8h ago",
+    "image": null,
+    "hasImage": false,
+    "replies": [
+      {
+        "id": "r7",
+        "userId": "user12",
+        "user": "Narendra Kulkarni",
+        "text": "Stop watering 10-15 days before harvest. This helps in better storage and curing of bulbs.",
+        "upvotes": 11,
+        "timestamp": "6h ago",
+        "image": null
+      }
+    ]
+  },
+  {
+    "id": "6",
+    "crop": "Maize",
+    "cropEmoji": "🌽",
+    "question": "Best spacing for maize planting?",
+    "description": "What is the recommended row-to-row and plant-to-plant spacing for hybrid maize?",
+    "user": "Balaji Naik",
+    "userId": "user13",
+    "upvotes": 7,
+    "repliesCount": 3,
+    "timestamp": "1d ago",
+    "image": null,
+    "hasImage": false,
+    "replies": [
+      {
+        "id": "r8",
+        "userId": "user14",
+        "user": "Arvind Mehta",
+        "text": "For hybrid maize: 60cm row-to-row and 20cm plant-to-plant. This gives optimal plant population of 83,000 plants per hectare.",
+        "upvotes": 9,
+        "timestamp": "22h ago",
+        "image": null
+      }
+    ]
+  },
+  {
+    "id": "7",
+    "crop": "Cotton",
+    "cropEmoji": "🌱",
+    "question": "How to identify pink bollworm infestation?",
+    "description": "Want to know early signs of pink bollworm so I can take action quickly.",
+    "user": "Dilip Naidu",
+    "userId": "user15",
+    "upvotes": 21,
+    "repliesCount": 7,
+    "timestamp": "3d ago",
+    "image": null,
+    "hasImage": false,
+    "replies": [
+      {
+        "id": "r9",
+        "userId": "user16",
+        "user": "Kavita Bhosale",
+        "text": "Look for rosette flowers and holes in bolls. Use pheromone traps for early detection. If count crosses 8 per trap, spray immediately.",
+        "upvotes": 14,
+        "timestamp": "2d ago",
+        "image": null
+      }
+    ]
+  },
+  {
+    "id": "8",
+    "crop": "Sugarcane",
+    "cropEmoji": "🌾",
+    "question": "Red rot disease in sugarcane - treatment?",
+    "description": "Some of my sugarcane plants show red rot symptoms. How to control spread?",
+    "user": "Mohan Jadhav",
+    "userId": "user17",
+    "upvotes": 11,
+    "repliesCount": 4,
+    "timestamp": "6h ago",
+    "image": null,
+    "hasImage": false,
+    "replies": [
+      {
+        "id": "r10",
+        "userId": "user18",
+        "user": "Sandeep Rathore",
+        "text": "Remove and burn infected plants immediately. Treat remaining crop with Carbendazim. Use disease-resistant varieties in next season.",
+        "upvotes": 8,
+        "timestamp": "4h ago",
+        "image": null
+      }
+    ]
+  },
+  {
+    "id": "9",
+    "crop": "Chilli",
+    "cropEmoji": "🌶️",
+    "question": "Chilli plants flowering but no fruit setting",
+    "description": "My chilli plants have many flowers but they are falling off. No fruit development. What could be the reason?",
+    "user": "Ravi Chandra",
+    "userId": "user19",
+    "upvotes": 28,
+    "repliesCount": 9,
+    "timestamp": "15h ago",
+    "image": null,
+    "hasImage": false,
+    "replies": [
+      {
+        "id": "r11",
+        "userId": "user20",
+        "user": "Geeta Nair",
+        "text": "This is usually due to high temperature or water stress. Ensure regular irrigation. Spray NAA (Naphthalene Acetic Acid) 20ppm to improve fruit setting.",
+        "upvotes": 22,
+        "timestamp": "12h ago",
+        "image": null
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "crop": "Tomato",
+    "cropEmoji": "🍅",
+    "question": "Should I remove tomato plant suckers?",
+    "description": "I see side shoots growing between main stem and branches. Should these be removed?",
+    "user": "Ashok Pawar",
+    "userId": "user21",
+    "upvotes": 13,
+    "repliesCount": 5,
+    "timestamp": "4h ago",
+    "image": null,
+    "hasImage": false,
+    "replies": [
+      {
+        "id": "r12",
+        "userId": "user22",
+        "user": "Meena Gupta",
+        "text": "Yes, remove suckers for indeterminate varieties. This directs energy to fruit production. Keep 1-2 main stems for best results.",
+        "upvotes": 10,
+        "timestamp": "2h ago",
+        "image": null
+      }
+    ]
+  }
+]

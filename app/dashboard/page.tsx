@@ -9,6 +9,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { useStarredCrops } from '@/lib/useStarredCrops'
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
 import MarketInsightCard from '@/components/dashboard/MarketInsightCard'
+import CommunityStats from '@/components/community/CommunityStats'
 import { getTransportBookings, type TransportBookingRecord } from '@/lib/transportBookings'
 import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
 import cropsData from '@/data/crops.json'
@@ -98,6 +99,13 @@ export default function DashboardPage() {
     () => transportBookings.filter((booking) => booking.type === 'transport').slice(0, 3),
     [transportBookings]
   )
+
+  // Community stats (simulated - can be fetched from localStorage or API)
+  const communityStats = {
+    reputation: 120,
+    answersPosted: 8,
+    upvotesReceived: 24,
+  }
 
   if (loading) {
     return (
@@ -263,12 +271,12 @@ export default function DashboardPage() {
         </div>
       </motion.div>
 
-      {/* Row 2 - Weather & Market Insight Cards */}
+      {/* Row 2 - Weather, Market Insight & Community Cards */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch"
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch"
       >
         {/* Weather Card */}
         <div className="h-full">
@@ -277,7 +285,7 @@ export default function DashboardPage() {
               🌤 {t.weatherToday}
             </h3>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-2 gap-6 flex-1">
+            <div className="grid grid-cols-2 gap-6 flex-1">
               <div>
                 <p className="text-sm text-gray-600 mb-1">{t.temperature}</p>
                 <p className="text-2xl font-bold text-[#B85C38]">28°C</p>
@@ -301,6 +309,15 @@ export default function DashboardPage() {
         {/* Market Insight Card */}
         <div className="h-full">
           <MarketInsightCard starredCrops={starredCrops} />
+        </div>
+
+        {/* Community Reputation Card */}
+        <div className="h-full">
+          <CommunityStats
+            reputation={communityStats.reputation}
+            answersPosted={communityStats.answersPosted}
+            upvotesReceived={communityStats.upvotesReceived}
+          />
         </div>
       </motion.div>
 
