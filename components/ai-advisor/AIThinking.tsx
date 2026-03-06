@@ -1,0 +1,107 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+
+interface AIThinkingProps {
+  lang?: string
+}
+
+const CHECKING_STEPS_EN = [
+  '📍 Analyzing your location...',
+  '🌤️ Checking current weather...',
+  '🌱 Reviewing crop stage...',
+  '💰 Fetching market prices...',
+]
+
+const CHECKING_STEPS_HI = [
+  '📍 आपके स्थान का विश्लेषण...',
+  '🌤️ मौसम की जांच...',
+  '🌱 फसल की अवस्था की समीक्षा...',
+  '💰 बाज़ार मूल्य लाना...',
+]
+
+export default function AIThinking({ lang = 'en' }: AIThinkingProps) {
+  const [currentStep, setCurrentStep] = useState(0)
+  const steps = lang === 'hi' ? CHECKING_STEPS_HI : CHECKING_STEPS_EN
+
+  useEffect(() => {
+    if (currentStep < steps.length - 1) {
+      const timer = setTimeout(() => {
+        setCurrentStep(currentStep + 1)
+      }, 600)
+      return () => clearTimeout(timer)
+    }
+  }, [currentStep, steps.length])
+
+  const headerText =
+    lang === 'hi'
+      ? '🌾 कृषि सहायक आपकी खेती की स्थिति का विश्लेषण कर रहा है...'
+      : '🌾 Krishi Sahayak is analyzing your farm conditions...'
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="flex justify-start"
+    >
+      <div className="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-lg bg-krishi-agriculture/10 text-krishi-text rounded-bl-none border border-krishi-agriculture/20">
+        <div className="flex items-center gap-2 mb-3">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+            className="text-xl"
+          >
+            🌾
+          </motion.div>
+          <p className="font-semibold text-sm">{headerText}</p>
+        </div>
+
+        <div className="space-y-2">
+          {steps.map((step, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{
+                opacity: idx <= currentStep ? 1 : 0.3,
+                x: 0,
+              }}
+              transition={{ duration: 0.3, delay: idx * 0.1 }}
+              className="flex items-center gap-2"
+            >
+              {idx <= currentStep ? (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="text-green-600"
+                >
+                  ✓
+                </motion.span>
+              ) : (
+                <motion.div
+                  animate={{ opacity: [0.3, 0.7, 0.3] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="w-4 h-4 border-2 border-krishi-primary/30 rounded-full"
+                />
+              )}
+              <span className={`text-sm ${idx <= currentStep ? 'text-krishi-text' : 'text-krishi-text/40'}`}>
+                {step}
+              </span>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="mt-3 flex gap-1"
+        >
+          <span className="w-2 h-2 bg-krishi-primary rounded-full" />
+          <span className="w-2 h-2 bg-krishi-primary rounded-full" />
+          <span className="w-2 h-2 bg-krishi-primary rounded-full" />
+        </motion.div>
+      </div>
+    </motion.div>
+  )
+}

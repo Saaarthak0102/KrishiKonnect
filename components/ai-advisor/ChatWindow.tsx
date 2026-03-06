@@ -6,6 +6,16 @@ import { AIMessage } from '@/lib/aiAdvisor'
 import MessageBubble from './MessageBubble'
 import ChatInput from './ChatInput'
 import SuggestedQuestions from './SuggestedQuestions'
+import ContextChips from './ContextChips'
+import AIThinking from './AIThinking'
+
+interface FarmContextPreview {
+  location: string
+  crop: string
+  temperature: string
+  mandiPrice: string
+  cropStage: string
+}
 
 interface ChatWindowProps {
   messages: AIMessage[]
@@ -14,6 +24,7 @@ interface ChatWindowProps {
   error: string | null
   onErrorDismiss: () => void
   lang: string
+  farmContext: FarmContextPreview | null
 }
 
 export default function ChatWindow({
@@ -23,6 +34,7 @@ export default function ChatWindow({
   error,
   onErrorDismiss,
   lang,
+  farmContext,
 }: ChatWindowProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [isSending, setIsSending] = useState(false)
@@ -61,6 +73,18 @@ export default function ChatWindow({
 
   return (
     <div className="flex-1 flex flex-col bg-white overflow-hidden">
+      {farmContext && (
+        <div className="px-6 pt-4">
+          <ContextChips
+            location={farmContext.location}
+            crop={farmContext.crop}
+            temperature={farmContext.temperature}
+            mandiPrice={farmContext.mandiPrice}
+            cropStage={farmContext.cropStage}
+          />
+        </div>
+      )}
+
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.length === 0 && !loading ? (
@@ -74,22 +98,11 @@ export default function ChatWindow({
                 key={message.id || idx}
                 message={message}
                 isUser={message.role === 'user'}
+                enableTypewriter={idx === messages.length - 1 && message.role === 'assistant'}
               />
             ))}
 
-            {isSending && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex justify-start"
-              >
-                <div className="flex items-center space-x-2 bg-krishi-agriculture/10 px-4 py-3 rounded-lg rounded-tl-none">
-                  <div className="w-2 h-2 bg-krishi-agriculture rounded-full animate-bounce" />
-                  <div className="w-2 h-2 bg-krishi-agriculture rounded-full animate-bounce delay-100" />
-                  <div className="w-2 h-2 bg-krishi-agriculture rounded-full animate-bounce delay-200" />
-                </div>
-              </motion.div>
-            )}
+            {isSending && <AIThinking lang={lang} />}
 
             <div ref={messagesEndRef} />
           </>

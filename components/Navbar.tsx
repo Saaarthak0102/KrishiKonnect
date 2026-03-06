@@ -5,16 +5,12 @@ import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import { usePathname } from 'next/navigation'
+import LanguageToggle from '@/components/ui/LanguageToggle'
 
 export default function Navbar() {
-  const { lang, changeLang } = useLanguage()
+  const { lang } = useLanguage()
   const pathname = usePathname()
   const t = translations[lang]
-
-  const toggleLanguage = () => {
-    const newLang = lang === 'hi' ? 'en' : 'hi'
-    changeLang(newLang)
-  }
 
   // Check if we're on the home/landing page
   const isHomePage = pathname === '/' || pathname === '/home'
@@ -74,12 +70,7 @@ export default function Navbar() {
             )}
           </div>
 
-          <button
-            onClick={toggleLanguage}
-            className="px-4 py-2 bg-krishi-primary text-white rounded-lg font-semibold hover:scale-105 transition-transform"
-          >
-            {lang === 'hi' ? 'EN' : 'हिंदी'}
-          </button>
+          <LanguageToggle />
         </div>
       </div>
     </motion.nav>

@@ -278,6 +278,7 @@ export async function updateChatTitle(chatId: string, title: string): Promise<vo
  */
 export async function generateKrishiAdvice(
   message: string,
+  userId: string,
   imageUrl?: string,
   farmerContext?: {
     location?: string
@@ -294,13 +295,14 @@ ${message}
 Please include image-based diagnosis or observations if relevant.`
       : message
 
-    const response = await fetch('/api/ai', {
+    const response = await fetch('/api/ai-advisor', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         userQuestion,
+        userId,
         location: farmerContext?.location,
         crop: farmerContext?.crop,
         language,
@@ -396,4 +398,64 @@ export function isAgriculturalQuestion(question: string): boolean {
 
   const lowerQuestion = question.toLowerCase()
   return agricultureKeywords.some((keyword) => lowerQuestion.includes(keyword))
+}
+
+/**
+ * Generate a smart chat title from the first user question
+ */
+export function generateChatTitle(question: string, language: 'en' | 'hi' = 'en'): string {
+  // Remove common question words and get the main topic
+  const cleanQuestion = question
+    .toLowerCase()
+    .replace(/^(what|when|where|how|why|which|who|can|should|is|are|do|does|kya|kaise|kab|kahan|kyon)/gi, '')
+    .trim()
+
+  // Extract key farming terms
+  const keywords = [
+    { en: 'fertilizer', hi: 'उर्वरक', title: 'Fertilizer Advice' },
+    { en: 'pest', hi: 'कीट', title: 'Pest Control' },
+    { en: 'irrigation', hi: 'सिंचाई', title: 'Irrigation Tips' },
+    { en: 'disease', hi: 'रोग', title: 'Disease Management' },
+    { en: 'weather', hi: 'मौसम', title: 'Weather Impact' },
+    { en: 'mandi', hi: 'मंडी', title: 'Market Prices' },
+    { en: 'price', hi: 'भाव', title: 'Crop Pricing' },
+    { en: 'wheat', hi: 'गेहूं', title: 'Wheat Farming' },
+    { en: 'rice', hi: 'धान', title: 'Rice Farming' },
+    { en: 'maize', hi: 'मक्का', title: 'Maize Farming' },
+    { en: 'cotton', hi: 'कपास', title: 'Cotton Farming' },
+    { en: 'vegetable', hi: 'सब्जी', title: 'Vegetable Farming' },
+    { en: 'seed', hi: 'बीज', title: 'Seed Selection' },
+    { en: 'harvest', hi: 'कटाई', title: 'Harvesting' },
+    { en: 'soil', hi: 'मिट्टी', title: 'Soil Management' },
+  ]
+
+  const lowerQuestion = question.toLowerCase()
+  
+  // Find matching keyword
+  for (const keyword of keywords) {
+    if (lowerQuestion.includes(keyword.en) || lowerQuestion.includes(keyword.hi)) {
+      return language === 'hi' 
+        ? keyword.title.replace('Fertilizer', 'उर्वरक')
+            .replace('Pest Control', 'कीट नियंत्रण')
+            .replace('Irrigation', 'सिंचाई')
+            .replace('Disease', 'रोग प्रबंधन')
+            .replace('Weather', 'मौसम')
+            .replace('Market', 'बाज़ार')
+            .replace('Crop', 'फसल')
+            .replace('Farming', 'खेती')
+            .replace('Seed', 'बीज')
+            .replace('Soil', 'मिट्टी')
+        : keyword.title
+    }
+  }
+
+  // If no keyword match, create a short title from the question
+  const words = cleanQuestion.split(' ').slice(0, 4)
+  const shortTitle = words.join(' ')
+  
+  if (shortTitle.length > 3) {
+    return shortTitle.charAt(0).toUpperCase() + shortTitle.slice(1)
+  }
+
+  return language === 'hi' ? 'खेती सलाह' : 'Farming Advice'
 }

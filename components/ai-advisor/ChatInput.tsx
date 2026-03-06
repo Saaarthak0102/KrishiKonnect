@@ -81,8 +81,8 @@ export default function ChatInput({
           disabled={disabled || isLoading}
           placeholder={
             lang === 'hi'
-              ? 'अपना सवाल पूछें... (Ctrl+Enter भेजने के लिए)'
-              : 'Ask your question... (Ctrl+Enter to send)'
+              ? 'अपना खेती से जुड़ा सवाल पूछें...'
+              : 'Ask your farming question...'
           }
           rows={3}
           className="w-full px-4 py-3 border-2 border-krishi-border rounded-lg resize-none focus:border-krishi-primary outline-none disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"

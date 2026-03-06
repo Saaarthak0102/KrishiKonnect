@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { LanguageProvider } from '@/lib/LanguageContext'
+import { LanguageProvider } from '@/context/LanguageContext'
 import { AuthWrapper } from '@/components/AuthProvider'
 import { MandiProvider } from '@/lib/MandiContext'
 import { StarredCropsProvider } from '@/context/StarredCropsContext'

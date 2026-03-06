@@ -8,7 +8,6 @@ import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
 import {
   createNewChat,
-  fetchUserChats,
   subscribeToChat,
   subscribeToChats,
   addMessageToChat,
@@ -18,12 +17,14 @@ import {
   updateChatTitle,
   getGreetingMessage,
   getFarmerContext,
+  generateChatTitle,
   type AIChat,
   type AIMessage,
 } from '@/lib/aiAdvisor'
 import Sidebar from '@/components/Sidebar'
 import ChatWindow from '@/components/ai-advisor/ChatWindow'
 import ChatHistorySidebar from '@/components/ai-advisor/ChatHistorySidebar'
+import LanguageToggle from '@/components/ui/LanguageToggle'
 
 export default function AIAdvisorPage() {
   const router = useRouter()
@@ -37,7 +38,33 @@ export default function AIAdvisorPage() {
   const [loading, setLoading] = useState(true)
   const [isLoadingChats, setIsLoadingChats] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [farmContext, setFarmContext] = useState<{
+    location: string
+    crop: string
+    temperature: string
+    mandiPrice: string
+    cropStage: string
+    season?: string
+  } | null>(null)
   const unsubscribeRef = useRef<(() => void) | null>(null)
+
+  const buildContextPreview = (context: {
+    location?: string
+    crop?: string
+    season?: string
+  } | null) => {
+    const location = context?.location || 'Uttar Pradesh'
+    const crop = context?.crop || 'Wheat'
+
+    return {
+      location,
+      crop,
+      season: context?.season || 'Rabi',
+      cropStage: 'Tillering',
+      temperature: '24°C',
+      mandiPrice: '₹2150/q',
+    }
+  }
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -137,6 +164,23 @@ export default function AIAdvisorPage() {
     }
   }, [currentChatId])
 
+  // Load context for UI chips when user is available
+  useEffect(() => {
+    if (!user?.uid) return
+
+    const loadContext = async () => {
+      try {
+        const contextFromProfile = await getFarmerContext(user.uid)
+        setFarmContext(buildContextPreview(contextFromProfile))
+      } catch (err) {
+        console.error('Error loading farm context:', err)
+        setFarmContext(buildContextPreview(null))
+      }
+    }
+
+    loadContext()
+  }, [user?.uid])
+
   const handleNewChat = async () => {
     if (!user?.uid) return
 
@@ -215,22 +259,23 @@ export default function AIAdvisorPage() {
 
       // Auto-generate title from first user message
       if (isFirstMessage && isDefaultTitle) {
-        const autoTitle = content.substring(0, 40).trim()
-        if (autoTitle) {
-          try {
-            await updateChatTitle(currentChatId, autoTitle)
-          } catch (err) {
-            console.error('Error updating chat title:', err)
-          }
+        const autoTitle = generateChatTitle(content, lang as 'en' | 'hi')
+        try {
+          await updateChatTitle(currentChatId, autoTitle)
+        } catch (err) {
+          console.error('Error updating chat title:', err)
         }
       }
 
-      // Get farmer context for better advice
+      // Refresh farmer context for every message so advice can stay current.
       const farmerContext = await getFarmerContext(user.uid)
+      const contextPreview = buildContextPreview(farmerContext)
+      setFarmContext(contextPreview)
 
       // Generate AI response
       const aiResponse = await generateKrishiAdvice(
         content,
+        user.uid,
         finalImageUrl,
         farmerContext || undefined,
         lang as 'en' | 'hi'
@@ -264,10 +309,14 @@ export default function AIAdvisorPage() {
     <div className="h-screen flex flex-col bg-krishi-bg overflow-hidden">
       {/* Header - Provides spacing for sticky sidebar */}
       <header className="sticky top-0 z-50 bg-white shadow-sm border-b-2 border-gray-200">
-        <div className="px-4 py-4 flex items-center justify-center">
+        <div className="px-4 py-4 flex items-center justify-between">
+          <div className="w-28" />
           <h1 className="text-lg md:text-xl font-bold text-krishi-heading">
             {lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak'} 🌾
           </h1>
+          <div className="w-28 flex justify-end">
+            <LanguageToggle />
+          </div>
         </div>
       </header>
 
@@ -287,6 +336,7 @@ export default function AIAdvisorPage() {
               error={error}
               onErrorDismiss={() => setError(null)}
               lang={lang}
+              farmContext={farmContext}
             />
           ) : (
             <div className="flex-1 flex items-center justify-center">
