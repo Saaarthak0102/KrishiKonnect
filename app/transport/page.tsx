@@ -15,8 +15,7 @@ import {
   generateBookingId,
   getTransportBookingById,
   saveTransportBooking,
-  loadTransportBookingsFromFirestore,
-  getTransportBookings,
+  subscribeToTransportBookings,
   type TransportBookingRecord
 } from '@/lib/transportBookings'
 
@@ -161,6 +160,7 @@ export default function TransportPage() {
 
   // Main state
   const [bookings, setBookings] = useState<TransportBookingRecord[]>([])
+    const [bookingsLoading, setBookingsLoading] = useState(true)
   const [showBookingForm, setShowBookingForm] = useState(!isReceiptRoute)
 
   // Form state
@@ -181,20 +181,25 @@ export default function TransportPage() {
   const [activeBooking, setActiveBooking] = useState<TransportBookingRecord | null>(null)
   const [isBookingLookupComplete, setIsBookingLookupComplete] = useState(!isReceiptRoute)
 
-  // Load bookings on mount
+  // Subscribe to realtime bookings updates
   useEffect(() => {
-    const storedBookings = getTransportBookings()
-    setBookings(storedBookings)
-
-    if (user?.uid) {
-      loadTransportBookingsFromFirestore(user.uid)
-        .then((firestoreBookings) => {
-          setBookings(firestoreBookings)
-        })
-        .catch(() => {
-          // Fallback to localStorage
-        })
+    if (!user?.uid) {
+      setBookings([])
+      setBookingsLoading(false)
+      return
     }
+
+      const userId: string = user.uid
+      setBookingsLoading(true)
+    
+    // Subscribe to realtime updates
+    const unsubscribe = subscribeToTransportBookings(userId, (updatedBookings) => {
+      setBookings(updatedBookings)
+      setBookingsLoading(false)
+    })
+
+      // Cleanup subscription on unmount
+      return () => unsubscribe()
   }, [user])
 
   // Handle receipt route
@@ -407,8 +412,6 @@ export default function TransportPage() {
     }
 
     saveTransportBooking(booking, user?.uid)
-    // Append new booking to existing bookings (preserve booking history)
-    setBookings(prev => [booking, ...prev])
     setActiveBooking(booking)
     setSelectedTransporter(transporter)
     setFormData(prev => ({
@@ -480,6 +483,7 @@ export default function TransportPage() {
           {!isReceiptRoute && (
             <TransportBookingHistory
               bookings={bookings}
+                            loading={bookingsLoading}
               lang={lang}
             />
           )}

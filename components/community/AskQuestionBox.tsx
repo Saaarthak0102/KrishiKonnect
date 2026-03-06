@@ -4,7 +4,12 @@ import { useState } from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
 
 interface AskQuestionBoxProps {
-  onPostCreated?: (content: string, cropTag: string) => void;
+  onPostCreated?: (
+    content: string,
+    cropTagEn: string,
+    cropTagHi: string,
+    cropEmoji: string
+  ) => Promise<void> | void;
 }
 
 const CROP_OPTIONS = [
@@ -20,8 +25,9 @@ export default function AskQuestionBox({ onPostCreated }: AskQuestionBoxProps) {
   const { t, lang } = useTranslation();
   const [selectedCrop, setSelectedCrop] = useState('');
   const [questionText, setQuestionText] = useState('');
+  const [isPosting, setIsPosting] = useState(false);
 
-  const handleAskQuestion = () => {
+  const handleAskQuestion = async () => {
     if (!questionText.trim()) {
       alert(t('pleaseEnterQuestion'));
       return;
@@ -32,16 +38,36 @@ export default function AskQuestionBox({ onPostCreated }: AskQuestionBoxProps) {
       return;
     }
 
-    // Call the callback to add to global feed
-    if (onPostCreated) {
-      onPostCreated(questionText.trim(), selectedCrop);
+    const selectedCropData = CROP_OPTIONS.find((crop) => crop.en === selectedCrop);
+
+    if (!selectedCropData) {
+      alert(t('pleaseSelectCrop'));
+      return;
     }
 
-    // Clear input fields
-    setQuestionText('');
-    setSelectedCrop('');
+    try {
+      setIsPosting(true);
 
-    alert(t('questionPostedSuccessfully'));
+      if (onPostCreated) {
+        await onPostCreated(
+          questionText.trim(),
+          selectedCropData.en,
+          selectedCropData.hi,
+          selectedCropData.emoji
+        );
+      }
+
+      // Clear input fields only after successful post.
+      setQuestionText('');
+      setSelectedCrop('');
+
+      alert(t('questionPostedSuccessfully'));
+    } catch (error) {
+      console.error('Error posting question:', error);
+      alert('Failed to post question. Please try again.');
+    } finally {
+      setIsPosting(false);
+    }
   };
 
   return (
@@ -74,10 +100,10 @@ export default function AskQuestionBox({ onPostCreated }: AskQuestionBoxProps) {
         <div className="flex justify-end">
           <button
             onClick={handleAskQuestion}
-            disabled={!questionText.trim() || !selectedCrop}
+            disabled={!questionText.trim() || !selectedCrop || isPosting}
             className="px-6 py-2.5 bg-krishi-primary text-white rounded-md font-medium hover:bg-krishi-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200"
           >
-            {t('postToGlobalFeed')}
+            {isPosting ? 'Posting...' : t('postToGlobalFeed')}
           </button>
         </div>
       </div>

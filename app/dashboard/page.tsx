@@ -10,7 +10,7 @@ import { useStarredCrops } from '@/lib/useStarredCrops'
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
 import MarketInsightCard from '@/components/dashboard/MarketInsightCard'
 import LatestCommunityQuestionCard from '@/components/dashboard/LatestCommunityQuestionCard'
-import { getTransportBookings, getLatestTransportBooking, type TransportBookingRecord } from '@/lib/transportBookings'
+import { subscribeToTransportBookings, type TransportBookingRecord } from '@/lib/transportBookings'
 import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
 import { getWeatherForLocation, type WeatherData } from '@/lib/weatherService'
 import { fetchCropPriceHistory, getBestPriceForCrop as getBestMandiPriceFromService } from '@/lib/mandiService'
@@ -398,10 +398,21 @@ export default function DashboardPage() {
     }
   }, [loading, user])
 
-  // Load transport bookings only once on mount.
+  // Subscribe to realtime transport bookings updates
   useEffect(() => {
-    setTransportBookings(getTransportBookings())
-  }, [])
+    if (!user?.uid) {
+      setTransportBookings([])
+      return
+    }
+
+    // Subscribe to realtime updates
+    const unsubscribe = subscribeToTransportBookings(user.uid, (updatedBookings) => {
+      setTransportBookings(updatedBookings)
+    })
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe()
+  }, [user])
 
   // Fetch weather for the farmer's selected location with half-day cache support.
   useEffect(() => {
@@ -457,7 +468,7 @@ export default function DashboardPage() {
   }, [farmerProfile?.primaryCrop, farmerProfile?.state])
 
   const latestTransportBooking = useMemo(
-    () => getLatestTransportBooking(),
+    () => transportBookings.length > 0 ? transportBookings[0] : null,
     [transportBookings]
   )
 

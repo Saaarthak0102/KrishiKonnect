@@ -2,9 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { useAuth } from '@/context/AuthContext'
-import { collection, query, where, orderBy, limit, onSnapshot } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+import { subscribeToLatestQuestion } from '@/lib/community'
 import { getShortTime } from '@/lib/timeUtils'
 
 interface LatestCommunityQuestionCardProps {
@@ -15,25 +13,31 @@ interface LatestCommunityQuestionCardProps {
 interface QuestionData {
   id: string
   questionText: string
+  title_en?: string
+  title_hi?: string
   description: string
+  crop?: string
   cropTag: string
+  cropTag_en?: string
+  cropTag_hi?: string
   cropEmoji: string
+  replies?: number
   repliesCount: number
   createdAt: Date
 }
 
 const translations = {
   en: {
-    title: 'My Latest Community Question',
-    message: "You haven't asked the community yet.",
+    title: 'Latest Community Question',
+    message: 'No community question yet.',
     button: 'Ask the Community',
     viewDiscussion: 'View Discussion →',
     replies: 'replies',
     reply: 'reply',
   },
   hi: {
-    title: 'मेरा नवीनतम समुदाय प्रश्न',
-    message: 'आपने अभी तक समुदाय से कोई प्रश्न नहीं पूछा है।',
+    title: 'नवीनतम समुदाय प्रश्न',
+    message: 'अभी तक कोई समुदाय प्रश्न नहीं है।',
     button: 'समुदाय से पूछें',
     viewDiscussion: 'चर्चा देखें →',
     replies: 'उत्तर',
@@ -53,44 +57,34 @@ export default function LatestCommunityQuestionCard({
   lang = 'en',
 }: LatestCommunityQuestionCardProps) {
   const router = useRouter()
-  const { user } = useAuth()
   const t = translations[lang]
   const [latestQuestion, setLatestQuestion] = useState<QuestionData | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user?.uid) {
-      setLoading(false)
-      return
-    }
-
-    // Subscribe to user's latest question
-    const questionsRef = collection(db, 'community_questions')
-    const q = query(
-      questionsRef,
-      where('userId', '==', user.uid),
-      orderBy('createdAt', 'desc'),
-      limit(1)
-    )
-
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        if (!snapshot.empty) {
-          const doc = snapshot.docs[0]
-          const data = doc.data()
-          setLatestQuestion({
-            id: doc.id,
-            questionText: data.questionText || '',
-            description: data.description || '',
-            cropTag: data.cropTag || '',
-            cropEmoji: data.cropEmoji || '🌾',
-            repliesCount: data.repliesCount || 0,
-            createdAt: timestampToDate(data.createdAt) || new Date(),
-          })
-        } else {
+    const unsubscribe = subscribeToLatestQuestion(
+      (question) => {
+        if (!question) {
           setLatestQuestion(null)
+          setLoading(false)
+          return
         }
+
+        setLatestQuestion({
+          id: question.id,
+          questionText: question.questionText || '',
+          title_en: question.title_en,
+          title_hi: question.title_hi,
+          description: question.description || '',
+          crop: question.crop,
+          cropTag: question.cropTag || '',
+          cropTag_en: question.cropTag_en,
+          cropTag_hi: question.cropTag_hi,
+          cropEmoji: question.cropEmoji || '🌾',
+          replies: question.replies || 0,
+          repliesCount: question.repliesCount || 0,
+          createdAt: timestampToDate(question.createdAt) || new Date(),
+        })
         setLoading(false)
       },
       (error) => {
@@ -100,7 +94,7 @@ export default function LatestCommunityQuestionCard({
     )
 
     return () => unsubscribe()
-  }, [user?.uid])
+  }, [])
 
   const handleClick = () => {
     if (latestQuestion) {
@@ -115,6 +109,18 @@ export default function LatestCommunityQuestionCard({
     if (text.length <= maxLength) return text
     return text.substring(0, maxLength).trim() + '...'
   }
+
+  const latestQuestionText =
+    lang === 'hi'
+      ? latestQuestion?.title_hi || latestQuestion?.questionText || ''
+      : latestQuestion?.title_en || latestQuestion?.questionText || ''
+
+  const latestQuestionCrop =
+    lang === 'hi'
+      ? latestQuestion?.cropTag_hi || latestQuestion?.cropTag || latestQuestion?.crop || ''
+      : latestQuestion?.cropTag_en || latestQuestion?.cropTag || latestQuestion?.crop || ''
+
+  const replyCount = latestQuestion?.repliesCount || latestQuestion?.replies || 0
 
   if (loading) {
     return (
@@ -161,7 +167,7 @@ export default function LatestCommunityQuestionCard({
         {/* Question Preview */}
         <div>
           <p className="text-gray-800 text-sm leading-relaxed mb-2">
-            {getTruncatedText(latestQuestion.questionText)}
+            {getTruncatedText(latestQuestionText)}
           </p>
           {latestQuestion.description && (
             <p className="text-gray-600 text-xs leading-relaxed">
@@ -174,12 +180,12 @@ export default function LatestCommunityQuestionCard({
         <div className="flex items-center gap-3 text-xs text-gray-600">
           {/* Crop Tag */}
           <span className="bg-green-100 text-green-800 px-2 py-1 rounded-md font-medium inline-flex items-center gap-1">
-            {latestQuestion.cropEmoji} {latestQuestion.cropTag}
+            {latestQuestion.cropEmoji} {latestQuestionCrop}
           </span>
 
           {/* Replies Count */}
           <span className="inline-flex items-center gap-1">
-            💬 {latestQuestion.repliesCount} {latestQuestion.repliesCount === 1 ? t.reply : t.replies}
+            💬 {replyCount} {replyCount === 1 ? t.reply : t.replies}
           </span>
 
           {/* Time Posted */}

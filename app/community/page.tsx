@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import FeaturePageLayout from '@/components/FeaturePageLayout';
 import AskQuestionBox from '@/components/community/AskQuestionBox';
-import { mockCommunityPosts, Post, Reply } from '@/data/mockCommunityPosts';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useAuth } from '@/context/AuthContext';
+import { addCommunityQuestion, subscribeToQuestions, type CommunityQuestion } from '@/lib/community';
 
 const FILTER_CATEGORIES_EN = ['All', 'Wheat', 'Rice', 'Vegetables', 'Fruits', 'Irrigation', 'Pest Control'];
 const FILTER_CATEGORIES_HI = ['सभी', 'गेहूँ', 'धान', 'सब्जियाँ', 'फल', 'सिंचाई', 'कीट नियंत्रण'];
@@ -25,13 +26,81 @@ const FILTER_CATEGORIES_MAP = {
   'कीट नियंत्रण': 'Pest Control',
 };
 
+interface FeedPost {
+  id: string;
+  author: string;
+  location?: string;
+  cropTag_en?: string;
+  cropTag_hi?: string;
+  content_en: string;
+  content_hi: string;
+  upvotes: number;
+  repliesCount: number;
+  createdAt: Date;
+}
+
+function toRelativeTime(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return date.toLocaleDateString();
+}
+
+function toFeedPost(question: CommunityQuestion): FeedPost {
+  const englishTitle = question.title_en || question.questionText || '';
+  const hindiTitle = question.title_hi || question.questionText || englishTitle;
+
+  return {
+    id: question.id,
+    author: question.userName || 'Farmer',
+    location: question.userLocation || '',
+    cropTag_en: question.cropTag_en || question.cropTag || '',
+    cropTag_hi: question.cropTag_hi || question.cropTag || '',
+    content_en: englishTitle,
+    content_hi: hindiTitle,
+    upvotes: question.upvotes || 0,
+    repliesCount: question.repliesCount || question.replies || 0,
+    createdAt: question.createdAt,
+  };
+}
+
+function canonicalCropTag(cropTag?: string): string {
+  if (!cropTag) return 'All';
+  return FILTER_CATEGORIES_MAP[cropTag as keyof typeof FILTER_CATEGORIES_MAP] || cropTag;
+}
+
 export default function CommunityPage() {
   const { t, lang } = useTranslation();
-  const [globalPosts, setGlobalPosts] = useState<Post[]>(mockCommunityPosts);
+  const { user, farmerProfile } = useAuth();
+  const [globalPosts, setGlobalPosts] = useState<FeedPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
 
   const FILTER_CATEGORIES = lang === 'en' ? FILTER_CATEGORIES_EN : FILTER_CATEGORIES_HI;
+
+  useEffect(() => {
+    const unsubscribe = subscribeToQuestions(
+      (questions) => {
+        setGlobalPosts(questions.map(toFeedPost));
+        setIsLoading(false);
+      },
+      (error) => {
+        console.error('Error loading community feed:', error);
+        setIsLoading(false);
+      },
+      100
+    );
+
+    return () => unsubscribe();
+  }, []);
 
   // Filter posts based on selected category
   const filteredPosts = useMemo(() => {
@@ -42,8 +111,8 @@ export default function CommunityPage() {
     }
     
     return globalPosts.filter(post => {
-      const cropTagToMatch = lang === 'en' ? post.cropTag_en : post.cropTag_hi;
-      return cropTagToMatch === filterKey;
+      const normalizedTag = canonicalCropTag(lang === 'en' ? post.cropTag_en : post.cropTag_hi);
+      return normalizedTag === filterKey;
     });
   }, [globalPosts, selectedFilter, lang]);
 
@@ -70,19 +139,31 @@ export default function CommunityPage() {
   };
 
   // Handle new post submission
-  const handleCreatePost = (contentText: string, cropTagValue: string) => {
-    const newPost: Post = {
-      id: Date.now().toString(),
-      author: 'Current User',
-      content_en: lang === 'en' ? contentText : '',
-      content_hi: lang === 'hi' ? contentText : '',
-      cropTag_en: cropTagValue,
-      cropTag_hi: cropTagValue,
-      upvotes: 0,
-      replies: [],
-      createdAt: 'Just now'
-    };
-    setGlobalPosts(prev => [newPost, ...prev]);
+  const handleCreatePost = async (
+    contentText: string,
+    cropTagEn: string,
+    cropTagHi: string,
+    cropEmoji: string
+  ) => {
+    if (!user) {
+      alert('Please sign in to post a question.');
+      return;
+    }
+
+    await addCommunityQuestion({
+      userId: user.uid,
+      userName: user.displayName || farmerProfile?.name || 'Farmer',
+      userLocation: farmerProfile?.state || 'India',
+      crop: cropTagEn,
+      cropTag: cropTagEn,
+      cropTag_en: cropTagEn,
+      cropTag_hi: cropTagHi,
+      cropEmoji,
+      questionText: contentText,
+      title_en: lang === 'en' ? contentText : '',
+      title_hi: lang === 'hi' ? contentText : '',
+      description: '',
+    });
   };
 
   return (
@@ -119,7 +200,11 @@ export default function CommunityPage() {
           {/* Posts Feed */}
           <div className="bg-white border-2 border-krishi-border rounded-xl shadow-sm mb-6 overflow-hidden">
             <div className="max-w-5xl mx-auto space-y-4 overflow-y-auto h-[60vh] p-6">
-              {filteredPosts.length === 0 ? (
+              {isLoading ? (
+                <div className="h-full flex items-center justify-center">
+                  <p className="text-krishi-text/70 text-lg">Loading...</p>
+                </div>
+              ) : filteredPosts.length === 0 ? (
                 <div className="h-full flex items-center justify-center">
                   <div className="text-center">
                     <div className="text-6xl mb-4 text-krishi-highlight">💬</div>
@@ -152,7 +237,7 @@ export default function CommunityPage() {
                           </h3>
                           <p className="text-sm text-krishi-text/70">
                             {post.location && `${post.location} • `}
-                            {post.createdAt}
+                            {toRelativeTime(post.createdAt)}
                           </p>
                         </div>
                       </div>
@@ -184,24 +269,17 @@ export default function CommunityPage() {
                       >
                         <span className="text-lg">💬</span>
                         <span>
-                          {post.replies.length} {post.replies.length === 1 ? t('reply') : t('replies')}
+                          {post.repliesCount} {post.repliesCount === 1 ? t('reply') : t('replies')}
                         </span>
                       </button>
                     </div>
 
                     {/* Replies */}
-                    {expandedPosts.has(post.id) && post.replies.length > 0 && (
+                    {expandedPosts.has(post.id) && post.repliesCount > 0 && (
                       <div className="mt-4 pl-4 border-l-2 border-krishi-border space-y-3">
-                        {post.replies.map((reply) => (
-                          <div key={reply.id} className="bg-krishi-bg/50 rounded-lg p-3">
-                            <p className="font-semibold text-sm text-krishi-heading mb-1">
-                              {reply.author}
-                            </p>
-                            <p className="text-sm text-krishi-text">
-                              {lang === 'en' ? reply.content_en : reply.content_hi}
-                            </p>
-                          </div>
-                        ))}
+                        <p className="text-sm text-krishi-text/70">
+                          {t('viewDetails')}
+                        </p>
                       </div>
                     )}
                   </div>

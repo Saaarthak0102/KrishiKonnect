@@ -9,7 +9,10 @@ import {
   setDoc,
   doc,
   getDoc,
-  deleteDoc
+  deleteDoc,
+  onSnapshot,
+  serverTimestamp,
+  Unsubscribe
 } from 'firebase/firestore'
 
 export const TRANSPORT_BOOKINGS_STORAGE_KEY = 'transportBookings'
@@ -30,6 +33,67 @@ export interface TransportBookingRecord {
   createdAt: string
   firestoreId?: string
 }
+/**
+ * Subscribe to realtime updates for transport bookings from Firestore
+ * Returns an unsubscribe function to stop listening
+ * Updates UI instantly when bookings are created, updated, or deleted
+ */
+export function subscribeToTransportBookings(
+  userId: string,
+  onUpdate: (bookings: TransportBookingRecord[]) => void
+): Unsubscribe {
+  if (!userId) {
+    return () => {}
+  }
+
+  const bookingsCollection = collection(db, 'bookings')
+  const q = query(
+    bookingsCollection,
+    where('userId', '==', userId),
+    orderBy('createdAtTimestamp', 'desc')
+  )
+
+  const unsubscribe = onSnapshot(
+    q,
+    (snapshot) => {
+      const bookings: TransportBookingRecord[] = []
+      snapshot.forEach(doc => {
+        const data = doc.data()
+        const booking: TransportBookingRecord = {
+          id: data.id,
+          type: 'transport',
+          crop: data.crop,
+          quantity: data.quantity,
+          pickupVillage: data.pickupVillage,
+          destinationMandi: data.destinationMandi,
+          provider: data.provider,
+          driverContact: data.driverContact,
+          pickupDate: data.pickupDate,
+          estimatedArrival: data.estimatedArrival,
+          cost: data.cost,
+          status: 'confirmed',
+          createdAt: data.createdAt,
+          firestoreId: doc.id
+        }
+        bookings.push(booking)
+      })
+
+      // Update localStorage with realtime data
+      localStorage.setItem(TRANSPORT_BOOKINGS_STORAGE_KEY, JSON.stringify(bookings))
+      
+      // Notify subscriber with updated bookings
+      onUpdate(bookings)
+    },
+    (error) => {
+      console.error('Error in bookings realtime listener:', error)
+      // On error, fallback to localStorage
+      onUpdate(getTransportBookings())
+    }
+  )
+
+  return unsubscribe
+}
+
 
 export function generateBookingId() {
   return `TR-${Math.floor(10000 + Math.random() * 90000)}`
@@ -95,7 +159,7 @@ export async function saveTransportBooking(
       const docRef = await addDoc(bookingsCollection, {
         userId,
         ...booking,
-        createdAtTimestamp: new Date(booking.createdAt),
+        createdAtTimestamp: serverTimestamp(),
         savedAt: new Date()
       })
       bookingWithId = {

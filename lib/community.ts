@@ -26,12 +26,18 @@ export interface CommunityQuestion {
   userId: string;
   userName: string;
   userLocation: string;
+  crop?: string;
   cropTag: string;
+  cropTag_en?: string;
+  cropTag_hi?: string;
   cropEmoji: string;
   questionText: string;
+  title_en?: string;
+  title_hi?: string;
   description: string;
   upvotes: number;
   upvotedBy: string[];
+  replies?: number;
   repliesCount: number;
   createdAt: Date;
   lastReplyAt: Date | null;
@@ -55,12 +61,18 @@ export interface CachedQuestion {
   userId: string;
   userName: string;
   userLocation: string;
+  crop?: string;
   cropTag: string;
+  cropTag_en?: string;
+  cropTag_hi?: string;
   cropEmoji: string;
   questionText: string;
+  title_en?: string;
+  title_hi?: string;
   description: string;
   upvotes: number;
   upvotedBy: string[];
+  replies?: number;
   repliesCount: number;
   createdAt: Date;
   lastReplyAt: Date | null;
@@ -74,10 +86,31 @@ function timestampToDate(timestamp: any): Date | null {
   return null;
 }
 
-// Helper to calculate latest activity time
-function getLatestActivity(createdAt: Date, lastReplyAt: Date | null): Date {
-  if (!lastReplyAt) return createdAt;
-  return lastReplyAt > createdAt ? lastReplyAt : createdAt;
+function parseQuestion(docId: string, data: any): CommunityQuestion {
+  const createdAt = timestampToDate(data.createdAt) || new Date();
+  const fallbackTitle = data.title_en || data.title_hi || data.questionText || '';
+
+  return {
+    id: docId,
+    userId: data.userId,
+    userName: data.userName,
+    userLocation: data.userLocation,
+    crop: data.crop || data.cropTag || '',
+    cropTag: data.cropTag || data.crop || '',
+    cropTag_en: data.cropTag_en || data.cropTag || data.crop || '',
+    cropTag_hi: data.cropTag_hi || data.cropTag || data.crop || '',
+    cropEmoji: data.cropEmoji || '🌾',
+    questionText: data.questionText || fallbackTitle,
+    title_en: data.title_en || data.questionText || fallbackTitle,
+    title_hi: data.title_hi || data.questionText || fallbackTitle,
+    description: data.description || '',
+    upvotes: data.upvotes || 0,
+    upvotedBy: data.upvotedBy || [],
+    replies: data.replies || data.repliesCount || 0,
+    repliesCount: data.repliesCount || data.replies || 0,
+    createdAt,
+    lastReplyAt: timestampToDate(data.lastReplyAt),
+  };
 }
 
 /**
@@ -95,19 +128,9 @@ export function subscribeToFeedCache(
     (docSnapshot) => {
       if (docSnapshot.exists()) {
         const data = docSnapshot.data();
-        const questions = (data?.questions || []).map((q: any) => ({
-          ...q,
-          upvotedBy: q.upvotedBy || [],
-          createdAt: timestampToDate(q.createdAt) || new Date(),
-          lastReplyAt: timestampToDate(q.lastReplyAt),
-        }));
-        
-        // Sort by latest activity
-        questions.sort((a, b) => {
-          const aActivity = getLatestActivity(a.createdAt, a.lastReplyAt);
-          const bActivity = getLatestActivity(b.createdAt, b.lastReplyAt);
-          return bActivity.getTime() - aActivity.getTime();
-        });
+        const questions = (data?.questions || [])
+          .map((q: any) => parseQuestion(q.id, q))
+          .sort((a: CommunityQuestion, b: CommunityQuestion) => b.createdAt.getTime() - a.createdAt.getTime()) as CachedQuestion[];
         
         onUpdate(questions);
       } else {
@@ -137,32 +160,9 @@ export function subscribeToQuestions(
   return onSnapshot(
     q,
     (snapshot: QuerySnapshot<DocumentData>) => {
-      const questions: CommunityQuestion[] = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        questions.push({
-          id: doc.id,
-          userId: data.userId,
-          userName: data.userName,
-          userLocation: data.userLocation,
-          cropTag: data.cropTag,
-          cropEmoji: data.cropEmoji,
-          questionText: data.questionText,
-          description: data.description,
-          upvotes: data.upvotes || 0,
-          upvotedBy: data.upvotedBy || [],
-          repliesCount: data.repliesCount || 0,
-          createdAt: timestampToDate(data.createdAt) || new Date(),
-          lastReplyAt: timestampToDate(data.lastReplyAt),
-        });
-      });
-
-      // Sort by latest activity
-      questions.sort((a, b) => {
-        const aActivity = getLatestActivity(a.createdAt, a.lastReplyAt);
-        const bActivity = getLatestActivity(b.createdAt, b.lastReplyAt);
-        return bActivity.getTime() - aActivity.getTime();
-      });
+      const questions: CommunityQuestion[] = snapshot.docs
+        .map((questionDoc) => parseQuestion(questionDoc.id, questionDoc.data()))
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
       onUpdate(questions);
     },
@@ -181,18 +181,30 @@ export async function addCommunityQuestion(
     userId: string;
     userName: string;
     userLocation: string;
+    crop?: string;
     cropTag: string;
+    cropTag_en?: string;
+    cropTag_hi?: string;
     cropEmoji: string;
     questionText: string;
-    description: string;
+    title_en?: string;
+    title_hi?: string;
+    description?: string;
   }
 ): Promise<string> {
   try {
     const questionsRef = collection(db, 'community_questions');
     const newQuestion = {
       ...questionData,
+      crop: questionData.crop || questionData.cropTag,
+      cropTag_en: questionData.cropTag_en || questionData.cropTag,
+      cropTag_hi: questionData.cropTag_hi || questionData.cropTag,
+      title_en: questionData.title_en || questionData.questionText,
+      title_hi: questionData.title_hi || questionData.questionText,
+      description: questionData.description || '',
       upvotes: 0,
       upvotedBy: [],
+      replies: 0,
       repliesCount: 0,
       createdAt: serverTimestamp(),
       lastReplyAt: null,
@@ -209,6 +221,34 @@ export async function addCommunityQuestion(
     console.error('Error adding question:', error);
     throw error;
   }
+}
+
+/**
+ * Subscribe to the globally latest community question.
+ */
+export function subscribeToLatestQuestion(
+  onUpdate: (question: CommunityQuestion | null) => void,
+  onError?: (error: Error) => void
+): () => void {
+  const questionsRef = collection(db, 'community_questions');
+  const latestQuestionQuery = query(questionsRef, orderBy('createdAt', 'desc'), limit(1));
+
+  return onSnapshot(
+    latestQuestionQuery,
+    (snapshot: QuerySnapshot<DocumentData>) => {
+      if (snapshot.empty) {
+        onUpdate(null);
+        return;
+      }
+
+      const latestDoc = snapshot.docs[0];
+      onUpdate(parseQuestion(latestDoc.id, latestDoc.data()));
+    },
+    (error) => {
+      console.error('Error subscribing to latest question:', error);
+      if (onError) onError(error);
+    }
+  );
 }
 
 /**
@@ -312,6 +352,7 @@ export async function addReply(
     // Update question's reply count and lastReplyAt
     const questionRef = doc(db, 'community_questions', questionId);
     await updateDoc(questionRef, {
+      replies: increment(1),
       repliesCount: increment(1),
       lastReplyAt: serverTimestamp(),
     });
@@ -431,6 +472,7 @@ export async function deleteReply(questionId: string, replyId: string): Promise<
     // Update question's reply count
     const questionRef = doc(db, 'community_questions', questionId);
     await updateDoc(questionRef, {
+      replies: increment(-1),
       repliesCount: increment(-1),
     });
   } catch (error) {

@@ -7,6 +7,7 @@ import type { TransportBookingRecord } from '@/lib/transportBookings'
 
 interface TransportBookingHistoryProps {
   bookings: TransportBookingRecord[]
+    loading?: boolean
   lang: 'en' | 'hi'
 }
 
@@ -43,6 +44,7 @@ const translations = {
 
 export default function TransportBookingHistory({
   bookings,
+    loading = false,
   lang = 'en'
 }: TransportBookingHistoryProps) {
   const router = useRouter()
@@ -61,6 +63,26 @@ export default function TransportBookingHistory({
 
   const handleViewReceipt = (bookingId: string) => {
     router.push(`/transport?bookingId=${bookingId}`)
+    if (loading) {
+      return (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-12 rounded-xl border-2 p-8 text-center"
+          style={{ borderColor: '#E8DCC8', backgroundColor: '#FAF3E0' }}
+        >
+          <div className="flex flex-col items-center justify-center py-8">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-t-transparent mb-4" 
+                 style={{ borderColor: '#E8DCC8', borderTopColor: 'transparent' }}>
+            </div>
+            <p className="text-gray-600">
+              {lang === 'hi' ? 'बुकिंग लोड हो रही हैं...' : 'Loading bookings...'}
+            </p>
+          </div>
+        </motion.div>
+      )
+    }
+
   }
 
   if (sortedBookings.length === 0) {
