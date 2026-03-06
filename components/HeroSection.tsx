@@ -17,9 +17,12 @@ export default function HeroSection() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="text-5xl md:text-6xl font-bold text-krishi-heading mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold text-krishi-heading mb-3">
             {t.heroHeadline}
           </h1>
+          <p className="text-2xl md:text-3xl font-semibold text-krishi-primary mb-6">
+            {t.heroTagline}
+          </p>
           <p className="text-lg md:text-xl text-krishi-text/80 mb-8">
             {t.heroSubtext}
           </p>

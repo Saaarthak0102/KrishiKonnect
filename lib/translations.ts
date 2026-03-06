@@ -10,23 +10,24 @@ export const translations = {
     dataAnalytics: 'कृषि दृष्टि',
     
     // Hero Section
-    heroTitle: 'नमस्ते किसान 🌾',
-    heroHeadline: 'नमस्ते किसान 🌾',
-    heroDesc: 'आपकी खेती, हमारी प्राथमिकता। KrishiKonnect के साथ पाएं कृषि बाजार भाव, कृषि फसल सलाह, कृषि संघ सहयोग और कृषि सहायक टिप्स - सब एक जगह।',
-    heroSubtext: 'आपकी खेती, हमारी प्राथमिकता। KrishiKonnect के साथ पाएं कृषि बाजार भाव, कृषि फसल सलाह, कृषि संघ सहयोग और कृषि सहायक टिप्स - सब एक जगह।',
+    heroTitle: 'नमस्ते किसान 👨‍🌾',
+    heroHeadline: 'नमस्ते किसान 👨‍🌾',
+    heroTagline: 'खेती के लिए आपकी स्मार्ट मदद',
+    heroDesc: 'मंडी के ताज़ा भाव देखें, अपनी जमीन के अनुसार सही फसल चुनें, खेती से जुड़े सवाल पूछें और दूसरे किसानों से जुड़ें — KrishiKonnect आपको खेती में बेहतर फैसले लेने में मदद करता है।',
+    heroSubtext: 'मंडी के ताज़ा भाव देखें, अपनी जमीन के अनुसार सही फसल चुनें, खेती से जुड़े सवाल पूछें और दूसरे किसानों से जुड़ें — KrishiKonnect आपको खेती में बेहतर फैसले लेने में मदद करता है।',
     startUsing: 'शुरू करें',
-    exploreFeatures: 'सुविधाएं देखें',
-    harvestSuccess: 'आपकी सफलता की फसल',
+    exploreFeatures: 'फीचर्स देखें',
+    harvestSuccess: 'बेहतर खेती, बेहतर कमाई',
     
     // Features
-    featuresTitle: 'हमारी सुविधाएं',
-    featuresHeading: 'हमारी सुविधाएं',
-    cropLibraryDesc: 'कृषि फसल में सभी फसलों की विस्तृत जानकारी और खेती के तरीके',
-    mandiPricesDesc: 'कृषि बाजार में रोज़ाना अपडेट होने वाले मंडी दरें और बाजार की जानकारी',
-    communityDesc: 'कृषि संघ में अन्य किसानों से जुड़ें और अनुभव साझा करें',
-    transportDesc: 'कृषि सेतु से फसल को मंडी तक पहुंचाने के लिए भरोसेमंद परिवहन',
-    aiAdvisorDesc: 'कृषि सहायक से कृत्रिम बुद्धिमत्ता आधारित विशेषज्ञ सलाह पाएं',
-    dataAnalyticsDesc: 'कृषि दृष्टि में अपनी खेती के आंकड़े और ट्रेंड देखें',
+    featuresTitle: 'Smart Tools for Indian Farmers',
+    featuresHeading: 'Smart Tools for Indian Farmers',
+    cropLibraryDesc: 'अपनी जमीन और मौसम के अनुसार सही फसल चुनें।',
+    mandiPricesDesc: 'अपने आसपास की मंडियों के ताज़ा भाव देखें।',
+    communityDesc: 'दूसरे किसानों से जुड़ें और अनुभव साझा करें।',
+    transportDesc: 'अपनी फसल को मंडी तक पहुँचाने के लिए परिवहन सहायता पाएं।',
+    aiAdvisorDesc: 'खेती से जुड़े सवाल पूछें और तुरंत सरल सलाह पाएं।',
+    dataAnalyticsDesc: 'आपकी खेती की ज़रूरी जानकारी एक ही जगह देखें।',
     
     // How It Works
     howItWorksHeading: 'कैसे काम करता है?',
@@ -39,7 +40,7 @@ export const translations = {
     
     // AI Highlight
     aiHighlightHeading: 'कृषि सहायक - आपका डिजिटल कृषि विशेषज्ञ 🤖',
-    aiHighlightSubtext: 'कृत्रिम बुद्धिमत्ता की शक्ति से पाएं विशेषज्ञ सलाह',
+    aiHighlightSubtext: 'हिंदी में खेती की सलाह देने वाला AI सहायक',
     aiExampleTitle: 'उदाहरण सलाह:',
     aiExampleQuestion: 'सवाल: मेरी गेहूं की फसल में पीली पत्तियाँ दिख रही हैं',
     aiExampleAnswer: 'जवाब: यह नाइट्रोजन की कमी हो सकती है। यूरिया खाद डालें और पानी की मात्रा जांचें।',
@@ -187,6 +188,7 @@ export const translations = {
     // Hero Section
     heroTitle: 'Namaste Farmer 🌾',
     heroHeadline: 'Namaste Farmer 🌾',
+    heroTagline: 'Your Smart Assistant for Farming',
     heroDesc: 'Your farming, our priority. Get Krishi Bazaar rates, Krishi Fasal guidance, Krishi Sangh support, and Krishi Sahayak tips - all in one place with KrishiKonnect.',
     heroSubtext: 'Your farming, our priority. Get Krishi Bazaar rates, Krishi Fasal guidance, Krishi Sangh support, and Krishi Sahayak tips - all in one place with KrishiKonnect.',
     startUsing: 'Start Using',
@@ -194,8 +196,8 @@ export const translations = {
     harvestSuccess: 'Harvest Your Success',
     
     // Features
-    featuresTitle: 'Our Features',
-    featuresHeading: 'Our Features',
+    featuresTitle: 'Smart Tools for Indian Farmers',
+    featuresHeading: 'Smart Tools for Indian Farmers',
     cropLibraryDesc: 'Krishi Fasal provides detailed information and cultivation methods for all crops',
     mandiPricesDesc: 'Krishi Bazaar provides daily updated market rates and market information',
     communityDesc: 'Connect with other farmers in Krishi Sangh and share experiences',

@@ -10,6 +10,11 @@ export default function FeatureGrid() {
 
   const features = [
     {
+      icon: '🤖',
+      titleKey: 'aiAdvisor',
+      descKey: 'aiAdvisorDesc',
+    },
+    {
       icon: '📚',
       titleKey: 'cropLibrary',
       descKey: 'cropLibraryDesc',
@@ -28,11 +33,6 @@ export default function FeatureGrid() {
       icon: '🚚',
       titleKey: 'transport',
       descKey: 'transportDesc',
-    },
-    {
-      icon: '🤖',
-      titleKey: 'aiAdvisor',
-      descKey: 'aiAdvisorDesc',
     },
     {
       icon: '📊',
