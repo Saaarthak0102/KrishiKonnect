@@ -32,6 +32,7 @@ interface ThreadViewProps {
   onPostReply: (replyText: string) => void;
   upvotedQuestions?: Set<string>;
   upvotedReplies?: Set<string>;
+  isPosting?: boolean;
 }
 
 export default function ThreadView({
@@ -42,6 +43,7 @@ export default function ThreadView({
   onPostReply,
   upvotedQuestions = new Set(),
   upvotedReplies = new Set(),
+  isPosting = false,
 }: ThreadViewProps) {
   const [replyText, setReplyText] = useState('');
 
@@ -156,9 +158,10 @@ export default function ThreadView({
           <div className="flex items-center gap-3">
             <button
               onClick={handlePostReply}
-              className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+              disabled={isPosting || !replyText.trim()}
+              className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              Post Reply
+              {isPosting ? 'Posting...' : 'Post Reply'}
             </button>
             <button
               type="button"

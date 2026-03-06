@@ -4,6 +4,18 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import FeaturePageLayout from '@/components/FeaturePageLayout';
 import ThreadView from '@/components/community/ThreadView';
+import { useAuth } from '@/context/AuthContext';
+import {
+  subscribeToReplies,
+  addReply,
+  upvoteQuestion,
+  removeUpvoteQuestion,
+  upvoteReply,
+  removeUpvoteReply,
+  CommunityReply,
+} from '@/lib/community';
+import { doc, getDoc, Timestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 interface Reply {
   id: string;
@@ -31,93 +43,245 @@ interface Question {
   replies: Reply[];
 }
 
+// Helper function to format timestamp
+function formatTimestamp(timestamp: Timestamp | null): string {
+  if (!timestamp || !timestamp.toDate) return 'Just now';
+  
+  const date = timestamp.toDate();
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  
+  return date.toLocaleDateString();
+}
+
+// Convert Firestore reply to UI format
+function convertReply(r: CommunityReply): Reply {
+  return {
+    id: r.id,
+    userId: r.userId,
+    user: r.userName,
+    text: r.replyText,
+    upvotes: r.upvotes,
+    timestamp: formatTimestamp(r.createdAt),
+    image: r.imageUrl,
+  };
+}
+
 export default function ThreadPage() {
   const params = useParams();
   const router = useRouter();
   const questionId = params.id as string;
+  const { user } = useAuth();
 
   const [question, setQuestion] = useState<Question | null>(null);
+  const [replies, setReplies] = useState<Reply[]>([]);
   const [upvotedQuestions, setUpvotedQuestions] = useState<Set<string>>(new Set());
   const [upvotedReplies, setUpvotedReplies] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [isPosting, setIsPosting] = useState(false);
 
-  // Load question from JSON file
+  // Load question from Firestore
   useEffect(() => {
-    fetch('/data/communityQuestions.json')
-      .then((res) => res.json())
-      .then((data: Question[]) => {
-        const foundQuestion = data.find((q) => q.id === questionId);
-        if (foundQuestion) {
-          setQuestion(foundQuestion);
+    async function loadQuestion() {
+      try {
+        const questionRef = doc(db, 'community_questions', questionId);
+        const questionDoc = await getDoc(questionRef);
+
+        if (questionDoc.exists()) {
+          const data = questionDoc.data();
+          setQuestion({
+            id: questionDoc.id,
+            crop: data.cropTag,
+            cropEmoji: data.cropEmoji,
+            question: data.questionText,
+            description: data.description,
+            user: data.userName,
+            userId: data.userId,
+            upvotes: data.upvotes || 0,
+            repliesCount: data.repliesCount || 0,
+            timestamp: formatTimestamp(data.createdAt),
+            image: data.imageUrl,
+            hasImage: !!data.imageUrl,
+            replies: [],
+          });
         }
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error loading question:', error);
         setLoading(false);
-      });
+      }
+    }
+
+    loadQuestion();
   }, [questionId]);
 
-  const handleUpvoteQuestion = (id: string) => {
-    if (!question) return;
-
-    if (upvotedQuestions.has(id)) {
-      setUpvotedQuestions((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(id);
-        return newSet;
-      });
-      setQuestion({ ...question, upvotes: question.upvotes - 1 });
-    } else {
-      setUpvotedQuestions((prev) => new Set(prev).add(id));
-      setQuestion({ ...question, upvotes: question.upvotes + 1 });
-    }
-  };
-
-  const handleUpvoteReply = (id: string) => {
-    if (!question) return;
-
-    if (upvotedReplies.has(id)) {
-      setUpvotedReplies((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(id);
-        return newSet;
-      });
-      setQuestion({
-        ...question,
-        replies: question.replies.map((r) =>
-          r.id === id ? { ...r, upvotes: r.upvotes - 1 } : r
-        ),
-      });
-    } else {
-      setUpvotedReplies((prev) => new Set(prev).add(id));
-      setQuestion({
-        ...question,
-        replies: question.replies.map((r) =>
-          r.id === id ? { ...r, upvotes: r.upvotes + 1 } : r
-        ),
-      });
-    }
-  };
-
-  const handlePostReply = (replyText: string) => {
-    if (!question) return;
-
-    const newReply: Reply = {
-      id: `r${Date.now()}`,
-      userId: 'currentUser',
-      user: 'You',
-      text: replyText,
-      upvotes: 0,
-      timestamp: 'Just now',
-      image: null,
-    };
-
-    setQuestion({
-      ...question,
-      replies: [...question.replies, newReply],
-      repliesCount: question.repliesCount + 1,
+  // Real-time subscription to replies
+  useEffect(() => {
+    const unsubscribe = subscribeToReplies(questionId, (firestoreReplies) => {
+      const convertedReplies = firestoreReplies.map(convertReply);
+      setReplies(convertedReplies);
+      
+      // Update replies count in question
+      if (question) {
+        setQuestion({
+          ...question,
+          repliesCount: convertedReplies.length,
+        });
+      }
     });
+
+    return () => unsubscribe();
+  }, [questionId]);
+
+  const handleUpvoteQuestion = async (id: string) => {
+    if (!user) {
+      alert('Please sign in to upvote');
+      return;
+    }
+
+    if (!question) return;
+
+    try {
+      if (upvotedQuestions.has(id)) {
+        // Optimistic update
+        setUpvotedQuestions((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(id);
+          return newSet;
+        });
+        setQuestion({ ...question, upvotes: question.upvotes - 1 });
+
+        // Update Firestore
+        await removeUpvoteQuestion(id);
+      } else {
+        // Optimistic update
+        setUpvotedQuestions((prev) => new Set(prev).add(id));
+        setQuestion({ ...question, upvotes: question.upvotes + 1 });
+
+        // Update Firestore
+        await upvoteQuestion(id);
+      }
+    } catch (error) {
+      console.error('Error upvoting question:', error);
+      // Revert on error
+      if (upvotedQuestions.has(id)) {
+        setUpvotedQuestions((prev) => new Set(prev).add(id));
+        setQuestion({ ...question, upvotes: question.upvotes + 1 });
+      } else {
+        setUpvotedQuestions((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(id);
+          return newSet;
+        });
+        setQuestion({ ...question, upvotes: question.upvotes - 1 });
+      }
+    }
+  };
+
+  const handleUpvoteReply = async (id: string) => {
+    if (!user) {
+      alert('Please sign in to upvote');
+      return;
+    }
+
+    if (!question) return;
+
+    try {
+      if (upvotedReplies.has(id)) {
+        // Optimistic update
+        setUpvotedReplies((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(id);
+          return newSet;
+        });
+        setReplies((prev) =>
+          prev.map((r) => (r.id === id ? { ...r, upvotes: r.upvotes - 1 } : r))
+        );
+
+        // Update Firestore
+        await removeUpvoteReply(questionId, id);
+      } else {
+        // Optimistic update
+        setUpvotedReplies((prev) => new Set(prev).add(id));
+        setReplies((prev) =>
+          prev.map((r) => (r.id === id ? { ...r, upvotes: r.upvotes + 1 } : r))
+        );
+
+        // Update Firestore
+        await upvoteReply(questionId, id);
+      }
+    } catch (error) {
+      console.error('Error upvoting reply:', error);
+      // Revert on error
+      if (upvotedReplies.has(id)) {
+        setUpvotedReplies((prev) => new Set(prev).add(id));
+        setReplies((prev) =>
+          prev.map((r) => (r.id === id ? { ...r, upvotes: r.upvotes + 1 } : r))
+        );
+      } else {
+        setUpvotedReplies((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(id);
+          return newSet;
+        });
+        setReplies((prev) =>
+          prev.map((r) => (r.id === id ? { ...r, upvotes: r.upvotes - 1 } : r))
+        );
+      }
+    }
+  };
+
+  const handlePostReply = async (replyText: string) => {
+    if (!user) {
+      alert('Please sign in to post a reply');
+      return;
+    }
+
+    if (!question) return;
+
+    setIsPosting(true);
+
+    try {
+      // Optimistic UI update
+      const optimisticReply: Reply = {
+        id: 'temp-' + Date.now(),
+        userId: user.uid,
+        user: user.displayName || 'You',
+        text: replyText,
+        upvotes: 0,
+        timestamp: 'Just now',
+        image: null,
+      };
+
+      setReplies([...replies, optimisticReply]);
+
+      // Add to Firestore (real-time listener will update with actual data)
+      await addReply(
+        questionId,
+        user.uid,
+        user.displayName || 'Anonymous',
+        '🌱', // Default badge
+        { replyText }
+      );
+
+      // Remove optimistic update (real data will come from listener)
+      setReplies((prev) => prev.filter((r) => r.id !== optimisticReply.id));
+    } catch (error) {
+      console.error('Error posting reply:', error);
+      alert('Failed to post reply. Please try again.');
+      // Remove optimistic update on error
+      setReplies((prev) => prev.filter((r) => !r.id.startsWith('temp-')));
+    } finally {
+      setIsPosting(false);
+    }
   };
 
   if (loading) {
@@ -173,12 +337,13 @@ export default function ThreadPage() {
           {/* Thread View */}
           <ThreadView
             question={question}
-            replies={question.replies}
+            replies={replies}
             onUpvoteQuestion={handleUpvoteQuestion}
             onUpvoteReply={handleUpvoteReply}
             onPostReply={handlePostReply}
             upvotedQuestions={upvotedQuestions}
             upvotedReplies={upvotedReplies}
+            isPosting={isPosting}
           />
         </main>
       </div>

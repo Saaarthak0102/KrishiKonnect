@@ -8,12 +8,13 @@ import QuestionCard from '@/components/community/QuestionCard';
 import { useStarredCrops } from '@/lib/useStarredCrops';
 import { useAuth } from '@/context/AuthContext';
 import {
-  subscribeToQuestions,
+  subscribeToFeedCache,
   addCommunityQuestion,
   upvoteQuestion,
   removeUpvoteQuestion,
   CommunityQuestion,
   QuestionInput,
+  CachedQuestion,
 } from '@/lib/community';
 import { Timestamp } from 'firebase/firestore';
 
@@ -80,12 +81,12 @@ export default function CommunityPage() {
   const { user } = useAuth();
   const [isPosting, setIsPosting] = useState(false);
 
-  // Real-time subscription to questions
+  // Real-time subscription to cached feed (1 document read instead of 20+)
   useEffect(() => {
-    const unsubscribe = subscribeToQuestions((firestoreQuestions) => {
-      const convertedQuestions = firestoreQuestions.map(convertQuestion);
+    const unsubscribe = subscribeToFeedCache((cachedQuestions) => {
+      const convertedQuestions = cachedQuestions.map(convertQuestion);
       setQuestions(convertedQuestions);
-    }, 50); // Load more questions for better experience
+    });
 
     return () => unsubscribe();
   }, []);
@@ -115,49 +116,113 @@ export default function CommunityPage() {
     setFilteredQuestions(filtered);
   }, [activeFilter, questions, starredCrops]);
 
-  const handleAskQuestion = (newQuestion: {
+  const handleAskQuestion = async (newQuestion: {
     questionText: string;
     description: string;
     cropTag: string;
     cropEmoji: string;
     image: string | null;
   }) => {
-    const question: Question = {
-      id: String(Date.now()),
-      crop: newQuestion.cropTag,
-      cropEmoji: newQuestion.cropEmoji,
-      question: newQuestion.questionText,
-      description: newQuestion.description,
-      user: 'You',
-      userId: 'currentUser',
-      upvotes: 0,
-      repliesCount: 0,
-      timestamp: 'Just now',
-      image: newQuestion.image,
-      hasImage: !!newQuestion.image,
-      replies: [],
-    };
+    if (!user) {
+      alert('Please sign in to post a question');
+      return;
+    }
 
-    setQuestions([question, ...questions]);
+    setIsPosting(true);
+
+    try {
+      // Optimistic UI update - add question immediately
+      const optimisticQuestion: Question = {
+        id: 'temp-' + Date.now(),
+        crop: newQuestion.cropTag,
+        cropEmoji: newQuestion.cropEmoji,
+        question: newQuestion.questionText,
+        description: newQuestion.description,
+        user: user.displayName || 'You',
+        userId: user.uid,
+        upvotes: 0,
+        repliesCount: 0,
+        timestamp: 'Just now',
+        image: newQuestion.image,
+        hasImage: !!newQuestion.image,
+      };
+
+      setQuestions([optimisticQuestion, ...questions]);
+
+      // Add to Firestore (real-time listener will update with actual data)
+      await addCommunityQuestion(
+        user.uid,
+        user.displayName || 'Anonymous',
+        '🌱', // Default badge
+        {
+          questionText: newQuestion.questionText,
+          description: newQuestion.description,
+          cropTag: newQuestion.cropTag,
+          cropEmoji: newQuestion.cropEmoji,
+          imageUrl: newQuestion.image,
+        }
+      );
+
+      // Remove optimistic update (real data will come from listener)
+      setQuestions((prev) => prev.filter((q) => q.id !== optimisticQuestion.id));
+    } catch (error) {
+      console.error('Error posting question:', error);
+      alert('Failed to post question. Please try again.');
+      // Remove optimistic update on error
+      setQuestions((prev) => prev.filter((q) => !q.id.startsWith('temp-')));
+    } finally {
+      setIsPosting(false);
+    }
   };
 
-  const handleUpvote = (id: string) => {
-    if (upvotedQuestions.has(id)) {
-      // Remove upvote
-      setUpvotedQuestions((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(id);
-        return newSet;
-      });
-      setQuestions((prev) =>
-        prev.map((q) => (q.id === id ? { ...q, upvotes: q.upvotes - 1 } : q))
-      );
-    } else {
-      // Add upvote
-      setUpvotedQuestions((prev) => new Set(prev).add(id));
-      setQuestions((prev) =>
-        prev.map((q) => (q.id === id ? { ...q, upvotes: q.upvotes + 1 } : q))
-      );
+  const handleUpvote = async (id: string) => {
+    if (!user) {
+      alert('Please sign in to upvote');
+      return;
+    }
+
+    try {
+      if (upvotedQuestions.has(id)) {
+        // Optimistic update
+        setUpvotedQuestions((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(id);
+          return newSet;
+        });
+        setQuestions((prev) =>
+          prev.map((q) => (q.id === id ? { ...q, upvotes: q.upvotes - 1 } : q))
+        );
+
+        // Update Firestore
+        await removeUpvoteQuestion(id);
+      } else {
+        // Optimistic update
+        setUpvotedQuestions((prev) => new Set(prev).add(id));
+        setQuestions((prev) =>
+          prev.map((q) => (q.id === id ? { ...q, upvotes: q.upvotes + 1 } : q))
+        );
+
+        // Update Firestore
+        await upvoteQuestion(id);
+      }
+    } catch (error) {
+      console.error('Error upvoting:', error);
+      // Revert optimistic update on error
+      if (upvotedQuestions.has(id)) {
+        setUpvotedQuestions((prev) => new Set(prev).add(id));
+        setQuestions((prev) =>
+          prev.map((q) => (q.id === id ? { ...q, upvotes: q.upvotes + 1 } : q))
+        );
+      } else {
+        setUpvotedQuestions((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(id);
+          return newSet;
+        });
+        setQuestions((prev) =>
+          prev.map((q) => (q.id === id ? { ...q, upvotes: q.upvotes - 1 } : q))
+        );
+      }
     }
   };
 
@@ -180,7 +245,7 @@ export default function CommunityPage() {
           </div>
 
           {/* Ask Question Box */}
-          <AskQuestionBox onSubmit={handleAskQuestion} />
+          <AskQuestionBox onSubmit={handleAskQuestion} isPosting={isPosting} />
 
           {/* Filter Bar */}
           <FilterBar activeFilter={activeFilter} onFilterChange={setActiveFilter} />

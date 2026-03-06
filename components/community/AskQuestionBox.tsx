@@ -10,6 +10,7 @@ interface AskQuestionBoxProps {
     cropEmoji: string;
     image: string | null;
   }) => void;
+  isPosting?: boolean;
 }
 
 const CROPS = [
@@ -24,7 +25,7 @@ const CROPS = [
   { name: 'Chilli', emoji: '🌶️' },
 ];
 
-export default function AskQuestionBox({ onSubmit }: AskQuestionBoxProps) {
+export default function AskQuestionBox({ onSubmit, isPosting = false }: AskQuestionBoxProps) {
   const [questionText, setQuestionText] = useState('');
   const [description, setDescription] = useState('');
   const [selectedCrop, setSelectedCrop] = useState('');
@@ -114,9 +115,10 @@ export default function AskQuestionBox({ onSubmit }: AskQuestionBoxProps) {
             <div className="flex items-center gap-3 pt-2">
               <button
                 onClick={handleSubmit}
-                className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+                disabled={isPosting}
+                className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                Post Question
+                {isPosting ? 'Posting...' : 'Post Question'}
               </button>
               <button
                 onClick={() => {
@@ -126,13 +128,15 @@ export default function AskQuestionBox({ onSubmit }: AskQuestionBoxProps) {
                   setSelectedCrop('');
                   setSelectedCropEmoji('');
                 }}
-                className="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-lg transition-colors"
+                disabled={isPosting}
+                className="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="ml-auto px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors flex items-center gap-2"
+                disabled={isPosting}
+                className="ml-auto px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 📷 Add Photo
               </button>

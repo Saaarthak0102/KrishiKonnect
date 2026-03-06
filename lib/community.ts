@@ -14,6 +14,8 @@ import {
   DocumentData,
   startAfter,
   getDocs,
+  setDoc,
+  getDoc,
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -32,6 +34,25 @@ export interface CommunityQuestion {
   upvotes: number;
   repliesCount: number;
   createdAt: Timestamp;
+}
+
+export interface CachedQuestion {
+  id: string;
+  userId: string;
+  userName: string;
+  userBadge: string;
+  cropTag: string;
+  cropEmoji: string;
+  questionText: string;
+  description: string;
+  imageUrl: string | null;
+  upvotes: number;
+  repliesCount: number;
+  createdAt: Timestamp;
+}
+
+export interface FeedCache {
+  questions: CachedQuestion[];
 }
 
 export interface CommunityReply {
@@ -61,16 +82,64 @@ export interface ReplyInput {
 // ===== COLLECTION REFERENCES =====
 
 const QUESTIONS_COLLECTION = 'community_questions';
+const FEED_CACHE_COLLECTION = 'community_feed';
+const FEED_CACHE_DOC = 'latest_questions';
 
 const getQuestionsRef = () => collection(db, QUESTIONS_COLLECTION);
 const getQuestionRef = (questionId: string) => doc(db, QUESTIONS_COLLECTION, questionId);
 const getRepliesRef = (questionId: string) =>
   collection(db, QUESTIONS_COLLECTION, questionId, 'replies');
 
+// Feed cache references
+const getFeedCacheRef = () => doc(db, FEED_CACHE_COLLECTION, FEED_CACHE_DOC);
+
+// ===== FEED CACHE UTILITIES =====
+
+/**
+ * Helper function to update a specific field of a question in the feed cache
+ * Finds the question by ID and updates the field
+ */
+async function updateFeedCacheQuestionField(
+  questionId: string,
+  updateData: { upvotes?: number; repliesCount?: number }
+): Promise<void> {
+  try {
+    const feedRef = getFeedCacheRef();
+    const feedDoc = await getDoc(feedRef);
+
+    if (!feedDoc.exists()) {
+      return; // Cache doesn't exist yet, nothing to update
+    }
+
+    const feedData = feedDoc.data() as FeedCache;
+    const questions = feedData.questions || [];
+
+    // Find and update the question in the cache
+    const updatedQuestions = questions.map((q) => {
+      if (q.id === questionId) {
+        return {
+          ...q,
+          upvotes: updateData.upvotes !== undefined ? updateData.upvotes : q.upvotes,
+          repliesCount: updateData.repliesCount !== undefined ? updateData.repliesCount : q.repliesCount,
+        };
+      }
+      return q;
+    });
+
+    // Only write if we found and updated the question
+    if (updatedQuestions.some((q) => q.id === questionId)) {
+      await updateDoc(feedRef, { questions: updatedQuestions });
+    }
+  } catch (error) {
+    console.error('Error updating feed cache question field:', error);
+    // Don't throw - the cache update failure shouldn't break the main operation
+  }
+}
+
 // ===== ADD QUESTION =====
 
 /**
- * Add a new community question to Firestore
+ * Add a new community question to Firestore and update the feed cache
  */
 export async function addCommunityQuestion(
   userId: string,
@@ -79,6 +148,7 @@ export async function addCommunityQuestion(
   questionData: QuestionInput
 ): Promise<string> {
   try {
+    // Step 1: Add the question to community_questions collection
     const questionRef = await addDoc(getQuestionsRef(), {
       userId,
       userName,
@@ -93,6 +163,38 @@ export async function addCommunityQuestion(
       createdAt: serverTimestamp(),
     });
 
+    // Step 2: Get the new question data with ID for feed cache
+    const newQuestion: CachedQuestion = {
+      id: questionRef.id,
+      userId,
+      userName,
+      userBadge,
+      cropTag: questionData.cropTag,
+      cropEmoji: questionData.cropEmoji,
+      questionText: questionData.questionText,
+      description: questionData.description,
+      imageUrl: questionData.imageUrl || null,
+      upvotes: 0,
+      repliesCount: 0,
+      createdAt: Timestamp.now(),
+    };
+
+    // Step 3: Update feed cache
+    const feedRef = getFeedCacheRef();
+    const feedDoc = await getDoc(feedRef);
+
+    if (feedDoc.exists()) {
+      // Cache exists - prepend new question and keep only latest 20
+      const existingQuestions = feedDoc.data().questions || [];
+      const updatedQuestions = [newQuestion, ...existingQuestions].slice(0, 20);
+      await updateDoc(feedRef, { questions: updatedQuestions });
+    } else {
+      // Cache doesn't exist - create it with the new question
+      await setDoc(feedRef, {
+        questions: [newQuestion],
+      });
+    }
+
     return questionRef.id;
   } catch (error) {
     console.error('Error adding question:', error);
@@ -104,6 +206,7 @@ export async function addCommunityQuestion(
 
 /**
  * Add a reply to a question and increment reply count
+ * Also updates the feed cache if the question is in the latest 20
  */
 export async function addReply(
   questionId: string,
@@ -113,6 +216,12 @@ export async function addReply(
   replyData: ReplyInput
 ): Promise<string> {
   try {
+    // Get current reply count
+    const questionRef = getQuestionRef(questionId);
+    const questionSnap = await getDoc(questionRef);
+    const currentRepliesCount = questionSnap.exists() ? (questionSnap.data().repliesCount || 0) : 0;
+    const newRepliesCount = currentRepliesCount + 1;
+
     // Add reply to subcollection
     const replyRef = await addDoc(getRepliesRef(questionId), {
       userId,
@@ -125,9 +234,12 @@ export async function addReply(
     });
 
     // Increment reply count on question
-    await updateDoc(getQuestionRef(questionId), {
+    await updateDoc(questionRef, {
       repliesCount: increment(1),
     });
+
+    // Update feed cache if question is in it
+    await updateFeedCacheQuestionField(questionId, { repliesCount: newRepliesCount });
 
     return replyRef.id;
   } catch (error) {
@@ -140,6 +252,8 @@ export async function addReply(
 
 /**
  * Upvote a question
+ * Note: The feed cache is not updated for upvotes as users can view the full question
+ * for the most up-to-date count. Focus feed cache updates on content changes (replies).
  */
 export async function upvoteQuestion(questionId: string): Promise<void> {
   try {
@@ -256,6 +370,36 @@ export function subscribeToReplies(
     },
     (error) => {
       console.error('Error in replies subscription:', error);
+    }
+  );
+
+  return unsubscribe;
+}
+
+/**
+ * Subscribe to the cached feed from community_feed/latest_questions
+ * This reads from a single cached document instead of loading 20+ documents
+ * Drastically reduces Firestore reads from ~20 to 1
+ * Returns unsubscribe function
+ */
+export function subscribeToFeedCache(
+  onUpdate: (questions: CachedQuestion[]) => void
+): () => void {
+  const feedRef = getFeedCacheRef();
+
+  const unsubscribe = onSnapshot(
+    feedRef,
+    (snapshot) => {
+      if (snapshot.exists()) {
+        const feedData = snapshot.data() as FeedCache;
+        onUpdate(feedData.questions || []);
+      } else {
+        // If cache doesn't exist yet, return empty array
+        onUpdate([]);
+      }
+    },
+    (error) => {
+      console.error('Error in feed cache subscription:', error);
     }
   );
 
