@@ -12,6 +12,7 @@ import MarketInsightCard from '@/components/dashboard/MarketInsightCard'
 import { getTransportBookings, type TransportBookingRecord } from '@/lib/transportBookings'
 import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
 import { getWeatherForLocation, type WeatherData } from '@/lib/weatherService'
+import { fetchCropPriceHistory, getBestPriceForCrop as getBestMandiPriceFromService } from '@/lib/mandiService'
 import cropsData from '@/data/crops.json'
 import mandiPricesData from '@/data/mandiPrices.json'
 
@@ -20,6 +21,310 @@ interface BestPriceData {
   mandi: string
   trend: 'up' | 'down' | 'stable'
   lastUpdated?: string
+}
+
+const cropDurations: Record<string, number> = {
+  maize: 90,
+  wheat: 120,
+  rice: 120,
+  cotton: 180,
+  sugarcane: 365,
+}
+
+type TrendDirection = 'up' | 'down' | 'stable'
+
+type StageRule = {
+  maxDayExclusive: number
+  messageEn: string
+  messageHi: string
+}
+
+const cropStageRules: Record<string, StageRule[]> = {
+  maize: [
+    {
+      maxDayExclusive: 15,
+      messageEn: 'Seedling stage - maintain soil moisture',
+      messageHi: 'अंकुरण चरण - मिट्टी में नमी बनाए रखें',
+    },
+    {
+      maxDayExclusive: 45,
+      messageEn: 'Vegetative growth - nitrogen fertilizer recommended',
+      messageHi: 'वनस्पतिक वृद्धि - नाइट्रोजन उर्वरक की सिफारिश',
+    },
+    {
+      maxDayExclusive: 75,
+      messageEn: 'Tasseling stage - monitor pests',
+      messageHi: 'टैसलिंग चरण - कीट निगरानी करें',
+    },
+    {
+      maxDayExclusive: Number.POSITIVE_INFINITY,
+      messageEn: 'Grain filling - irrigation important',
+      messageHi: 'दाना भराव चरण - सिंचाई महत्वपूर्ण है',
+    },
+  ],
+  wheat: [
+    {
+      maxDayExclusive: 20,
+      messageEn: 'Germination stage - maintain moisture',
+      messageHi: 'अंकुरण चरण - नमी बनाए रखें',
+    },
+    {
+      maxDayExclusive: 60,
+      messageEn: 'Tillering stage - apply fertilizer',
+      messageHi: 'टिलरिंग चरण - उर्वरक डालें',
+    },
+    {
+      maxDayExclusive: 90,
+      messageEn: 'Heading stage - pest monitoring',
+      messageHi: 'हेडिंग चरण - कीट निगरानी करें',
+    },
+    {
+      maxDayExclusive: Number.POSITIVE_INFINITY,
+      messageEn: 'Grain development stage',
+      messageHi: 'दाना विकास चरण',
+    },
+  ],
+}
+
+function normalizeCropKey(crop: string): string {
+  return crop.trim().toLowerCase()
+}
+
+function resolveCropId(crop: string): string {
+  const cropKey = normalizeCropKey(crop)
+  const exact = cropsData.find(
+    (entry) => entry.id.toLowerCase() === cropKey || entry.name_en.toLowerCase() === cropKey
+  )
+  return exact?.id || cropKey
+}
+
+function parseDateInput(dateValue?: unknown): Date | null {
+  if (!dateValue) return null
+
+  if (dateValue instanceof Date) {
+    return Number.isNaN(dateValue.getTime()) ? null : dateValue
+  }
+
+  if (typeof dateValue === 'string' || typeof dateValue === 'number') {
+    const parsed = new Date(dateValue)
+    return Number.isNaN(parsed.getTime()) ? null : parsed
+  }
+
+  if (typeof dateValue === 'object' && dateValue !== null) {
+    const timestampValue = dateValue as { toDate?: () => Date; seconds?: number }
+
+    if (typeof timestampValue.toDate === 'function') {
+      const fromTimestamp = timestampValue.toDate()
+      return Number.isNaN(fromTimestamp.getTime()) ? null : fromTimestamp
+    }
+
+    if (typeof timestampValue.seconds === 'number') {
+      const fromSeconds = new Date(timestampValue.seconds * 1000)
+      return Number.isNaN(fromSeconds.getTime()) ? null : fromSeconds
+    }
+  }
+
+  return null
+}
+
+function calculateDaysSincePlanting(plantingDate?: unknown): number | null {
+  const parsedPlantingDate = parseDateInput(plantingDate)
+  if (!parsedPlantingDate) return null
+
+  const now = new Date()
+  const msDiff = now.getTime() - parsedPlantingDate.getTime()
+  const dayDiff = Math.floor(msDiff / (1000 * 60 * 60 * 24))
+  return Math.max(dayDiff, 0)
+}
+
+function calculateHarvestDays(crop: string, plantingDate?: unknown): number | null {
+  const cropId = resolveCropId(crop)
+  const cropDuration = cropDurations[cropId]
+  const daysSincePlanting = calculateDaysSincePlanting(plantingDate)
+
+  if (!cropDuration || daysSincePlanting === null) {
+    return null
+  }
+
+  return Math.max(cropDuration - daysSincePlanting, 0)
+}
+
+function getCropStageAdvice(crop: string, plantingDate?: unknown, lang: 'en' | 'hi' = 'en'): string[] {
+  const cropId = resolveCropId(crop)
+  const daysSincePlanting = calculateDaysSincePlanting(plantingDate)
+
+  // Handle missing planting date
+  if (daysSincePlanting === null) {
+    return lang === 'hi'
+      ? [
+          'बुवाई तिथि जोड़ें',
+          'फसल वृद्धि चरण ट्रैक करें',
+          'व्यक्तिगत सलाह प्राप्त करें',
+        ]
+      : [
+          'Add planting date in profile',
+          'Track crop growth stages',
+          'Get personalized farm advice',
+        ]
+  }
+
+  // Maize-specific advice
+  if (cropId === 'maize') {
+    if (daysSincePlanting < 15) {
+      return lang === 'hi'
+        ? [
+            'मिट्टी में नमी बनाए रखें',
+            'अंकुरों को कीटों से बचाएं',
+            'अत्यधिक सिंचाई से बचें',
+          ]
+        : [
+            'Maintain soil moisture',
+            'Protect seedlings from pests',
+            'Avoid over-irrigation',
+          ]
+    }
+
+    if (daysSincePlanting < 45) {
+      return lang === 'hi'
+        ? [
+            'नाइट्रोजन उर्वरक डालें',
+            'पत्तियों की वृद्धि देखें',
+            'नियमित रूप से खरपतवार निकालें',
+          ]
+        : [
+            'Apply nitrogen fertilizer',
+            'Monitor leaf growth',
+            'Remove weeds regularly',
+          ]
+    }
+
+    if (daysSincePlanting < 75) {
+      return lang === 'hi'
+        ? [
+            'कीट आक्रमण से सावधान रहें',
+            'उचित सिंचाई सुनिश्चित करें',
+            'पौधों की वृद्धि समर्थन करें',
+          ]
+        : [
+            'Watch for pest attacks',
+            'Ensure proper irrigation',
+            'Support plant growth',
+          ]
+    }
+
+    return lang === 'hi'
+      ? [
+          'अनाज भराव सिंचाई सुनिश्चित करें',
+          'फंगल रोग जांच करें',
+          'कटाई की योजना बनाएं',
+        ]
+      : [
+          'Ensure grain filling irrigation',
+          'Check for fungal diseases',
+          'Prepare for harvest planning',
+        ]
+  }
+
+  // Wheat-specific advice
+  if (cropId === 'wheat') {
+    if (daysSincePlanting < 20) {
+      return lang === 'hi'
+        ? [
+            'मिट्टी में नमी बनाए रखें',
+            'अंकुरण की निगरानी करें',
+            'अंकुरों को कीटों से बचाएं',
+          ]
+        : [
+            'Maintain soil moisture',
+            'Monitor germination',
+            'Protect seedlings from pests',
+          ]
+    }
+
+    if (daysSincePlanting < 60) {
+      return lang === 'hi'
+        ? [
+            'नाइट्रोजन उर्वरक डालें',
+            'नियमित रूप से खरपतवार नियंत्रण करें',
+            'पौध घनत्व की निगरानी करें',
+          ]
+        : [
+            'Apply nitrogen fertilizer',
+            'Control weeds regularly',
+            'Monitor plant density',
+          ]
+    }
+
+    if (daysSincePlanting < 90) {
+      return lang === 'hi'
+        ? [
+            'रस्ट रोग की जांच करें',
+            'उचित सिंचाई सुनिश्चित करें',
+            'फसल की वृद्धि की निगरानी करें',
+          ]
+        : [
+            'Inspect for rust disease',
+            'Ensure proper irrigation',
+            'Monitor crop growth',
+          ]
+    }
+
+    return lang === 'hi'
+      ? [
+          'दाना विकास की निगरानी करें',
+          'अतिरिक्त सिंचाई कम करें',
+          'कटाई की तैयारी करें',
+        ]
+      : [
+          'Monitor grain development',
+          'Reduce excess irrigation',
+          'Prepare for harvesting',
+        ]
+  }
+
+  // Generic fallback for other crops
+  return lang === 'hi'
+    ? [
+        'फसल की वृद्धि की निगरानी करें',
+        'सिंचाई समय सारणी बनाए रखें',
+        'पौधों का नियमित निरीक्षण करें',
+      ]
+    : [
+        'Monitor crop growth',
+        'Maintain irrigation schedule',
+        'Inspect plants regularly',
+      ]
+}
+
+async function getBestMandiPrice(crop: string, state?: string) {
+  const cropId = resolveCropId(crop)
+  return getBestMandiPriceFromService(cropId, state)
+}
+
+async function getMarketTrend(crop: string, state?: string): Promise<TrendDirection> {
+  const cropId = resolveCropId(crop)
+  if (!cropId) return 'stable'
+
+  const history = await fetchCropPriceHistory(cropId, state)
+
+  if (history.length >= 2) {
+    const todayPrice = history[history.length - 1].modalPrice
+    const yesterdayPrice = history[history.length - 2].modalPrice
+
+    if (todayPrice > yesterdayPrice) return 'up'
+    if (todayPrice < yesterdayPrice) return 'down'
+    return 'stable'
+  }
+
+  const bestPrice = await getBestMandiPrice(cropId, state)
+  return bestPrice?.trend || 'stable'
+}
+
+function getSeasonForCrop(crop: string, lang: 'en' | 'hi'): string {
+  const cropId = resolveCropId(crop)
+  const cropMeta = cropsData.find((entry) => entry.id === cropId)
+  if (!cropMeta) return 'Rabi'
+  return lang === 'hi' ? cropMeta.season_hi : cropMeta.season_en
 }
 
 // Helper function to get best price for a crop from local dataset
@@ -55,6 +360,7 @@ export default function DashboardPage() {
   const [dashboardLoading, setDashboardLoading] = useState(true)
   const [transportBookings, setTransportBookings] = useState<TransportBookingRecord[]>([])
   const [weather, setWeather] = useState<WeatherData | null>(null)
+  const [marketTrend, setMarketTrend] = useState<TrendDirection>('stable')
 
   // Compute My Crops from starred crops
   const myCrops = useMemo(() => {
@@ -123,6 +429,32 @@ export default function DashboardPage() {
     }
   }, [farmerProfile?.village, farmerProfile?.state])
 
+  // Compute market trend from latest mandi history for the primary crop.
+  useEffect(() => {
+    if (!farmerProfile?.primaryCrop) {
+      setMarketTrend('stable')
+      return
+    }
+
+    let isMounted = true
+
+    getMarketTrend(farmerProfile.primaryCrop, farmerProfile.state)
+      .then((trend) => {
+        if (isMounted) {
+          setMarketTrend(trend)
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setMarketTrend('stable')
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [farmerProfile?.primaryCrop, farmerProfile?.state])
+
   const latestTransportBookings = useMemo(
     () => transportBookings.filter((booking) => booking.type === 'transport').slice(0, 3),
     [transportBookings]
@@ -156,6 +488,7 @@ export default function DashboardPage() {
       season: 'मौसम',
       marketTrend: 'बाजार रुझान',
       estimatedHarvest: 'अनुमानित कटाई',
+      inYourFarmToday: 'आपके खेत में आज',
       weatherToday: 'आज का मौसम',
       temperature: 'तापमान',
       rainChance: 'बारिश की संभावना',
@@ -172,6 +505,8 @@ export default function DashboardPage() {
       noServices: 'अभी तक कोई परिवहन बुकिंग नहीं है। मंडी से परिवहन बुक करें।',
       days: 'दिन',
       rising: 'बढ़ रहा है ↑',
+      falling: 'गिर रहा है ↓',
+      stable: 'स्थिर',
       myCrops: 'मेरी फसलें',
       latestMandiPrices: 'आपकी फसलों के लिए नवीनतम मंडी भाव',
       noCropsSelected: 'अभी कोई फसल नहीं चुनी गई',
@@ -189,6 +524,7 @@ export default function DashboardPage() {
       season: 'Season',
       marketTrend: 'Market Trend',
       estimatedHarvest: 'Estimated Harvest',
+      inYourFarmToday: 'In Your Farm Today',
       weatherToday: 'Weather Today',
       temperature: 'Temperature',
       rainChance: 'Rain Chance',
@@ -205,6 +541,8 @@ export default function DashboardPage() {
       noServices: 'No transport bookings yet. Book transport from mandi flow.',
       days: 'days',
       rising: 'Rising ↑',
+      falling: 'Falling ↓',
+      stable: 'Stable',
       myCrops: 'My Crops',
       latestMandiPrices: 'Latest mandi prices for your crops',
       noCropsSelected: 'No crops selected yet',
@@ -218,6 +556,25 @@ export default function DashboardPage() {
   }
 
   const t = translations[lang]
+  const plantingDate = (farmerProfile as { plantingDate?: unknown; createdAt?: unknown }).plantingDate
+    ?? (farmerProfile as { plantingDate?: unknown; createdAt?: unknown }).createdAt
+  const estimatedHarvestDays = calculateHarvestDays(farmerProfile.primaryCrop, plantingDate)
+  const cropAdvice = getCropStageAdvice(farmerProfile.primaryCrop, plantingDate, lang)
+  const cropSeason = getSeasonForCrop(farmerProfile.primaryCrop, lang)
+
+  const marketTrendLabel =
+    marketTrend === 'up'
+      ? t.rising
+      : marketTrend === 'down'
+        ? t.falling
+        : t.stable
+
+  const marketTrendColor =
+    marketTrend === 'up'
+      ? 'text-[#7FB069]'
+      : marketTrend === 'down'
+        ? 'text-[#B85C38]'
+        : 'text-gray-600'
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
@@ -233,7 +590,7 @@ export default function DashboardPage() {
           {t.farmOverview}
         </h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-3 gap-6">
           {/* Column 1 - Crop & Location */}
           <div className="space-y-4">
             <div>
@@ -251,7 +608,7 @@ export default function DashboardPage() {
                 {t.location}
               </p>
               <p className="text-lg font-semibold text-gray-900">
-                {farmerProfile.village}, {farmerProfile.state}
+                {farmerProfile.village}
               </p>
             </div>
             <div>
@@ -260,7 +617,7 @@ export default function DashboardPage() {
                 {t.season}
               </p>
               <p className="text-lg font-semibold text-gray-900">
-                Rabi
+                {cropSeason}
               </p>
             </div>
           </div>
@@ -272,21 +629,33 @@ export default function DashboardPage() {
                 <span>📈</span>
                 {t.marketTrend}
               </p>
-              <p className="text-lg font-semibold text-[#7FB069]">
-                {t.rising}
+              <p className={`text-lg font-semibold ${marketTrendColor}`}>
+                {marketTrendLabel}
               </p>
             </div>
-          </div>
-
-          {/* Column 3 - Harvest Info */}
-          <div className="space-y-4">
             <div className="bg-gradient-to-br from-[#FAF3E0] to-[#F5E6D3] rounded-lg p-4 border border-[#B85C38]/20">
               <p className="text-sm text-gray-600 mb-2">
                 {t.estimatedHarvest}
               </p>
               <p className="text-3xl font-bold text-[#1F3C88]">
-                38 <span className="text-lg font-normal">{t.days}</span>
+                {estimatedHarvestDays !== null ? estimatedHarvestDays : '--'}{' '}
+                <span className="text-lg font-normal">{t.days}</span>
               </p>
+            </div>
+          </div>
+
+          {/* Column 3 - In Your Farm Today */}
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-gray-600 mb-2 flex items-center gap-2">
+                <span>🌱</span>
+                {t.inYourFarmToday}
+              </p>
+              <ul className="mt-2 space-y-1 text-sm text-gray-700">
+                {cropAdvice.map((tip, index) => (
+                  <li key={index}>• {tip}</li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
