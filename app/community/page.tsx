@@ -24,6 +24,7 @@ interface Question {
   description: string;
   user: string;
   userId: string;
+  location: string;
   upvotes: number;
   upvotedBy: string[];
   repliesCount: number;
@@ -62,6 +63,7 @@ function convertQuestion(q: CommunityQuestion): Question {
     description: q.description,
     user: q.userName,
     userId: q.userId,
+    location: q.userLocation,
     upvotes: q.upvotes,
     upvotedBy: q.upvotedBy || [],
     repliesCount: q.repliesCount,
@@ -139,6 +141,7 @@ export default function CommunityPage() {
         description: newQuestion.description,
         user: user.displayName || 'You',
         userId: user.uid,
+        location: 'Your Location',
         upvotes: 0,
         upvotedBy: [],
         repliesCount: 0,
@@ -326,6 +329,7 @@ export default function CommunityPage() {
                   question={question.question}
                   description={question.description}
                   user={question.user}
+                  location={question.location}
                   timestamp={question.timestamp}
                   upvotes={question.upvotes}
                   repliesCount={question.repliesCount}

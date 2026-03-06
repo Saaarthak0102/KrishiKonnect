@@ -9,6 +9,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { useStarredCrops } from '@/lib/useStarredCrops'
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
 import MarketInsightCard from '@/components/dashboard/MarketInsightCard'
+import LatestCommunityQuestionCard from '@/components/dashboard/LatestCommunityQuestionCard'
 import { getTransportBookings, type TransportBookingRecord } from '@/lib/transportBookings'
 import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
 import { getWeatherForLocation, type WeatherData } from '@/lib/weatherService'
@@ -867,6 +868,17 @@ export default function DashboardPage() {
               </div>
             ))
           )}
+
+          {/* Divider */}
+          {latestTransportBookings.length > 0 && (
+            <div className="border-t border-gray-200 my-2"></div>
+          )}
+
+          {/* Latest Community Question Card */}
+          <LatestCommunityQuestionCard 
+            farmerName={farmerProfile?.name || 'Ramesh Singh'}
+            lang={lang as 'en' | 'hi'}
+          />
         </div>
         </motion.div>
       </div>

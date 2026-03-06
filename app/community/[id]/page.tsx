@@ -36,6 +36,7 @@ interface Question {
   description: string;
   user: string;
   userId: string;
+  location: string;
   upvotes: number;
   upvotedBy: string[];
   repliesCount: number;
@@ -106,6 +107,7 @@ export default function ThreadPage() {
             description: data.description,
             user: data.userName,
             userId: data.userId,
+            location: data.userLocation || 'Unknown Location',
             upvotes: data.upvotes || 0,
             upvotedBy: data.upvotedBy || [],
             repliesCount: data.repliesCount || 0,

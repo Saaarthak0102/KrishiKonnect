@@ -28,6 +28,7 @@ export interface CommunityQuestion {
   userId: string;
   userName: string;
   userBadge: string;
+  userLocation: string;
   cropTag: string;
   cropEmoji: string;
   questionText: string;
@@ -44,6 +45,7 @@ export interface CachedQuestion {
   userId: string;
   userName: string;
   userBadge: string;
+  userLocation: string;
   cropTag: string;
   cropEmoji: string;
   questionText: string;
@@ -153,11 +155,28 @@ export async function addCommunityQuestion(
   questionData: QuestionInput
 ): Promise<string> {
   try {
+    // Fetch user's location from their profile
+    let userLocation = 'Unknown Location';
+    try {
+      const userRef = doc(db, 'users', userId);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        const village = userData.village || '';
+        const state = userData.state || '';
+        userLocation = [village, state].filter(Boolean).join(', ') || 'Unknown Location';
+      }
+    } catch (error) {
+      console.error('Error fetching user location:', error);
+      // Continue with default location if fetch fails
+    }
+
     // Step 1: Add the question to community_questions collection
     const questionRef = await addDoc(getQuestionsRef(), {
       userId,
       userName,
       userBadge,
+      userLocation,
       cropTag: questionData.cropTag,
       cropEmoji: questionData.cropEmoji,
       questionText: questionData.questionText,
@@ -175,6 +194,7 @@ export async function addCommunityQuestion(
       userId,
       userName,
       userBadge,
+      userLocation,
       cropTag: questionData.cropTag,
       cropEmoji: questionData.cropEmoji,
       questionText: questionData.questionText,

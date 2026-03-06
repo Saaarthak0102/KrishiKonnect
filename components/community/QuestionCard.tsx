@@ -10,6 +10,7 @@ interface QuestionCardProps {
   question: string;
   description: string;
   user: string;
+  location: string;
   timestamp: string;
   upvotes: number;
   repliesCount: number;
@@ -25,6 +26,7 @@ export default function QuestionCard({
   question,
   description,
   user,
+  location,
   timestamp,
   upvotes,
   repliesCount,
@@ -50,9 +52,26 @@ export default function QuestionCard({
         </div>
 
         {/* Question */}
-        <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+        <h3 className="text-lg font-semibold text-gray-800 mb-3 line-clamp-2">
           {question}
         </h3>
+
+        {/* Identity Signals - Farmer Info */}
+        <div className="mb-4 pb-4 border-b border-green-100">
+          <div className="text-sm text-gray-700 font-semibold mb-2">
+            {user}
+          </div>
+          <div className="flex flex-wrap gap-3 text-xs">
+            <div className="flex items-center gap-1 text-gray-600">
+              <span>📍</span>
+              <span>{location}</span>
+            </div>
+            <div className="flex items-center gap-1 text-gray-600">
+              <span>🌾</span>
+              <span>{crop} Grower</span>
+            </div>
+          </div>
+        </div>
 
         {/* Description */}
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
@@ -74,8 +93,6 @@ export default function QuestionCard({
         <div className="flex items-center justify-between pt-4 border-t border-green-100">
           {/* User Info */}
           <div className="flex items-center gap-2 text-xs text-gray-600">
-            <span className="font-medium">👤 {user}</span>
-            <span className="text-gray-400">•</span>
             <span>{timestamp}</span>
           </div>
 

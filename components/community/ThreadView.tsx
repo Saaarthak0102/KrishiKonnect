@@ -22,6 +22,7 @@ interface ThreadViewProps {
     description: string;
     user: string;
     userId: string;
+    location: string;
     upvotes: number;
     timestamp: string;
     image?: string | null;
@@ -79,6 +80,23 @@ export default function ThreadView({
           {question.description}
         </p>
 
+        {/* Identity Signals - Farmer Info */}
+        <div className="mb-6 pb-6 border-b border-gray-200">
+          <div className="text-sm text-gray-700 font-semibold mb-3">
+            {question.user}
+          </div>
+          <div className="flex flex-wrap gap-4 text-sm">
+            <div className="flex items-center gap-2 text-gray-600">
+              <span>📍</span>
+              <span>{question.location}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <span>🌾</span>
+              <span>{question.crop} Grower</span>
+            </div>
+          </div>
+        </div>
+
         {/* Image if present */}
         {question.image && (
           <div className="mb-6">
@@ -92,11 +110,9 @@ export default function ThreadView({
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-          {/* User Info */}
-          <div className="flex items-center gap-2 text-gray-600">
-            <span className="font-medium">👤 {question.user}</span>
-            <span className="text-gray-400">•</span>
-            <span>{question.timestamp}</span>
+          {/* Timestamp */}
+          <div className="text-sm text-gray-600">
+            {question.timestamp}
           </div>
 
           {/* Upvote Button */}
