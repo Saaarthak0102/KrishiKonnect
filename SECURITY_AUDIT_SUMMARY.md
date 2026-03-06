@@ -25,7 +25,7 @@
 
 **Exposed Credentials:**
 - Firebase API Key: `AIzaSyBTvv12cHn2DeoK9yObIVzvhK4mIt9B0Dg`
-- Data.gov API Key: `579b464db66ec23bdd000001e2f8fdd6e6d7a3d7403f38f`
+- Data.gov API Key: `REDACTED_API_KEY`
 - Firebase Project ID: `krishikonnect-6e3b5`
 
 **Immediate Action:**
@@ -178,7 +178,7 @@ After implementing all fixes, verify with:
 ```bash
 # 1. No secrets in repository
 grep -r "AIzaSyBTvv12cHn2DeoK9yObIVzvhK4mIt9B0Dg" .
-grep -r "579b464db66ec23bdd000001e2f8fdd6e6d7a3d7403f38f" .
+grep -r "REDACTED_API_KEY" .
 # Should return NO RESULTS
 
 # 2. Test the app runs

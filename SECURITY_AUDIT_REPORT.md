@@ -21,7 +21,7 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=krishikonnect-6e3b5
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=krishikonnect-6e3b5.firebasestorage.app
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=408459676622
 NEXT_PUBLIC_FIREBASE_APP_ID=1:408459676622:web:3f7bf0432041831de7f99f
-NEXT_PUBLIC_DATA_GOV_API_KEY=579b464db66ec23bdd000001e2f8fdd6e6d7a3d7403f38f
+NEXT_PUBLIC_DATA_GOV_API_KEY=REDACTED_API_KEY
 ```
 
 **Why This is Critical:**
@@ -109,7 +109,7 @@ match /users/{userId} {
 
 **Issue:** File `replacements.txt` exists in repository root containing what appears to be a removed/redacted Data.gov API key:
 ```
-579b464db66ec23bdd000001e2f8fdd6e6d7a3d7403f38f==REMOVED_SECRET
+REDACTED_API_KEY==REMOVED_SECRET
 ```
 
 **Problem:**

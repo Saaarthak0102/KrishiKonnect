@@ -24,7 +24,7 @@
 
 #### Step 1b: Get New Data.gov API Key
 1. Go to [Data.gov API Dashboard](https://data.gov.in/api-user)
-2. Invalidate/disable old key: `579b464db66ec23bdd000001e2f8fdd6e6d7a3d7403f38f`
+2. Invalidate/disable old key: `REDACTED_API_KEY`
 3. Generate new API key
 4. Copy the new key
 
@@ -273,7 +273,7 @@ npm run dev
 ```bash
 # Verify no secrets in code
 grep -r "AIzaSyBTvv12cHn2DeoK9yObIVzvhK4mIt9B0Dg" .
-grep -r "579b464db66ec23bdd000001e2f8fdd6e6d7a3d7403f38f" .
+grep -r "REDACTED_API_KEY" .
 
 # Both should return NO RESULTS
 ```
@@ -311,7 +311,7 @@ grep -r "579b464db66ec23bdd000001e2f8fdd6e6d7a3d7403f38f" .
 | Firebase API Key | `AIzaSyBTvv12cHn2DeoK9yObIVzvhK4mIt9B0Dg` | 🔴 EXPOSED | `[New key - keep secret]` |
 | Firebase Auth Domain | `krishikonnect-6e3b5.firebaseapp.com` | ⚠️ Informational | No change needed |
 | Firebase Project ID | `krishikonnect-6e3b5` | ⚠️ Informational | No change needed |
-| Data.gov API Key | `579b464db66ec23bdd000001e2f8fdd6e6d7a3d7403f38f` | 🔴 EXPOSED | `[New key - keep secret]` |
+| Data.gov API Key | `REDACTED_API_KEY` | 🔴 EXPOSED | `[New key - keep secret]` |
 
 ---
 
