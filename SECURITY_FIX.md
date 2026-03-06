@@ -88,8 +88,8 @@ brew install git-filter-repo
 
 **Create replacements file (`replacements.txt`):**
 ```
-579b464db66ec23bdd000001e2f8fdd6e6d7a3d7403f38f==REDACTED_DATAGOV_KEY
-AIzaSyBTvv12cHn2DeoK9yObIVzvhK4mIt9B0Dg==REDACTED_FIREBASE_KEY
+EXPOSED_DATAGOV_API_KEY==REDACTED
+EXPOSED_FIREBASE_API_KEY==REDACTED
 ```
 
 **Run the cleanup:**
@@ -115,9 +115,7 @@ git push origin --force-with-lease
 
 **Create a file with secrets to remove (`secrets.txt`):**
 ```
-579b464db66ec23bdd000001e2f8fdd6e6d7a3d7403f38f
-AIzaSyBTvv12cHn2DeoK9yObIVzvhK4mIt9B0Dg
-```
+
 
 **Run the cleanup:**
 ```bash
@@ -137,7 +135,7 @@ cd d:\KrishiKonnect
 
 # Remove specific API key from all commits
 git filter-branch --tree-filter \
-  "git ls-files -z | xargs -0 sed -i 's/579b464db66ec23bdd000001e2f8fdd6e6d7a3d7403f38f/REDACTED/g'" \
+  "git ls-files -z | xargs -0 sed -i 's/EXPOSED_DATAGOV_API_KEY/REDACTED/g'" \
   -- --all
 
 # Clean up
