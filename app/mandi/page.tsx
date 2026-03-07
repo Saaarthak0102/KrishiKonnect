@@ -693,24 +693,17 @@ export default function MandiPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-8 flex items-center gap-4"
               >
-                <motion.button
+                <button
                   onClick={() => {
                     setSelectedCrop(null)
                     setExpandedMandi(null)
                     setSelectedState('')
                   }}
-                  className="rounded-[10px] px-[14px] py-[6px] font-medium transition-all duration-[200ms] ease-out"
-                  style={{
-                    color: '#2D2A6E',
-                    background: 'rgba(45,42,110,0.08)',
-                    border: '1px solid rgba(45,42,110,0.25)',
-                  }}
-                  whileHover={{ scale: 1.03, y: -2, backgroundColor: '#242159', color: '#FFFFFF', boxShadow: '0 10px 20px rgba(45,42,110,0.24)' }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                  className="inline-flex items-center gap-2 font-medium text-[#2D2A6E] transition-all duration-[250ms] ease-out transform hover:translate-x-[-2px] hover:scale-[1.02] hover:text-[#C46A3D] active:scale-[0.97]"
                 >
-                  ← {lang === 'hi' ? 'वापस' : 'Back'}
-                </motion.button>
+                  <span>←</span>
+                  <span>{lang === 'hi' ? 'वापस' : 'Back'}</span>
+                </button>
                 <h2 className="text-3xl font-bold" style={{ color: '#1F3C88' }}>
                   {selectedCrop} {lang === 'hi' ? 'भाव' : 'Prices'}
                 </h2>
@@ -736,16 +729,16 @@ export default function MandiPage() {
                   boxShadow: '0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04), 0 0 12px rgba(196,106,61,0.10)',
                 }}
               >
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-3">
+                <div className="flex items-center justify-between gap-4">
                   {/* State Filter Dropdown */}
-                  <div className="flex-1">
-                    <label className="block text-sm font-semibold mb-2" style={{ color: '#1F3C88' }}>
+                  <div className="flex flex-1 flex-col gap-[6px]">
+                    <label className="block text-sm font-semibold" style={{ color: '#1F3C88' }}>
                       {lang === 'hi' ? 'राज्य' : 'State'}
                     </label>
                     <select
                       value={selectedState}
                       onChange={(e) => setSelectedState(e.target.value)}
-                      className="w-full rounded-lg border-2 px-4 py-2 outline-none transition-all duration-[200ms] ease-out hover:bg-[rgba(45,42,110,0.05)]"
+                      className="h-[42px] w-full rounded-lg border-2 px-4 py-2 outline-none transition-all duration-[200ms] ease-out hover:bg-[rgba(45,42,110,0.05)]"
                       style={{
                         borderColor: '#D8CFC0',
                         color: '#1F3C88',
@@ -771,14 +764,14 @@ export default function MandiPage() {
 
                   {/* My Crops Button */}
                   {starredCrops.length > 0 && (
-                    <div className="flex items-end">
+                    <div className="flex items-center">
                       <motion.button
                         onClick={() => {
                           setSelectedCrop(null)
                           setShowMyCrops(true)
                           setSelectedState('')
                         }}
-                        className="w-full rounded-[10px] px-6 py-2 font-semibold transition-all md:w-auto"
+                        className="h-[42px] rounded-[12px] px-4 font-semibold transition-all"
                         style={{
                           color: '#2D2A6E',
                           backgroundColor: 'rgba(196,106,61,0.12)',
