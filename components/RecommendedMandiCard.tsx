@@ -20,7 +20,7 @@ export default function RecommendedMandiCard({
   return (
     <div
       className="rounded-xl border-2 p-5 md:p-6"
-      style={{ borderColor: '#C7DFAF', backgroundColor: '#F2F9EA' }}
+      style={{ borderColor: '#C7DFAF', backgroundColor: 'rgba(242, 249, 234, 0.6)' }}
     >
       <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: '#4D7C0F' }}>
         {lang === 'hi' ? 'AI लॉजिस्टिक्स सुझाव' : 'AI Logistics Suggestion'}

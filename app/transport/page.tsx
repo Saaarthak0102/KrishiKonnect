@@ -494,7 +494,7 @@ export default function TransportPage() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               className="mb-8 rounded-xl border-2 p-8 text-center backdrop-blur-md"
-              style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.72)' }}
+              style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.58)' }}
             >
               <h2 className="text-2xl font-bold mb-2" style={{ color: '#1F3C88' }}>
                 {lang === 'hi' ? 'बुकिंग नहीं मिली' : 'Booking not found'}
@@ -622,9 +622,9 @@ function ReceiptView({ booking, lang, onPrint }: ReceiptViewProps) {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4 }}
       className="mb-8 rounded-xl border-2 p-8 md:p-10 text-center backdrop-blur-md"
-      style={{ borderColor: '#7FB069', backgroundColor: 'rgba(255, 255, 255, 0.72)' }}
+      style={{ borderColor: '#7FB069', backgroundColor: 'rgba(255, 255, 255, 0.58)' }}
     >
-      <div id="transport-receipt" className="max-w-2xl mx-auto text-left space-y-4 rounded-lg border-2 p-6 backdrop-blur-sm" style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.7)' }}>
+      <div id="transport-receipt" className="max-w-2xl mx-auto text-left space-y-4 rounded-lg border-2 p-6 backdrop-blur-sm" style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.56)' }}>
         <div className="text-center border-b pb-4" style={{ borderColor: '#E8DCC8' }}>
           <h3 className="text-2xl font-bold" style={{ color: '#1F3C88' }}>
             KrishiKonnect Transport Receipt
@@ -635,51 +635,51 @@ function ReceiptView({ booking, lang, onPrint }: ReceiptViewProps) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.75)' }}>
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
             <p className="text-sm text-gray-600 mb-1">Booking ID</p>
             <p className="font-semibold" style={{ color: '#1F3C88' }}>{booking.id}</p>
           </div>
-          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
             <p className="text-sm text-gray-600 mb-1">Date</p>
             <p className="font-semibold" style={{ color: '#1F3C88' }}>{booking.createdAt}</p>
           </div>
-          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
             <p className="text-sm text-gray-600 mb-1">Pickup Village</p>
             <p className="font-semibold" style={{ color: '#1F3C88' }}>{booking.pickupVillage}</p>
           </div>
-          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
             <p className="text-sm text-gray-600 mb-1">Destination Mandi</p>
             <p className="font-semibold" style={{ color: '#1F3C88' }}>{booking.destinationMandi}</p>
           </div>
-          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
             <p className="text-sm text-gray-600 mb-1">Crop</p>
             <p className="font-semibold" style={{ color: '#1F3C88' }}>{booking.crop}</p>
           </div>
-          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
             <p className="text-sm text-gray-600 mb-1">Quantity</p>
             <p className="font-semibold" style={{ color: '#1F3C88' }}>
               {booking.quantity} {lang === 'hi' ? 'क्विंटल' : 'quintals'}
             </p>
           </div>
-          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
             <p className="text-sm text-gray-600 mb-1">Transport Provider</p>
             <p className="font-semibold" style={{ color: '#1F3C88' }}>{booking.provider}</p>
           </div>
-          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
             <p className="text-sm text-gray-600 mb-1">Driver Contact</p>
             <p className="font-semibold" style={{ color: '#1F3C88' }}>{booking.driverContact}</p>
           </div>
-          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
             <p className="text-sm text-gray-600 mb-1">Pickup Date</p>
             <p className="font-semibold" style={{ color: '#1F3C88' }}>{booking.pickupDate}</p>
           </div>
-          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+          <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
             <p className="text-sm text-gray-600 mb-1">Estimated Arrival</p>
             <p className="font-semibold" style={{ color: '#1F3C88' }}>{booking.estimatedArrival}</p>
           </div>
         </div>
 
-        <div className="p-6 rounded-lg" style={{ backgroundColor: '#E8F5E9', border: '2px solid #7FB069' }}>
+        <div className="p-6 rounded-lg" style={{ backgroundColor: 'rgba(232, 245, 233, 0.55)', border: '2px solid #7FB069' }}>
           <div className="flex items-center justify-between gap-4">
             <p className="font-semibold text-gray-700">Total Cost</p>
             <p className="font-bold text-3xl" style={{ color: '#7FB069' }}>
@@ -768,7 +768,7 @@ function TransportForm({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.4 }}
         className="mb-8 rounded-xl border-2 p-6 md:p-8 backdrop-blur-md"
-        style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.68)' }}
+        style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.56)' }}
       >
         <h2 className="text-2xl font-bold mb-6" style={{ color: '#1F3C88' }}>
           {lang === 'hi' ? 'परिवहन विवरण' : 'Transport Details'}
@@ -790,7 +790,7 @@ function TransportForm({
                 style={{
                   borderColor: '#D8CFC0',
                   color: '#1F3C88',
-                  backgroundColor: 'rgba(255, 255, 255, 0.82)'
+                  backgroundColor: 'rgba(255, 255, 255, 0.58)'
                 }}
                 readOnly={!!farmerProfile?.village}
               />
@@ -808,7 +808,7 @@ function TransportForm({
                 style={{
                   borderColor: '#D8CFC0',
                   color: '#1F3C88',
-                  backgroundColor: 'rgba(255, 255, 255, 0.82)'
+                  backgroundColor: 'rgba(255, 255, 255, 0.58)'
                 }}
               >
                 <option value="">{lang === 'hi' ? 'फसल चुनें' : 'Select Crop'}</option>
@@ -846,7 +846,7 @@ function TransportForm({
                 style={{
                   borderColor: '#D8CFC0',
                   color: '#1F3C88',
-                  backgroundColor: 'rgba(255, 255, 255, 0.82)'
+                  backgroundColor: 'rgba(255, 255, 255, 0.58)'
                 }}
                 disabled={!formData.crop}
               >
@@ -879,7 +879,7 @@ function TransportForm({
                 style={{
                   borderColor: '#D8CFC0',
                   color: '#1F3C88',
-                  backgroundColor: 'rgba(255, 255, 255, 0.82)'
+                  backgroundColor: 'rgba(255, 255, 255, 0.58)'
                 }}
                 onFocus={(e) => {
                   e.target.style.borderColor = '#1F3C88'
@@ -905,7 +905,7 @@ function TransportForm({
                 style={{
                   borderColor: '#D8CFC0',
                   color: '#1F3C88',
-                  backgroundColor: 'rgba(255, 255, 255, 0.82)'
+                  backgroundColor: 'rgba(255, 255, 255, 0.58)'
                 }}
                 onFocus={(e) => {
                   e.target.style.borderColor = '#1F3C88'
@@ -930,7 +930,7 @@ function TransportForm({
                 style={{
                   borderColor: '#D8CFC0',
                   color: '#1F3C88',
-                  backgroundColor: 'rgba(255, 255, 255, 0.82)'
+                  backgroundColor: 'rgba(255, 255, 255, 0.58)'
                 }}
                 readOnly={!!farmerProfile?.phoneNumber}
               />
@@ -967,7 +967,7 @@ function TransportForm({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           className="mb-8 rounded-xl border-2 p-6 md:p-8 backdrop-blur-md"
-          style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.68)' }}
+          style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.56)' }}
         >
           <h2 className="text-2xl font-bold mb-4" style={{ color: '#1F3C88' }}>
             {lang === 'hi' ? '💰 अनुमानित परिवहन लागत' : '💰 Estimated Transport Cost'}
@@ -1014,7 +1014,7 @@ function TransportForm({
                 className="rounded-xl border-2 p-6 transition-all hover:shadow-lg backdrop-blur-md"
                 style={{
                   borderColor: step === 'confirmed' && selectedTransporter?.id === transporter.id ? '#7FB069' : '#E8DCC8',
-                  backgroundColor: 'rgba(255, 255, 255, 0.64)'
+                  backgroundColor: 'rgba(255, 255, 255, 0.54)'
                 }}
               >
                 <div className="mb-4">
@@ -1076,7 +1076,7 @@ function TransportForm({
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
           className="mb-8 rounded-xl border-2 p-8 md:p-10 text-center backdrop-blur-md"
-          style={{ borderColor: '#7FB069', backgroundColor: 'rgba(255, 255, 255, 0.72)' }}
+          style={{ borderColor: '#7FB069', backgroundColor: 'rgba(255, 255, 255, 0.58)' }}
         >
           <div className="mb-6 transport-no-print">
             <div className="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center text-4xl" style={{ backgroundColor: '#7FB069' }}>
@@ -1101,51 +1101,51 @@ function TransportForm({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
                 <p className="text-sm text-gray-600 mb-1">Booking ID</p>
                 <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.id}</p>
               </div>
-              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
                 <p className="text-sm text-gray-600 mb-1">Date</p>
                 <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.createdAt}</p>
               </div>
-              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
                 <p className="text-sm text-gray-600 mb-1">Pickup Village</p>
                 <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.pickupVillage}</p>
               </div>
-              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
                 <p className="text-sm text-gray-600 mb-1">Destination Mandi</p>
                 <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.destinationMandi}</p>
               </div>
-              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
                 <p className="text-sm text-gray-600 mb-1">Crop</p>
                 <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.crop}</p>
               </div>
-              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
                 <p className="text-sm text-gray-600 mb-1">Quantity</p>
                 <p className="font-semibold" style={{ color: '#1F3C88' }}>
                   {activeBooking.quantity} {lang === 'hi' ? 'क्विंटल' : 'quintals'}
                 </p>
               </div>
-              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
                 <p className="text-sm text-gray-600 mb-1">Transport Provider</p>
                 <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.provider}</p>
               </div>
-              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
                 <p className="text-sm text-gray-600 mb-1">Driver Contact</p>
                 <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.driverContact}</p>
               </div>
-              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
                 <p className="text-sm text-gray-600 mb-1">Pickup Date</p>
                 <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.pickupDate}</p>
               </div>
-              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(250, 243, 224, 0.72)' }}>
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
                 <p className="text-sm text-gray-600 mb-1">Estimated Arrival</p>
                 <p className="font-semibold" style={{ color: '#1F3C88' }}>{activeBooking.estimatedArrival}</p>
               </div>
             </div>
 
-            <div className="p-6 rounded-lg" style={{ backgroundColor: '#E8F5E9', border: '2px solid #7FB069' }}>
+            <div className="p-6 rounded-lg" style={{ backgroundColor: 'rgba(232, 245, 233, 0.55)', border: '2px solid #7FB069' }}>
               <div className="flex items-center justify-between gap-4">
                 <p className="font-semibold text-gray-700">Total Cost</p>
                 <p className="font-bold text-3xl" style={{ color: '#7FB069' }}>

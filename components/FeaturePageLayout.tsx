@@ -59,7 +59,7 @@ export default function FeaturePageLayout({ children }: FeaturePageLayoutProps) 
   return (
     <div className="min-h-screen flex flex-col">
       {/* Sticky Navbar */}
-      <header className="sticky top-0 z-50 bg-white/75 backdrop-blur-sm border-b-2 border-gray-200 shadow-sm">
+      <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-sm border-b-2 border-gray-200 shadow-sm">
         <div className="px-4 py-4 flex items-center justify-between">
           {/* Logo and Page Title */}
           <div className="flex items-center space-x-4">

@@ -70,7 +70,7 @@ export default function TransportBookingHistory({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 rounded-xl border-2 p-8 text-center"
-          style={{ borderColor: '#E8DCC8', backgroundColor: '#FAF3E0' }}
+          style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.56)' }}
         >
           <div className="flex flex-col items-center justify-center py-8">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-t-transparent mb-4" 
@@ -92,7 +92,7 @@ export default function TransportBookingHistory({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-12 rounded-xl border-2 p-8 text-center"
-        style={{ borderColor: '#E8DCC8', backgroundColor: '#FAF3E0' }}
+        style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.56)' }}
       >
         <p className="text-gray-600 mb-6">{t.noBookings}</p>
         <motion.button
@@ -115,7 +115,7 @@ export default function TransportBookingHistory({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       className="mb-12 rounded-xl border-2 p-8"
-      style={{ borderColor: '#E8DCC8', backgroundColor: '#FFFFFF' }}
+      style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.56)' }}
     >
       <h2 className="text-2xl font-bold mb-6 flex items-center gap-2" style={{ color: '#1F3C88' }}>
         <MdEditCalendar size={28} />
@@ -130,7 +130,7 @@ export default function TransportBookingHistory({
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: idx * 0.05, duration: 0.3 }}
             className="rounded-lg border-2 p-6 transition-all hover:shadow-md"
-            style={{ borderColor: '#E8DCC8', backgroundColor: '#FAF3E0' }}
+            style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
               {/* Crop → Destination */}
@@ -189,7 +189,7 @@ export default function TransportBookingHistory({
               <div className="flex items-center gap-2">
                 <span
                   className="px-3 py-1 rounded-full text-xs font-semibold"
-                  style={{ backgroundColor: '#E8F5E9', color: '#7FB069' }}
+                  style={{ backgroundColor: 'rgba(232, 245, 233, 0.55)', color: '#7FB069' }}
                 >
                   ✓ {t.confirmed}
                 </span>

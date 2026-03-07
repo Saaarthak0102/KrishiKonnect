@@ -309,7 +309,7 @@ export default function AIAdvisorPage() {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Header - Provides spacing for sticky sidebar */}
-      <header className="sticky top-0 z-50 bg-white/75 backdrop-blur-sm shadow-sm border-b-2 border-gray-200">
+      <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-sm shadow-sm border-b-2 border-gray-200">
         <div className="px-4 py-4 flex items-center justify-between">
           <div className="w-28" />
           <h1 className="text-lg md:text-xl font-bold">

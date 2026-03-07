@@ -185,7 +185,7 @@ export default function CropLibraryPage() {
                 placeholder={t.searchPlaceholder}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-krishi-border rounded-lg focus:outline-none focus:border-krishi-primary bg-white/80 text-krishi-text placeholder-krishi-text/50"
+                className="w-full px-4 py-3 border-2 border-krishi-border rounded-lg focus:outline-none focus:border-krishi-primary bg-white/60 text-krishi-text placeholder-krishi-text/50"
               />
             </div>
 
@@ -249,7 +249,7 @@ export default function CropLibraryPage() {
                 <select
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-                  className="w-full px-4 py-2 border-2 border-krishi-border rounded-lg focus:outline-none focus:border-krishi-primary bg-white/80 text-krishi-text font-semibold cursor-pointer"
+                  className="w-full px-4 py-2 border-2 border-krishi-border rounded-lg focus:outline-none focus:border-krishi-primary bg-white/60 text-krishi-text font-semibold cursor-pointer"
                 >
                   <option value="asc">{t.sortAZ}</option>
                   <option value="desc">{t.sortZA}</option>

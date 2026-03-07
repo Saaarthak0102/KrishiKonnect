@@ -32,7 +32,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen flex flex-col">
       {/* Sticky Top Navbar */}
-      <header className="sticky top-0 z-50 bg-white/75 backdrop-blur-sm shadow-sm border-b-2 border-gray-200">
+      <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-sm shadow-sm border-b-2 border-gray-200">
         <div className="px-4 py-4 flex items-center justify-between">
           {/* Left - Logo and Brand */}
           <div className="flex items-center space-x-4">

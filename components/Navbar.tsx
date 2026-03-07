@@ -21,7 +21,7 @@ export default function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
-      className="sticky top-0 z-50 bg-white/75 backdrop-blur-sm border-b-2 border-krishi-border shadow-sm"
+      className="sticky top-0 z-50 bg-white/60 backdrop-blur-sm border-b-2 border-krishi-border shadow-sm"
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">

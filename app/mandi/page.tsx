@@ -342,7 +342,7 @@ export default function MandiPage() {
                       style={{
                         borderColor: '#D8CFC0',
                         color: '#1F3C88',
-                        backgroundColor: '#FFFFFF',
+                        backgroundColor: 'rgba(255, 255, 255, 0.62)',
                       }}
                       onFocus={(e) => {
                         e.target.style.borderColor = '#1F3C88'
@@ -553,7 +553,7 @@ export default function MandiPage() {
                       style={{
                         borderColor: '#D8CFC0',
                         color: '#1F3C88',
-                        backgroundColor: '#FFFFFF',
+                        backgroundColor: 'rgba(255, 255, 255, 0.62)',
                       }}
                       onFocus={(e) => {
                         e.target.style.borderColor = '#1F3C88'
