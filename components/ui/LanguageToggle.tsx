@@ -16,7 +16,7 @@ export default function LanguageToggle() {
     >
       {/* Sliding Active Pill */}
       <div
-        className="absolute inset-y-1 w-[calc(50%-4px)] bg-krishi-primary rounded-lg"
+        className="absolute inset-y-1 w-[calc(50%-6px)] bg-krishi-primary rounded-lg"
         style={{
           left: 'calc(0.5rem)',
           transform: language === 'hi' ? 'translateX(100%)' : 'translateX(0)',
