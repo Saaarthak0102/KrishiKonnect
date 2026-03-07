@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import Footer from '@/components/Footer'
 import CropCard from '@/components/CropCard'
 import DashboardLayout from '@/components/layout/DashboardLayout'
@@ -72,6 +72,7 @@ export default function CropLibraryPage() {
   const { lang } = useLanguage()
   const t = translations[lang]
   const { starredCrops } = useStarredCrops()
+  const cropGridRef = useRef<HTMLDivElement | null>(null)
 
   // State Management
   const [searchTerm, setSearchTerm] = useState('')
@@ -139,6 +140,38 @@ export default function CropLibraryPage() {
 
     return crops
   }, [searchTerm, selectedSeason, sortOrder, lang, starredCrops])
+
+  useEffect(() => {
+    if (!cropGridRef.current) {
+      return
+    }
+
+    const cards = Array.from(cropGridRef.current.querySelectorAll<HTMLElement>('.crop-card'))
+    if (cards.length === 0) {
+      return
+    }
+
+    if (typeof IntersectionObserver === 'undefined') {
+      cards.forEach((card) => card.classList.add('visible'))
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.15 }
+    )
+
+    cards.forEach((card) => observer.observe(card))
+
+    return () => observer.disconnect()
+  }, [filteredAndSortedCrops])
 
   return (
     <DashboardLayout>
@@ -391,21 +424,19 @@ export default function CropLibraryPage() {
         {/* Crop Grid */}
         {filteredAndSortedCrops.length > 0 ? (
           <motion.div
+            ref={cropGridRef}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="crop-library-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {filteredAndSortedCrops.map((crop, index) => (
-              <motion.div
+            {filteredAndSortedCrops.map((crop) => (
+              <div
                 key={crop.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05, duration: 0.3 }}
-                layout
+                className="crop-card"
               >
                 <CropCard crop={crop} />
-              </motion.div>
+              </div>
             ))}
           </motion.div>
         ) : (
