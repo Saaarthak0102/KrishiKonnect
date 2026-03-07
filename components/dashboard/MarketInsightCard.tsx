@@ -6,6 +6,8 @@ import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
 import cropsData from '@/data/crops.json'
 import mandiPricesData from '@/data/mandiPrices.json'
+import { HiOutlineChartBar } from 'react-icons/hi'
+import { FiAlertCircle, FiTrendingDown, FiTrendingUp } from 'react-icons/fi'
 
 interface MandiPriceData {
   crop: string
@@ -57,8 +59,14 @@ const translations = {
 
 const getTrendColor = (trend: 'up' | 'down' | 'stable') => {
   if (trend === 'up') return 'text-[#7FB069]'
-  if (trend === 'down') return 'text-[#B85C38]'
+  if (trend === 'down') return 'text-[#C46A3D]'
   return 'text-gray-600'
+}
+
+const getTrendIcon = (trend: 'up' | 'down' | 'stable') => {
+  if (trend === 'up') return <FiTrendingUp size={18} />
+  if (trend === 'down') return <FiTrendingDown size={18} />
+  return null
 }
 
 interface MarketInsightCardProps {
@@ -123,10 +131,13 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.15 }}
-        className="bg-white/45 backdrop-blur-md rounded-xl shadow-lg border border-indigo-200/40 p-6 h-full flex flex-col"
+        className="bg-white/55 backdrop-blur-[10px] rounded-2xl shadow-[0_6px_24px_rgba(0,0,0,0.05),0_0_18px_rgba(196,106,61,0.12)] border border-[rgba(196,106,61,0.35)] p-6 h-full flex flex-col hover:shadow-[0_10px_30px_rgba(0,0,0,0.08),0_0_22px_rgba(196,106,61,0.18)] transition-all duration-250"
+        style={{
+          WebkitBackdropFilter: 'blur(10px)',
+        }}
       >
-      <h3 className="text-lg font-semibold text-krishi-indigo flex items-center gap-2 mb-6">
-        <span>📊</span>
+      <h3 className="text-lg font-semibold text-[#2D2A6E] flex items-center gap-2 mb-6">
+        <HiOutlineChartBar size={28} className="text-[#C46A3D]" />
         {t.marketInsight}
       </h3>
 
@@ -172,26 +183,32 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.15 }}
-      className="bg-white/45 backdrop-blur-md rounded-xl shadow-lg border border-indigo-200/40 p-6 h-full flex flex-col"
+      className="bg-white/55 backdrop-blur-[10px] rounded-2xl shadow-[0_6px_24px_rgba(0,0,0,0.05),0_0_18px_rgba(196,106,61,0.12)] border border-[rgba(196,106,61,0.35)] p-6 h-full flex flex-col hover:shadow-[0_10px_30px_rgba(0,0,0,0.08),0_0_22px_rgba(196,106,61,0.18)] transition-all duration-250"
+      style={{
+        WebkitBackdropFilter: 'blur(10px)',
+      }}
     >
-      <h3 className="text-lg font-semibold text-krishi-indigo flex items-center gap-2 mb-4">
-        <span>📊</span>
+      <h3 className="text-lg font-semibold text-[#2D2A6E] flex items-center gap-2 mb-4">
+        <HiOutlineChartBar size={28} className="text-[#C46A3D]" />
         {t.marketInsight}
       </h3>
 
       <div className="space-y-4">
         {/* Main insight text */}
-        <p className="text-base text-krishi-indigo font-medium">
+        <p className="text-[17px] text-[#2D2A6E] font-medium leading-relaxed">
           {insightText}
         </p>
 
         {/* Recommendation */}
-        <p className="text-sm text-gray-600">
-          {t.considerSelling}
-        </p>
+        <div className="flex items-start gap-2">
+          <FiAlertCircle size={20} className="text-[#C46A3D] mt-0.5 flex-shrink-0" />
+          <p className="text-base text-[#C46A3D] font-medium">
+            {t.considerSelling}
+          </p>
+        </div>
 
         {/* Best mandi section */}
-        <div className="mt-4 p-4 bg-white/30 backdrop-blur-sm rounded-lg border border-indigo-200/40 shadow-md">
+        <div className="mt-4 p-4 bg-white/70 backdrop-blur-sm rounded-xl border border-[rgba(196,106,61,0.25)] shadow-sm">
           <p className="text-sm text-gray-600 mb-2">
             {lang === 'hi' ? (
               <>आज का सर्वश्रेष्ठ <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">बाजार</span></>
@@ -200,19 +217,22 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
             )}
           </p>
           <div className="flex items-baseline justify-between">
-            <h4 className="text-lg font-bold text-krishi-indigo">
+            <h4 className="text-xl font-bold text-[#2D2A6E]">
               {insight.mandi}
             </h4>
             <div className="text-right">
-              <p className={`text-2xl font-bold ${getTrendColor(insight.trend)}`}>
-                ₹{insight.modalPrice.toLocaleString()}
-              </p>
-              <p className="text-xs text-gray-500">{t.perQuintal}</p>
+              <div className="flex items-baseline gap-1">
+                <p className="text-[28px] font-bold text-[#C46A3D]">
+                  ₹{insight.modalPrice.toLocaleString()}
+                </p>
+                <p className="text-sm text-gray-500 opacity-70">{t.perQuintal}</p>
+              </div>
             </div>
           </div>
-          <p className={`text-xs font-medium mt-2 ${getTrendColor(insight.trend)}`}>
-            {insight.trend === 'up' ? '📈' : insight.trend === 'down' ? '📉' : '➡️'} {insight.change}
-          </p>
+          <div className={`flex items-center gap-1 mt-2 text-[15px] font-semibold ${getTrendColor(insight.trend)}`}>
+            {getTrendIcon(insight.trend)}
+            <span>{insight.change}</span>
+          </div>
         </div>
       </div>
     </motion.div>
