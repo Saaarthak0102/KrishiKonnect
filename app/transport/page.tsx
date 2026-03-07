@@ -13,7 +13,7 @@ import { useAuth } from '@/context/AuthContext'
 import cropsData from '@/data/crops.json'
 import { useMandiPrices } from '@/lib/MandiContext'
 import { FaTruck } from 'react-icons/fa'
-import { FiCalendar, FiMapPin, FiDollarSign, FiCheckCircle, FiArrowLeft, FiPlus } from 'react-icons/fi'
+import { FiCalendar, FiMapPin, FiDollarSign, FiCheckCircle, FiPlus } from 'react-icons/fi'
 import {
   generateBookingId,
   getTransportBookingById,
@@ -159,7 +159,6 @@ export default function TransportPage() {
   const cropFromUrl = searchParams.get('crop') || ''
   const mandiFromUrl = searchParams.get('mandi') || ''
   const bookingIdFromUrl = searchParams.get('bookingId') || ''
-  const shouldScroll = searchParams.get('book')
   const isReceiptRoute = Boolean(bookingIdFromUrl)
 
   // Main state
@@ -184,22 +183,6 @@ export default function TransportPage() {
   const [estimatedCost, setEstimatedCost] = useState<{ min: number; max: number }>({ min: 0, max: 0 })
   const [activeBooking, setActiveBooking] = useState<TransportBookingRecord | null>(null)
   const [isBookingLookupComplete, setIsBookingLookupComplete] = useState(!isReceiptRoute)
-  const [highlightBookingForm, setHighlightBookingForm] = useState(false)
-
-  const scrollToBooking = (highlight = false) => {
-    const form = document.getElementById('transport-booking-form')
-
-    if (!form) return
-
-    form.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    })
-
-    if (highlight) {
-      setHighlightBookingForm(true)
-    }
-  }
 
   // Subscribe to realtime bookings updates
   useEffect(() => {
@@ -234,30 +217,6 @@ export default function TransportPage() {
     setShowBookingForm(false)
     setIsBookingLookupComplete(true)
   }, [bookingIdFromUrl, isReceiptRoute])
-
-  useEffect(() => {
-    if (shouldScroll !== 'true' || isReceiptRoute) return
-
-    if (!showBookingForm) {
-      setShowBookingForm(true)
-    }
-
-    const timer = setTimeout(() => {
-      scrollToBooking(true)
-    }, 300)
-
-    return () => clearTimeout(timer)
-  }, [shouldScroll, isReceiptRoute])
-
-  useEffect(() => {
-    if (!highlightBookingForm) return
-
-    const timer = setTimeout(() => {
-      setHighlightBookingForm(false)
-    }, 1100)
-
-    return () => clearTimeout(timer)
-  }, [highlightBookingForm])
 
   // Auto-fill from profile
   useEffect(() => {
@@ -484,29 +443,23 @@ export default function TransportPage() {
     })
   }
 
-  const handleScrollToBooking = () => {
-    if (isReceiptRoute) {
-      router.push('/transport?book=true')
-      return
-    }
-
-    if (!showBookingForm) {
-      handleRequestNewTransport()
-      setTimeout(() => {
-        scrollToBooking(true)
-      }, 120)
-      return
-    }
-
-    scrollToBooking(true)
-  }
-
   const handleUseRecommendedMandi = () => {
     if (!recommendedMandi) return
     setFormData((prev) => ({
       ...prev,
       destinationMandi: `${recommendedMandi.mandi} (${recommendedMandi.state})`
     }))
+  }
+
+  const scrollToBookingForm = () => {
+    const form = document.getElementById('transport-booking-form')
+
+    if (form) {
+      form.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+    }
   }
 
   const handlePrintReceipt = () => {
@@ -530,89 +483,55 @@ export default function TransportPage() {
             transition={{ duration: 0.6, ease: 'easeOut' }}
             className="mb-10"
           >
-            <motion.button
-              onClick={() => router.push('/dashboard')}
-              className="mb-4 inline-flex items-center gap-[6px]"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '0.9rem',
-                fontWeight: 500,
-                color: '#2D2A6E',
-                background: 'rgba(255,255,255,0.45)',
-                backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
-                border: '1px solid rgba(196,106,61,0.30)',
-                borderRadius: '10px',
-                padding: '6px 12px',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-              whileHover={{
-                x: -2,
-                backgroundColor: 'rgba(255,255,255,0.65)',
-                boxShadow: '0 6px 14px rgba(0,0,0,0.06)'
-              }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <FiArrowLeft size={15} />
-              {lang === 'hi' ? 'डैशबोर्ड पर वापस' : 'Back to Dashboard'}
-            </motion.button>
+            <div className="flex flex-col items-center text-center relative">
+              <div className="flex items-center justify-center gap-[10px] mb-3">
+                <h1 className="font-bold tracking-[-0.2px] font-['Poppins']" style={{ fontSize: '3rem' }}>
+                  <span className="text-[#2D2A6E]">Krishi</span>
+                  {' '}
+                  <span className="text-[#C46A3D]">Setu</span>
+                </h1>
+                <FaTruck
+                  size={30}
+                  style={{ 
+                    color: '#2D2A6E',
+                    marginLeft: '8px',
+                    transform: 'translateY(4px)'
+                  }}
+                />
+              </div>
 
-            <div className="mb-3 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <h1 className="flex items-center gap-3" style={{ 
-                fontFamily: 'Poppins, sans-serif',
-                fontSize: '1.6rem', 
-                fontWeight: 600, 
-                color: '#2D2A6E' 
+              <p style={{
+                fontSize: '1rem',
+                fontWeight: 500,
+                color: '#C46A3D',
+                marginTop: '6px'
               }}>
-                <motion.span
-                  whileHover={{ y: -1 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
-                  style={{ display: 'inline-flex' }}
-                >
-                  <FaTruck size={22} style={{ color: '#2D2A6E', opacity: 0.9 }} />
-                </motion.span>
-                {lang === 'hi' ? 'परिवहन बुकिंग' : 'Transport Booking'}
-              </h1>
+                Book transport to send your crops to the mandi
+              </p>
 
               <motion.button
-                onClick={handleScrollToBooking}
-                className="inline-flex items-center gap-[6px]"
+                onClick={scrollToBookingForm}
+                className="flex items-center justify-center absolute right-0 top-0"
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
                   background: '#2D2A6E',
                   color: 'white',
-                  fontWeight: 500,
-                  fontSize: '0.9rem',
-                  padding: '8px 16px',
+                  width: '40px',
+                  height: '40px',
                   borderRadius: '10px',
+                  cursor: 'pointer',
                   transition: 'all 0.2s ease'
                 }}
                 whileHover={{
-                  scale: 1.02,
                   backgroundColor: '#3a378a',
+                  scale: 1.05,
                   boxShadow: '0 6px 16px rgba(45,42,110,0.25)'
                 }}
                 whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
               >
-                <FiPlus size={16} />
-                {lang === 'hi' ? '+ नई बुकिंग' : '+ New Booking'}
+                <FiPlus size={18} />
               </motion.button>
             </div>
-
-            <p className="max-w-3xl" style={{
-              fontSize: '0.95rem',
-              color: 'rgba(45,42,110,0.75)',
-              marginTop: '4px'
-            }}>
-              {lang === 'hi'
-                ? 'अपनी फसल को मंडी तक पहुंचाने के लिए परिवहन बुक करें'
-                : 'Book transport to send your crops to the mandi'}
-            </p>
           </motion.div>
 
           {/* Section 1: Your Transport Bookings */}
@@ -717,7 +636,6 @@ export default function TransportPage() {
 
               {showBookingForm && (
                 <TransportForm
-                  highlight={highlightBookingForm}
                   formData={formData}
                   step={step}
                   estim={estimatedCost}
@@ -748,12 +666,6 @@ export default function TransportPage() {
       </div>
 
       <style jsx global>{`
-        @keyframes highlightForm {
-          0% { box-shadow: 0 0 0 rgba(45,42,110,0); }
-          50% { box-shadow: 0 0 18px rgba(45,42,110,0.18); }
-          100% { box-shadow: 0 0 0 rgba(45,42,110,0); }
-        }
-
         @media print {
           body.transport-receipt-print * {
             visibility: hidden;
@@ -916,7 +828,6 @@ function ReceiptView({ booking, lang, onPrint }: ReceiptViewProps) {
 }
 
 interface TransportFormProps {
-  highlight: boolean
   formData: TransportRequest
   step: 'form' | 'estimate' | 'transporters' | 'confirmed'
   estim: { min: number; max: number }
@@ -940,7 +851,6 @@ interface TransportFormProps {
 }
 
 function TransportForm({
-  highlight,
   formData,
   step,
   estim,
@@ -978,8 +888,7 @@ function TransportForm({
           border: '1px solid rgba(196,106,61,0.25)',
           borderRadius: '16px',
           boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 0 14px rgba(45,42,110,0.08)',
-          padding: '24px',
-          animation: highlight ? 'highlightForm 1s ease' : 'none'
+          padding: '24px'
         }}
       >
         <h2 className="text-2xl font-bold mb-6" style={{ 
