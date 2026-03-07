@@ -112,7 +112,6 @@ export default function ChatWindow({
                 key={message.id || idx}
                 message={message}
                 isUser={message.role === 'user'}
-                enableTypewriter={idx === messages.length - 1 && message.role === 'assistant'}
               />
             ))}
 

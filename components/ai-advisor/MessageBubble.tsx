@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { AIMessage } from '@/lib/aiAdvisor'
 import { detectLanguage, toResponseLanguage } from '@/lib/languageDetector'
@@ -10,10 +9,9 @@ import DataSources from './DataSources'
 interface MessageBubbleProps {
   message: AIMessage
   isUser: boolean
-  enableTypewriter?: boolean
 }
 
-export default function MessageBubble({ message, isUser, enableTypewriter = false }: MessageBubbleProps) {
+export default function MessageBubble({ message, isUser }: MessageBubbleProps) {
   const detected = detectLanguage(message.content)
   const responseLanguage = toResponseLanguage(detected)
   const languageLabel =
@@ -23,33 +21,6 @@ export default function MessageBubble({ message, isUser, enableTypewriter = fals
         ? 'Hinglish'
         : 'English'
   const lang = responseLanguage === 'hindi' ? 'hi' : 'en'
-
-  // Typewriter effect state
-  const [displayedContent, setDisplayedContent] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
-
-  useEffect(() => {
-    if (!isUser && enableTypewriter && message.content) {
-      setIsTyping(true)
-      setDisplayedContent('')
-      
-      let currentIndex = 0
-      const interval = setInterval(() => {
-        if (currentIndex < message.content.length) {
-          setDisplayedContent(message.content.slice(0, currentIndex + 1))
-          currentIndex++
-        } else {
-          setIsTyping(false)
-          clearInterval(interval)
-        }
-      }, 20) // Adjust speed here (lower = faster)
-
-      return () => clearInterval(interval)
-    } else {
-      setDisplayedContent(message.content)
-      setIsTyping(false)
-    }
-  }, [message.content, isUser, enableTypewriter])
 
   // User message bubble
   if (isUser) {
@@ -124,10 +95,10 @@ export default function MessageBubble({ message, isUser, enableTypewriter = fals
         </p>
 
         {/* Use AnswerCard for structured display */}
-        <AnswerCard content={displayedContent} lang={lang} />
+        <AnswerCard content={message.content} lang={lang} />
 
-        {/* Data Sources - only show when fully typed */}
-        {!isTyping && <DataSources lang={lang} />}
+        {/* Data Sources */}
+        <DataSources lang={lang} />
 
         {/* Timestamp */}
         <p className="text-xs mt-2 text-gray-500">
