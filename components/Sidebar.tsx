@@ -92,7 +92,7 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
   const handleLogout = async () => {
     try {
       await logout()
-      router.push('/')
+      router.replace('/')
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Logout failed'
       alert(`Error logging out: ${errorMessage}`)

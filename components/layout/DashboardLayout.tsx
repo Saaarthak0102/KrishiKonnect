@@ -85,7 +85,7 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
   const handleLogout = async () => {
     try {
       await logout()
-      router.push('/')
+      router.replace('/')
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Logout failed'
       alert(`Error logging out: ${errorMessage}`)
