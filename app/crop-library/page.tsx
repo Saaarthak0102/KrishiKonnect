@@ -9,7 +9,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { useStarredCrops } from '@/lib/useStarredCrops'
 import { translations } from '@/lib/translations'
 import cropsData from '@/data/crops.json'
-import { GiWheat } from 'react-icons/gi'
+import { GiPlantSeed } from 'react-icons/gi'
 import { FiSearch, FiStar } from 'react-icons/fi'
 
 // Season mapping: English to Hindi
@@ -194,8 +194,8 @@ export default function CropLibraryPage() {
                 {lang === 'hi' ? 'फसल' : 'Fasal'}
               </span>
             </h1>
-            <GiWheat 
-              size={30} 
+            <GiPlantSeed 
+              size={22} 
               color="#2D2A6E" 
               style={{ 
                 opacity: 0.9,
