@@ -158,6 +158,7 @@ export default function TransportPage() {
   // URL params
   const cropFromUrl = searchParams.get('crop') || ''
   const mandiFromUrl = searchParams.get('mandi') || ''
+  const shouldScroll = searchParams.get('book')
   const bookingIdFromUrl = searchParams.get('bookingId') || ''
   const isReceiptRoute = Boolean(bookingIdFromUrl)
 
@@ -349,6 +350,22 @@ export default function TransportPage() {
       }
     })
   }, [cropFromUrl, mandiFromUrl, cropOptions, mandiOptions])
+
+  useEffect(() => {
+    if (shouldScroll !== 'true') return
+
+    const form = document.getElementById('transport-booking-form')
+    if (!form) return
+
+    const timer = window.setTimeout(() => {
+      form.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+    }, 300)
+
+    return () => window.clearTimeout(timer)
+  }, [shouldScroll])
 
   const calculateEstimatedCost = useMemo(() => {
     if (!formData.destinationMandi || !farmerProfile?.state) {
