@@ -107,15 +107,13 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
         expanded ? 'w-64' : 'w-16'
       }`}
       style={{
-        background: 'rgba(255,255,255,0.45)',
-        backdropFilter: 'blur(14px)',
-        WebkitBackdropFilter: 'blur(14px)',
-        borderRight: '1px solid rgba(196,106,61,0.25)',
-        boxShadow: '2px 0 20px rgba(0,0,0,0.05)'
+        background: 'transparent',
+        borderRight: 'none',
+        boxShadow: 'none'
       }}
     >
       {/* Header with Logo & Toggle */}
-      <div className="flex items-center justify-center p-4" style={{ borderBottom: '1px solid rgba(196,106,61,0.25)' }}>
+      <div className="flex items-center justify-center p-4">
         <button
           onClick={() => setExpanded(!expanded)}
           className="flex items-center justify-center"
@@ -192,7 +190,7 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
 
       {/* Logout Button */}
       {user && (
-        <div className="p-3 border-t-2 border-gray-200">
+        <div className="p-3">
           <button
             onClick={handleLogout}
             className="w-full flex items-center justify-center space-x-2 px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors duration-200"

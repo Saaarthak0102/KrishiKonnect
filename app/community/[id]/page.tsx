@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import FeaturePageLayout from '@/components/FeaturePageLayout';
+import DashboardLayout from '@/components/layout/DashboardLayout';
 import ThreadView from '@/components/community/ThreadView';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -333,7 +333,7 @@ export default function ThreadPage() {
 
   if (loading) {
     return (
-      <FeaturePageLayout>
+      <DashboardLayout>
         <div className="min-h-screen py-8">
           <main className="container mx-auto px-4 max-w-5xl">
             <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-md p-12 text-center">
@@ -341,13 +341,13 @@ export default function ThreadPage() {
             </div>
           </main>
         </div>
-      </FeaturePageLayout>
+      </DashboardLayout>
     );
   }
 
   if (!question) {
     return (
-      <FeaturePageLayout>
+      <DashboardLayout>
         <div className="min-h-screen py-8">
           <main className="container mx-auto px-4 max-w-5xl">
             <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-md p-12 text-center">
@@ -368,12 +368,12 @@ export default function ThreadPage() {
             </div>
           </main>
         </div>
-      </FeaturePageLayout>
+      </DashboardLayout>
     );
   }
 
   return (
-    <FeaturePageLayout>
+    <DashboardLayout>
       <div className="min-h-screen py-8">
         <main className="container mx-auto px-4 max-w-5xl">
           {/* Back Button */}
@@ -412,6 +412,6 @@ export default function ThreadPage() {
           />
         </main>
       </div>
-    </FeaturePageLayout>
+    </DashboardLayout>
   );
 }

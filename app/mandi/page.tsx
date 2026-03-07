@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import FeaturePageLayout from '@/components/FeaturePageLayout'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 import Footer from '@/components/Footer'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useMandiPrices } from '@/lib/MandiContext'
@@ -268,7 +268,7 @@ export default function MandiPage() {
   }, [])
 
   return (
-    <FeaturePageLayout>
+    <DashboardLayout>
       <div className="min-h-screen bg-transparent">
         <main className="container mx-auto px-4 py-12 md:py-16">
           <motion.div
@@ -678,7 +678,7 @@ export default function MandiPage() {
 
         <Footer />
       </div>
-    </FeaturePageLayout>
+    </DashboardLayout>
   )
   
 }

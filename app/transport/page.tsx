@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import FeaturePageLayout from '@/components/FeaturePageLayout'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 import Footer from '@/components/Footer'
 import RecommendedMandiCard from '@/components/RecommendedMandiCard'
 import TransportBookingHistory from '@/components/TransportBookingHistory'
@@ -460,7 +460,7 @@ export default function TransportPage() {
   }
 
   return (
-    <FeaturePageLayout>
+    <DashboardLayout>
       <div className="min-h-screen bg-transparent">
         <main className="container mx-auto px-4 py-12 md:py-16">
           {/* Header */}
@@ -604,7 +604,7 @@ export default function TransportPage() {
           }
         }
       `}</style>
-    </FeaturePageLayout>
+    </DashboardLayout>
   )
 }
 

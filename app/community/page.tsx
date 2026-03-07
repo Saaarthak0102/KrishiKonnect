@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import FeaturePageLayout from '@/components/FeaturePageLayout';
+import DashboardLayout from '@/components/layout/DashboardLayout';
 import AskQuestionBox from '@/components/community/AskQuestionBox';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/context/AuthContext';
@@ -169,7 +169,7 @@ export default function CommunityPage() {
   };
 
   return (
-    <FeaturePageLayout>
+    <DashboardLayout>
       <div className="min-h-screen py-8 px-4">
         <main className="max-w-5xl mx-auto">
           {/* Header */}
@@ -296,6 +296,6 @@ export default function CommunityPage() {
           <AskQuestionBox onPostCreated={handleCreatePost} />
         </main>
       </div>
-    </FeaturePageLayout>
+    </DashboardLayout>
   );
 }

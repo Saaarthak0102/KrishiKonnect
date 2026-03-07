@@ -308,26 +308,40 @@ export default function AIAdvisorPage() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      {/* Header - Provides spacing for sticky sidebar */}
-      <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-sm shadow-sm border-b-2 border-gray-200">
+      {/* Header - Updated to match DashboardLayout navbar style */}
+      <header 
+        className="sticky top-0 z-50"
+        style={{
+          background: 'rgba(255,255,255,0.35)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(196,106,61,0.25)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+          transition: 'all 0.3s ease'
+        }}
+      >
         <div className="px-4 py-4 flex items-center justify-between">
-          <div className="w-28" />
-          <h1 className="text-lg md:text-xl font-bold">
-            {lang === 'hi' ? (
-              <>
-                <span className="text-[#2D4B8C]">कृषि</span>
-                {' '}
-                <span className="text-[#C96A3A]">सहायक</span>
-              </>
-            ) : (
-              <>
-                <span className="text-[#2D4B8C]">Krishi</span>
-                {' '}
-                <span className="text-[#C96A3A]">Sahayak</span>
-              </>
-            )} <GiWheat size={24} className="inline text-krishi-agriculture" />
-          </h1>
-          <div className="w-28 flex justify-end">
+          {/* Left - Logo and Brand with Page Title */}
+          <div className="flex items-center space-x-4">
+            <GiWheat size={24} className="text-krishi-agriculture" />
+            <span className="text-lg hidden sm:inline font-semibold">
+              <span className="text-[#2D2A6E]">KrishiKonnect</span>
+              <span className="text-gray-400 mx-2">|</span>
+              <span className="text-[#2D2A6E]">Krishi</span>
+              {' '}
+              <span className="text-[#C46A3D]">Sahayak</span>
+            </span>
+          </div>
+
+          {/* Center - Greeting Message */}
+          <div className="flex-1 text-center hidden md:block">
+            <h1 className="text-lg md:text-xl font-semibold" style={{ color: '#2D2A6E', fontWeight: 600 }}>
+              {lang === 'hi' ? 'नमस्ते' : 'Namaste'}
+            </h1>
+          </div>
+
+          {/* Right - Language Toggle */}
+          <div className="flex items-center space-x-4">
             <LanguageToggle />
           </div>
         </div>

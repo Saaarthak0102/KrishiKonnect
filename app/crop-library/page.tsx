@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import Footer from '@/components/Footer'
 import CropCard from '@/components/CropCard'
-import FeaturePageLayout from '@/components/FeaturePageLayout'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useStarredCrops } from '@/lib/useStarredCrops'
@@ -139,7 +139,7 @@ export default function CropLibraryPage() {
   }, [searchTerm, selectedSeason, sortOrder, lang, starredCrops])
 
   return (
-    <FeaturePageLayout>
+    <DashboardLayout>
       <div className="min-h-screen">
         <main className="container mx-auto px-4 py-16">
         {/* Page Header */}
@@ -330,6 +330,6 @@ export default function CropLibraryPage() {
       </main>
       <Footer />
       </div>
-    </FeaturePageLayout>
+    </DashboardLayout>
   )
 }
