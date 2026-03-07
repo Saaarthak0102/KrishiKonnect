@@ -795,12 +795,12 @@ export default function MandiPage() {
                 </div>
               </motion.div>
 
-              <div className="mb-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
                 <motion.div
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 + 0 * 0.05, duration: 0.5, ease: 'easeOut' }}
-                  className="bazaar-reveal"
+                  className="bazaar-reveal h-full"
                   data-bazaar-reveal="true"
                 >
                   <MandiBestPriceCard bestMandi={bestMandiForSelectedCrop} lang={lang} />
@@ -809,7 +809,7 @@ export default function MandiPage() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 + 1 * 0.05, duration: 0.5, ease: 'easeOut' }}
-                  className="bazaar-reveal"
+                  className="bazaar-reveal h-full"
                   data-bazaar-reveal="true"
                 >
                   <MandiPriceSummary
@@ -824,7 +824,7 @@ export default function MandiPage() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 + 2 * 0.05, duration: 0.5, ease: 'easeOut' }}
-                  className="bazaar-reveal"
+                  className="bazaar-reveal h-full"
                   data-bazaar-reveal="true"
                 >
                   <NearbyMandisCard
@@ -837,7 +837,7 @@ export default function MandiPage() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 + 3 * 0.05, duration: 0.5, ease: 'easeOut' }}
-                  className="bazaar-reveal"
+                  className="bazaar-reveal h-full"
                   data-bazaar-reveal="true"
                 >
                   <WeeklyMarketTrend

@@ -26,7 +26,7 @@ function MandiPriceSummary({
         boxShadow: '0 10px 28px rgba(0,0,0,0.10), 0 4px 10px rgba(0,0,0,0.06), 0 0 16px rgba(196,106,61,0.16)',
       }}
       transition={{ duration: 0.18, ease: 'easeOut' }}
-      className="rounded-xl p-5"
+      className="h-full min-h-[180px] rounded-xl p-5 flex flex-col justify-between"
       style={{
         background: 'rgba(255,255,255,0.55)',
         backdropFilter: 'blur(12px)',
