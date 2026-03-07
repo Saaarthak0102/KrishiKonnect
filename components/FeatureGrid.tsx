@@ -17,6 +17,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 // Helper function to render two-colored Krishi titles
 function renderKrishiTitle(title: string) {
+  // Handle English Krishi titles
   if (title.startsWith('Krishi ')) {
     const parts = title.split(' ')
     return (
@@ -27,6 +28,19 @@ function renderKrishiTitle(title: string) {
       </>
     )
   }
+  
+  // Handle Hindi कृषि titles (e.g., कृषि संघ, कृषि सेतु, कृषि सहायक)
+  if (title.startsWith('कृषि ')) {
+    const parts = title.split(' ')
+    return (
+      <>
+        <span className="text-krishi-indigo">{parts[0]}</span>
+        {' '}
+        <span className="text-krishi-clay">{parts.slice(1).join(' ')}</span>
+      </>
+    )
+  }
+  
   return <span className="text-krishi-indigo">{title}</span>
 }
 
