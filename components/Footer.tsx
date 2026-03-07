@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
@@ -22,8 +23,14 @@ function renderTextWithBrand(text: string) {
 }
 
 export default function Footer() {
+  const pathname = usePathname()
   const { lang } = useLanguage()
   const t = translations[lang]
+
+  // Keep footer exclusive to landing page.
+  if (pathname !== '/') {
+    return null
+  }
 
   const quickLinks = [
     { href: '#home', label: t.home },
