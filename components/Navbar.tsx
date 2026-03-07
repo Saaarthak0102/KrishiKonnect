@@ -38,7 +38,7 @@ export default function Navbar() {
               <>
                 <motion.a
                   href="#"
-                  className="text-krishi-text hover:text-krishi-primary transition-colors"
+                  className="text-krishi-indigo hover:text-krishi-clay transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -46,7 +46,7 @@ export default function Navbar() {
                 </motion.a>
                 <motion.a
                   href="#features"
-                  className="text-krishi-text hover:text-krishi-primary transition-colors"
+                  className="text-krishi-indigo hover:text-krishi-clay transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -54,7 +54,7 @@ export default function Navbar() {
                 </motion.a>
                 <motion.a
                   href="#how-it-works"
-                  className="text-krishi-text hover:text-krishi-primary transition-colors"
+                  className="text-krishi-indigo hover:text-krishi-clay transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -62,7 +62,7 @@ export default function Navbar() {
                 </motion.a>
                 <motion.a
                   href="#ai-advisor"
-                  className="text-krishi-text hover:text-krishi-primary transition-colors"
+                  className="text-krishi-indigo hover:text-krishi-clay transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -75,7 +75,7 @@ export default function Navbar() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link href="/" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                  <Link href="/" className="text-krishi-indigo hover:text-krishi-clay transition-colors">
                     {t.home}
                   </Link>
                 </motion.div>
@@ -83,7 +83,7 @@ export default function Navbar() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link href="/crop-library" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                  <Link href="/crop-library" className="text-krishi-indigo hover:text-krishi-clay transition-colors">
                     {t.cropLibrary}
                   </Link>
                 </motion.div>
@@ -91,7 +91,7 @@ export default function Navbar() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link href="/mandi" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                  <Link href="/mandi" className="text-krishi-indigo hover:text-krishi-clay transition-colors">
                     {t.mandiPrices}
                   </Link>
                 </motion.div>
@@ -99,7 +99,7 @@ export default function Navbar() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link href="/community" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                  <Link href="/community" className="text-krishi-indigo hover:text-krishi-clay transition-colors">
                     {t.community}
                   </Link>
                 </motion.div>
@@ -107,7 +107,7 @@ export default function Navbar() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link href="/transport" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                  <Link href="/transport" className="text-krishi-indigo hover:text-krishi-clay transition-colors">
                     {t.transport}
                   </Link>
                 </motion.div>
@@ -115,7 +115,7 @@ export default function Navbar() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link href="/ai-advisor" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                  <Link href="/ai-advisor" className="text-krishi-indigo hover:text-krishi-clay transition-colors">
                     {t.aiAdvisor}
                   </Link>
                 </motion.div>

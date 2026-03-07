@@ -49,8 +49,8 @@ export default function AIThinking({ lang = 'en' }: AIThinkingProps) {
 
   const headerText =
     lang === 'hi'
-      ? (<><GiWheat size={20} className="inline" /> <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">सहायक</span> आपकी खेती की स्थिति का विश्लेषण कर रहा है...</>)
-      : (<><GiWheat size={20} className="inline" /> <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Sahayak</span> is analyzing your farm conditions...</>)
+      ? (<><GiWheat size={20} className="inline" /> <span className="text-krishi-indigo">कृषि</span>{' '}<span className="text-krishi-clay">सहायक</span> आपकी खेती की स्थिति का विश्लेषण कर रहा है...</>)
+      : (<><GiWheat size={20} className="inline" /> <span className="text-krishi-indigo">Krishi</span>{' '}<span className="text-krishi-clay">Sahayak</span> is analyzing your farm conditions...</>)
 
   return (
     <motion.div
@@ -59,7 +59,7 @@ export default function AIThinking({ lang = 'en' }: AIThinkingProps) {
       transition={{ duration: 0.3 }}
       className="flex justify-start"
     >
-      <div className="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-lg bg-krishi-agriculture/10 text-krishi-text rounded-bl-none border border-krishi-agriculture/20">
+      <div className="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-lg bg-krishi-agriculture/10 text-krishi-indigo rounded-bl-none border border-krishi-agriculture/20">
         <div className="flex items-center gap-2 mb-3">
           <motion.div
             animate={{ rotate: 360 }}
@@ -94,11 +94,11 @@ export default function AIThinking({ lang = 'en' }: AIThinkingProps) {
                 <motion.div
                   animate={{ opacity: [0.3, 0.7, 0.3] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
-                  className="w-4 h-4 border-2 border-krishi-primary/30 rounded-full"
+                  className="w-4 h-4 border-2 border-krishi-clay/30 rounded-full"
                 />
               )}
               <span className="flex-shrink-0">{getStepIcon(idx)}</span>
-              <span className={`text-sm ${idx <= currentStep ? 'text-krishi-text' : 'text-krishi-text/40'}`}>
+              <span className={`text-sm ${idx <= currentStep ? 'text-krishi-indigo' : 'text-krishi-indigo/40'}`}>
                 {step}
               </span>
             </motion.div>
@@ -110,9 +110,9 @@ export default function AIThinking({ lang = 'en' }: AIThinkingProps) {
           transition={{ duration: 1.5, repeat: Infinity }}
           className="mt-3 flex gap-1"
         >
-          <span className="w-2 h-2 bg-krishi-primary rounded-full" />
-          <span className="w-2 h-2 bg-krishi-primary rounded-full" />
-          <span className="w-2 h-2 bg-krishi-primary rounded-full" />
+          <span className="w-2 h-2 bg-krishi-clay rounded-full" />
+          <span className="w-2 h-2 bg-krishi-clay rounded-full" />
+          <span className="w-2 h-2 bg-krishi-clay rounded-full" />
         </motion.div>
       </div>
     </motion.div>

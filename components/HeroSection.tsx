@@ -32,20 +32,20 @@ export default function HeroSection() {
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}          className="col-span-12 md:col-span-5"        >
-          <h1 className="text-5xl md:text-6xl font-bold text-krishi-heading mb-3">
+          <h1 className="text-5xl md:text-6xl font-bold text-krishi-indigo mb-3">
             {t.heroHeadline}
           </h1>
-          <p className="text-2xl md:text-3xl font-semibold text-krishi-primary mb-6">
+          <p className="text-2xl md:text-3xl font-semibold text-krishi-clay mb-6">
             {t.heroTagline}
           </p>
-          <p className="text-lg md:text-xl text-krishi-text/80 mb-8">
+          <p className="text-lg md:text-xl text-krishi-indigo/80 mb-8">
             {renderTextWithBrand(t.heroSubtext)}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="/login"
-                className="inline-block bg-krishi-primary text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-shadow"
+                className="inline-block bg-krishi-clay text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-shadow"
               >
                 {t.startUsing}
               </Link>
@@ -53,7 +53,7 @@ export default function HeroSection() {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <a
                 href="#features"
-                className="inline-block border-2 border-krishi-primary text-krishi-primary px-8 py-4 rounded-lg font-semibold text-lg hover:bg-krishi-primary hover:text-white transition-colors"
+                className="inline-block border-2 border-krishi-clay text-krishi-clay px-8 py-4 rounded-lg font-semibold text-lg hover:bg-krishi-clay hover:text-white transition-colors"
               >
                 {t.exploreFeatures}
               </a>
@@ -71,7 +71,7 @@ export default function HeroSection() {
             <div className="text-8xl mb-4 flex justify-center">
               <GiWheat size={96} className="text-krishi-agriculture" />
             </div>
-            <p className="text-2xl font-semibold text-krishi-heading">
+            <p className="text-2xl font-semibold text-krishi-indigo">
               {t.harvestSuccess}
             </p>
           </div>

@@ -21,13 +21,13 @@ function renderKrishiTitle(title: string) {
     const parts = title.split(' ')
     return (
       <>
-        <span className="text-[#2D4B8C]">Krishi</span>
+        <span className="text-krishi-indigo">Krishi</span>
         {' '}
-        <span className="text-[#C96A3A]">{parts.slice(1).join(' ')}</span>
+        <span className="text-krishi-clay">{parts.slice(1).join(' ')}</span>
       </>
     )
   }
-  return <span className="text-krishi-heading">{title}</span>
+  return <span className="text-krishi-indigo">{title}</span>
 }
 
 export default function FeatureGrid() {
@@ -113,7 +113,7 @@ export default function FeatureGrid() {
   return (
     <section id="features" className="py-20">
       <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-4xl md:text-5xl font-bold text-krishi-heading text-center mb-20">
+        <h2 className="text-4xl md:text-5xl font-bold text-krishi-indigo text-center mb-20">
           {t.featuresHeading}
         </h2>
         
@@ -143,7 +143,7 @@ export default function FeatureGrid() {
                   {/* Feature Icon */}
                   <div className="mb-6">
                     <motion.div
-                      className="inline-flex items-center justify-center w-16 h-16 bg-white/75 backdrop-blur-sm rounded-xl border-2 border-krishi-border shadow-sm text-krishi-primary"
+                      className="inline-flex items-center justify-center w-16 h-16 bg-white/75 backdrop-blur-sm rounded-xl border-2 border-krishi-border shadow-sm text-krishi-clay"
                       whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.2 }}
                     >
@@ -157,7 +157,7 @@ export default function FeatureGrid() {
                   </h3>
 
                   {/* Feature Description */}
-                  <p className="text-krishi-text text-lg leading-relaxed mb-6 max-w-lg">
+                  <p className="text-krishi-indigo/80 text-lg leading-relaxed mb-6 max-w-lg">
                     {description}
                   </p>
 
@@ -166,7 +166,7 @@ export default function FeatureGrid() {
                     <div>
                       <motion.button
                         onClick={() => router.push(feature.cta.href)}
-                        className="inline-flex items-center px-6 py-3 bg-krishi-primary text-white font-semibold rounded-lg hover:bg-krishi-primary-dark transition-colors duration-200 shadow-md hover:shadow-lg"
+                        className="inline-flex items-center px-6 py-3 bg-krishi-clay text-white font-semibold rounded-lg hover:bg-krishi-clay/90 transition-colors duration-200 shadow-md hover:shadow-lg"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >

@@ -27,8 +27,8 @@ export default function RootPage() {
     return (
       <main className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-krishi-primary border-t-krishi-heading"></div>
-          <p className="mt-4 text-krishi-text">Loading...</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-krishi-clay border-t-krishi-indigo"></div>
+          <p className="mt-4 text-krishi-indigo">Loading...</p>
         </div>
       </main>
     )

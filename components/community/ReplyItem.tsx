@@ -122,16 +122,16 @@ export default function ReplyItem({
           {/* Reply Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span className="font-semibold text-krishi-heading text-xs sm:text-sm">
+              <span className="font-semibold text-krishi-indigo text-xs sm:text-sm">
                 {reply.userName}
               </span>
-              <span className="text-krishi-text/70 text-xs flex items-center gap-1">
+              <span className="text-krishi-indigo/70 text-xs flex items-center gap-1">
                 📍 {reply.userLocation}
               </span>
-              <span className="text-krishi-text/40 text-xs">•</span>
-              <span className="text-krishi-text/70 text-xs">{getShortTime(reply.createdAt)}</span>
+              <span className="text-krishi-indigo/40 text-xs">•</span>
+              <span className="text-krishi-indigo/70 text-xs">{getShortTime(reply.createdAt)}</span>
             </div>
-            <p className="text-krishi-text text-xs sm:text-sm mb-2 leading-relaxed">{reply.replyText}</p>
+            <p className="text-krishi-indigo text-xs sm:text-sm mb-2 leading-relaxed">{reply.replyText}</p>
 
             {/* Action Buttons */}
             <div className="flex items-center gap-3">
@@ -139,8 +139,8 @@ export default function ReplyItem({
                 onClick={handleUpvote}
                 className={`text-xs font-medium flex items-center gap-1 px-2 py-1 rounded transition-colors ${
                   hasUpvoted
-                    ? 'text-krishi-primary'
-                    : 'text-krishi-text/70 hover:text-krishi-primary'
+                    ? 'text-krishi-clay'
+                    : 'text-krishi-indigo/70 hover:text-krishi-clay'
                 }`}
               >
                 <span>{hasUpvoted ? '👍' : '👍'}</span>
@@ -150,7 +150,7 @@ export default function ReplyItem({
               {canReply && (
                 <button
                   onClick={() => setShowReplyInput(!showReplyInput)}
-                  className="text-xs font-medium text-krishi-text/70 hover:text-krishi-primary transition-colors"
+                  className="text-xs font-medium text-krishi-indigo/70 hover:text-krishi-clay transition-colors"
                 >
                   💬 Reply
                 </button>
@@ -166,7 +166,7 @@ export default function ReplyItem({
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
               placeholder="Write your reply..."
-              className="w-full px-3 py-2 border border-krishi-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-krishi-primary focus:border-krishi-primary resize-none"
+              className="w-full px-3 py-2 border border-krishi-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-krishi-primary focus:border-krishi-clay resize-none"
               rows={2}
               disabled={isSubmitting}
             />
@@ -174,7 +174,7 @@ export default function ReplyItem({
               <button
                 onClick={handleReplySubmit}
                 disabled={!replyText.trim() || isSubmitting}
-                className="px-3 py-1.5 bg-krishi-primary text-white text-xs font-medium rounded-md hover:bg-krishi-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-1.5 bg-krishi-clay text-white text-xs font-medium rounded-md hover:bg-krishi-clay/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
               >
                 {isSubmitting ? 'Posting...' : 'Post Reply'}
               </button>

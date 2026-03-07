@@ -57,7 +57,7 @@ export default function CTASection() {
     <section className="max-w-6xl mx-auto px-6 py-20">
       <div
         ref={ctaRef}
-        className="bg-krishi-primary/80 backdrop-blur-md text-white rounded-2xl p-8 md:p-12 text-center shadow-xl"
+        className="bg-krishi-clay/90 backdrop-blur-md text-white rounded-2xl p-8 md:p-12 text-center shadow-xl"
       >
         <h2 className="text-4xl md:text-5xl font-bold mb-4">
           {t.ctaHeading}
@@ -71,7 +71,7 @@ export default function CTASection() {
         >
           <Link
             href="/login"
-            className="inline-block bg-white/85 backdrop-blur-sm text-krishi-primary px-8 py-4 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-shadow"
+            className="inline-block bg-white/85 backdrop-blur-sm text-krishi-clay px-8 py-4 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-shadow"
           >
             {t.getStarted}
           </Link>

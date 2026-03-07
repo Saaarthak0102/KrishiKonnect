@@ -97,7 +97,7 @@ export default memo(function CropCard({ crop }: CropCardProps) {
           {/* Content Section */}
           <div className="p-4">
             {/* Crop Name */}
-            <h3 className="text-xl font-bold text-krishi-heading mb-2 truncate">
+            <h3 className="text-xl font-bold text-krishi-indigo mb-2 truncate">
               {cropName}
             </h3>
 

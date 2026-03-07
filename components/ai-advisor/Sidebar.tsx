@@ -47,7 +47,7 @@ export default function AIAdvisorSidebar({
       <div className="p-4 border-b border-krishi-border">
         <button
           onClick={onNewChat}
-          className="w-full px-4 py-3 bg-krishi-primary text-white rounded-lg font-semibold hover:bg-krishi-primary/90 transition-all flex items-center justify-center space-x-2"
+          className="w-full px-4 py-3 bg-krishi-clay text-white rounded-lg font-semibold hover:bg-krishi-clay/90 transition-all flex items-center justify-center space-x-2"
         >
           <span>+</span>
           <span>{lang === 'hi' ? 'नई चैट' : 'New Chat'}</span>
@@ -58,7 +58,7 @@ export default function AIAdvisorSidebar({
       <div className="flex-1 overflow-y-auto p-2">
         {chats.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-krishi-text/60 text-sm">
+            <p className="text-gray-500 text-sm">
               {lang === 'hi' ? 'कोई चैट नहीं' : 'No chats yet'}
             </p>
           </div>
@@ -72,15 +72,15 @@ export default function AIAdvisorSidebar({
                 onMouseLeave={() => setHoveredId(null)}
                 className={`group relative px-3 py-2 rounded-lg cursor-pointer transition-all ${
                   currentChatId === chat.id
-                    ? 'bg-krishi-primary/10 border-l-4 border-krishi-primary'
+                    ? 'bg-krishi-clay/10 border-l-4 border-krishi-clay'
                     : 'hover:bg-white/45'
                 }`}
               >
                 <div onClick={() => onSelectChat(chat.id)} className="flex-1">
-                  <p className="text-sm font-medium text-krishi-text truncate">
+                  <p className="text-sm font-medium text-krishi-indigo truncate">
                     {chat.title}
                   </p>
-                  <p className="text-xs text-krishi-text/60 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     {formatDate(chat.createdAt)}
                   </p>
                 </div>
@@ -133,7 +133,7 @@ export default function AIAdvisorSidebar({
       </div>
 
       {/* Footer Info */}
-      <div className="p-4 border-t border-krishi-border text-xs text-krishi-text/60 text-center">
+      <div className="p-4 border-t border-krishi-border text-xs text-gray-500 text-center">
         <p>Krishi Sahayak 🌾</p>
         <p className="mt-1">{lang === 'hi' ? 'कृषि सहायक' : 'AI Farming Advisor'}</p>
       </div>

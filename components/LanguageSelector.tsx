@@ -20,13 +20,13 @@ export default function LanguageSelector() {
       className="bg-white/75 backdrop-blur-md border-2 border-krishi-border rounded-2xl shadow-lg p-8 md:p-12 max-w-md w-full mx-4"
     >
       <div className="text-center mb-8">
-        <h1 className="text-4xl md:text-5xl font-bold text-krishi-heading mb-3">
+        <h1 className="text-4xl md:text-5xl font-bold text-krishi-indigo mb-3">
           <BrandName /> 🌾
         </h1>
-        <p className="text-krishi-text/80">
+        <p className="text-krishi-indigo/80">
           किसानों के लिए डिजिटल प्लेटफॉर्म
         </p>
-        <p className="text-krishi-text/80">
+        <p className="text-krishi-indigo/80">
           Digital Platform for Farmers
         </p>
       </div>
@@ -36,7 +36,7 @@ export default function LanguageSelector() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => selectLanguage('hi')}
-          className="w-full bg-krishi-primary text-white py-4 px-6 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-shadow"
+          className="w-full bg-krishi-clay text-white py-4 px-6 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-shadow"
         >
           हिंदी में जारी रखें 🇮🇳
         </motion.button>
@@ -45,7 +45,7 @@ export default function LanguageSelector() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => selectLanguage('en')}
-          className="w-full bg-krishi-heading text-white py-4 px-6 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-shadow"
+          className="w-full bg-krishi-indigo text-white py-4 px-6 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-shadow"
         >
           Continue in English 🇬🇧
         </motion.button>

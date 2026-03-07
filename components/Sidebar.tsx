@@ -25,9 +25,9 @@ function renderKrishiLabel(label: string, lang: 'hi' | 'en') {
       const parts = label.split(' ')
       return (
         <>
-          <span className="text-[#2D4B8C]">कृषि</span>
+          <span className="text-krishi-indigo">कृषि</span>
           {' '}
-          <span className="text-[#C96A3A]">{parts.slice(1).join(' ')}</span>
+          <span className="text-krishi-clay">{parts.slice(1).join(' ')}</span>
         </>
       )
     }
@@ -37,9 +37,9 @@ function renderKrishiLabel(label: string, lang: 'hi' | 'en') {
       const parts = label.split(' ')
       return (
         <>
-          <span className="text-[#2D4B8C]">Krishi</span>
+          <span className="text-krishi-indigo">Krishi</span>
           {' '}
-          <span className="text-[#C96A3A]">{parts.slice(1).join(' ')}</span>
+          <span className="text-krishi-clay">{parts.slice(1).join(' ')}</span>
         </>
       )
     }
@@ -114,7 +114,7 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
       <div className="flex items-center justify-between p-4 border-b-2 border-gray-200">
         {expanded && (
           <Link href="/dashboard" className="flex items-center space-x-2 flex-1">
-            <GiWheat size={24} className="text-krishi-primary" />
+            <GiWheat size={24} className="text-krishi-clay" />
             <span className="text-sm">
               <BrandName />
             </span>

@@ -54,7 +54,7 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
         animate={{ opacity: 1, y: 0 }}
         className="bg-white/70 backdrop-blur-sm border border-krishi-agriculture/20 rounded-lg p-4 shadow-sm space-y-3"
       >
-        <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-krishi-text">
+        <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-krishi-indigo">
           {parsed.fullText}
         </p>
       </motion.div>
@@ -82,7 +82,7 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
               {lang === 'hi' ? 'त्वरित उत्तर' : 'Quick Answer'}
             </h4>
           </div>
-          <p className="text-sm text-krishi-text whitespace-pre-wrap break-words leading-relaxed">
+          <p className="text-sm text-krishi-indigo whitespace-pre-wrap break-words leading-relaxed">
             {parsed.quickAnswer}
           </p>
         </motion.div>
@@ -102,7 +102,7 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
               {lang === 'hi' ? 'अनुशंसित कार्रवाई' : 'Recommended Action'}
             </h4>
           </div>
-          <p className="text-sm text-krishi-text whitespace-pre-wrap break-words leading-relaxed">
+          <p className="text-sm text-krishi-indigo whitespace-pre-wrap break-words leading-relaxed">
             {parsed.recommendedAction}
           </p>
         </motion.div>
@@ -122,7 +122,7 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
               {lang === 'hi' ? 'मौसम का प्रभाव' : 'Weather Impact'}
             </h4>
           </div>
-          <p className="text-sm text-krishi-text whitespace-pre-wrap break-words leading-relaxed">
+          <p className="text-sm text-krishi-indigo whitespace-pre-wrap break-words leading-relaxed">
             {parsed.weatherImpact}
           </p>
         </motion.div>
@@ -142,7 +142,7 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
               {lang === 'hi' ? 'बाजार अंतर्दृष्टि' : 'Market Insight'}
             </h4>
           </div>
-          <p className="text-sm text-krishi-text whitespace-pre-wrap break-words leading-relaxed">
+          <p className="text-sm text-krishi-indigo whitespace-pre-wrap break-words leading-relaxed">
             {parsed.marketInsight}
           </p>
         </motion.div>

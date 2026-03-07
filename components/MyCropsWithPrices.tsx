@@ -166,14 +166,14 @@ export default function MyCropsWithPrices({
         transition={{ duration: 0.4 }}
         className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
       >
-        <h2 className="text-xl font-bold text-krishi-heading mb-6 flex items-center gap-2">
+        <h2 className="text-xl font-bold text-krishi-indigo mb-6 flex items-center gap-2">
           <span>🌾</span>
           {t.myCrops}
         </h2>
 
         <div className="py-12 px-6 text-center">
           <div className="mb-4 text-5xl">🌾</div>
-          <h3 className="text-lg font-bold text-krishi-heading mb-2">
+          <h3 className="text-lg font-bold text-krishi-indigo mb-2">
             {t.noCropsSelected}
           </h3>
           <p className="text-gray-600 mb-6 max-w-sm mx-auto">
@@ -203,7 +203,7 @@ export default function MyCropsWithPrices({
         transition={{ duration: 0.4 }}
         className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
       >
-        <h2 className="text-xl font-bold text-krishi-heading mb-6 flex items-center gap-2">
+        <h2 className="text-xl font-bold text-krishi-indigo mb-6 flex items-center gap-2">
           <span>🌾</span>
           {t.myCrops}
         </h2>
@@ -227,7 +227,7 @@ export default function MyCropsWithPrices({
       className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
     >
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-krishi-heading flex items-center gap-2 mb-1">
+        <h2 className="text-xl font-bold text-krishi-indigo flex items-center gap-2 mb-1">
           <span>🌾</span>
           {t.myCrops}
         </h2>

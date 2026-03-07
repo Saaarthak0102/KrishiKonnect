@@ -15,13 +15,13 @@ function renderKrishiTitle(title: string) {
     const parts = title.split(' ')
     return (
       <>
-        <span className="text-[#2D4B8C]">Krishi</span>
+        <span className="text-krishi-indigo">Krishi</span>
         {' '}
-        <span className="text-[#C96A3A]">{parts.slice(1).join(' ')}</span>
+        <span className="text-krishi-clay">{parts.slice(1).join(' ')}</span>
       </>
     )
   }
-  return <span className="text-krishi-heading">{title}</span>
+  return <span className="text-krishi-indigo">{title}</span>
 }
 
 export default function FeatureCard({ icon, title, description }: FeatureCardProps) {
@@ -44,7 +44,7 @@ export default function FeatureCard({ icon, title, description }: FeatureCardPro
       <h3 className="text-xl font-semibold mb-3">
         {renderKrishiTitle(title)}
       </h3>
-      <p className="text-krishi-text/80">
+      <p className="text-krishi-indigo/80">
         {description}
       </p>
     </motion.div>

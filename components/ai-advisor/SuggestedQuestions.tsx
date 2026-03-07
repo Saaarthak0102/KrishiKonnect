@@ -69,19 +69,19 @@ export default function SuggestedQuestions({
         <h2 className="text-2xl font-bold mb-2">
           {lang === 'hi' ? (
             <>
-              <span className="text-[#2D4B8C]">कृषि</span>
+              <span className="text-krishi-indigo">कृषि</span>
               {' '}
-              <span className="text-[#C96A3A]">सहायक</span>
+              <span className="text-krishi-clay">सहायक</span>
             </>
           ) : (
             <>
-              <span className="text-[#2D4B8C]">Krishi</span>
+              <span className="text-krishi-indigo">Krishi</span>
               {' '}
-              <span className="text-[#C96A3A]">Sahayak</span>
+              <span className="text-krishi-clay">Sahayak</span>
             </>
           )}
         </h2>
-        <p className="text-krishi-text/70">
+        <p className="text-krishi-indigo/70">
           {lang === 'hi'
             ? 'कुछ सामान्य प्रश्न चुनें या अपना प्रश्न पूछें'
             : 'Choose a common question or ask your own'}
@@ -98,7 +98,7 @@ export default function SuggestedQuestions({
             whileHover={{ scale: 1.02, y: -5 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onSelectQuestion(q.question)}
-            className="p-4 bg-white/70 backdrop-blur-sm border-2 border-krishi-border rounded-lg hover:border-krishi-primary hover:shadow-md transition-all text-left group"
+            className="p-4 bg-white/70 backdrop-blur-sm border-2 border-krishi-border rounded-lg hover:border-krishi-clay hover:shadow-md transition-all text-left group"
           >
             <motion.div
               className="text-3xl mb-2"
@@ -107,8 +107,8 @@ export default function SuggestedQuestions({
             >
               {q.emoji}
             </motion.div>
-            <p className="font-semibold text-krishi-heading mb-1">{q.title}</p>
-            <p className="text-sm text-krishi-text/70 group-hover:text-krishi-text transition-colors">
+            <p className="font-semibold text-krishi-indigo mb-1">{q.title}</p>
+            <p className="text-sm text-krishi-indigo/70 group-hover:text-krishi-indigo transition-colors">
               {q.question}
             </p>
           </motion.button>
@@ -122,7 +122,7 @@ export default function SuggestedQuestions({
         transition={{ delay: 0.5 }}
         className="mt-6 p-4 bg-krishi-agriculture/10 border border-krishi-agriculture/30 rounded-lg"
       >
-        <p className="text-sm text-krishi-text/70 leading-relaxed">
+        <p className="text-sm text-krishi-indigo/70 leading-relaxed">
           {lang === 'hi'
             ? '🌾 मैं कृषि संबंधी किसी भी सवाल का जवाब दे सकता हूँ - फसल की बीमारी, कीटों, सिंचाई, उर्वरक, मिट्टी की जाँच, और कृषि प्रणालियों के बारे में। अपनी स्थिति के अनुसार सलाह पाएं!'
             : '🌾 I can answer any farming question - crop diseases, pests, irrigation, fertilizers, soil testing, and farming practices. Get advice tailored to your situation!'}

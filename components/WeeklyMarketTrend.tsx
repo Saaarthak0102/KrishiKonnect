@@ -19,18 +19,18 @@ function WeeklyMarketTrend({
     direction === 'up'
       ? 'text-krishi-agriculture'
       : direction === 'down'
-      ? 'text-krishi-primary'
+      ? 'text-krishi-clay'
       : 'text-krishi-highlight'
 
   const prefix = averageChange > 0 ? '+' : ''
 
   return (
     <section className="rounded-xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-5">
-      <h3 className="text-lg font-bold text-krishi-heading">
+      <h3 className="text-lg font-bold text-krishi-indigo">
         {lang === 'hi' ? 'Market Trend (7 Days)' : 'Market Trend (7 Days)'}
       </h3>
       <p className={`mt-2 text-base font-bold ${trendColorClass}`}>{label}</p>
-      <p className="mt-1 text-sm text-krishi-text/80">
+      <p className="mt-1 text-sm text-krishi-indigo/80">
         {lang === 'hi' ? 'Average Change' : 'Average Change'}: {prefix}
         {averageChange.toFixed(1)}%
       </p>

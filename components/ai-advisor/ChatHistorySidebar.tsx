@@ -57,19 +57,19 @@ export default function ChatHistorySidebar({
             <h2 className="font-bold text-sm">
               {lang === 'hi' ? (
                 <>
-                  <span className="text-[#2D4B8C]">कृषि</span>
+                  <span className="text-krishi-indigo">कृषि</span>
                   {' '}
-                  <span className="text-[#C96A3A]">सहायक</span>
+                  <span className="text-krishi-clay">सहायक</span>
                 </>
               ) : (
                 <>
-                  <span className="text-[#2D4B8C]">Krishi</span>
+                  <span className="text-krishi-indigo">Krishi</span>
                   {' '}
-                  <span className="text-[#C96A3A]">Sahayak</span>
+                  <span className="text-krishi-clay">Sahayak</span>
                 </>
               )}
             </h2>
-            <p className="text-xs text-krishi-text/60">
+            <p className="text-xs text-gray-500">
               {lang === 'hi' ? (
                 <>
                   <span className="text-[#2D4B8C]">कृषि</span>
@@ -92,7 +92,7 @@ export default function ChatHistorySidebar({
       <div className="p-4 border-b border-krishi-border">
         <button
           onClick={onNewChat}
-          className="w-full px-4 py-2.5 bg-krishi-primary text-white rounded-lg font-semibold hover:bg-krishi-primary/90 transition-all flex items-center justify-center space-x-2 text-sm"
+          className="w-full px-4 py-2.5 bg-krishi-clay text-white rounded-lg font-semibold hover:bg-krishi-clay/90 transition-all flex items-center justify-center space-x-2 text-sm"
         >
           <span>+</span>
           <span>{lang === 'hi' ? 'नई चैट' : 'New Chat'}</span>
@@ -103,7 +103,7 @@ export default function ChatHistorySidebar({
       <div className="flex-1 overflow-y-auto">
         {chats.length === 0 ? (
           <div className="p-4 text-center py-12">
-            <p className="text-sm text-krishi-text/60">
+            <p className="text-sm text-gray-500">
               {lang === 'hi' ? 'कोई चैट नहीं' : 'No chats yet'}
             </p>
           </div>
@@ -130,10 +130,10 @@ export default function ChatHistorySidebar({
                       : 'hover:bg-white/45 border-l-4 border-transparent'
                   }`}
                 >
-                  <span className="font-semibold text-sm text-krishi-heading truncate">
+                  <span className="font-semibold text-sm text-krishi-indigo truncate">
                     {getTruncatedTitle(chat.title)}
                   </span>
-                  <span className="text-xs text-krishi-text/60 truncate">
+                  <span className="text-xs text-gray-500 truncate">
                     {formatDate(chat.createdAt)}
                   </span>
                 </button>
@@ -161,7 +161,7 @@ export default function ChatHistorySidebar({
       </div>
 
       {/* Footer */}
-      <div className="p-3 border-t border-krishi-border bg-white/45 backdrop-blur-sm text-xs text-krishi-text/50 text-center">
+      <div className="p-3 border-t border-krishi-border bg-white/45 backdrop-blur-sm text-xs text-gray-400 text-center">
         {lang === 'hi' ? 'आपकी पिछली चैट' : 'Your chat history'}
       </div>
     </motion.div>

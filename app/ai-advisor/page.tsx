@@ -364,26 +364,26 @@ export default function AIAdvisorPage() {
                 <h2 className="text-2xl font-bold mb-2">
                   {lang === 'hi' ? (
                     <>
-                      <span className="text-[#2D4B8C]">कृषि</span>
+                      <span className="text-krishi-indigo">कृषि</span>
                       {' '}
-                      <span className="text-[#C96A3A]">सहायक</span>
+                      <span className="text-krishi-clay">सहायक</span>
                     </>
                   ) : (
                     <>
-                      <span className="text-[#2D4B8C]">Krishi</span>
+                      <span className="text-krishi-indigo">Krishi</span>
                       {' '}
-                      <span className="text-[#C96A3A]">Sahayak</span>
+                      <span className="text-krishi-clay">Sahayak</span>
                     </>
                   )}
                 </h2>
-                <p className="text-krishi-text mb-6">
+                <p className="text-krishi-indigo mb-6">
                   {lang === 'hi'
                     ? 'अपनी खेती से जुड़े सवालों के लिए कृषि सहायक से बात करें'
                     : 'Talk to Krishi Sahayak for your farming questions'}
                 </p>
                 <button
                   onClick={handleNewChat}
-                  className="px-6 py-3 bg-krishi-primary text-white rounded-lg font-semibold hover:bg-krishi-primary/90 transition-all"
+                  className="px-6 py-3 bg-krishi-clay text-white rounded-lg font-semibold hover:bg-krishi-clay/90 transition-all"
                 >
                   {lang === 'hi' ? 'नई चैट शुरू करें' : 'Start New Chat'}
                 </button>

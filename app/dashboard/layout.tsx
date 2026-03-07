@@ -45,7 +45,7 @@ export default function DashboardLayout({
 
           {/* Center - Welcome Message */}
           <div className="flex-1 text-center hidden md:block">
-            <h1 className="text-lg md:text-xl font-bold text-krishi-heading">
+            <h1 className="text-lg md:text-xl font-bold text-krishi-indigo">
               {lang === 'hi' ? 'स्वागत है' : 'Welcome back'}, {farmerProfile?.name || user?.phoneNumber} 👋
             </h1>
           </div>
@@ -53,10 +53,10 @@ export default function DashboardLayout({
           {/* Right - User Info and Language Toggle */}
           <div className="flex items-center space-x-4">
             <div className="hidden lg:block text-right">
-              <p className="text-sm text-krishi-text/60 font-semibold">
+              <p className="text-sm text-gray-500 font-semibold">
                 {farmerProfile?.village}, {farmerProfile?.state}
               </p>
-              <p className="text-xs text-krishi-text/40">
+              <p className="text-xs text-gray-400">
                 {farmerProfile?.primaryCrop}
               </p>
             </div>

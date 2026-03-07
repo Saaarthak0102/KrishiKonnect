@@ -12,18 +12,18 @@ interface NearbyMandisCardProps {
 function NearbyMandisCard({ userState, mandis, lang }: NearbyMandisCardProps) {
   return (
     <section className="rounded-xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-5">
-      <h3 className="text-lg font-bold text-krishi-heading">
+      <h3 className="text-lg font-bold text-krishi-indigo">
         {lang === 'hi' ? `Nearby Mandis in ${userState}` : `Nearby Mandis in ${userState}`}
       </h3>
 
       {mandis.length === 0 ? (
-        <p className="mt-3 text-sm text-krishi-text/70">
+        <p className="mt-3 text-sm text-krishi-indigo/70">
           {lang === 'hi'
             ? 'आपके राज्य में इस फसल के लिए मंडी डेटा उपलब्ध नहीं है।'
             : 'No nearby mandis found for your state.'}
         </p>
       ) : (
-        <ol className="mt-3 space-y-2 text-sm text-krishi-text">
+        <ol className="mt-3 space-y-2 text-sm text-krishi-indigo">
           {mandis.map((mandi, index) => (
             <li key={mandi.id}>
               {index + 1}. {mandi.mandiEn} ₹{mandi.modalPrice.toLocaleString('en-IN')}

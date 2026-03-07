@@ -481,8 +481,8 @@ export default function DashboardPage() {
     return (
       <main className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-krishi-primary border-t-krishi-heading"></div>
-          <p className="mt-4 text-krishi-text">{lang === 'hi' ? 'लोड हो रहा है...' : 'Loading...'}</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-krishi-clay border-t-krishi-heading"></div>
+          <p className="mt-4 text-krishi-indigo">{lang === 'hi' ? 'लोड हो रहा है...' : 'Loading...'}</p>
         </div>
       </main>
     )
@@ -602,7 +602,7 @@ export default function DashboardPage() {
         transition={{ duration: 0.4 }}
         className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
       >
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+        <h2 className="text-xl font-semibold text-krishi-indigo mb-6 flex items-center gap-2">
           <GiWheat size={24} className="text-krishi-agriculture" />
           {t.farmOverview}
         </h2>
@@ -615,7 +615,7 @@ export default function DashboardPage() {
                 <GiWheat size={20} />
                 {t.primaryCrop}
               </p>
-              <p className="text-lg font-semibold text-gray-900">
+              <p className="text-lg font-semibold text-krishi-indigo">
                 {farmerProfile.primaryCrop}
               </p>
             </div>
@@ -624,7 +624,7 @@ export default function DashboardPage() {
                 <MdLocationOn size={20} />
                 {t.location}
               </p>
-              <p className="text-lg font-semibold text-gray-900">
+              <p className="text-lg font-semibold text-krishi-indigo">
                 {farmerProfile.village}
               </p>
             </div>
@@ -633,7 +633,7 @@ export default function DashboardPage() {
                 <MdCalendarToday size={20} />
                 {t.season}
               </p>
-              <p className="text-lg font-semibold text-gray-900">
+              <p className="text-lg font-semibold text-krishi-indigo">
                 {cropSeason}
               </p>
             </div>
@@ -688,7 +688,7 @@ export default function DashboardPage() {
         {/* Weather Card */}
         <div className="h-full md:col-span-4">
           <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6 h-full flex flex-col">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-krishi-indigo mb-4 flex items-center gap-2">
               🌤 {t.weatherToday}
             </h3>
             
@@ -729,7 +729,7 @@ export default function DashboardPage() {
           className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
         >
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-1">
+            <h2 className="text-lg font-semibold text-krishi-indigo flex items-center gap-2 mb-1">
               <GiWheat size={24} className="text-krishi-agriculture" />
               {t.myCrops}
             </h2>
@@ -744,7 +744,7 @@ export default function DashboardPage() {
               <div className="mb-4 text-5xl flex justify-center">
                 <GiWheat size={64} className="text-krishi-agriculture" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-krishi-indigo mb-2">
                 {t.noCropsSelected}
               </h3>
               <p className="text-gray-600 mb-6 max-w-sm mx-auto">
@@ -797,7 +797,7 @@ export default function DashboardPage() {
                       className="flex items-center justify-between p-4 bg-[#FAF3E0]/30 rounded-lg border border-gray-200 hover:border-[#B85C38] hover:shadow-md transition-all cursor-pointer"
                     >
                       <div className="flex-1">
-                        <p className="font-semibold text-gray-900 mb-1">
+                        <p className="font-semibold text-krishi-indigo mb-1">
                           {cropName}
                         </p>
                         {priceData && (
@@ -809,7 +809,7 @@ export default function DashboardPage() {
                       <div className="text-right">
                         {priceData ? (
                           <>
-                            <p className="text-lg font-bold text-gray-900">
+                            <p className="text-lg font-bold text-krishi-indigo">
                               ₹{priceData.price.toLocaleString()}
                             </p>
                             <p className={`text-sm font-medium ${getTrendColor(priceData.trend)}`}>
@@ -845,7 +845,7 @@ export default function DashboardPage() {
           transition={{ duration: 0.4, delay: 0.3 }}
           className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-krishi-indigo mb-4 flex items-center gap-2">
             <FaTruck size={24} />
             {t.yourServices}
           </h3>
@@ -860,7 +860,7 @@ export default function DashboardPage() {
               <div className="flex items-start gap-3">
                 <FaTruck size={24} className="text-gray-600 mt-1" />
                 <div className="flex-1">
-                  <p className="font-semibold text-gray-900 mb-1">
+                  <p className="font-semibold text-krishi-indigo mb-1">
                     {t.transportBooked}
                   </p>
                   <p className="text-xs text-gray-500 mb-1">ID: {latestTransportBooking.id}</p>

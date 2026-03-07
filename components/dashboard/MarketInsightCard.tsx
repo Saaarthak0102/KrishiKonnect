@@ -125,14 +125,14 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
         transition={{ duration: 0.4, delay: 0.15 }}
         className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6 h-full flex flex-col"
       >
-      <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-6">
+      <h3 className="text-lg font-semibold text-krishi-indigo flex items-center gap-2 mb-6">
         <span>📊</span>
         {t.marketInsight}
       </h3>
 
         <div className="py-12 px-6 text-center">
           <div className="mb-4 text-5xl">📊</div>
-          <h4 className="text-lg font-semibold text-gray-900 mb-2">
+          <h4 className="text-lg font-semibold text-krishi-indigo mb-2">
             {t.noInsightTitle}
           </h4>
           <p className="text-gray-600 mb-6 max-w-sm mx-auto">
@@ -174,14 +174,14 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
       transition={{ duration: 0.4, delay: 0.15 }}
       className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6 h-full flex flex-col"
     >
-      <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
+      <h3 className="text-lg font-semibold text-krishi-indigo flex items-center gap-2 mb-4">
         <span>📊</span>
         {t.marketInsight}
       </h3>
 
       <div className="space-y-4">
         {/* Main insight text */}
-        <p className="text-base text-gray-900 font-medium">
+        <p className="text-base text-krishi-indigo font-medium">
           {insightText}
         </p>
 
@@ -200,7 +200,7 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
             )}
           </p>
           <div className="flex items-baseline justify-between">
-            <h4 className="text-lg font-bold text-gray-900">
+            <h4 className="text-lg font-bold text-krishi-indigo">
               {insight.mandi}
             </h4>
             <div className="text-right">

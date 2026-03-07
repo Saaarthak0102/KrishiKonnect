@@ -230,12 +230,12 @@ export default function ChatCard({
           {/* User Info and Crop Tag */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <h3 className="font-semibold text-krishi-heading text-sm sm:text-base">{userName}</h3>
-              <span className="text-krishi-text/40 text-xs">•</span>
-              <span className="text-krishi-text/70 text-xs sm:text-sm">{createdAt}</span>
+              <h3 className="font-semibold text-krishi-indigo text-sm sm:text-base">{userName}</h3>
+              <span className="text-krishi-indigo/40 text-xs">•</span>
+              <span className="text-krishi-indigo/70 text-xs sm:text-sm">{createdAt}</span>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-krishi-text/70 text-xs sm:text-sm flex items-center gap-1">
+              <span className="text-krishi-indigo/70 text-xs sm:text-sm flex items-center gap-1">
                 📍 {userLocation}
               </span>
               <span className="bg-krishi-agriculture text-white px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1">
@@ -248,11 +248,11 @@ export default function ChatCard({
 
         {/* Question Text */}
         <div className="mb-3">
-          <p className="text-krishi-text font-medium text-sm sm:text-base mb-2 leading-relaxed">
+          <p className="text-krishi-indigo font-medium text-sm sm:text-base mb-2 leading-relaxed">
             {questionText}
           </p>
           {description && (
-            <p className="text-krishi-text/80 text-xs sm:text-sm leading-relaxed">
+            <p className="text-krishi-indigo/80 text-xs sm:text-sm leading-relaxed">
               {description}
             </p>
           )}
@@ -265,8 +265,8 @@ export default function ChatCard({
             onClick={handleUpvote}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
               hasUpvoted
-                ? 'text-krishi-primary'
-                : 'text-krishi-text/70 hover:text-krishi-primary'
+                ? 'text-krishi-clay'
+                : 'text-krishi-indigo/70 hover:text-krishi-clay'
             }`}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
@@ -279,7 +279,7 @@ export default function ChatCard({
           {/* Reply Button */}
           <motion.button
             onClick={handleReplyClick}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium border border-krishi-border text-krishi-text hover:bg-krishi-primary hover:text-white transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium border border-krishi-border text-krishi-indigo hover:bg-krishi-clay hover:text-white transition-colors"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ duration: 0.2 }}
@@ -292,7 +292,7 @@ export default function ChatCard({
           {localRepliesCount > 0 && (
             <motion.button
               onClick={toggleReplies}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-krishi-text/70 hover:text-krishi-primary transition-colors ml-auto"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-krishi-indigo/70 hover:text-krishi-clay transition-colors ml-auto"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
@@ -320,7 +320,7 @@ export default function ChatCard({
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
               placeholder="Write your reply..."
-              className="w-full px-3 py-2 border border-krishi-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-krishi-primary focus:border-krishi-primary resize-none"
+              className="w-full px-3 py-2 border border-krishi-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-krishi-primary focus:border-krishi-clay resize-none"
               rows={2}
               disabled={isSubmitting}
             />
@@ -328,7 +328,7 @@ export default function ChatCard({
               <button
                 onClick={handleSubmitMainReply}
                 disabled={!replyText.trim() || isSubmitting}
-                className="px-4 py-2 bg-krishi-primary text-white text-sm font-medium rounded-md hover:bg-krishi-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-2 bg-krishi-clay text-white text-sm font-medium rounded-md hover:bg-krishi-clay/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
               >
                 {isSubmitting ? 'Posting...' : 'Post Reply'}
               </button>

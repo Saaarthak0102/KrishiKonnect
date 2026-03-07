@@ -42,7 +42,7 @@ function renderKrishiTitle(title: string, lang: 'hi' | 'en') {
       )
     }
   }
-  return <span className="text-krishi-heading">{title}</span>
+  return <span className="text-krishi-indigo">{title}</span>
 }
 
 export default function FeaturePageLayout({ children }: FeaturePageLayoutProps) {

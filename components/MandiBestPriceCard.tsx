@@ -28,14 +28,14 @@ function MandiBestPriceCard({ bestMandi, lang }: MandiBestPriceCardProps) {
 
   return (
     <section className="rounded-xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-5">
-      <p className="text-sm font-bold text-krishi-primary">
+      <p className="text-sm font-bold text-krishi-clay">
         {lang === 'hi' ? '⭐ आज की सर्वश्रेष्ठ मंडी' : 'Best Mandi Today'}
       </p>
 
       {bestMandi ? (
         <>
-          <p className="mt-3 text-2xl font-bold text-krishi-heading">📍 {bestMandi.mandiEn}</p>
-          <p className="text-sm text-krishi-text/80">{bestMandi.state}</p>
+          <p className="mt-3 text-2xl font-bold text-krishi-indigo">📍 {bestMandi.mandiEn}</p>
+          <p className="text-sm text-krishi-indigo/80">{bestMandi.state}</p>
           <p className="mt-2 text-3xl font-extrabold text-krishi-agriculture">
             ₹{bestMandi.modalPrice.toLocaleString('en-IN')} / quintal
           </p>
@@ -48,12 +48,12 @@ function MandiBestPriceCard({ bestMandi, lang }: MandiBestPriceCardProps) {
                 <span className="font-medium">{lang === 'hi' ? 'लाइव' : 'Live'}</span>
               </div>
             )}
-            <p className="text-xs text-krishi-text/70">
+            <p className="text-xs text-krishi-indigo/70">
               {getTimestamp()}
             </p>
           </div>
 
-          <p className="mt-2 text-sm font-semibold text-krishi-text/80">
+          <p className="mt-2 text-sm font-semibold text-krishi-indigo/80">
             {lang === 'hi' ? 'ट्रेंड' : 'Trend'}: {bestMandi.trend.toUpperCase()}
           </p>
           <motion.div
@@ -63,14 +63,14 @@ function MandiBestPriceCard({ bestMandi, lang }: MandiBestPriceCardProps) {
           >
             <Link
               href={`/transport?crop=${encodeURIComponent(bestMandi.cropEn)}&mandi=${encodeURIComponent(bestMandi.mandiEn)}`}
-              className="inline-flex rounded-lg bg-krishi-primary px-4 py-2 text-sm font-semibold text-white"
+              className="inline-flex rounded-lg bg-krishi-clay px-4 py-2 text-sm font-semibold text-white"
             >
               {lang === 'hi' ? 'यहीं बेचें → ट्रांसपोर्ट' : 'Sell Here → Transport'}
             </Link>
           </motion.div>
         </>
       ) : (
-        <p className="mt-3 text-sm text-krishi-text/70">
+        <p className="mt-3 text-sm text-krishi-indigo/70">
           {lang === 'hi' ? 'इस फसल के लिए मंडी डेटा उपलब्ध नहीं है।' : 'No mandi data available for this crop.'}
         </p>
       )}

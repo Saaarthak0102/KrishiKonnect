@@ -42,7 +42,7 @@ export default function LandingNavbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-krishi-text hover:text-krishi-primary transition-colors font-medium text-base whitespace-nowrap"
+                className="text-krishi-indigo hover:text-krishi-clay transition-colors font-medium text-base whitespace-nowrap"
               >
                 {link.label}
               </a>
@@ -55,7 +55,7 @@ export default function LandingNavbar() {
           </div>
 
           {/* Mobile menu button (placeholder for future mobile menu) */}
-          <button className="md:hidden ml-4 p-2 text-krishi-heading">
+          <button className="md:hidden ml-4 p-2 text-krishi-indigo">
             <svg
               className="w-6 h-6"
               fill="none"

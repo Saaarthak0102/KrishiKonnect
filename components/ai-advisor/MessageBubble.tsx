@@ -60,7 +60,7 @@ export default function MessageBubble({ message, isUser, enableTypewriter = fals
         transition={{ duration: 0.3 }}
         className="flex justify-end"
       >
-        <div className="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-lg bg-krishi-primary text-white rounded-br-none">
+        <div className="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-lg bg-krishi-clay text-white rounded-br-none">
           {/* Image if exists */}
           {message.imageUrl && (
             <div className="mb-2">
@@ -98,7 +98,7 @@ export default function MessageBubble({ message, isUser, enableTypewriter = fals
       className="flex justify-start"
     >
       <div className="max-w-xs lg:max-w-md xl:max-w-lg w-full">
-        <p className="text-xs font-semibold mb-2 text-krishi-text/70">
+        <p className="text-xs font-semibold mb-2 text-gray-500">
           {`Language: ${languageLabel}`}
         </p>
 
@@ -109,7 +109,7 @@ export default function MessageBubble({ message, isUser, enableTypewriter = fals
         {!isTyping && <DataSources lang={lang} />}
 
         {/* Timestamp */}
-        <p className="text-xs mt-2 text-krishi-text/60">
+        <p className="text-xs mt-2 text-gray-500">
           {new Date(message.createdAt).toLocaleTimeString('en-US', {
             hour: '2-digit',
             minute: '2-digit',

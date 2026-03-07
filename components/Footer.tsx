@@ -44,12 +44,12 @@ export default function Footer() {
                 <BrandName />
               </h3>
             </div>
-            <p className="text-krishi-text/80 text-sm">{t.footerTagline}</p>
+            <p className="text-krishi-indigo/80 text-sm">{t.footerTagline}</p>
           </div>
 
           {/* Quick Links (Landing Page Navigation) */}
           <div>
-            <h4 className="font-semibold text-krishi-heading mb-4">
+            <h4 className="font-semibold text-krishi-indigo mb-4">
               {lang === 'hi' ? 'त्वरित लिंक' : 'Quick Links'}
             </h4>
             <div className="flex flex-col gap-2">
@@ -57,7 +57,7 @@ export default function Footer() {
                 <motion.a
                   key={link.href}
                   href={link.href}
-                  className="text-krishi-text/80 hover:text-krishi-primary transition-colors text-sm"
+                  className="text-krishi-indigo/80 hover:text-krishi-clay transition-colors text-sm"
                   whileHover={{ scale: 1.05, x: 4 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -69,9 +69,9 @@ export default function Footer() {
 
           {/* Copyright */}
           <div className="flex flex-col justify-between">
-            <p className="text-sm text-krishi-text/60">{renderTextWithBrand(t.allRightsReserved)}</p>
+            <p className="text-sm text-gray-500">{renderTextWithBrand(t.allRightsReserved)}</p>
             <div className="mt-4">
-              <p className="text-xs text-krishi-text/50">
+              <p className="text-xs text-gray-400">
                 {lang === 'hi'
                   ? 'किसानों के भविष्य के लिए डिजिटल समाधान'
                   : 'Digital solutions for farmers\' future'}
@@ -82,7 +82,7 @@ export default function Footer() {
 
         {/* Bottom Divider */}
         <div className="border-t border-krishi-border mt-8 pt-8">
-          <p className="text-center text-xs text-krishi-text/50">
+          <p className="text-center text-xs text-gray-400">
             {lang === 'hi'
               ? <>© 2026 <BrandName />। सर्वाधिकार सुरक्षित।</>
               : <>© 2026 <BrandName />. All rights reserved.</>}

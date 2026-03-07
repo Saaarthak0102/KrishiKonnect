@@ -49,7 +49,7 @@ export default function HowItWorks() {
       id="how-it-works" 
       className="max-w-6xl mx-auto px-6 py-20 bg-white/50 rounded-2xl my-16"
     >
-      <h2 className="text-4xl md:text-5xl font-bold text-krishi-heading text-center mb-12">
+      <h2 className="text-4xl md:text-5xl font-bold text-krishi-indigo text-center mb-12">
         {t.howItWorksHeading}
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -59,17 +59,17 @@ export default function HowItWorks() {
             className="text-center"
           >
             <motion.div
-              className="inline-block bg-krishi-primary text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-4"
+              className="inline-block bg-krishi-clay text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-4"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
             >
               {step.number}
             </motion.div>
-            <h3 className="text-2xl font-semibold text-krishi-heading mb-3">
+            <h3 className="text-2xl font-semibold text-krishi-indigo mb-3">
               {t[step.titleKey as keyof typeof t]}
             </h3>
-            <p className="text-krishi-text/80">
+            <p className="text-krishi-indigo/80">
               {t[step.descKey as keyof typeof t]}
             </p>
           </div>

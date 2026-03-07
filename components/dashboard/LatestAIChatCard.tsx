@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
 import { subscribeToLatestAIChat, type AIChat } from '@/lib/aiAdvisor'
 import { getShortTime } from '@/lib/timeUtils'
 
@@ -112,15 +111,7 @@ export default function LatestAIChatCard({
         <div className="mb-3">
           <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             <span>🤖</span>
-            {lang === 'hi' ? (
-              <>
-                नवीनतम <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">सहायक</span> चैट
-              </>
-            ) : (
-              <>
-                Latest <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Sahayak</span> Chat
-              </>
-            )}
+            {t.title}
           </h3>
           <p className="text-xs text-gray-500 mt-1">{t.subtitle}</p>
         </div>
@@ -131,15 +122,12 @@ export default function LatestAIChatCard({
             <p className="text-sm text-gray-600">{t.emptyLine2}</p>
           </div>
 
-          <motion.button
+          <button
             onClick={handleClick}
-            className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ duration: 0.2 }}
+            className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
           >
             {t.startChat}
-          </motion.button>
+          </button>
         </div>
       </div>
     )
@@ -151,15 +139,7 @@ export default function LatestAIChatCard({
         <div className="mb-3">
           <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             <span>🤖</span>
-            {lang === 'hi' ? (
-              <>
-                नवीनतम <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">सहायक</span> चैट
-              </>
-            ) : (
-              <>
-                Latest <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Sahayak</span> Chat
-              </>
-            )}
+            {t.title}
           </h3>
           <p className="text-xs text-gray-500 mt-1">{t.subtitle}</p>
         </div>
@@ -174,15 +154,12 @@ export default function LatestAIChatCard({
             <span>{MOCK_CHAT_FALLBACK.updatedAtLabel}</span>
           </p>
 
-          <motion.button
+          <button
             onClick={handleClick}
-            className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ duration: 0.2 }}
+            className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
           >
             {t.continueChat}
-          </motion.button>
+          </button>
         </div>
       </div>
     )
@@ -195,15 +172,7 @@ export default function LatestAIChatCard({
       <div className="mb-3">
         <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
           <span>🤖</span>
-          {lang === 'hi' ? (
-            <>
-              नवीनतम <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">सहायक</span> चैट
-            </>
-          ) : (
-            <>
-              Latest <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Sahayak</span> Chat
-            </>
-          )}
+          {t.title}
         </h3>
         <p className="text-xs text-gray-500 mt-1">{t.subtitle}</p>
       </div>
@@ -219,15 +188,12 @@ export default function LatestAIChatCard({
           <span>{getShortTime(chat.updatedAt || chat.createdAt)}</span>
         </div>
 
-        <motion.button
+        <button
           onClick={handleClick}
-          className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ duration: 0.2 }}
+          className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
         >
           {t.continueChat}
-        </motion.button>
+        </button>
       </div>
     </div>
   )

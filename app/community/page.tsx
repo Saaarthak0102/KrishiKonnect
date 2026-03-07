@@ -174,10 +174,10 @@ export default function CommunityPage() {
         <main className="max-w-5xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold text-krishi-heading mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-krishi-indigo mb-2">
               {t('communityDiscussions')}
             </h1>
-            <p className="text-krishi-text/80 mt-1">
+            <p className="text-krishi-indigo/80 mt-1">
               {t('communityDescription')}
             </p>
           </div>
@@ -190,8 +190,8 @@ export default function CommunityPage() {
                 onClick={() => setSelectedFilter(category)}
                 className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                   selectedFilter === category
-                    ? 'bg-krishi-primary text-white'
-                    : 'bg-white/70 backdrop-blur-sm border border-krishi-border text-krishi-text hover:bg-krishi-primary/10'
+                    ? 'bg-krishi-clay text-white'
+                    : 'bg-white/70 backdrop-blur-sm border border-krishi-border text-krishi-indigo hover:bg-krishi-clay/10'
                 }`}
               >
                 {category}
@@ -204,7 +204,7 @@ export default function CommunityPage() {
             <div className="max-w-5xl mx-auto space-y-4 overflow-y-auto h-[60vh] p-6">
               {isLoading ? (
                 <div className="h-full flex items-center justify-center">
-                  <p className="text-krishi-text/70 text-lg">Loading...</p>
+                  <p className="text-krishi-indigo/70 text-lg">Loading...</p>
                 </div>
               ) : filteredPosts.length === 0 ? (
                 <div className="h-full flex items-center justify-center">
@@ -212,7 +212,7 @@ export default function CommunityPage() {
                     <div className="text-6xl mb-4 text-krishi-highlight flex justify-center">
                       <BsChatDots size={64} />
                     </div>
-                    <p className="text-krishi-text/70 text-lg">
+                    <p className="text-krishi-indigo/70 text-lg">
                       {t('noQuestionsFound')}
                     </p>
                   </div>
@@ -221,7 +221,7 @@ export default function CommunityPage() {
                 filteredPosts.map((post) => (
                   <div
                     key={post.id}
-                    className="bg-white/70 backdrop-blur-sm border-2 border-krishi-border rounded-xl p-4 hover:border-krishi-primary/50 transition-all"
+                    className="bg-white/70 backdrop-blur-sm border-2 border-krishi-border rounded-xl p-4 hover:border-krishi-clay/50 transition-all"
                   >
                     {/* Post Header */}
                     <div className="flex items-start justify-between mb-3">
@@ -236,10 +236,10 @@ export default function CommunityPage() {
                           {post.author.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <h3 className="font-semibold text-krishi-heading">
+                          <h3 className="font-semibold text-krishi-indigo">
                             {post.author}
                           </h3>
-                          <p className="text-sm text-krishi-text/70">
+                          <p className="text-sm text-krishi-indigo/70">
                             {post.location && `${post.location} • `}
                             {toRelativeTime(post.createdAt)}
                           </p>
@@ -247,14 +247,14 @@ export default function CommunityPage() {
                       </div>
                       {/* Crop Tag */}
                       {(post.cropTag_en || post.cropTag_hi) && (
-                        <span className="px-3 py-1 bg-krishi-primary/10 text-krishi-primary rounded-full text-sm font-medium">
+                        <span className="px-3 py-1 bg-krishi-clay/10 text-krishi-clay rounded-full text-sm font-medium">
                           {lang === 'en' ? post.cropTag_en : post.cropTag_hi}
                         </span>
                       )}
                     </div>
 
                     {/* Post Content */}
-                    <p className="text-krishi-text mb-4">
+                    <p className="text-krishi-indigo mb-4">
                       {lang === 'en' ? post.content_en : post.content_hi}
                     </p>
 
@@ -262,14 +262,14 @@ export default function CommunityPage() {
                     <div className="flex items-center gap-4 text-sm">
                       <button
                         onClick={() => handleUpvote(post.id)}
-                        className="flex items-center gap-1 text-krishi-text hover:text-krishi-primary transition-colors"
+                        className="flex items-center gap-1 text-krishi-indigo hover:text-krishi-clay transition-colors"
                       >
                         <BiLike size={20} />
                         <span>{post.upvotes}</span>
                       </button>
                       <button
                         onClick={() => toggleReplies(post.id)}
-                        className="flex items-center gap-1 text-krishi-text hover:text-krishi-primary transition-colors"
+                        className="flex items-center gap-1 text-krishi-indigo hover:text-krishi-clay transition-colors"
                       >
                         <BsChatDots size={20} />
                         <span>
@@ -281,7 +281,7 @@ export default function CommunityPage() {
                     {/* Replies */}
                     {expandedPosts.has(post.id) && post.repliesCount > 0 && (
                       <div className="mt-4 pl-4 border-l-2 border-krishi-border space-y-3">
-                        <p className="text-sm text-krishi-text/70">
+                        <p className="text-sm text-krishi-indigo/70">
                           {t('viewDetails')}
                         </p>
                       </div>

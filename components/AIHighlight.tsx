@@ -23,35 +23,35 @@ export default function AIHighlight() {
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             {lang === 'hi' ? (
               <>
-                <span className="text-[#2D4B8C]">कृषि</span>
+                <span className="text-krishi-indigo">कृषि</span>
                 {' '}
-                <span className="text-[#C96A3A]">सहायक</span>
+                <span className="text-krishi-clay">सहायक</span>
                 {' - आपका डिजिटल कृषि विशेषज्ञ '}
                 <RiRobot2Line className="inline" size={40} />
               </>
             ) : (
               <>
-                <span className="text-[#2D4B8C]">Krishi</span>
+                <span className="text-krishi-indigo">Krishi</span>
                 {' '}
-                <span className="text-[#C96A3A]">Sahayak</span>
+                <span className="text-krishi-clay">Sahayak</span>
                 {' - Your Digital Agriculture Expert '}
                 <RiRobot2Line className="inline" size={40} />
               </>
             )}
           </h2>
-          <p className="text-lg text-krishi-text/80">
+          <p className="text-lg text-krishi-indigo/80">
             {t.aiHighlightSubtext}
           </p>
         </div>
 
         <div className="max-w-3xl mx-auto bg-white/70 backdrop-blur-md border-2 border-krishi-border rounded-lg p-6 mb-6 shadow-md">
-          <p className="text-sm text-krishi-text/70 mb-3">{t.aiExampleTitle}</p>
+          <p className="text-sm text-gray-500 mb-3">{t.aiExampleTitle}</p>
           <div className="space-y-4">
             <div className="bg-white/55 backdrop-blur-sm p-4 rounded-lg">
-              <p className="text-krishi-text font-medium">{t.aiExampleQuestion}</p>
+              <p className="text-krishi-indigo font-medium">{t.aiExampleQuestion}</p>
             </div>
             <div className="bg-krishi-agriculture/10 p-4 rounded-lg border-l-4 border-krishi-agriculture">
-              <p className="text-krishi-text">{t.aiExampleAnswer}</p>
+              <p className="text-krishi-indigo">{t.aiExampleAnswer}</p>
             </div>
           </div>
         </div>
@@ -60,7 +60,7 @@ export default function AIHighlight() {
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
               href="/ai-advisor"
-              className="inline-block bg-krishi-primary text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-shadow"
+              className="inline-block bg-krishi-clay text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-shadow"
             >
               {t.aiTryButton}
             </Link>
