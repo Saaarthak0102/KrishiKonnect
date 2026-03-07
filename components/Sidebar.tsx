@@ -6,11 +6,10 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useAuth } from '@/context/AuthContext'
 import { logout } from '@/lib/auth'
+import type { IconType } from 'react-icons'
 import { GiPlantSeed } from 'react-icons/gi'
-import { MdStorefront } from 'react-icons/md'
+import { MdInsights, MdLogout, MdSmartToy, MdStorefront } from 'react-icons/md'
 import { FaUsers, FaTruck } from 'react-icons/fa'
-import { RiRobot2Line } from 'react-icons/ri'
-import { HiOutlineChartBar } from 'react-icons/hi'
 import { IoChevronForward, IoChevronBack } from 'react-icons/io5'
 import BrandName from '@/components/ui/BrandName'
 
@@ -55,34 +54,34 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
   const router = useRouter()
   const pathname = usePathname()
 
-  const menuItems = [
+  const menuItems: { icon: IconType; label: string; href: string }[] = [
     {
-      icon: <HiOutlineChartBar size={20} />,
+      icon: MdInsights,
       label: lang === 'hi' ? 'कृषि दृष्टि' : 'Krishi Drishti',
       href: '/dashboard',
     },
     {
-      icon: <GiPlantSeed size={20} />,
+      icon: GiPlantSeed,
       label: lang === 'hi' ? 'कृषि फसल' : 'Krishi Fasal',
       href: '/crop-library',
     },
     {
-      icon: <MdStorefront size={20} />,
+      icon: MdStorefront,
       label: lang === 'hi' ? 'कृषि बाजार' : 'Krishi Bazaar',
       href: '/mandi',
     },
     {
-      icon: <FaUsers size={20} />,
+      icon: FaUsers,
       label: lang === 'hi' ? 'कृषि संघ' : 'Krishi Sangh',
       href: '/community',
     },
     {
-      icon: <RiRobot2Line size={20} />,
+      icon: MdSmartToy,
       label: lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak',
       href: '/ai-advisor',
     },
     {
-      icon: <FaTruck size={20} />,
+      icon: FaTruck,
       label: lang === 'hi' ? 'कृषि सेतु' : 'Krishi Setu',
       href: '/transport',
     },
@@ -150,7 +149,7 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
             key={item.href}
             href={item.href}
             className={`flex items-center mx-2 ${
-              expanded ? 'justify-start px-4 space-x-3' : 'justify-center'
+              expanded ? 'justify-start px-4 gap-[14px]' : 'justify-center'
             } py-3`}
             style={{
               borderRadius: '10px',
@@ -176,8 +175,11 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
             }}
             title={!expanded ? item.label : ''}
           >
-            <span className="flex-shrink-0" style={{ color: isActive(item.href) ? '#C46A3D' : '#2D2A6E', fontSize: '18px' }}>
-              {item.icon}
+            <span
+              className="flex h-7 w-7 flex-shrink-0 items-center justify-center"
+              style={{ color: isActive(item.href) ? '#C46A3D' : '#2D2A6E' }}
+            >
+              <item.icon size={24} />
             </span>
             {expanded && (
               <span className="font-semibold text-sm whitespace-nowrap">
@@ -190,19 +192,30 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
 
       {/* Logout Button */}
       {user && (
-        <div className="p-3">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center space-x-2 px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors duration-200"
-            title={!expanded ? 'Logout' : ''}
-          >
-            <span className="text-lg">🚪</span>
-            {expanded && (
-              <span className="font-semibold text-sm">
-                {lang === 'hi' ? 'लॉगआउट' : 'Logout'}
+        <div className="p-3 mt-8 mb-5">
+          <div className="rounded-[12px] border border-[#C46A3D]">
+            <button
+              onClick={handleLogout}
+              className={`w-full flex items-center ${expanded ? 'justify-start px-3 gap-[10px]' : 'justify-center'} py-2 rounded-[12px] transition-colors duration-200`}
+              style={{ color: '#2D2A6E' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(196,106,61,0.08)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent'
+              }}
+              title={!expanded ? 'Logout' : ''}
+            >
+              <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center text-[#C46A3D]">
+                <MdLogout size={24} />
               </span>
-            )}
-          </button>
+              {expanded && (
+                <span className="font-medium text-sm whitespace-nowrap text-[#2D2A6E]">
+                  {lang === 'hi' ? 'लॉगआउट' : 'Logout'}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       )}
     </aside>
