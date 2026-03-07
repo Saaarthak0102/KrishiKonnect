@@ -55,18 +55,19 @@ export default function MessageBubble({ message, isUser, enableTypewriter = fals
   if (isUser) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        whileHover={{ y: -1 }}
-        className="flex justify-end"
+        transition={{ duration: 0.35, ease: 'easeOut' }}
+        whileHover={{ y: -2 }}
+        className="ai-chat-message flex justify-end"
       >
         <div 
-          className="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-xl rounded-br-none transition-all duration-200"
+          className="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-xl rounded-br-none transition-all duration-200 will-change-transform"
           style={{
             background: '#C46A3D',
             color: 'white',
             boxShadow: '0 6px 16px rgba(0,0,0,0.12)',
+            transform: 'translateZ(0)',
           }}
         >
           {/* Image if exists */}
@@ -100,12 +101,24 @@ export default function MessageBubble({ message, isUser, enableTypewriter = fals
   // AI message bubble with structured response
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="flex justify-start"
+      transition={{ duration: 0.35, ease: 'easeOut' }}
+      whileHover={{ y: -2, scale: 1.01 }}
+      className="ai-chat-message flex justify-start will-change-transform"
+      style={{
+        transform: 'translateZ(0)',
+      }}
     >
-      <div className="max-w-xs lg:max-w-md xl:max-w-lg w-full">
+      <div 
+        className="max-w-xs lg:max-w-md xl:max-w-lg w-full px-4 py-3 rounded-xl transition-all duration-200"
+        style={{
+          background: 'rgba(255,255,255,0.65)',
+          border: '1px solid rgba(196,106,61,0.25)',
+          borderRadius: '12px',
+          boxShadow: '0 8px 20px rgba(0,0,0,0.08), 0 0 10px rgba(196,106,61,0.08)',
+        }}
+      >
         <p className="text-xs font-semibold mb-2" style={{ color: '#2D2A6E', fontWeight: 600 }}>
           {`Language: ${languageLabel}`}
         </p>

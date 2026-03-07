@@ -310,8 +310,11 @@ export default function AIAdvisorPage() {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Header - Updated to match DashboardLayout navbar style */}
-      <header 
+      <motion.header 
         className="sticky top-0 z-50"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
         style={{
           background: 'rgba(255,255,255,0.35)',
           backdropFilter: 'blur(12px)',
@@ -324,13 +327,24 @@ export default function AIAdvisorPage() {
         <div className="px-4 py-4 flex items-center justify-between">
           {/* Left - Logo and Brand with Page Title */}
           <div className="flex items-center space-x-4">
-            <GiWheat size={24} className="text-krishi-agriculture" />
+            <motion.div
+              whileHover={{ y: -1 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+            >
+              <GiWheat size={24} className="text-krishi-agriculture" />
+            </motion.div>
             <div className="flex items-center space-x-2">
               <span className="text-lg hidden sm:inline font-semibold">
                 <span className="text-[#2D2A6E]">KrishiKonnect</span>
               </span>
               <span className="text-gray-400 mx-2 hidden sm:inline">|</span>
-              <HiSparkles size={22} className="hidden sm:inline" style={{ color: '#2D2A6E', opacity: 0.9 }} />
+              <motion.div
+                whileHover={{ y: -1 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className="hidden sm:inline"
+              >
+                <HiSparkles size={22} style={{ color: '#2D2A6E', opacity: 0.9 }} />
+              </motion.div>
               <span className="text-lg font-semibold" style={{ fontFamily: 'Poppins', fontSize: '1.5rem', fontWeight: 600 }}>
                 <span style={{ color: '#2D2A6E' }}>Krishi</span>
                 {' '}
@@ -340,18 +354,23 @@ export default function AIAdvisorPage() {
           </div>
 
           {/* Center - Greeting Message */}
-          <div className="flex-1 text-center hidden md:block">
+          <motion.div 
+            className="flex-1 text-center hidden md:block"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.08, duration: 0.5 }}
+          >
             <h1 className="text-lg md:text-xl font-semibold" style={{ color: '#2D2A6E', fontWeight: 600 }}>
               {lang === 'hi' ? 'नमस्ते' : 'Namaste'}
             </h1>
-          </div>
+          </motion.div>
 
           {/* Right - Language Toggle */}
           <div className="flex items-center space-x-4">
             <LanguageToggle />
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* 3-Column Layout: Krishi Drishti Sidebar | Chat Window | Chat History Sidebar */}
       <div className="flex flex-1 overflow-hidden">

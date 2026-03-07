@@ -31,15 +31,19 @@ export default function ContextChips({
       {chips.map((chip, idx) => (
         <motion.div
           key={idx}
-          whileHover={{ y: -2 }}
-          transition={{ duration: 0.25 }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: idx * 0.05, ease: 'easeOut' }}
+          whileHover={{ y: -1, scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 will-change-transform"
           style={{
             background: 'rgba(255,255,255,0.6)',
             backdropFilter: 'blur(10px)',
             WebkitBackdropFilter: 'blur(10px)',
             border: '1px solid rgba(196,106,61,0.25)',
             color: '#2D2A6E',
+            transform: 'translateZ(0)',
           }}
         >
           <span style={{ color: '#2D2A6E', opacity: 0.9 }}>{chip.icon}</span>

@@ -72,14 +72,19 @@ export default function ChatWindow({
   }
 
   return (
-    <div 
+    <motion.div 
       className="flex-1 flex flex-col overflow-hidden rounded-2xl mx-3 my-3"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.15, ease: 'easeOut' }}
       style={{
         background: 'rgba(255,255,255,0.55)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
         border: '1px solid rgba(196,106,61,0.25)',
         boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 0 14px rgba(45,42,110,0.10)',
+        willChange: 'transform, opacity',
+        transform: 'translateZ(0)',
       }}
     >
       {farmContext && (
@@ -166,6 +171,6 @@ export default function ChatWindow({
           lang={lang}
         />
       </div>
-    </div>
+    </motion.div>
   )
 }

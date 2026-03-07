@@ -132,6 +132,46 @@
   }
 }
 
+/* AI Pulse Glow Animation for Krishi Sahayak thinking loader */
+@keyframes aiPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(45, 42, 110, 0.15), inset 0 0 8px rgba(196, 106, 61, 0.08);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(45, 42, 110, 0.25), inset 0 0 12px rgba(196, 106, 61, 0.12);
+  }
+}
+
+.ai-pulse-glow {
+  animation: aiPulseGlow 2.8s infinite ease-in-out;
+}
+
+/* Chat Message Animations for Krishi Sahayak */
+.ai-chat-message {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+  will-change: transform, opacity;
+}
+
+.ai-chat-message.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ai-thinking-message {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+  will-change: transform, opacity;
+}
+
+.ai-thinking-message.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
 .badge-glow {
   animation: badgeGlow 2.8s infinite;
 }
@@ -227,5 +267,16 @@
 
   .badge-glow {
     animation: none;
+  }
+
+  .ai-pulse-glow,
+  .ai-thinking-message {
+    animation: none !important;
+  }
+
+  .ai-chat-message,
+  .ai-thinking-message {
+    opacity: 1;
+    transform: none !important;
   }
 }

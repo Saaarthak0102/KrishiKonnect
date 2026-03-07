@@ -75,7 +75,10 @@ export default function ChatInput({
     <div className="space-y-3">
       {/* Textarea */}
       <div className="relative">
-        <textarea
+        <motion.textarea
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={handleKeyPress}
@@ -86,7 +89,7 @@ export default function ChatInput({
               : 'Ask your farming question...'
           }
           rows={3}
-          className="w-full px-4 py-3 rounded-xl resize-none outline-none disabled:cursor-not-allowed transition-all"
+          className="w-full px-4 py-3 rounded-xl resize-none outline-none disabled:cursor-not-allowed transition-all will-change-transform"
           style={{
             background: 'rgba(255,255,255,0.6)',
             backdropFilter: 'blur(10px)',
@@ -94,14 +97,17 @@ export default function ChatInput({
             border: '1px solid rgba(196,106,61,0.25)',
             fontSize: '0.95rem',
             color: '#2D2A6E',
+            transform: 'translateZ(0)',
           }}
           onFocus={(e) => {
-            e.target.style.border = '1px solid #C46A3D'
-            e.target.style.boxShadow = '0 0 10px rgba(196,106,61,0.25)'
+            e.target.style.border = '1px solid rgba(196,106,61,0.45)'
+            e.target.style.boxShadow = '0 0 0 2px rgba(196,106,61,0.12)'
+            e.target.style.transform = 'translateY(-1px)'
           }}
           onBlur={(e) => {
             e.target.style.border = '1px solid rgba(196,106,61,0.25)'
             e.target.style.boxShadow = 'none'
+            e.target.style.transform = 'translateY(0)'
           }}
         />
       </div>
@@ -110,15 +116,16 @@ export default function ChatInput({
       <div className="flex items-center justify-between gap-3">
         {/* Image Upload Button */}
         <motion.button
-          whileHover={{ y: -2, scale: 1.03 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ y: -1, scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => fileInputRef.current?.click()}
           disabled={disabled || isLoading}
-          className="flex items-center space-x-2 px-4 py-2.5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
+          className="flex items-center space-x-2 px-4 py-2.5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm will-change-transform"
           style={{
             background: 'rgba(255,255,255,0.55)',
             border: '1px solid rgba(196,106,61,0.3)',
             color: '#2D2A6E',
+            transform: 'translateZ(0)',
           }}
           title={
             lang === 'hi'
@@ -144,22 +151,23 @@ export default function ChatInput({
 
         {/* Send Button */}
         <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={
+            !disabled && !isLoading && message.trim()
+              ? { 
+                  y: -2, 
+                  scale: 1.03,
+                  boxShadow: '0 10px 22px rgba(45,42,110,0.20), 0 0 10px rgba(45,42,110,0.12)',
+                }
+              : {}
+          }
+          whileTap={{ scale: 0.98 }}
           onClick={handleSendMessage}
           disabled={disabled || isLoading || !message.trim()}
-          className="flex items-center space-x-2 px-6 py-2.5 rounded-lg text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
+          className="flex items-center space-x-2 px-6 py-2.5 rounded-lg text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm will-change-transform"
           style={{
             background: '#2D2A6E',
             boxShadow: '0 6px 16px rgba(45,42,110,0.25)',
-          }}
-          onMouseEnter={(e) => {
-            if (!disabled && !isLoading && message.trim()) {
-              e.currentTarget.style.background = '#3a378a'
-            }
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#2D2A6E'
+            transform: 'translateZ(0)',
           }}
         >
           <span>{isLoading ? '...' : lang === 'hi' ? 'भेजें' : 'Send'}</span>

@@ -54,12 +54,20 @@ export default function AIThinking({ lang = 'en' }: AIThinkingProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="flex justify-start"
+      transition={{ duration: 0.35, ease: 'easeOut' }}
+      className="ai-thinking-message flex justify-start"
     >
-      <div className="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-lg bg-krishi-agriculture/10 text-krishi-indigo rounded-bl-none border border-krishi-agriculture/20">
+      <div 
+        className="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-xl rounded-bl-none border will-change-transform"
+        style={{
+          background: 'rgba(196,106,61,0.08)',
+          borderColor: 'rgba(196,106,61,0.25)',
+          animation: 'aiPulseGlow 2.8s infinite ease-in-out',
+          transform: 'translateZ(0)',
+        }}
+      >
         <div className="flex items-center gap-2 mb-3">
           <motion.div
             animate={{ rotate: 360 }}
