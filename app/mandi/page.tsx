@@ -299,6 +299,15 @@ export default function MandiPage() {
     setExpandedMandi((prev) => (prev === mandiId ? null : mandiId))
   }, [])
 
+  useEffect(() => {
+    const previousScrollBehavior = document.documentElement.style.scrollBehavior
+    document.documentElement.style.scrollBehavior = 'smooth'
+
+    return () => {
+      document.documentElement.style.scrollBehavior = previousScrollBehavior
+    }
+  }, [])
+
   return (
     <DashboardLayout>
       <div className="min-h-screen bg-transparent">
@@ -340,7 +349,7 @@ export default function MandiPage() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.05, duration: 0.4 }}
-                className="mb-8 rounded-xl border-2 bg-white/60 p-5 backdrop-blur-md"
+                className="mb-8 rounded-xl border-2 bg-white/60 p-5 backdrop-blur-md transition-all duration-[250ms] ease-out hover:shadow-[0_10px_25px_rgba(0,0,0,0.08),0_0_10px_rgba(45,42,110,0.06)] hover:-translate-y-[2px]"
                 style={{ borderColor: '#E8DCC8' }}
               >
                 {/* Search & Filter Container */}
@@ -352,7 +361,7 @@ export default function MandiPage() {
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       placeholder={lang === 'hi' ? 'फसल खोजें... जैसे गेहूं, चावल' : 'Search crops... e.g. Wheat, Rice'}
-                      className="w-full rounded-[12px] px-4 py-3 outline-none transition-all"
+                      className="w-full rounded-[12px] px-4 py-3 outline-none transition-all duration-[200ms] ease-out will-change-transform"
                       style={{
                         background: 'rgba(255,255,255,0.55)',
                         backdropFilter: 'blur(12px)',
@@ -361,7 +370,7 @@ export default function MandiPage() {
                       }}
                       onFocus={(e) => {
                         e.target.style.border = '1px solid #C46A3D'
-                        e.target.style.boxShadow = '0 0 10px rgba(196,106,61,0.15)'
+                        e.target.style.boxShadow = '0 0 8px rgba(196,106,61,0.18)'
                       }}
                       onBlur={(e) => {
                         e.target.style.border = '1px solid rgba(196,106,61,0.30)'
@@ -375,17 +384,19 @@ export default function MandiPage() {
                     <select
                       value={selectedState}
                       onChange={(e) => setSelectedState(e.target.value)}
-                      className="w-full rounded-lg border-2 px-4 py-3 outline-none transition-colors"
+                      className="w-full rounded-lg border-2 px-4 py-3 outline-none transition-all duration-[200ms] ease-out hover:bg-[rgba(45,42,110,0.05)]"
                       style={{
                         borderColor: '#D8CFC0',
                         color: '#1F3C88',
                         backgroundColor: 'rgba(255, 255, 255, 0.62)',
                       }}
                       onFocus={(e) => {
-                        e.target.style.borderColor = '#1F3C88'
+                        e.target.style.borderColor = '#C46A3D'
+                        e.target.style.border = '2px solid #C46A3D'
                       }}
                       onBlur={(e) => {
                         e.target.style.borderColor = '#D8CFC0'
+                        e.target.style.border = ''
                       }}
                     >
                       <option value="">
@@ -404,13 +415,15 @@ export default function MandiPage() {
                     <div className="w-full md:w-auto">
                       <button
                         onClick={() => setShowMyCrops(!showMyCrops)}
-                        className="w-full rounded-[10px] px-6 py-3 font-semibold transition-all"
+                        className="w-full rounded-[10px] px-6 py-3 font-semibold transition-all duration-[200ms] ease-out active:scale-[0.97]"
                         style={{
                           color: showMyCrops ? '#FFFFFF' : '#2D2A6E',
                           backgroundColor: showMyCrops ? '#C46A3D' : 'rgba(196,106,61,0.12)',
                           border: showMyCrops ? '1px solid #C46A3D' : '1px solid rgba(196,106,61,0.35)',
                         }}
                         onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-1px)'
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(196,106,61,0.18)'
                           if (showMyCrops) {
                             e.currentTarget.style.backgroundColor = '#B95D31'
                           } else {
@@ -419,6 +432,8 @@ export default function MandiPage() {
                           }
                         }}
                         onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = ''
+                          e.currentTarget.style.boxShadow = ''
                           if (showMyCrops) {
                             e.currentTarget.style.backgroundColor = '#C46A3D'
                           } else {
@@ -490,26 +505,29 @@ export default function MandiPage() {
                     <motion.button
                       key={crop.id}
                       id={`crop-card-${crop.name_en.toLowerCase().replace(/\s+/g, '-')}`}
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      whileHover={{
-                        y: -4,
-                        boxShadow: '0 14px 35px rgba(0,0,0,0.12), 0 0 18px rgba(45,42,110,0.12)',
-                      }}
-                      transition={{ delay: Math.min(idx * 0.02, 0.3), duration: 0.25, ease: 'easeOut' }}
+                      whileTap={{ scale: 0.995 }}
+                      transition={{ delay: idx * 0.05, duration: 0.4, ease: 'easeOut' }}
                       onClick={() => setSelectedCrop(crop.name_en)}
-                      className="group rounded-[16px] p-5 text-left transition-all duration-[250ms] ease-in-out"
+                      className="crop-card group rounded-[16px] p-5 text-left hover:-translate-y-[3px] hover:shadow-[0_12px_28px_rgba(0,0,0,0.10),0_0_12px_rgba(45,42,110,0.08)]"
                       style={{
                         background: 'rgba(255,255,255,0.55)',
                         backdropFilter: 'blur(12px)',
                         border: '1px solid rgba(196,106,61,0.30)',
-                        boxShadow: '0 10px 25px rgba(0,0,0,0.08), 0 0 14px rgba(45,42,110,0.08)',
+                        boxShadow: '0 8px 22px rgba(0,0,0,0.08)',
+                        transform: 'translateZ(0)',
+                        willChange: 'transform',
+                        transition: 'transform 0.18s ease-out, box-shadow 0.18s ease-out',
                       }}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="mb-1 flex items-center gap-2">
-                            <CropIcon size={20} style={{ color: '#2D2A6E', opacity: 0.85 }} />
+                              <CropIcon
+                                size={20}
+                                style={{ color: '#2D2A6E', opacity: 0.85 }}
+                              />
                             <h3
                               className="font-semibold flex items-center"
                               style={{ fontSize: '1.2rem', color: '#2D2A6E' }}
@@ -521,14 +539,32 @@ export default function MandiPage() {
                             {mandiCount} {lang === 'hi' ? 'मंडियां' : 'mandis'}
                           </p>
                           <div className="flex items-center gap-2">
-                            <p className="font-semibold" style={{ fontSize: '1.35rem', color: '#2E9D57' }}>
+                            <motion.p
+                              initial={{ opacity: 0, y: 6 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.35, ease: 'easeOut', delay: idx * 0.05 + 0.1 }}
+                              className="font-semibold"
+                              style={{ fontSize: '1.35rem', color: '#2E9D57' }}
+                            >
                               ₹{bestPrice.toLocaleString('en-IN')}
-                            </p>
+                            </motion.p>
                             {trendDirection === 'up' && (
-                              <FiTrendingUp size={18} style={{ color: '#2E9D57' }} aria-label="Price trending up" />
+                              <motion.span
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.25, ease: 'easeOut', delay: idx * 0.05 + 0.16 }}
+                              >
+                                <FiTrendingUp size={18} style={{ color: '#2E9D57' }} aria-label="Price trending up" />
+                              </motion.span>
                             )}
                             {trendDirection === 'down' && (
-                              <FiTrendingDown size={18} style={{ color: '#C46A3D' }} aria-label="Price trending down" />
+                              <motion.span
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.25, ease: 'easeOut', delay: idx * 0.05 + 0.16 }}
+                              >
+                                <FiTrendingDown size={18} style={{ color: '#C46A3D' }} aria-label="Price trending down" />
+                              </motion.span>
                             )}
                           </div>
                           <p
@@ -540,7 +576,7 @@ export default function MandiPage() {
                         </div>
                       </div>
                       <div
-                        className="mt-4 inline-flex cursor-pointer items-center rounded-[10px] border px-[14px] py-2 font-medium transition-all group-hover:bg-[#2D2A6E] group-hover:text-white"
+                        className="view-prices-button mt-4 inline-flex cursor-pointer items-center rounded-[10px] border px-[14px] py-2 font-medium transition-all duration-[160ms] ease-out hover:shadow-[0_4px_12px_rgba(45,42,110,0.20)] active:scale-[0.97]"
                         style={{
                           background: 'rgba(45,42,110,0.08)',
                           color: '#2D2A6E',
@@ -610,14 +646,14 @@ export default function MandiPage() {
                     <select
                       value={selectedState}
                       onChange={(e) => setSelectedState(e.target.value)}
-                      className="w-full rounded-lg border-2 px-4 py-2 outline-none transition-colors"
+                      className="w-full rounded-lg border-2 px-4 py-2 outline-none transition-all duration-[200ms] ease-out hover:bg-[rgba(45,42,110,0.05)]"
                       style={{
                         borderColor: '#D8CFC0',
                         color: '#1F3C88',
                         backgroundColor: 'rgba(255, 255, 255, 0.62)',
                       }}
                       onFocus={(e) => {
-                        e.target.style.borderColor = '#1F3C88'
+                        e.target.style.borderColor = '#C46A3D'
                       }}
                       onBlur={(e) => {
                         e.target.style.borderColor = '#D8CFC0'
