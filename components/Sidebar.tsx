@@ -6,6 +6,11 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useAuth } from '@/context/AuthContext'
 import { logout } from '@/lib/auth'
+import { GiWheat, GiPlantSeed } from 'react-icons/gi'
+import { MdStorefront } from 'react-icons/md'
+import { FaUsers, FaTruck } from 'react-icons/fa'
+import { RiRobot2Line } from 'react-icons/ri'
+import { HiOutlineChartBar } from 'react-icons/hi'
 
 interface SidebarProps {
   defaultExpanded?: boolean
@@ -50,32 +55,32 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
 
   const menuItems = [
     {
-      icon: '🏠',
+      icon: <HiOutlineChartBar size={20} />,
       label: lang === 'hi' ? 'कृषि दृष्टि' : 'Krishi Drishti',
       href: '/dashboard',
     },
     {
-      icon: '📚',
+      icon: <GiPlantSeed size={20} />,
       label: lang === 'hi' ? 'कृषि फसल' : 'Krishi Fasal',
       href: '/crop-library',
     },
     {
-      icon: '💰',
+      icon: <MdStorefront size={20} />,
       label: lang === 'hi' ? 'कृषि बाजार' : 'Krishi Bazaar',
       href: '/mandi',
     },
     {
-      icon: '🤝',
+      icon: <FaUsers size={20} />,
       label: lang === 'hi' ? 'कृषि संघ' : 'Krishi Sangh',
       href: '/community',
     },
     {
-      icon: '🤖',
+      icon: <RiRobot2Line size={20} />,
       label: lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak',
       href: '/ai-advisor',
     },
     {
-      icon: '🚚',
+      icon: <FaTruck size={20} />,
       label: lang === 'hi' ? 'कृषि सेतु' : 'Krishi Setu',
       href: '/transport',
     },
@@ -108,7 +113,7 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
       <div className="flex items-center justify-between p-4 border-b-2 border-gray-200">
         {expanded && (
           <Link href="/dashboard" className="flex items-center space-x-2 flex-1">
-            <span className="text-2xl">🌾</span>
+            <GiWheat size={24} className="text-krishi-primary" />
             <span className="font-bold text-krishi-heading text-sm">KrishiKonnect</span>
           </Link>
         )}
@@ -144,7 +149,7 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
             }
             title={!expanded ? item.label : ''}
           >
-            <span className="text-xl flex-shrink-0">{item.icon}</span>
+            <span className="flex-shrink-0">{item.icon}</span>
             {expanded && (
               <span className="font-semibold text-sm whitespace-nowrap">
                 {renderKrishiLabel(item.label, lang)}

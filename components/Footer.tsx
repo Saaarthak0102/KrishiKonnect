@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
+import { GiWheat } from 'react-icons/gi'
 
 export default function Footer() {
   const { lang } = useLanguage()
@@ -21,9 +22,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand Section */}
           <div>
-            <h3 className="text-2xl font-bold text-krishi-heading mb-2">
-              KrishiKonnect 🌾
-            </h3>
+            <div className="flex items-center gap-2 mb-2">
+              <GiWheat size={24} className="text-krishi-agriculture" />
+              <h3 className="text-2xl font-bold text-krishi-heading">
+                KrishiKonnect
+              </h3>
+            </div>
             <p className="text-krishi-text/80 text-sm">{t.footerTagline}</p>
           </div>
 

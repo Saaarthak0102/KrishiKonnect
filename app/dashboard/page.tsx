@@ -17,6 +17,10 @@ import { getWeatherForLocation, type WeatherData } from '@/lib/weatherService'
 import { fetchCropPriceHistory, getBestPriceForCrop as getBestMandiPriceFromService } from '@/lib/mandiService'
 import cropsData from '@/data/crops.json'
 import mandiPricesData from '@/data/mandiPrices.json'
+import { GiWheat, GiPlantSeed } from 'react-icons/gi'
+import { MdLocationOn, MdCalendarToday } from 'react-icons/md'
+import { FiTrendingUp } from 'react-icons/fi'
+import { FaTruck } from 'react-icons/fa'
 
 interface BestPriceData {
   price: number
@@ -599,7 +603,7 @@ export default function DashboardPage() {
         className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
       >
         <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
-          <span>🌾</span>
+          <GiWheat size={24} className="text-krishi-agriculture" />
           {t.farmOverview}
         </h2>
         
@@ -608,7 +612,7 @@ export default function DashboardPage() {
           <div className="space-y-4">
             <div>
               <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
-                <span>🌾</span>
+                <GiWheat size={20} />
                 {t.primaryCrop}
               </p>
               <p className="text-lg font-semibold text-gray-900">
@@ -617,7 +621,7 @@ export default function DashboardPage() {
             </div>
             <div>
               <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
-                <span>📍</span>
+                <MdLocationOn size={20} />
                 {t.location}
               </p>
               <p className="text-lg font-semibold text-gray-900">
@@ -626,7 +630,7 @@ export default function DashboardPage() {
             </div>
             <div>
               <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
-                <span>📅</span>
+                <MdCalendarToday size={20} />
                 {t.season}
               </p>
               <p className="text-lg font-semibold text-gray-900">
@@ -639,7 +643,7 @@ export default function DashboardPage() {
           <div className="space-y-4">
             <div>
               <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
-                <span>📈</span>
+                <FiTrendingUp size={20} />
                 {t.marketTrend}
               </p>
               <p className={`text-lg font-semibold ${marketTrendColor}`}>
@@ -661,7 +665,7 @@ export default function DashboardPage() {
           <div className="space-y-4">
             <div>
               <p className="text-sm text-gray-600 mb-2 flex items-center gap-2">
-                <span>🌱</span>
+                <GiPlantSeed size={20} />
                 {t.inYourFarmToday}
               </p>
               <ul className="mt-2 space-y-1 text-sm text-gray-700">
@@ -726,7 +730,7 @@ export default function DashboardPage() {
         >
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-1">
-              <span>🌾</span>
+              <GiWheat size={24} className="text-krishi-agriculture" />
               {t.myCrops}
             </h2>
             <p className="text-sm text-gray-600">
@@ -737,7 +741,9 @@ export default function DashboardPage() {
           {/* Empty State */}
           {myCrops.length === 0 && (
             <div className="py-12 px-6 text-center">
-              <div className="mb-4 text-5xl">🌾</div>
+              <div className="mb-4 text-5xl flex justify-center">
+                <GiWheat size={64} className="text-krishi-agriculture" />
+              </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 {t.noCropsSelected}
               </h3>
@@ -840,7 +846,8 @@ export default function DashboardPage() {
           className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
         >
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            🚚 {t.yourServices}
+            <FaTruck size={24} />
+            {t.yourServices}
           </h3>
         
         <div className="space-y-4">
@@ -851,7 +858,7 @@ export default function DashboardPage() {
           ) : (
             <div key={latestTransportBooking.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
               <div className="flex items-start gap-3">
-                <span className="text-2xl">🚚</span>
+                <FaTruck size={24} className="text-gray-600 mt-1" />
                 <div className="flex-1">
                   <p className="font-semibold text-gray-900 mb-1">
                     {t.transportBooked}

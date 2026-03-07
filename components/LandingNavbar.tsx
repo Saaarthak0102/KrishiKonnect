@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import LanguageToggle from './LanguageToggle'
+import { GiWheat } from 'react-icons/gi'
 
 export default function LandingNavbar() {
   const { lang } = useLanguage()
@@ -27,9 +28,10 @@ export default function LandingNavbar() {
       <div className="w-full">
         <div className="flex items-center justify-between h-16 px-4 md:px-8 lg:px-12">
           {/* Left - Logo */}
-          <Link href="/" className="flex items-center gap-1 flex-shrink-0">
+          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+            <GiWheat size={24} className="text-krishi-agriculture" />
             <span className="text-2xl font-bold text-krishi-heading">
-              KrishiKonnect 🌾
+              KrishiKonnect
             </span>
           </Link>
 

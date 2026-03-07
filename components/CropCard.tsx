@@ -6,6 +6,7 @@ import { useState, memo } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useStarredCrops } from '@/lib/useStarredCrops'
 import Toast from '@/components/Toast'
+import { AiFillStar, AiOutlineStar } from 'react-icons/ai'
 
 interface Crop {
   id: string
@@ -85,9 +86,11 @@ export default memo(function CropCard({ crop }: CropCardProps) {
               aria-label={isStarred(crop.id) ? 'Remove from My Crops' : 'Add to My Crops'}
               title={isStarred(crop.id) ? 'Remove from My Crops' : 'Add to My Crops'}
             >
-              <span className={`text-xl ${isStarred(crop.id) ? 'text-[#F2A541]' : 'text-gray-400'}`}>
-                {isStarred(crop.id) ? '⭐' : '☆'}
-              </span>
+              {isStarred(crop.id) ? (
+                <AiFillStar size={20} className="text-[#F2A541]" />
+              ) : (
+                <AiOutlineStar size={20} className="text-gray-400" />
+              )}
             </motion.button>
           </div>
 

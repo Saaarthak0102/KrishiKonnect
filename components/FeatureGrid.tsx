@@ -3,6 +3,11 @@
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
+import { RiRobot2Line } from 'react-icons/ri'
+import { GiPlantSeed } from 'react-icons/gi'
+import { MdStorefront } from 'react-icons/md'
+import { FaUsers, FaTruck } from 'react-icons/fa'
+import { HiOutlineChartBar } from 'react-icons/hi'
 
 // Helper function to render two-colored Krishi titles
 function renderKrishiTitle(title: string) {
@@ -25,32 +30,32 @@ export default function FeatureGrid() {
 
   const features = [
     {
-      icon: '🤖',
+      icon: <RiRobot2Line size={32} />,
       titleKey: 'aiAdvisor',
       descKey: 'aiAdvisorDesc',
     },
     {
-      icon: '📚',
+      icon: <GiPlantSeed size={32} />,
       titleKey: 'cropLibrary',
       descKey: 'cropLibraryDesc',
     },
     {
-      icon: '💰',
+      icon: <MdStorefront size={32} />,
       titleKey: 'mandiPrices',
       descKey: 'mandiPricesDesc',
     },
     {
-      icon: '🤝',
+      icon: <FaUsers size={32} />,
       titleKey: 'community',
       descKey: 'communityDesc',
     },
     {
-      icon: '🚚',
+      icon: <FaTruck size={32} />,
       titleKey: 'transport',
       descKey: 'transportDesc',
     },
     {
-      icon: '📊',
+      icon: <HiOutlineChartBar size={32} />,
       titleKey: 'dataAnalytics',
       descKey: 'dataAnalyticsDesc',
     }

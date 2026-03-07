@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import type { TransportBookingRecord } from '@/lib/transportBookings'
+import { MdEditCalendar } from 'react-icons/md'
 
 interface TransportBookingHistoryProps {
   bookings: TransportBookingRecord[]
@@ -119,8 +120,9 @@ export default function TransportBookingHistory({
       className="mb-12 rounded-xl border-2 p-8"
       style={{ borderColor: '#E8DCC8', backgroundColor: '#FFFFFF' }}
     >
-      <h2 className="text-2xl font-bold mb-6" style={{ color: '#1F3C88' }}>
-        📋 {t.yourTransportBookings}
+      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2" style={{ color: '#1F3C88' }}>
+        <MdEditCalendar size={28} />
+        {t.yourTransportBookings}
       </h2>
 
       <div className="space-y-4">

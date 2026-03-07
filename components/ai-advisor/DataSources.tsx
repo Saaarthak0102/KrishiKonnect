@@ -1,6 +1,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { WiDaySunny } from 'react-icons/wi'
+import { MdStorefront, MdCalendarToday } from 'react-icons/md'
+import { GiWheat } from 'react-icons/gi'
 
 interface DataSourcesProps {
   lang?: string
@@ -9,24 +12,24 @@ interface DataSourcesProps {
 export default function DataSources({ lang = 'en' }: DataSourcesProps) {
   const sources = [
     {
-      icon: '🌤️',
+      icon: <WiDaySunny size={20} />,
       label: lang === 'hi' ? 'मौसम API' : 'Weather API',
       isKrishi: false,
     },
     {
-      icon: '💰',
+      icon: <MdStorefront size={20} />,
       labelPart1: lang === 'hi' ? 'कृषि' : 'Krishi',
       labelPart2: lang === 'hi' ? 'बाजार' : 'Bazaar',
       isKrishi: true,
     },
     {
-      icon: '🌾',
+      icon: <GiWheat size={20} />,
       labelPart1: lang === 'hi' ? 'कृषि' : 'Krishi',
       labelPart2: lang === 'hi' ? 'फसल' : 'Fasal',
       isKrishi: true,
     },
     {
-      icon: '📅',
+      icon: <MdCalendarToday size={20} />,
       label: lang === 'hi' ? 'मौसमी कैलेंडर' : 'Seasonal Calendar',
       isKrishi: false,
     },

@@ -2,24 +2,37 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { MdLocationOn, MdStorefront } from 'react-icons/md'
+import { WiDaySunny } from 'react-icons/wi'
+import { GiWheat, GiPlantSeed } from 'react-icons/gi'
 
 interface AIThinkingProps {
   lang?: string
 }
 
 const CHECKING_STEPS_EN = [
-  '📍 Analyzing your location...',
-  '🌤️ Checking current weather...',
-  '🌱 Reviewing crop stage...',
-  '💰 Fetching market prices...',
+  'Analyzing your location...',
+  'Checking current weather...',
+  'Reviewing crop stage...',
+  'Fetching market prices...',
 ]
 
 const CHECKING_STEPS_HI = [
-  '📍 आपके स्थान का विश्लेषण...',
-  '🌤️ मौसम की जांच...',
-  '🌱 फसल की अवस्था की समीक्षा...',
-  '💰 बाज़ार मूल्य लाना...',
+  'आपके स्थान का विश्लेषण...',
+  'मौसम की जांच...',
+  'फसल की अवस्था की समीक्षा...',
+  'बाज़ार मूल्य लाना...',
 ]
+
+const getStepIcon = (idx: number) => {
+  const icons = [
+    <MdLocationOn size={16} key="location" />,
+    <WiDaySunny size={16} key="weather" />,
+    <GiPlantSeed size={16} key="crop" />,
+    <MdStorefront size={16} key="market" />,
+  ]
+  return icons[idx] || null
+}
 
 export default function AIThinking({ lang = 'en' }: AIThinkingProps) {
   const [currentStep, setCurrentStep] = useState(0)
@@ -36,8 +49,8 @@ export default function AIThinking({ lang = 'en' }: AIThinkingProps) {
 
   const headerText =
     lang === 'hi'
-      ? (<>🌾 <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">सहायक</span> आपकी खेती की स्थिति का विश्लेषण कर रहा है...</>)
-      : (<>🌾 <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Sahayak</span> is analyzing your farm conditions...</>)
+      ? (<><GiWheat size={20} className="inline" /> <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">सहायक</span> आपकी खेती की स्थिति का विश्लेषण कर रहा है...</>)
+      : (<><GiWheat size={20} className="inline" /> <span className="text-[#2D4B8C]">Krishi</span>{' '}<span className="text-[#C96A3A]">Sahayak</span> is analyzing your farm conditions...</>)
 
   return (
     <motion.div
@@ -51,9 +64,8 @@ export default function AIThinking({ lang = 'en' }: AIThinkingProps) {
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-            className="text-xl"
           >
-            🌾
+            <GiWheat size={20} className="text-krishi-agriculture" />
           </motion.div>
           <p className="font-semibold text-sm">{headerText}</p>
         </div>
@@ -85,6 +97,7 @@ export default function AIThinking({ lang = 'en' }: AIThinkingProps) {
                   className="w-4 h-4 border-2 border-krishi-primary/30 rounded-full"
                 />
               )}
+              <span className="flex-shrink-0">{getStepIcon(idx)}</span>
               <span className={`text-sm ${idx <= currentStep ? 'text-krishi-text' : 'text-krishi-text/40'}`}>
                 {step}
               </span>

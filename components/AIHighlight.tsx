@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
+import { RiRobot2Line } from 'react-icons/ri'
 
 export default function AIHighlight() {
   const { lang } = useLanguage()
@@ -25,14 +26,16 @@ export default function AIHighlight() {
                 <span className="text-[#2D4B8C]">कृषि</span>
                 {' '}
                 <span className="text-[#C96A3A]">सहायक</span>
-                {' - आपका डिजिटल कृषि विशेषज्ञ 🤖'}
+                {' - आपका डिजिटल कृषि विशेषज्ञ '}
+                <RiRobot2Line className="inline" size={40} />
               </>
             ) : (
               <>
                 <span className="text-[#2D4B8C]">Krishi</span>
                 {' '}
                 <span className="text-[#C96A3A]">Sahayak</span>
-                {' - Your Digital Agriculture Expert 🤖'}
+                {' - Your Digital Agriculture Expert '}
+                <RiRobot2Line className="inline" size={40} />
               </>
             )}
           </h2>

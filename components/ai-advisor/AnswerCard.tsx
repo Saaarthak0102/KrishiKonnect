@@ -1,6 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { HiOutlineLightBulb } from 'react-icons/hi'
+import { AiOutlineCheckCircle } from 'react-icons/ai'
+import { WiDaySunny } from 'react-icons/wi'
+import { MdStorefront } from 'react-icons/md'
 
 interface AnswerCardProps {
   content: string
@@ -73,7 +77,7 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
           className="bg-gradient-to-r from-green-50 to-white border border-green-200 rounded-lg p-4 shadow-sm"
         >
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xl">💡</span>
+            <HiOutlineLightBulb size={20} className="text-green-600" />
             <h4 className="font-semibold text-green-900">
               {lang === 'hi' ? 'त्वरित उत्तर' : 'Quick Answer'}
             </h4>
@@ -93,7 +97,7 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
           className="bg-gradient-to-r from-blue-50 to-white border border-blue-200 rounded-lg p-4 shadow-sm"
         >
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xl">✅</span>
+            <AiOutlineCheckCircle size={20} className="text-blue-600" />
             <h4 className="font-semibold text-blue-900">
               {lang === 'hi' ? 'अनुशंसित कार्रवाई' : 'Recommended Action'}
             </h4>
@@ -113,7 +117,7 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
           className="bg-gradient-to-r from-amber-50 to-white border border-amber-200 rounded-lg p-4 shadow-sm"
         >
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xl">🌤️</span>
+            <WiDaySunny size={24} className="text-amber-600" />
             <h4 className="font-semibold text-amber-900">
               {lang === 'hi' ? 'मौसम का प्रभाव' : 'Weather Impact'}
             </h4>
@@ -133,7 +137,7 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
           className="bg-gradient-to-r from-purple-50 to-white border border-purple-200 rounded-lg p-4 shadow-sm"
         >
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xl">💰</span>
+            <MdStorefront size={20} className="text-purple-600" />
             <h4 className="font-semibold text-purple-900">
               {lang === 'hi' ? 'बाजार अंतर्दृष्टि' : 'Market Insight'}
             </h4>

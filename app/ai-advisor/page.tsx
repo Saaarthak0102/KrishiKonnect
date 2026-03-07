@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
+import { GiWheat } from 'react-icons/gi'
 import {
   createNewChat,
   subscribeToChat,
@@ -324,7 +325,7 @@ export default function AIAdvisorPage() {
                 {' '}
                 <span className="text-[#C96A3A]">Sahayak</span>
               </>
-            )} 🌾
+            )} <GiWheat size={24} className="inline text-krishi-agriculture" />
           </h1>
           <div className="w-28 flex justify-end">
             <LanguageToggle />
@@ -357,7 +358,9 @@ export default function AIAdvisorPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center"
               >
-                <div className="text-6xl mb-4">🌾</div>
+                <div className="text-6xl mb-4 flex justify-center">
+                  <GiWheat size={64} className="text-krishi-agriculture" />
+                </div>
                 <h2 className="text-2xl font-bold mb-2">
                   {lang === 'hi' ? (
                     <>

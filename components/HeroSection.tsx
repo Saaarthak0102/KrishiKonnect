@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
+import { GiWheat } from 'react-icons/gi'
 
 export default function HeroSection() {
   const { lang } = useLanguage()
@@ -53,7 +54,9 @@ export default function HeroSection() {
           className="relative"
         >
           <div className="bg-krishi-agriculture/20 border-2 border-krishi-agriculture rounded-2xl p-8 md:p-12 text-center">
-            <div className="text-8xl mb-4">🌾</div>
+            <div className="text-8xl mb-4 flex justify-center">
+              <GiWheat size={96} className="text-krishi-agriculture" />
+            </div>
             <p className="text-2xl font-semibold text-krishi-heading">
               {t.harvestSuccess}
             </p>

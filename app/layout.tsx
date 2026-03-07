@@ -9,7 +9,7 @@ import { StarredCropsProvider } from '@/context/StarredCropsContext'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'KrishiKonnect 🌾 - किसानों के लिए डिजिटल प्लेटफॉर्म',
+  title: 'KrishiKonnect - किसानों के लिए डिजिटल प्लेटफॉर्म',
   description: 'A farmer-friendly agricultural web platform connecting farmers with markets, knowledge, and community',
 }
 

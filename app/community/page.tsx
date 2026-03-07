@@ -6,6 +6,8 @@ import AskQuestionBox from '@/components/community/AskQuestionBox';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/context/AuthContext';
 import { addCommunityQuestion, subscribeToQuestions, type CommunityQuestion } from '@/lib/community';
+import { BsChatDots } from 'react-icons/bs';
+import { BiLike } from 'react-icons/bi';
 
 const FILTER_CATEGORIES_EN = ['All', 'Wheat', 'Rice', 'Vegetables', 'Fruits', 'Irrigation', 'Pest Control'];
 const FILTER_CATEGORIES_HI = ['सभी', 'गेहूँ', 'धान', 'सब्जियाँ', 'फल', 'सिंचाई', 'कीट नियंत्रण'];
@@ -207,7 +209,9 @@ export default function CommunityPage() {
               ) : filteredPosts.length === 0 ? (
                 <div className="h-full flex items-center justify-center">
                   <div className="text-center">
-                    <div className="text-6xl mb-4 text-krishi-highlight">💬</div>
+                    <div className="text-6xl mb-4 text-krishi-highlight flex justify-center">
+                      <BsChatDots size={64} />
+                    </div>
                     <p className="text-krishi-text/70 text-lg">
                       {t('noQuestionsFound')}
                     </p>
@@ -260,14 +264,14 @@ export default function CommunityPage() {
                         onClick={() => handleUpvote(post.id)}
                         className="flex items-center gap-1 text-krishi-text hover:text-krishi-primary transition-colors"
                       >
-                        <span className="text-lg">👍</span>
+                        <BiLike size={20} />
                         <span>{post.upvotes}</span>
                       </button>
                       <button
                         onClick={() => toggleReplies(post.id)}
                         className="flex items-center gap-1 text-krishi-text hover:text-krishi-primary transition-colors"
                       >
-                        <span className="text-lg">💬</span>
+                        <BsChatDots size={20} />
                         <span>
                           {post.repliesCount} {post.repliesCount === 1 ? t('reply') : t('replies')}
                         </span>

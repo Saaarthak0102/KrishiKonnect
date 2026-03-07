@@ -7,6 +7,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { logout } from '@/lib/auth'
 import LanguageToggle from '@/components/LanguageToggle'
 import Sidebar from '@/components/Sidebar'
+import { GiWheat } from 'react-icons/gi'
 
 export default function DashboardLayout({
   children,
@@ -35,7 +36,7 @@ export default function DashboardLayout({
         <div className="px-4 py-4 flex items-center justify-between">
           {/* Left - Logo and Brand */}
           <div className="flex items-center space-x-4">
-            <span className="text-2xl">🌾</span>
+            <GiWheat size={24} className="text-krishi-agriculture" />
             <span className="font-bold text-krishi-heading text-lg hidden sm:inline">KrishiKonnect</span>
           </div>
 
