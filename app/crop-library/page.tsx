@@ -185,7 +185,7 @@ export default function CropLibraryPage() {
           className="text-center mb-12"
         >
           <div className="flex items-center justify-center gap-[10px] mb-3">
-            <h1 className="text-5xl font-bold tracking-tight">
+            <h1 className="font-bold tracking-[-0.5px]" style={{ fontSize: '3rem' }}>
               <span className="text-[#2D2A6E]">
                 {lang === 'hi' ? 'कृषि' : 'Krishi'}
               </span>
@@ -195,7 +195,7 @@ export default function CropLibraryPage() {
               </span>
             </h1>
             <GiPlantSeed 
-              size={22} 
+              size={32} 
               color="#2D2A6E" 
               style={{ 
                 opacity: 0.9,

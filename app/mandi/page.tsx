@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { IconType } from 'react-icons'
 import { FiTrendingDown, FiTrendingUp } from 'react-icons/fi'
 import { GiCottonFlower, GiPlantSeed, GiWheat } from 'react-icons/gi'
+import { MdStorefront } from 'react-icons/md'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import Footer from '@/components/Footer'
 import { useLanguage } from '@/lib/LanguageContext'
@@ -308,7 +309,7 @@ export default function MandiPage() {
             transition={{ duration: 0.4 }}
             className="mb-10 text-center"
           >
-            <h1 className="mb-3 font-bold tracking-[-0.5px]" style={{ fontSize: '2.3rem' }}>
+            <h1 className="mb-3 font-bold tracking-[-0.5px] flex items-center justify-center gap-2" style={{ fontSize: '3rem' }}>
               {lang === 'hi' ? (
                 <>
                   <span className="text-[#2D2A6E]">कृषि</span>
@@ -322,8 +323,9 @@ export default function MandiPage() {
                   <span className="text-[#C46A3D]">Bazaar</span>
                 </>
               )}
+              <MdStorefront size={32} style={{ color: '#2D2A6E', opacity: 0.9, marginLeft: '8px' }} />
             </h1>
-            <p className="mx-auto max-w-3xl text-gray-700">
+            <p className="mx-auto max-w-3xl font-medium" style={{ fontSize: '1rem', color: '#C46A3D' }}>
               {lang === 'hi'
                 ? 'अपनी फसल चुनें और सभी मंडियों में सर्वश्रेष्ठ भाव देखें।'
                 : 'Select your crop and view the best prices across all mandis.'}
@@ -506,16 +508,16 @@ export default function MandiPage() {
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <div className="mb-1 flex items-center gap-2.5">
+                          <div className="mb-1 flex items-center gap-2">
                             <CropIcon size={20} style={{ color: '#2D2A6E', opacity: 0.85 }} />
                             <h3
-                              className="font-semibold"
-                              style={{ fontSize: '1.15rem', color: '#2D2A6E' }}
+                              className="font-semibold flex items-center"
+                              style={{ fontSize: '1.2rem', color: '#2D2A6E' }}
                             >
                               {lang === 'hi' ? crop.name_hi : crop.name_en}
                             </h3>
                           </div>
-                          <p className="text-sm text-gray-600 mb-3">
+                          <p className="font-medium mb-3" style={{ fontSize: '0.9rem', color: '#C46A3D' }}>
                             {mandiCount} {lang === 'hi' ? 'मंडियां' : 'mandis'}
                           </p>
                           <div className="flex items-center gap-2">
@@ -531,7 +533,7 @@ export default function MandiPage() {
                           </div>
                           <p
                             className="font-medium"
-                            style={{ fontSize: '0.85rem', color: 'rgba(45,42,110,0.65)' }}
+                            style={{ fontSize: '0.85rem', color: '#C46A3D' }}
                           >
                             {lang === 'hi' ? 'सर्वोत्तम भाव' : 'best price'}
                           </p>
