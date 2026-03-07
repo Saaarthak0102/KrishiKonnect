@@ -23,6 +23,7 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
   const { lang } = useLanguage()
   const [scrolled, setScrolled] = useState(false)
   const isAIAdvisorPage = pathname.startsWith('/ai-advisor')
+  const isDashboardPage = pathname === '/dashboard'
 
   useEffect(() => {
     const handleScroll = () => {
@@ -125,9 +126,11 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
 
           {/* Center - Greeting Message */}
           <div className="flex-1 text-center hidden md:block">
-            <h1 className="text-lg md:text-xl font-semibold" style={{ color: '#2D2A6E', fontWeight: 600 }}>
-              {lang === 'hi' ? 'नमस्ते' : 'Namaste'}, {farmerProfile?.name || user?.phoneNumber}
-            </h1>
+            {isDashboardPage && (
+              <h1 className="text-lg md:text-xl font-semibold" style={{ color: '#2D2A6E', fontWeight: 600 }}>
+                {lang === 'hi' ? 'नमस्ते' : 'Namaste'}, {farmerProfile?.name || user?.phoneNumber}
+              </h1>
+            )}
           </div>
 
           {/* Right - User Info and Language Toggle */}
