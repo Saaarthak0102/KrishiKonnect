@@ -141,7 +141,7 @@ export default function CropDetailPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white border-2 border-krishi-border rounded-lg overflow-hidden shadow-md mb-12"
+          className="bg-white/70 backdrop-blur-md border-2 border-krishi-border rounded-lg overflow-hidden shadow-md mb-12"
         >
           {/* Crop Image */}
           <div className="relative w-full h-64 md:h-80 bg-gradient-to-br from-krishi-agriculture to-krishi-primary overflow-hidden">
@@ -226,7 +226,7 @@ export default function CropDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1, duration: 0.4 }}
-              className="bg-white border-2 border-krishi-border rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow"
+              className="bg-white/70 backdrop-blur-md border-2 border-krishi-border rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow"
             >
               {/* Section Header */}
               <div className="flex items-center mb-4">
@@ -266,7 +266,7 @@ export default function CropDetailPage() {
           </p>
           <Link
             href="/ai-advisor"
-            className="inline-block bg-white font-bold px-8 py-3 rounded-lg hover:bg-white/90 transition-colors"
+            className="inline-block bg-white/85 backdrop-blur-sm font-bold px-8 py-3 rounded-lg hover:bg-white/95 transition-colors"
           >
             {lang === 'hi' ? (
               <>

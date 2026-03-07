@@ -41,7 +41,7 @@ export default function AIAdvisorSidebar({
     <motion.div
       initial={{ x: -256 }}
       animate={{ x: 0 }}
-      className="w-64 bg-white border-r border-krishi-border overflow-y-auto shadow-sm h-full flex flex-col"
+      className="w-64 bg-white/70 backdrop-blur-md border-r border-krishi-border overflow-y-auto shadow-sm h-full flex flex-col"
     >
       {/* New Chat Button */}
       <div className="p-4 border-b border-krishi-border">
@@ -73,7 +73,7 @@ export default function AIAdvisorSidebar({
                 className={`group relative px-3 py-2 rounded-lg cursor-pointer transition-all ${
                   currentChatId === chat.id
                     ? 'bg-krishi-primary/10 border-l-4 border-krishi-primary'
-                    : 'hover:bg-krishi-bg'
+                    : 'hover:bg-white/45'
                 }`}
               >
                 <div onClick={() => onSelectChat(chat.id)} className="flex-1">

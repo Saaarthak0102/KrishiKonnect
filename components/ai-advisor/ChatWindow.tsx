@@ -72,7 +72,7 @@ export default function ChatWindow({
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-white overflow-hidden">
+    <div className="flex-1 flex flex-col bg-white/55 backdrop-blur-[2px] overflow-hidden">
       {farmContext && (
         <div className="px-6 pt-4">
           <ContextChips
@@ -149,7 +149,7 @@ export default function ChatWindow({
       )}
 
       {/* Input Area */}
-      <div className="border-t border-krishi-border p-4 bg-white">
+      <div className="border-t border-krishi-border p-4 bg-white/70 backdrop-blur-sm">
         <ChatInput
           onSendMessage={handleSendMessage}
           onImageSelect={handleImageSelect}

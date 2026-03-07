@@ -164,7 +164,7 @@ export default function MyCropsWithPrices({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+        className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
       >
         <h2 className="text-xl font-bold text-krishi-heading mb-6 flex items-center gap-2">
           <span>🌾</span>
@@ -201,7 +201,7 @@ export default function MyCropsWithPrices({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+        className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
       >
         <h2 className="text-xl font-bold text-krishi-heading mb-6 flex items-center gap-2">
           <span>🌾</span>
@@ -224,7 +224,7 @@ export default function MyCropsWithPrices({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+      className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
     >
       <div className="mb-6">
         <h2 className="text-xl font-bold text-krishi-heading flex items-center gap-2 mb-1">

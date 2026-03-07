@@ -7,7 +7,7 @@ export default function LanguageToggle() {
 
   return (
     <div
-      className="inline-flex items-center rounded-xl border border-krishi-border bg-white p-1 shadow-sm"
+      className="inline-flex items-center rounded-xl border border-krishi-border bg-white/70 backdrop-blur-sm p-1 shadow-sm"
       role="group"
       aria-label="Language selector"
     >

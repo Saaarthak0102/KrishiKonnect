@@ -60,7 +60,7 @@ export default function ThreadView({
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-2xl shadow-md p-6">
+      <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-md p-6">
         <div className="mb-4">
           <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-green-50 text-green-700 rounded-lg font-medium">
             <span className="text-xl">{question.cropEmoji}</span>
@@ -113,7 +113,7 @@ export default function ThreadView({
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-md p-6">
+      <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-md p-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
           💬 {replies.length} {replies.length === 1 ? 'Reply' : 'Replies'}
         </h2>

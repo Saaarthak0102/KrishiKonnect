@@ -17,7 +17,7 @@ export default function LanguagePage() {
   }, [router])
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-krishi-bg">
+    <main className="min-h-screen flex items-center justify-center">
       <LanguageSelector />
     </main>
   )

@@ -27,7 +27,7 @@ function MandiBestPriceCard({ bestMandi, lang }: MandiBestPriceCardProps) {
   }
 
   return (
-    <section className="rounded-xl border-2 border-krishi-border bg-white p-5">
+    <section className="rounded-xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-5">
       <p className="text-sm font-bold text-krishi-primary">
         {lang === 'hi' ? '⭐ आज की सर्वश्रेष्ठ मंडी' : 'Best Mandi Today'}
       </p>

@@ -214,7 +214,7 @@ export default function ChatCard({
   };
 
   return (
-    <div className="bg-white border-2 border-krishi-border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+    <div className="bg-white/70 backdrop-blur-md border-2 border-krishi-border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
       {/* Main Card Content */}
       <div className="p-4 md:p-5">
         {/* Header Section */}
@@ -314,7 +314,7 @@ export default function ChatCard({
 
       {/* Reply Input at Card Level */}
       {showReplyInput && currentUserId && (
-        <div className="bg-gray-50 border-t border-krishi-border px-4 py-3">
+        <div className="bg-white/45 backdrop-blur-sm border-t border-krishi-border px-4 py-3">
           <div className="space-y-2">
             <textarea
               value={replyText}
@@ -349,7 +349,7 @@ export default function ChatCard({
 
       {/* Replies Section with Nested Structure */}
       {showReplies && nestedReplies.length > 0 && (
-        <div className="bg-gray-50 border-t border-krishi-border px-4 py-3">
+        <div className="bg-white/45 backdrop-blur-sm border-t border-krishi-border px-4 py-3">
           <div className="space-y-0">
             {nestedReplies.map((reply) => (
               <ReplyItem

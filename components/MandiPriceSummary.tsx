@@ -18,7 +18,7 @@ function MandiPriceSummary({
   lang,
 }: MandiPriceSummaryProps) {
   return (
-    <section className="rounded-xl border-2 border-krishi-border bg-white p-5">
+    <section className="rounded-xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-5">
       <h3 className="text-lg font-bold text-krishi-heading">
         {lang === 'hi' ? 'Price Summary' : 'Price Summary'}
       </h3>

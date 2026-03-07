@@ -98,7 +98,7 @@ export default function SuggestedQuestions({
             whileHover={{ scale: 1.02, y: -5 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onSelectQuestion(q.question)}
-            className="p-4 bg-white border-2 border-krishi-border rounded-lg hover:border-krishi-primary hover:shadow-md transition-all text-left group"
+            className="p-4 bg-white/70 backdrop-blur-sm border-2 border-krishi-border rounded-lg hover:border-krishi-primary hover:shadow-md transition-all text-left group"
           >
             <motion.div
               className="text-3xl mb-2"

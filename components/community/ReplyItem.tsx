@@ -107,7 +107,7 @@ export default function ReplyItem({
 
   return (
     <div className={`${getMarginClass()} ${depth > 0 ? 'mt-3' : ''}`}>
-      <div className="bg-white rounded-md p-3 shadow-sm border-l-2 border-krishi-border">
+      <div className="bg-white/65 backdrop-blur-sm rounded-md p-3 shadow-sm border-l-2 border-krishi-border">
         <div className="flex items-start gap-2 mb-2">
           {/* Reply Avatar */}
           <div

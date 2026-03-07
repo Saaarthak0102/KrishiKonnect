@@ -101,11 +101,11 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
 
   return (
     <aside
-      className={`sticky top-16 self-start h-[calc(100vh-4rem)] bg-white border-r-2 border-gray-200 transition-all duration-300 flex flex-col ${
+      className={`sticky top-16 self-start h-[calc(100vh-4rem)] bg-white/70 backdrop-blur-md border-r-2 border-gray-200 transition-all duration-300 flex flex-col ${
         expanded ? 'w-64' : 'w-16'
       }`}
       style={{
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
         borderRightColor: '#E5E7EB',
       }}
     >
@@ -136,13 +136,13 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
               expanded ? 'justify-start px-4 space-x-3' : 'justify-center'
             } py-3 ${
               isActive(item.href)
-                ? 'bg-krishi-bg'
+                ? 'bg-white/60 backdrop-blur-sm'
                 : 'hover:bg-gray-100'
             }`}
             style={
               isActive(item.href)
                 ? {
-                    backgroundColor: '#FAF3E0',
+                    backgroundColor: 'rgba(255, 255, 255, 0.6)',
                     color: '#1F3C88',
                   }
                 : {}

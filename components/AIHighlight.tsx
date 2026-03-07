@@ -44,10 +44,10 @@ export default function AIHighlight() {
           </p>
         </div>
 
-        <div className="max-w-3xl mx-auto bg-white border-2 border-krishi-border rounded-lg p-6 mb-6 shadow-md">
+        <div className="max-w-3xl mx-auto bg-white/70 backdrop-blur-md border-2 border-krishi-border rounded-lg p-6 mb-6 shadow-md">
           <p className="text-sm text-krishi-text/70 mb-3">{t.aiExampleTitle}</p>
           <div className="space-y-4">
-            <div className="bg-krishi-bg p-4 rounded-lg">
+            <div className="bg-white/55 backdrop-blur-sm p-4 rounded-lg">
               <p className="text-krishi-text font-medium">{t.aiExampleQuestion}</p>
             </div>
             <div className="bg-krishi-agriculture/10 p-4 rounded-lg border-l-4 border-krishi-agriculture">

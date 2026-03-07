@@ -96,9 +96,9 @@ export default function MandiCropDetailPage() {
   if (!cropMeta) {
     return (
       <FeaturePageLayout>
-        <div className="min-h-screen bg-krishi-bg">
+        <div className="min-h-screen">
           <main className="container mx-auto px-4 py-16">
-            <div className="rounded-2xl border-2 border-krishi-border bg-white p-10 text-center">
+            <div className="rounded-2xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-10 text-center">
               <h1 className="text-3xl font-bold text-krishi-heading">
                 {lang === 'hi' ? 'फसल नहीं मिली' : 'Crop not found'}
               </h1>
@@ -118,7 +118,7 @@ export default function MandiCropDetailPage() {
 
   return (
     <FeaturePageLayout>
-      <div className="min-h-screen bg-krishi-bg">
+      <div className="min-h-screen">
         <main className="container mx-auto px-4 py-10 md:py-14">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <Link
@@ -135,7 +135,7 @@ export default function MandiCropDetailPage() {
               <select
                 value={selectedState}
                 onChange={(event) => setSelectedState(event.target.value)}
-                className="rounded-lg border-2 border-krishi-border bg-white px-3 py-2 text-sm text-krishi-text"
+                className="rounded-lg border-2 border-krishi-border bg-white/80 px-3 py-2 text-sm text-krishi-text"
               >
                 {stateOptions.map((state) => (
                   <option key={state} value={state}>
@@ -151,7 +151,7 @@ export default function MandiCropDetailPage() {
           </h1>
 
           {loading ? (
-            <div className="mt-8 rounded-2xl border-2 border-krishi-border bg-white p-10 text-center">
+            <div className="mt-8 rounded-2xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-10 text-center">
               <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-krishi-primary border-t-transparent" />
               <p className="mt-3 text-krishi-text/70">
                 {lang === 'hi' ? 'भाव लोड हो रहे हैं...' : 'Loading crop prices...'}
@@ -163,7 +163,7 @@ export default function MandiCropDetailPage() {
                 <motion.div
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-2xl border-2 border-krishi-border bg-white p-6"
+                  className="rounded-2xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-6"
                 >
                   <p className="inline-block rounded-full bg-[#B85C38]/15 px-3 py-1 text-xs font-bold text-[#B85C38]">
                     ⭐ {lang === 'hi' ? 'आज का सर्वश्रेष्ठ भाव' : 'Best Price Today'}
@@ -195,7 +195,7 @@ export default function MandiCropDetailPage() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 }}
-                  className="rounded-2xl border-2 border-krishi-border bg-white p-6"
+                  className="rounded-2xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-6"
                 >
                   <h2 className="text-xl font-bold text-krishi-heading">
                     {lang === 'hi' ? '7-दिन भाव ट्रेंड' : '7-Day Price Trend'}
@@ -211,7 +211,7 @@ export default function MandiCropDetailPage() {
                           contentStyle={{
                             borderRadius: 12,
                             border: '2px solid #D8CFC0',
-                            background: '#FAF3E0',
+                            background: 'rgba(250, 243, 224, 0.8)',
                           }}
                         />
                         <Line
@@ -227,7 +227,7 @@ export default function MandiCropDetailPage() {
                 </motion.div>
               </section>
 
-              <section className="mt-8 rounded-2xl border-2 border-krishi-border bg-white p-6">
+              <section className="mt-8 rounded-2xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-6">
                 <h2 className="text-2xl font-bold text-krishi-heading">
                   {lang === 'hi' ? 'अन्य मंडियां' : 'Other Mandis'}
                 </h2>
@@ -243,7 +243,7 @@ export default function MandiCropDetailPage() {
                     {mandiRowsForCrop.map((row) => (
                       <div
                         key={row.id}
-                        className="rounded-xl border border-krishi-border bg-krishi-bg px-4 py-3"
+                        className="rounded-xl border border-krishi-border bg-white/50 backdrop-blur-sm px-4 py-3"
                       >
                         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                           <div>

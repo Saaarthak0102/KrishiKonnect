@@ -479,7 +479,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-krishi-bg">
+      <main className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-krishi-primary border-t-krishi-heading"></div>
           <p className="mt-4 text-krishi-text">{lang === 'hi' ? 'लोड हो रहा है...' : 'Loading...'}</p>
@@ -600,7 +600,7 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+        className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
       >
         <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
           <GiWheat size={24} className="text-krishi-agriculture" />
@@ -687,7 +687,7 @@ export default function DashboardPage() {
       >
         {/* Weather Card */}
         <div className="h-full md:col-span-4">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full flex flex-col">
+          <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6 h-full flex flex-col">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               🌤 {t.weatherToday}
             </h3>
@@ -726,7 +726,7 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
-          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+          className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
         >
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-1">
@@ -843,7 +843,7 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
-          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+          className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
         >
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <FaTruck size={24} />
@@ -856,7 +856,7 @@ export default function DashboardPage() {
               {t.noServices}
             </p>
           ) : (
-            <div key={latestTransportBooking.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div key={latestTransportBooking.id} className="p-4 bg-white/50 backdrop-blur-sm rounded-lg border border-gray-200">
               <div className="flex items-start gap-3">
                 <FaTruck size={24} className="text-gray-600 mt-1" />
                 <div className="flex-1">

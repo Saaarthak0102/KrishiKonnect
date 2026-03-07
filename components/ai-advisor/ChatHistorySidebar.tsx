@@ -47,7 +47,7 @@ export default function ChatHistorySidebar({
     <motion.div
       initial={{ x: 300 }}
       animate={{ x: 0 }}
-      className="w-80 bg-white border-l border-krishi-border overflow-hidden flex flex-col shadow-sm h-full"
+      className="w-80 bg-white/70 backdrop-blur-md border-l border-krishi-border overflow-hidden flex flex-col shadow-sm h-full"
     >
       {/* Header */}
       <div className="p-4 border-b border-krishi-border bg-gradient-to-r from-krishi-primary/5 to-krishi-agriculture/5">
@@ -127,7 +127,7 @@ export default function ChatHistorySidebar({
                   className={`w-full text-left px-3 py-2.5 rounded-lg transition-all duration-200 flex flex-col ${
                     currentChatId === chat.id
                       ? 'bg-indigo-50 border-l-4 border-indigo-600'
-                      : 'hover:bg-gray-50 border-l-4 border-transparent'
+                      : 'hover:bg-white/45 border-l-4 border-transparent'
                   }`}
                 >
                   <span className="font-semibold text-sm text-krishi-heading truncate">
@@ -161,7 +161,7 @@ export default function ChatHistorySidebar({
       </div>
 
       {/* Footer */}
-      <div className="p-3 border-t border-krishi-border bg-gray-50 text-xs text-krishi-text/50 text-center">
+      <div className="p-3 border-t border-krishi-border bg-white/45 backdrop-blur-sm text-xs text-krishi-text/50 text-center">
         {lang === 'hi' ? 'आपकी पिछली चैट' : 'Your chat history'}
       </div>
     </motion.div>

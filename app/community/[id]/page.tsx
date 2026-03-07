@@ -334,9 +334,9 @@ export default function ThreadPage() {
   if (loading) {
     return (
       <FeaturePageLayout>
-        <div className="min-h-screen bg-gradient-to-b from-green-50 to-white py-8">
+        <div className="min-h-screen py-8">
           <main className="container mx-auto px-4 max-w-5xl">
-            <div className="bg-white rounded-2xl shadow-md p-12 text-center">
+            <div className="bg-white/75 backdrop-blur-sm rounded-2xl shadow-md p-12 text-center">
               <p className="text-gray-500 text-lg">Loading...</p>
             </div>
           </main>
@@ -348,9 +348,9 @@ export default function ThreadPage() {
   if (!question) {
     return (
       <FeaturePageLayout>
-        <div className="min-h-screen bg-gradient-to-b from-green-50 to-white py-8">
+        <div className="min-h-screen py-8">
           <main className="container mx-auto px-4 max-w-5xl">
-            <div className="bg-white rounded-2xl shadow-md p-12 text-center">
+            <div className="bg-white/75 backdrop-blur-sm rounded-2xl shadow-md p-12 text-center">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('questionNotFound') || 'Question Not Found'}</h2>
               <p className="text-gray-600 mb-6">
                 {t('questionNotFoundDesc') || "The question you're looking for doesn't exist or has been removed."}
@@ -374,7 +374,7 @@ export default function ThreadPage() {
 
   return (
     <FeaturePageLayout>
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white py-8">
+      <div className="min-h-screen py-8">
         <main className="container mx-auto px-4 max-w-5xl">
           {/* Back Button */}
           <button

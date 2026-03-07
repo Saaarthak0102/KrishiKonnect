@@ -269,7 +269,7 @@ export default function MandiPage() {
 
   return (
     <FeaturePageLayout>
-      <div className="min-h-screen" style={{ backgroundColor: '#F9F6F0' }}>
+      <div className="min-h-screen bg-transparent">
         <main className="container mx-auto px-4 py-12 md:py-16">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -307,8 +307,8 @@ export default function MandiPage() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.05, duration: 0.4 }}
-                className="mb-8 rounded-xl border-2 p-5"
-                style={{ borderColor: '#E8DCC8', backgroundColor: '#FAF3E0' }}
+                className="mb-8 rounded-xl border-2 bg-white/60 p-5 backdrop-blur-md"
+                style={{ borderColor: '#E8DCC8' }}
               >
                 {/* Search & Filter Container */}
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-3">
@@ -453,8 +453,8 @@ export default function MandiPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: Math.min(idx * 0.02, 0.3), duration: 0.3 }}
                       onClick={() => setSelectedCrop(crop.name_en)}
-                      className="group rounded-xl p-5 text-left transition-all hover:scale-105 hover:shadow-lg"
-                      style={{ backgroundColor: '#FAF3E0', border: '2px solid #E8DCC8' }}
+                      className="group rounded-xl border-2 bg-white/70 p-5 text-left backdrop-blur-md transition-all hover:scale-105 hover:shadow-lg"
+                      style={{ borderColor: '#E8DCC8' }}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -537,8 +537,8 @@ export default function MandiPage() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.4 }}
-                className="mb-8 rounded-xl border-2 p-5"
-                style={{ borderColor: '#E8DCC8', backgroundColor: '#FAF3E0' }}
+                className="mb-8 rounded-xl border-2 bg-white/60 p-5 backdrop-blur-md"
+                style={{ borderColor: '#E8DCC8' }}
               >
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-3">
                   {/* State Filter Dropdown */}

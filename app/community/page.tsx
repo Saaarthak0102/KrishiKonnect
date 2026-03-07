@@ -170,7 +170,7 @@ export default function CommunityPage() {
 
   return (
     <FeaturePageLayout>
-      <div className="min-h-screen bg-krishi-bg py-8 px-4">
+      <div className="min-h-screen py-8 px-4">
         <main className="max-w-5xl mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -191,7 +191,7 @@ export default function CommunityPage() {
                 className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                   selectedFilter === category
                     ? 'bg-krishi-primary text-white'
-                    : 'bg-white border border-krishi-border text-krishi-text hover:bg-krishi-primary/10'
+                    : 'bg-white/70 backdrop-blur-sm border border-krishi-border text-krishi-text hover:bg-krishi-primary/10'
                 }`}
               >
                 {category}
@@ -200,7 +200,7 @@ export default function CommunityPage() {
           </div>
 
           {/* Posts Feed */}
-          <div className="bg-white border-2 border-krishi-border rounded-xl shadow-sm mb-6 overflow-hidden">
+          <div className="bg-white/70 backdrop-blur-sm border-2 border-krishi-border rounded-xl shadow-sm mb-6 overflow-hidden">
             <div className="max-w-5xl mx-auto space-y-4 overflow-y-auto h-[60vh] p-6">
               {isLoading ? (
                 <div className="h-full flex items-center justify-center">
@@ -221,7 +221,7 @@ export default function CommunityPage() {
                 filteredPosts.map((post) => (
                   <div
                     key={post.id}
-                    className="bg-white border-2 border-krishi-border rounded-xl p-4 hover:border-krishi-primary/50 transition-all"
+                    className="bg-white/70 backdrop-blur-sm border-2 border-krishi-border rounded-xl p-4 hover:border-krishi-primary/50 transition-all"
                   >
                     {/* Post Header */}
                     <div className="flex items-start justify-between mb-3">

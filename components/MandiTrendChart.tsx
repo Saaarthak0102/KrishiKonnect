@@ -47,7 +47,7 @@ function MandiTrendChartComponent({ data, crop, trend = 'stable', mandi = 'Mandi
 
   if (!chartData || chartData.length === 0) {
     return (
-      <div className="h-20 rounded-xl bg-[#FAF3E0] border border-[#D8CFC0] flex items-center justify-center text-xs text-[#1D1D1D]/60">
+      <div className="h-20 rounded-xl bg-white/55 backdrop-blur-sm border border-[#D8CFC0] flex items-center justify-center text-xs text-[#1D1D1D]/60">
         No trend data available
       </div>
     )
@@ -59,7 +59,7 @@ function MandiTrendChartComponent({ data, crop, trend = 'stable', mandi = 'Mandi
   const yDomain = [Math.floor(minPrice * 0.98), Math.ceil(maxPrice * 1.02)]
 
   return (
-    <div className="rounded-xl bg-[#FAF3E0] p-4 space-y-4">
+    <div className="rounded-xl bg-white/60 backdrop-blur-sm p-4 space-y-4">
       <div>
         <h3 className="text-sm font-bold" style={{ color: '#1F3C88' }}>
           7-Day Price Trend
@@ -69,7 +69,7 @@ function MandiTrendChartComponent({ data, crop, trend = 'stable', mandi = 'Mandi
         </p>
       </div>
 
-      <div className="h-28 rounded-lg bg-white border border-[#D8CFC0] p-2">
+      <div className="h-28 rounded-lg bg-white/75 backdrop-blur-sm border border-[#D8CFC0] p-2">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#eee" vertical={false} />
