@@ -73,7 +73,7 @@ export default function ChatWindow({
 
   return (
     <motion.div 
-      className="flex-1 flex flex-col overflow-hidden rounded-2xl mx-3 my-3"
+      className="flex-1 min-h-0 flex flex-col overflow-hidden rounded-2xl mx-3 my-3"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.15, ease: 'easeOut' }}
@@ -100,7 +100,7 @@ export default function ChatWindow({
       )}
 
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="flex-1 min-h-0 overflow-y-auto p-6 pr-2 space-y-4">
         {messages.length === 0 && !loading ? (
           <div className="h-full flex items-center justify-center">
             <SuggestedQuestions onSelectQuestion={handleSendMessage} lang={lang} />
@@ -162,7 +162,7 @@ export default function ChatWindow({
       )}
 
       {/* Input Area */}
-      <div className="border-t p-4" style={{ borderColor: 'rgba(196,106,61,0.25)' }}>
+      <div className="shrink-0 border-t p-4 pt-3" style={{ borderColor: 'rgba(196,106,61,0.25)' }}>
         <ChatInput
           onSendMessage={handleSendMessage}
           onImageSelect={handleImageSelect}

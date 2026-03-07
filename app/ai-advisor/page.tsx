@@ -304,9 +304,9 @@ export default function AIAdvisorPage() {
   }
 
   return (
-    <div className="flex flex-1 overflow-hidden">
+    <div className="h-full min-h-0 flex flex-1 overflow-hidden">
       {/* CENTER COLUMN: Chat Window */}
-      <div className="flex flex-1 flex-col overflow-hidden bg-white/45 backdrop-blur-[2px]">
+      <div className="flex flex-1 min-h-0 flex-col overflow-hidden bg-white/45 backdrop-blur-[2px]">
         {/* Chat Area */}
         {currentChatId ? (
           <ChatWindow
@@ -361,7 +361,7 @@ export default function AIAdvisorPage() {
 
         {/* RIGHT COLUMN: Chat History Sidebar */}
         {/* Hidden on mobile, shown on larger screens */}
-        <div className="hidden lg:flex">
+        <div className="hidden h-full min-h-0 lg:flex">
           <ChatHistorySidebar
             chats={chats}
             currentChatId={currentChatId}

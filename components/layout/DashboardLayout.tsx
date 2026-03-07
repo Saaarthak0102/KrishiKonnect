@@ -22,6 +22,7 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
   const { user, farmerProfile } = useAuth()
   const { lang } = useLanguage()
   const [scrolled, setScrolled] = useState(false)
+  const isAIAdvisorPage = pathname.startsWith('/ai-advisor')
 
   useEffect(() => {
     const handleScroll = () => {
@@ -93,7 +94,7 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className={`${isAIAdvisorPage ? 'h-screen overflow-hidden' : 'min-h-screen'} flex flex-col`}>
       {/* Sticky Top Navbar */}
       <header 
         className="sticky top-0 z-50"
@@ -144,11 +145,11 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
       </header>
 
       {/* Main Content with Sidebar */}
-      <div className="flex flex-1">
+      <div className={`flex flex-1 ${isAIAdvisorPage ? 'overflow-hidden min-h-0' : ''}`}>
         <Sidebar defaultExpanded={true} />
 
         {/* Page Content */}
-        <main className="flex-1">
+        <main className={`flex-1 ${isAIAdvisorPage ? 'overflow-hidden min-h-0' : ''}`}>
           {children}
         </main>
       </div>

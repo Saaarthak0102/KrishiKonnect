@@ -100,7 +100,7 @@ export default function ChatHistorySidebar({
             </p>
           </div>
         ) : (
-          <div className="p-2 space-y-1">
+          <div className="p-3 space-y-2">
             {chats.map((chat) => (
               <motion.div
                 key={chat.id}
@@ -115,39 +115,32 @@ export default function ChatHistorySidebar({
                 className={`relative group`}
               >
                 <motion.button
-                  whileHover={{ x: 3 }}
+                  whileHover={{
+                    y: -1,
+                    scale: 1.01,
+                    boxShadow: '0 10px 22px rgba(196,106,61,0.14), 0 4px 14px rgba(45,42,110,0.08)',
+                    backgroundColor: 'rgba(255,255,255,0.56)',
+                  }}
                   transition={{ duration: 0.2 }}
                   onClick={() => onSelectChat(chat.id)}
-                  className={`w-full text-left px-3 py-2.5 rounded-lg transition-all duration-200 flex flex-col ${
-                    currentChatId === chat.id
-                      ? 'border-l-4'
-                      : 'border-l-4'
-                  }`}
+                  className="w-full text-left px-4 py-3 rounded-2xl transition-all duration-200 flex flex-col border"
                   style={
                     currentChatId === chat.id
                       ? {
-                          background: 'rgba(255,255,255,0.6)',
+                          background: 'rgba(255,255,255,0.62)',
                           backdropFilter: 'blur(10px)',
                           WebkitBackdropFilter: 'blur(10px)',
-                          borderLeftColor: '#C46A3D',
-                          boxShadow: '0 4px 12px rgba(196,106,61,0.2)',
+                          borderColor: 'rgba(196,106,61,0.35)',
+                          boxShadow: '0 10px 24px rgba(196,106,61,0.18), 0 4px 14px rgba(45,42,110,0.08)',
                         }
                       : {
+                          background: 'rgba(255,255,255,0.42)',
                           backdropFilter: 'blur(10px)',
                           WebkitBackdropFilter: 'blur(10px)',
-                          borderLeftColor: 'transparent',
+                          borderColor: 'rgba(196,106,61,0.22)',
+                          boxShadow: '0 6px 16px rgba(45,42,110,0.08)',
                         }
                   }
-                  onMouseEnter={(e) => {
-                    if (currentChatId !== chat.id) {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.4)'
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (currentChatId !== chat.id) {
-                      e.currentTarget.style.background = 'transparent'
-                    }
-                  }}
                 >
                   <span className="font-semibold text-sm truncate" style={{ color: '#2D2A6E' }}>
                     {getTruncatedTitle(chat.title)}
@@ -167,7 +160,7 @@ export default function ChatHistorySidebar({
                         ? (onDeleteChat(chat.id), setShowDeleteConfirm(null))
                         : setShowDeleteConfirm(chat.id)
                     }
-                    className="absolute right-3 top-2.5 p-1.5 rounded hover:bg-red-100 text-red-600 hover:text-red-700 transition-colors"
+                    className="absolute right-3 top-3 p-1.5 rounded hover:bg-red-100 text-red-600 hover:text-red-700 transition-colors"
                     title={lang === 'hi' ? 'हटाएं' : 'Delete'}
                   >
                     {showDeleteConfirm === chat.id ? '✓' : '×'}
