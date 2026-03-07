@@ -2,12 +2,10 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
 import { GiWheat } from 'react-icons/gi'
-import { HiSparkles } from 'react-icons/hi'
 import {
   createNewChat,
   subscribeToChat,
@@ -23,10 +21,8 @@ import {
   type AIChat,
   type AIMessage,
 } from '@/lib/aiAdvisor'
-import Sidebar from '@/components/Sidebar'
 import ChatWindow from '@/components/ai-advisor/ChatWindow'
 import ChatHistorySidebar from '@/components/ai-advisor/ChatHistorySidebar'
-import LanguageToggle from '@/components/ui/LanguageToggle'
 
 export default function AIAdvisorPage() {
   const router = useRouter()
@@ -308,95 +304,27 @@ export default function AIAdvisorPage() {
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
-      {/* Header - Updated to match DashboardLayout navbar style */}
-      <motion.header 
-        className="sticky top-0 z-50"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        style={{
-          background: 'rgba(255,255,255,0.35)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(196,106,61,0.25)',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-          transition: 'all 0.3s ease'
-        }}
-      >
-        <div className="px-4 py-4 flex items-center justify-between">
-          {/* Left - Logo and Brand with Page Title */}
-          <div className="flex items-center space-x-4">
+    <div className="flex flex-1 overflow-hidden">
+      {/* CENTER COLUMN: Chat Window */}
+      <div className="flex flex-1 flex-col overflow-hidden bg-white/45 backdrop-blur-[2px]">
+        {/* Chat Area */}
+        {currentChatId ? (
+          <ChatWindow
+            messages={messages}
+            loading={loading}
+            onSendMessage={handleSendMessage}
+            error={error}
+            onErrorDismiss={() => setError(null)}
+            lang={lang}
+            farmContext={farmContext}
+          />
+        ) : (
+          <div className="flex-1 flex items-center justify-center">
             <motion.div
-              whileHover={{ y: -1 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center"
             >
-              <GiWheat size={24} className="text-krishi-agriculture" />
-            </motion.div>
-            <div className="flex items-center space-x-2">
-              <span className="text-lg hidden sm:inline font-semibold">
-                <span className="text-[#2D2A6E]">KrishiKonnect</span>
-              </span>
-              <span className="text-gray-400 mx-2 hidden sm:inline">|</span>
-              <motion.div
-                whileHover={{ y: -1 }}
-                transition={{ duration: 0.2, ease: 'easeOut' }}
-                className="hidden sm:inline"
-              >
-                <HiSparkles size={22} style={{ color: '#2D2A6E', opacity: 0.9 }} />
-              </motion.div>
-              <span className="text-lg font-semibold" style={{ fontFamily: 'Poppins', fontSize: '1.5rem', fontWeight: 600 }}>
-                <span style={{ color: '#2D2A6E' }}>Krishi</span>
-                {' '}
-                <span style={{ color: '#C46A3D' }}>Sahayak</span>
-              </span>
-            </div>
-          </div>
-
-          {/* Center - Greeting Message */}
-          <motion.div 
-            className="flex-1 text-center hidden md:block"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.08, duration: 0.5 }}
-          >
-            <h1 className="text-lg md:text-xl font-semibold" style={{ color: '#2D2A6E', fontWeight: 600 }}>
-              {lang === 'hi' ? 'नमस्ते' : 'Namaste'}
-            </h1>
-          </motion.div>
-
-          {/* Right - Language Toggle */}
-          <div className="flex items-center space-x-4">
-            <LanguageToggle />
-          </div>
-        </div>
-      </motion.header>
-
-      {/* 3-Column Layout: Krishi Drishti Sidebar | Chat Window | Chat History Sidebar */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* LEFT COLUMN: Krishi Drishti Sidebar */}
-        <Sidebar defaultExpanded={true} />
-
-        {/* CENTER COLUMN: Chat Window */}
-        <div className="flex flex-1 flex-col overflow-hidden bg-white/45 backdrop-blur-[2px]">
-          {/* Chat Area */}
-          {currentChatId ? (
-            <ChatWindow
-              messages={messages}
-              loading={loading}
-              onSendMessage={handleSendMessage}
-              error={error}
-              onErrorDismiss={() => setError(null)}
-              lang={lang}
-              farmContext={farmContext}
-            />
-          ) : (
-            <div className="flex-1 flex items-center justify-center">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-center"
-              >
                 <div className="text-6xl mb-4 flex justify-center">
                   <GiWheat size={64} className="text-krishi-agriculture" />
                 </div>
@@ -445,6 +373,5 @@ export default function AIAdvisorPage() {
           />
         </div>
       </div>
-    </div>
   )
 }
