@@ -8,6 +8,7 @@ import { ConfirmationResult, RecaptchaVerifier, signInWithPhoneNumber } from 'fi
 import { auth } from '@/lib/firebase'
 import { useLanguage } from '@/lib/LanguageContext'
 import LanguageToggle from '@/components/LanguageToggle'
+import { FiTool } from 'react-icons/fi'
 
 /**
  * FIREBASE TEST PHONE NUMBERS FOR DEVELOPMENT
@@ -271,10 +272,23 @@ export default function LoginPage() {
       
       {/* Development Notice - Remove in Production */}
       {process.env.NODE_ENV === 'development' && (
-        <div className="fixed top-4 left-4 bg-blue-100 border-l-4 border-blue-500 p-4 max-w-xs hidden md:block">
-          <p className="text-sm font-semibold text-blue-900">📝 Development Mode</p>
-          <p className="text-xs text-blue-800 mt-1">Test Phone: <code className="bg-blue-50 px-2 py-1">+919876543210</code></p>
-          <p className="text-xs text-blue-800">Test OTP: <code className="bg-blue-50 px-2 py-1">123456</code></p>
+        <div 
+          className="fixed top-4 left-4 p-3 max-w-xs hidden md:block"
+          style={{
+            background: 'rgba(255,255,255,0.5)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            border: '1px solid rgba(196,106,61,0.35)',
+            borderRadius: '12px',
+            boxShadow: '0 6px 20px rgba(45,42,110,0.08)'
+          }}
+        >
+          <p className="text-sm font-semibold flex items-center" style={{ color: '#2D2A6E' }}>
+            <FiTool size={18} className="mr-1" style={{ color: '#C46A3D' }} />
+            Development Mode
+          </p>
+          <p className="text-xs mt-1" style={{ color: '#2D2A6E' }}>Test Phone: <code className="px-2 py-1" style={{ background: 'rgba(196,106,61,0.1)', color: '#C46A3D', borderRadius: '4px' }}>+919876543210</code></p>
+          <p className="text-xs" style={{ color: '#2D2A6E' }}>Test OTP: <code className="px-2 py-1" style={{ background: 'rgba(196,106,61,0.1)', color: '#C46A3D', borderRadius: '4px' }}>123456</code></p>
         </div>
       )}
       
@@ -282,10 +296,18 @@ export default function LoginPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-xl p-8 md:p-12 max-w-md w-full"
+        className="p-8 md:p-12 max-w-md w-full"
+        style={{
+          background: 'rgba(255,255,255,0.35)',
+          backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
+          border: '1.5px solid rgba(196,106,61,0.6)',
+          borderRadius: '16px',
+          boxShadow: '0 10px 30px rgba(45,42,110,0.12), 0 4px 14px rgba(196,106,61,0.18)'
+        }}
       >
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-krishi-heading mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#2D2A6E' }}>
             {t.loginTitle}
           </h1>
           <p className="text-krishi-text/70">
@@ -296,7 +318,7 @@ export default function LoginPage() {
         {step === 'phone' ? (
           <form onSubmit={handlePhoneSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-krishi-heading mb-2">
+              <label className="block text-sm font-semibold mb-2" style={{ color: '#2D2A6E' }}>
                 {t.phoneLabel}
               </label>
               <input
@@ -304,7 +326,20 @@ export default function LoginPage() {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 placeholder={t.phonePlaceholder}
-                className="w-full px-4 py-3 border-2 border-krishi-border rounded-lg focus:outline-none focus:border-krishi-primary"
+                className="w-full px-4 py-3 rounded-lg transition-all duration-200"
+                style={{
+                  border: '1px solid rgba(196,106,61,0.4)',
+                  borderRadius: '10px'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#C46A3D'
+                  e.target.style.boxShadow = '0 0 0 2px rgba(196,106,61,0.15)'
+                  e.target.style.outline = 'none'
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(196,106,61,0.4)'
+                  e.target.style.boxShadow = 'none'
+                }}
               />
             </div>
 
@@ -319,15 +354,43 @@ export default function LoginPage() {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={loading}
-              className="w-full bg-krishi-primary text-white py-3 px-6 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+              className="w-full text-white py-3 px-6 font-semibold text-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+              style={{
+                background: '#C46A3D',
+                borderRadius: '10px'
+              }}
             >
               {loading ? (lang === 'hi' ? 'भेज रहे हैं...' : 'Sending...') : t.sendOtp}
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="button"
+              onClick={() => router.push('/')}
+              className="w-full font-semibold py-3 px-4 transition-all duration-250"
+              style={{
+                border: '1.5px solid #C46A3D',
+                color: '#C46A3D',
+                background: 'transparent',
+                borderRadius: '10px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(196,106,61,0.08)'
+                e.currentTarget.style.boxShadow = '0 6px 18px rgba(196,106,61,0.18)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.boxShadow = 'none'
+              }}
+            >
+              {lang === 'hi' ? 'होम पर वापस जाएं' : 'Back to Home'}
             </motion.button>
           </form>
         ) : (
           <form onSubmit={handleOtpSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-krishi-heading mb-2">
+              <label className="block text-sm font-semibold mb-2" style={{ color: '#2D2A6E' }}>
                 {t.otpLabel}
               </label>
               <input
@@ -336,7 +399,20 @@ export default function LoginPage() {
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 placeholder={t.otpPlaceholder}
                 maxLength={6}
-                className="w-full px-4 py-3 border-2 border-krishi-border rounded-lg focus:outline-none focus:border-krishi-primary text-center text-2xl tracking-widest"
+                className="w-full px-4 py-3 text-center text-2xl tracking-widest transition-all duration-200"
+                style={{
+                  border: '1px solid rgba(196,106,61,0.4)',
+                  borderRadius: '10px'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#C46A3D'
+                  e.target.style.boxShadow = '0 0 0 2px rgba(196,106,61,0.15)'
+                  e.target.style.outline = 'none'
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(196,106,61,0.4)'
+                  e.target.style.boxShadow = 'none'
+                }}
               />
             </div>
 
@@ -351,7 +427,11 @@ export default function LoginPage() {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={loading}
-              className="w-full bg-krishi-primary text-white py-3 px-6 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+              className="w-full text-white py-3 px-6 font-semibold text-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+              style={{
+                background: '#C46A3D',
+                borderRadius: '10px'
+              }}
             >
               {loading ? (lang === 'hi' ? 'सत्यापित कर रहे हैं...' : 'Verifying...') : t.verifyOtp}
             </motion.button>
@@ -365,7 +445,8 @@ export default function LoginPage() {
                 setOtp('')
                 setError('')
               }}
-              className="w-full text-krishi-primary font-semibold py-2 hover:underline"
+              className="w-full font-semibold py-2 hover:underline"
+              style={{ color: '#C46A3D' }}
             >
               {t.backButton}
             </button>
