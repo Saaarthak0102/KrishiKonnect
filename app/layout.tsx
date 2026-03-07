@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Poppins } from 'next/font/google'
 import './globals.css'
 import { LanguageProvider } from '@/context/LanguageContext'
 import { AuthWrapper } from '@/components/AuthProvider'
@@ -7,7 +7,10 @@ import { MandiProvider } from '@/lib/MandiContext'
 import { StarredCropsProvider } from '@/context/StarredCropsContext'
 import Grainient from '@/components/ui/Grainient'
 
-const inter = Inter({ subsets: ['latin'] })
+const poppins = Poppins({ 
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'] 
+})
 
 export const metadata: Metadata = {
   title: 'KrishiKonnect - किसानों के लिए डिजिटल प्लेटफॉर्म',
@@ -21,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="hi">
-      <body className={`${inter.className} relative min-h-screen`}>
+      <body className={`${poppins.className} relative min-h-screen`}>
         <div className="fixed inset-0 -z-10 pointer-events-none">
           <Grainient
             color1="#dccba7"
