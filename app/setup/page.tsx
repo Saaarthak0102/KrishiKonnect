@@ -169,19 +169,27 @@ export default function SetupPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-xl p-8 md:p-12 max-w-md w-full"
+        className="p-8 md:p-12 max-w-md w-full"
+        style={{
+          background: 'rgba(255,255,255,0.35)',
+          backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
+          border: '1.5px solid rgba(196,106,61,0.55)',
+          borderRadius: '16px',
+          boxShadow: '0 12px 35px rgba(45,42,110,0.12), 0 4px 14px rgba(196,106,61,0.18)'
+        }}
       >
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-krishi-heading mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#2D2A6E' }}>
             {t.setupTitle}
           </h1>
-          <p className="text-krishi-text/70">{t.subtitle}</p>
+          <p style={{ color: 'rgba(45,42,110,0.75)' }}>{t.subtitle}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name Field */}
           <div>
-            <label className="block text-sm font-semibold text-krishi-heading mb-2">
+            <label className="block text-sm font-semibold mb-2" style={{ color: '#2D2A6E' }}>
               {t.nameLabel}
             </label>
             <input
@@ -189,13 +197,27 @@ export default function SetupPage() {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder={t.namePlaceholder}
-              className="w-full px-4 py-3 border-2 border-krishi-border rounded-lg focus:outline-none focus:border-krishi-primary"
+              className="w-full px-4 py-3 transition-all duration-200"
+              style={{
+                border: '1px solid rgba(196,106,61,0.45)',
+                borderRadius: '10px',
+                background: 'rgba(255,255,255,0.65)'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#C46A3D'
+                e.target.style.boxShadow = '0 0 0 2px rgba(196,106,61,0.15)'
+                e.target.style.outline = 'none'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'rgba(196,106,61,0.45)'
+                e.target.style.boxShadow = 'none'
+              }}
             />
           </div>
 
           {/* Village Field */}
           <div>
-            <label className="block text-sm font-semibold text-krishi-heading mb-2">
+            <label className="block text-sm font-semibold mb-2" style={{ color: '#2D2A6E' }}>
               {t.villageLabel}
             </label>
             <input
@@ -203,19 +225,47 @@ export default function SetupPage() {
               value={formData.village}
               onChange={(e) => setFormData({ ...formData, village: e.target.value })}
               placeholder={t.villagePlaceholder}
-              className="w-full px-4 py-3 border-2 border-krishi-border rounded-lg focus:outline-none focus:border-krishi-primary"
+              className="w-full px-4 py-3 transition-all duration-200"
+              style={{
+                border: '1px solid rgba(196,106,61,0.45)',
+                borderRadius: '10px',
+                background: 'rgba(255,255,255,0.65)'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#C46A3D'
+                e.target.style.boxShadow = '0 0 0 2px rgba(196,106,61,0.15)'
+                e.target.style.outline = 'none'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'rgba(196,106,61,0.45)'
+                e.target.style.boxShadow = 'none'
+              }}
             />
           </div>
 
           {/* State Field */}
           <div>
-            <label className="block text-sm font-semibold text-krishi-heading mb-2">
+            <label className="block text-sm font-semibold mb-2" style={{ color: '#2D2A6E' }}>
               {t.stateLabel}
             </label>
             <select
               value={formData.state}
               onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-              className="w-full px-4 py-3 border-2 border-krishi-border rounded-lg focus:outline-none focus:border-krishi-primary"
+              className="w-full px-4 py-3 transition-all duration-200"
+              style={{
+                border: '1px solid rgba(196,106,61,0.45)',
+                borderRadius: '10px',
+                background: 'rgba(255,255,255,0.65)'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#C46A3D'
+                e.target.style.boxShadow = '0 0 0 2px rgba(196,106,61,0.15)'
+                e.target.style.outline = 'none'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'rgba(196,106,61,0.45)'
+                e.target.style.boxShadow = 'none'
+              }}
             >
               <option value="">{t.statePlaceholder}</option>
               {INDIAN_STATES.map((state) => (
@@ -228,13 +278,27 @@ export default function SetupPage() {
 
           {/* Primary Crop Field */}
           <div>
-            <label className="block text-sm font-semibold text-krishi-heading mb-2">
+            <label className="block text-sm font-semibold mb-2" style={{ color: '#2D2A6E' }}>
               {t.cropLabel}
             </label>
             <select
               value={formData.primaryCrop}
               onChange={(e) => setFormData({ ...formData, primaryCrop: e.target.value })}
-              className="w-full px-4 py-3 border-2 border-krishi-border rounded-lg focus:outline-none focus:border-krishi-primary"
+              className="w-full px-4 py-3 transition-all duration-200"
+              style={{
+                border: '1px solid rgba(196,106,61,0.45)',
+                borderRadius: '10px',
+                background: 'rgba(255,255,255,0.65)'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#C46A3D'
+                e.target.style.boxShadow = '0 0 0 2px rgba(196,106,61,0.15)'
+                e.target.style.outline = 'none'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'rgba(196,106,61,0.45)'
+                e.target.style.boxShadow = 'none'
+              }}
             >
               <option value="">{t.cropPlaceholder}</option>
               {PRIMARY_CROPS.map((crop) => (
@@ -256,7 +320,22 @@ export default function SetupPage() {
             whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={loading}
-            className="w-full bg-krishi-primary text-white py-3 px-6 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+            className="w-full text-white py-3 px-6 font-semibold text-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+            style={{
+              background: '#C46A3D',
+              borderRadius: '10px',
+              boxShadow: '0 6px 18px rgba(196,106,61,0.18)'
+            }}
+            onMouseEnter={(e) => {
+              if (!loading) {
+                e.currentTarget.style.transform = 'translateY(-1px)'
+                e.currentTarget.style.boxShadow = '0 8px 22px rgba(196,106,61,0.22)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = '0 6px 18px rgba(196,106,61,0.18)'
+            }}
           >
             {loading
               ? lang === 'hi'
