@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import { RiRobot2Line } from 'react-icons/ri'
+import { FiArrowRight, FiCheckCircle, FiZap } from 'react-icons/fi'
 
 export default function AIHighlight() {
   const { lang } = useLanguage()
@@ -44,25 +45,65 @@ export default function AIHighlight() {
           </p>
         </div>
 
-        <div className="max-w-3xl mx-auto bg-white/70 backdrop-blur-md border-2 border-krishi-border rounded-lg p-6 mb-6 shadow-md">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-3xl mx-auto bg-white/65 backdrop-blur-[10px] border border-indigo-500/15 rounded-2xl p-6 mb-6 shadow-[0_10px_25px_rgba(0,0,0,0.08)]"
+        >
           <p className="text-sm text-gray-500 mb-3">{t.aiExampleTitle}</p>
-          <div className="space-y-4">
-            <div className="bg-white/55 backdrop-blur-sm p-4 rounded-lg">
-              <p className="text-krishi-indigo font-medium">{t.aiExampleQuestion}</p>
+
+          <div className="space-y-3 text-sm md:text-[0.95rem]">
+            <div className="flex justify-end">
+              <div className="max-w-[70%]">
+                <div className="bg-[#C46A3D] text-white rounded-xl px-3 py-2 text-left leading-relaxed shadow-sm">
+                  kya ghaziabad mai kela ugaya ja sakta hai
+                </div>
+                <p className="text-xs text-right text-gray-600/60 mt-1">01:28 AM</p>
+              </div>
             </div>
-            <div className="bg-krishi-agriculture/10 p-4 rounded-lg border-l-4 border-krishi-agriculture">
-              <p className="text-krishi-indigo">{t.aiExampleAnswer}</p>
+
+            <div className="bg-emerald-100/60 border-l-4 border-emerald-500 rounded-xl p-4 text-left">
+              <p className="flex items-center gap-2 text-emerald-800 font-semibold mb-2">
+                <FiZap className="h-4 w-4" />
+                Quick Answer
+              </p>
+              <p className="text-krishi-indigo leading-relaxed">
+                Haan, Ghaziabad mein kela ugaya ja sakta hai, lekin kuch khaas baaton ka dhyaan rakhna padega.
+              </p>
+            </div>
+
+            <div className="bg-indigo-100/60 border-l-4 border-indigo-500 rounded-xl p-4 text-left">
+              <p className="flex items-center gap-2 text-indigo-800 font-semibold mb-2">
+                <FiCheckCircle className="h-4 w-4" />
+                Recommended Action
+              </p>
+              <ul className="space-y-1 text-krishi-indigo">
+                <li className="flex items-start gap-2">
+                  <FiCheckCircle className="h-4 w-4 mt-0.5 text-indigo-600" />
+                  <span>Mitti ki jaanch karwayen</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <FiCheckCircle className="h-4 w-4 mt-0.5 text-indigo-600" />
+                  <span>Sahi variety choose karein (G-9)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <FiCheckCircle className="h-4 w-4 mt-0.5 text-indigo-600" />
+                  <span>Paani ka sahi management rakhein</span>
+                </li>
+              </ul>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         <div className="text-center">
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.95 }}>
             <Link
               href="/ai-advisor"
-              className="inline-block bg-krishi-clay text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-shadow"
+              className="inline-flex items-center gap-2 bg-krishi-clay text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-sm hover:shadow-md transition-all duration-300"
             >
               {t.aiTryButton}
+              <FiArrowRight className="h-5 w-5" />
             </Link>
           </motion.div>
         </div>
