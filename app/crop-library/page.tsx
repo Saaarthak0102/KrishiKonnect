@@ -9,6 +9,8 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { useStarredCrops } from '@/lib/useStarredCrops'
 import { translations } from '@/lib/translations'
 import cropsData from '@/data/crops.json'
+import { GiWheat } from 'react-icons/gi'
+import { FiSearch, FiStar } from 'react-icons/fi'
 
 // Season mapping: English to Hindi
 const SEASON_MAPPING: Record<string, string> = {
@@ -149,25 +151,40 @@ export default function CropLibraryPage() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            {lang === 'hi' ? (
-              <>
-                <span className="text-[#2D4B8C]">कृषि</span>
-                {' '}
-                <span className="text-[#C96A3A]">फसल</span>
-                {' 🌾'}
-              </>
-            ) : (
-              <>
-                <span className="text-[#2D4B8C]">Krishi</span>
-                {' '}
-                <span className="text-[#C96A3A]">Fasal</span>
-                {' 🌾'}
-              </>
-            )}
-          </h1>
-          <p className="text-xl text-krishi-text mb-2">{t.cropLibrarySubtitle}</p>
-          <p className="text-krishi-text/80 max-w-2xl mx-auto">{t.cropLibraryDescription}</p>
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <h1 
+              className="text-[2.2rem] font-bold font-[Poppins]"
+              style={{
+                letterSpacing: '-0.5px',
+                textShadow: '0 0 10px rgba(45,42,110,0.08)',
+              }}
+            >
+              <span className="text-[#2D2A6E]">
+                {lang === 'hi' ? 'कृषि' : 'Krishi'}
+              </span>
+              {' '}
+              <span className="text-[#C46A3D]">
+                {lang === 'hi' ? 'फसल' : 'Fasal'}
+              </span>
+            </h1>
+            <GiWheat 
+              size={28} 
+              color="#2D2A6E" 
+              style={{ 
+                opacity: 0.9,
+                marginLeft: '8px',
+                transition: 'all 0.2s ease',
+              }}
+              className="hover:translate-y-[-1px]"
+            />
+          </div>
+          <p className="text-lg text-krishi-text font-medium mb-3">{t.cropLibrarySubtitle}</p>
+          <p 
+            className="text-[0.95rem] leading-relaxed max-w-[650px] mx-auto"
+            style={{ color: 'rgba(45,42,110,0.75)', marginTop: '10px' }}
+          >
+            {t.cropLibraryDescription}
+          </p>
         </motion.div>
 
         {/* Search and Filters Row */}
@@ -177,50 +194,90 @@ export default function CropLibraryPage() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="mb-10"
         >
-          <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl p-6 shadow-lg">
+          <div 
+            className="rounded-[16px] p-[20px_22px] transition-all duration-300 ease-out hover:translate-y-[-2px]"
+            style={{
+              background: 'rgba(255,255,255,0.55)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              border: '1px solid rgba(196,106,61,0.25)',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 0 12px rgba(45,42,110,0.05)',
+            }}
+          >
             {/* Search Input */}
-            <div className="mb-6">
+            <div className="mb-6 flex items-center gap-3" style={{
+              background: 'rgba(255,255,255,0.75)',
+              border: '1px solid rgba(196,106,61,0.35)',
+              borderRadius: '10px',
+              padding: '12px 14px',
+              transition: 'all 0.2s ease',
+            }}>
+              <FiSearch 
+                size={18} 
+                color="#2D2A6E" 
+                style={{ opacity: 0.75 }}
+              />
               <input
                 type="text"
                 placeholder={t.searchPlaceholder}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-3 border border-indigo-200/40 rounded-lg focus:outline-none focus:border-krishi-primary bg-white/50 backdrop-blur-sm text-krishi-text placeholder-krishi-text/50"
+                className="flex-1 focus:outline-none bg-transparent text-[0.95rem] w-full"
+                style={{
+                  color: '#2D2A6E',
+                }}
+                onFocus={(e) => {
+                  (e.currentTarget.parentElement as HTMLElement).style.border = '1px solid rgba(196,106,61,0.45)';
+                  (e.currentTarget.parentElement as HTMLElement).style.boxShadow = '0 0 0 2px rgba(196,106,61,0.15)';
+                }}
+                onBlur={(e) => {
+                  (e.currentTarget.parentElement as HTMLElement).style.border = '1px solid rgba(196,106,61,0.35)';
+                  (e.currentTarget.parentElement as HTMLElement).style.boxShadow = 'none';
+                }}
               />
+              <style>{`
+                input::placeholder {
+                  color: rgba(45,42,110,0.55);
+                }
+              `}</style>
             </div>
 
             {/* Season Filter and Sort Dropdown */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Season Filter Buttons */}
               <div>
-                <p className="text-sm font-semibold text-krishi-heading mb-3">
+                <p 
+                  className="text-[0.9rem] font-medium mb-2"
+                  style={{ color: '#2D2A6E', marginBottom: '8px' }}
+                >
                   {lang === 'hi' ? 'मौसम द्वारा फिल्टर करें' : 'Filter by Season'}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {seasons.map((season) => {
                     const isSelected = selectedSeason === season.value
-                    let buttonClass = 'px-4 py-2 rounded-full font-semibold transition-all duration-200 '
-
-                    if (season.value === 'all') {
-                      buttonClass += isSelected
-                        ? 'bg-indigo-600 text-white shadow-lg'
-                        : 'bg-white/40 backdrop-blur-md text-gray-700 hover:bg-white/60 border border-indigo-200/40'
-                    } else {
-                      const seasonColor = SEASON_COLORS[season.value]
-                      if (isSelected) {
-                        buttonClass += `text-white shadow-lg`
-                        buttonClass += ` bg-[${seasonColor}]`
-                      } else {
-                        buttonClass += 'bg-white/40 backdrop-blur-md text-gray-700 hover:bg-white/60 border border-indigo-200/40'
-                      }
-                    }
-
+                    
                     return (
                       <button
                         key={season.value}
                         onClick={() => setSelectedSeason(season.value)}
-                        style={isSelected && season.value !== 'all' ? { backgroundColor: SEASON_COLORS[season.value] } : {}}
-                        className={buttonClass}
+                        style={
+                          isSelected && season.value !== 'all' 
+                            ? { backgroundColor: SEASON_COLORS[season.value], color: 'white', border: 'none' }
+                            : undefined
+                        }
+                        className={`
+                          px-[14px] py-[6px] rounded-full text-[0.85rem] font-medium
+                          transition-all duration-200 ease-out
+                          ${
+                            season.value === 'all' && isSelected
+                              ? 'bg-[#2D2A6E] text-white shadow-md'
+                              : season.value === 'all'
+                              ? 'bg-white/65 border border-[rgba(196,106,61,0.25)] text-[rgba(45,42,110,0.85)] hover:translate-y-[-1px] hover:shadow-[0_4px_12px_rgba(45,42,110,0.15)]'
+                              : isSelected
+                              ? 'text-white shadow-md'
+                              : 'bg-white/65 border border-[rgba(196,106,61,0.25)] text-[rgba(45,42,110,0.85)] hover:translate-y-[-1px] hover:shadow-[0_4px_12px_rgba(45,42,110,0.15)]'
+                          }
+                        `}
                       >
                         {season.label}
                       </button>
@@ -229,27 +286,51 @@ export default function CropLibraryPage() {
                   {/* My Crops Filter Button */}
                   <button
                     onClick={() => setSelectedSeason('my-crops')}
-                    style={selectedSeason === 'my-crops' ? { backgroundColor: '#F2A541' } : {}}
-                    className={`px-4 py-2 rounded-full font-semibold transition-all duration-200 ${
-                      selectedSeason === 'my-crops'
-                        ? 'bg-[#F2A541] text-white shadow-lg'
-                        : 'bg-white/40 backdrop-blur-md text-gray-700 hover:bg-white/60 border border-indigo-200/40'
-                    }`}
+                    style={selectedSeason === 'my-crops' ? { backgroundColor: '#C46A3D' } : undefined}
+                    className={`
+                      px-[14px] py-[6px] rounded-full text-[0.85rem] font-medium
+                      transition-all duration-200 ease-out gap-[6px] inline-flex items-center
+                      ${
+                        selectedSeason === 'my-crops'
+                          ? 'bg-[#C46A3D] text-white shadow-md'
+                          : 'bg-white/65 border border-[rgba(196,106,61,0.25)] text-[rgba(45,42,110,0.85)] hover:translate-y-[-1px] hover:shadow-[0_4px_12px_rgba(45,42,110,0.15)]'
+                      }
+                    `}
                   >
-                    ⭐ {lang === 'hi' ? 'मेरी फसलें' : 'My Crops'} ({starredCrops.length})
+                    <FiStar size={16} color={selectedSeason === 'my-crops' ? 'white' : '#C46A3D'} />
+                    {lang === 'hi' ? 'मेरी फसलें' : 'My Crops'} ({starredCrops.length})
                   </button>
                 </div>
               </div>
 
               {/* Sort Dropdown */}
               <div>
-                <p className="text-sm font-semibold text-krishi-heading mb-3">
+                <p 
+                  className="text-[0.9rem] font-medium mb-2"
+                  style={{ color: '#2D2A6E', marginBottom: '8px' }}
+                >
                   {lang === 'hi' ? 'क्रमबद्ध करें' : 'Sort By'}
                 </p>
                 <select
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-                  className="w-full px-4 py-2 border-2 border-krishi-border rounded-lg focus:outline-none focus:border-krishi-primary bg-white/60 text-krishi-text font-semibold cursor-pointer"
+                  className="w-full text-[0.9rem] font-medium"
+                  style={{
+                    background: 'rgba(255,255,255,0.7)',
+                    border: '1px solid rgba(196,106,61,0.35)',
+                    borderRadius: '10px',
+                    padding: '10px 12px',
+                    color: '#2D2A6E',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.outline = 'none';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px rgba(196,106,61,0.15)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 >
                   <option value="asc">{t.sortAZ}</option>
                   <option value="desc">{t.sortZA}</option>
@@ -264,7 +345,14 @@ export default function CropLibraryPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="mb-6 text-krishi-text/70 text-sm"
+          className="text-sm"
+          style={{
+            fontSize: '0.9rem',
+            fontWeight: 500,
+            color: '#C46A3D',
+            marginBottom: '12px',
+            opacity: 0.9,
+          }}
         >
           {selectedSeason === 'my-crops' && starredCrops.length === 0 ? (
             <span>{lang === 'hi' ? 'आपने कोई फसल सहेजी नहीं है' : "You haven't saved any crops yet"}</span>
