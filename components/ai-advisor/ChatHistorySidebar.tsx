@@ -172,18 +172,6 @@ export default function ChatHistorySidebar({
         )}
       </div>
 
-      {/* Footer */}
-      <div 
-        className="p-3 border-t text-xs text-gray-400 text-center"
-        style={{
-          borderColor: 'rgba(196,106,61,0.25)',
-          background: 'rgba(255,255,255,0.45)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-        }}
-      >
-        {lang === 'hi' ? 'आपकी पिछली चैट' : 'Your chat history'}
-      </div>
     </motion.div>
   )
 }

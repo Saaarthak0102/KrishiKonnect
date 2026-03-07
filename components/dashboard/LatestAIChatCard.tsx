@@ -36,6 +36,15 @@ const MOCK_CHAT_FALLBACK = {
   updatedAtLabel: '2h ago',
 }
 
+const cardClassName =
+  'dashboard-card rounded-2xl border border-[#C46A3D]/20 bg-white/60 backdrop-blur-md shadow-sm'
+
+const cardStyle = {
+  padding: '16px',
+  boxShadow: '0 1px 2px rgba(0,0,0,0.06)',
+  transition: 'all 0.25s ease',
+}
+
 export default function LatestAIChatCard({
   userId,
   lang = 'en',
@@ -96,19 +105,7 @@ export default function LatestAIChatCard({
 
   if (loading) {
     return (
-      <div
-        className="dashboard-card"
-        style={{
-          background: 'linear-gradient(135deg, rgba(45,42,110,0.35), rgba(196,106,61,0.28)), rgba(255,255,255,0.35)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          borderRadius: '18px',
-          border: '1px solid rgba(196,106,61,0.30)',
-          boxShadow: '0 14px 36px rgba(0,0,0,0.10), 0 0 16px rgba(45,42,110,0.12), 0 0 10px rgba(196,106,61,0.10)',
-          padding: '16px',
-          transition: 'all 0.25s ease'
-        }}
-      >
+      <div className={cardClassName} style={cardStyle}>
         <div className="animate-pulse">
           <div style={{ height: '16px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '75%', marginBottom: '12px' }}></div>
           <div style={{ height: '12px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '100%', marginBottom: '8px' }}></div>
@@ -121,32 +118,23 @@ export default function LatestAIChatCard({
   if (isEmptyState) {
     return (
       <div
-        className="dashboard-card"
-        style={{
-          background: 'linear-gradient(135deg, rgba(45,42,110,0.35), rgba(196,106,61,0.28)), rgba(255,255,255,0.35)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          borderRadius: '18px',
-          border: '1px solid rgba(196,106,61,0.30)',
-          boxShadow: '0 14px 36px rgba(0,0,0,0.10), 0 0 16px rgba(45,42,110,0.12), 0 0 10px rgba(196,106,61,0.10)',
-          padding: '16px',
-          transition: 'all 0.25s ease'
-        }}
+        className={cardClassName}
+        style={cardStyle}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-4px)'
-          e.currentTarget.style.boxShadow = '0 18px 40px rgba(0,0,0,0.12), 0 0 20px rgba(45,42,110,0.15), 0 0 14px rgba(196,106,61,0.12)'
+          e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.10)'
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'translateY(0)'
-          e.currentTarget.style.boxShadow = '0 14px 36px rgba(0,0,0,0.10), 0 0 16px rgba(45,42,110,0.12), 0 0 10px rgba(196,106,61,0.10)'
+          e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.06)'
         }}
       >
         <div className="mb-3">
-          <h3 style={{ fontSize: '1.4rem', fontWeight: 600, color: '#2D2A6E', display: 'flex', alignItems: 'center', gap: '8px', textShadow: '0 0 10px rgba(45,42,110,0.12)' }}>
-            <HiSparkles size={22} style={{ color: '#2D2A6E', opacity: 0.9 }} />
+          <h3 className="text-[#2D2A6E] font-semibold" style={{ fontSize: '1.4rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <HiSparkles size={22} style={{ color: '#2D2A6E' }} />
             {t.title}
           </h3>
-          <p style={{ fontSize: '0.95rem', color: 'rgba(45,42,110,0.75)', fontWeight: 500, marginTop: '4px' }}>{t.subtitle}</p>
+          <p className="text-gray-600" style={{ fontSize: '0.95rem', marginTop: '4px' }}>{t.subtitle}</p>
         </div>
 
         <div className="space-y-3">
@@ -159,27 +147,23 @@ export default function LatestAIChatCard({
             onClick={handleClick}
             style={{
               width: '100%',
-              background: 'rgba(45,42,110,0.90)',
-              color: 'white',
               padding: '10px 18px',
-              borderRadius: '12px',
               fontSize: '14px',
               fontWeight: 500,
-              border: '1px solid rgba(255,255,255,0.15)',
               cursor: 'pointer',
-              boxShadow: '0 8px 20px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.15)',
-              backdropFilter: 'blur(6px)',
+              backgroundColor: '#2D2A6E',
               transition: 'all 0.25s ease'
             }}
+            className="bg-[#2D2A6E] text-white rounded-xl hover:bg-[#25235c] transition"
             onMouseOver={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)'
-              e.currentTarget.style.background = '#3a378a'
-              e.currentTarget.style.boxShadow = '0 12px 28px rgba(45,42,110,0.30), 0 0 14px rgba(45,42,110,0.20)'
+              e.currentTarget.style.backgroundColor = '#25235c'
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)'
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.transform = 'translateY(0) scale(1)'
-              e.currentTarget.style.background = 'rgba(45,42,110,0.90)'
-              e.currentTarget.style.boxShadow = '0 8px 20px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.15)'
+              e.currentTarget.style.backgroundColor = '#2D2A6E'
+              e.currentTarget.style.boxShadow = 'none'
             }}
           >
             {t.startChat}
@@ -192,39 +176,30 @@ export default function LatestAIChatCard({
   if (!latestChat && hasFirestoreError) {
     return (
       <div
-        className="dashboard-card"
-        style={{
-          background: 'linear-gradient(135deg, rgba(45,42,110,0.35), rgba(196,106,61,0.28)), rgba(255,255,255,0.35)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          borderRadius: '18px',
-          border: '1px solid rgba(196,106,61,0.30)',
-          boxShadow: '0 14px 36px rgba(0,0,0,0.10), 0 0 16px rgba(45,42,110,0.12), 0 0 10px rgba(196,106,61,0.10)',
-          padding: '16px',
-          transition: 'all 0.25s ease'
-        }}
+        className={cardClassName}
+        style={cardStyle}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-4px)'
-          e.currentTarget.style.boxShadow = '0 18px 40px rgba(0,0,0,0.12), 0 0 20px rgba(45,42,110,0.15), 0 0 14px rgba(196,106,61,0.12)'
+          e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.10)'
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'translateY(0)'
-          e.currentTarget.style.boxShadow = '0 14px 36px rgba(0,0,0,0.10), 0 0 16px rgba(45,42,110,0.12), 0 0 10px rgba(196,106,61,0.10)'
+          e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.06)'
         }}
       >
         <div className="mb-3">
-          <h3 style={{ fontSize: '1.4rem', fontWeight: 600, color: '#2D2A6E', display: 'flex', alignItems: 'center', gap: '8px', textShadow: '0 0 10px rgba(45,42,110,0.12)' }}>
-            <HiSparkles size={22} style={{ color: '#2D2A6E', opacity: 0.9 }} />
+          <h3 className="text-[#2D2A6E] font-semibold" style={{ fontSize: '1.4rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <HiSparkles size={22} style={{ color: '#2D2A6E' }} />
             {t.title}
           </h3>
-          <p style={{ fontSize: '0.95rem', color: 'rgba(45,42,110,0.75)', fontWeight: 500, marginTop: '4px' }}>{t.subtitle}</p>
+          <p className="text-gray-600" style={{ fontSize: '0.95rem', marginTop: '4px' }}>{t.subtitle}</p>
         </div>
 
         <div className="space-y-3">
-          <p style={{ fontSize: '14px', fontWeight: 500, color: '#2D2A6E', lineHeight: '1.6' }}>
+          <p className="text-[#2D2A6E] font-medium" style={{ fontSize: '14px', lineHeight: '1.6' }}>
             {MOCK_CHAT_FALLBACK.title}
           </p>
-          <p style={{ fontSize: '12px', color: 'rgba(45,42,110,0.7)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <p className="text-gray-400 text-sm" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span>🌽 {MOCK_CHAT_FALLBACK.crop}</span>
             <span>•</span>
             <span>{MOCK_CHAT_FALLBACK.updatedAtLabel}</span>
@@ -234,27 +209,23 @@ export default function LatestAIChatCard({
             onClick={handleClick}
             style={{
               width: '100%',
-              background: 'rgba(45,42,110,0.90)',
-              color: 'white',
               padding: '10px 18px',
-              borderRadius: '12px',
               fontSize: '14px',
               fontWeight: 500,
-              border: '1px solid rgba(255,255,255,0.15)',
               cursor: 'pointer',
-              boxShadow: '0 8px 20px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.15)',
-              backdropFilter: 'blur(6px)',
+              backgroundColor: '#2D2A6E',
               transition: 'all 0.25s ease'
             }}
+            className="bg-[#2D2A6E] text-white rounded-xl hover:bg-[#25235c] transition"
             onMouseOver={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)'
-              e.currentTarget.style.background = '#3a378a'
-              e.currentTarget.style.boxShadow = '0 12px 28px rgba(45,42,110,0.30), 0 0 14px rgba(45,42,110,0.20)'
+              e.currentTarget.style.backgroundColor = '#25235c'
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)'
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.transform = 'translateY(0) scale(1)'
-              e.currentTarget.style.background = 'rgba(45,42,110,0.90)'
-              e.currentTarget.style.boxShadow = '0 8px 20px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.15)'
+              e.currentTarget.style.backgroundColor = '#2D2A6E'
+              e.currentTarget.style.boxShadow = 'none'
             }}
           >
             {t.continueChat}
@@ -268,40 +239,31 @@ export default function LatestAIChatCard({
 
   return (
     <div
-      className="dashboard-card"
-      style={{
-        background: 'linear-gradient(135deg, rgba(45,42,110,0.35), rgba(196,106,61,0.28)), rgba(255,255,255,0.35)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        borderRadius: '18px',
-        border: '1px solid rgba(196,106,61,0.30)',
-        boxShadow: '0 14px 36px rgba(0,0,0,0.10), 0 0 16px rgba(45,42,110,0.12), 0 0 10px rgba(196,106,61,0.10)',
-        padding: '16px',
-        transition: 'all 0.25s ease'
-      }}
+      className={cardClassName}
+      style={cardStyle}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-4px)'
-        e.currentTarget.style.boxShadow = '0 18px 40px rgba(0,0,0,0.12), 0 0 20px rgba(45,42,110,0.15), 0 0 14px rgba(196,106,61,0.12)'
+        e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.10)'
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0)'
-        e.currentTarget.style.boxShadow = '0 14px 36px rgba(0,0,0,0.10), 0 0 16px rgba(45,42,110,0.12), 0 0 10px rgba(196,106,61,0.10)'
+        e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.06)'
       }}
     >
       <div className="mb-3">
-        <h3 style={{ fontSize: '1.4rem', fontWeight: 600, color: '#2D2A6E', display: 'flex', alignItems: 'center', gap: '8px', textShadow: '0 0 10px rgba(45,42,110,0.12)' }}>
-          <HiSparkles size={22} style={{ color: '#2D2A6E', opacity: 0.9 }} />
+        <h3 className="text-[#2D2A6E] font-semibold" style={{ fontSize: '1.4rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <HiSparkles size={22} style={{ color: '#2D2A6E' }} />
           {t.title}
         </h3>
-        <p style={{ fontSize: '0.95rem', color: 'rgba(45,42,110,0.75)', fontWeight: 500, marginTop: '4px' }}>{t.subtitle}</p>
+        <p className="text-gray-600" style={{ fontSize: '0.95rem', marginTop: '4px' }}>{t.subtitle}</p>
       </div>
 
       <div className="space-y-3">
-        <p style={{ fontSize: '14px', fontWeight: 500, color: '#2D2A6E', lineHeight: '1.6' }}>
+        <p className="text-[#2D2A6E] font-medium" style={{ fontSize: '14px', lineHeight: '1.6' }}>
           {previewText || MOCK_CHAT_FALLBACK.title}
         </p>
 
-        <div style={{ fontSize: '12px', color: 'rgba(45,42,110,0.7)', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        <div className="text-gray-400 text-sm" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           {cropTag ? <span>🌽 {cropTag}</span> : null}
           {cropTag ? <span>•</span> : null}
           <span>{getShortTime(chat.updatedAt || chat.createdAt)}</span>
@@ -311,27 +273,23 @@ export default function LatestAIChatCard({
           onClick={handleClick}
           style={{
             width: '100%',
-            background: 'rgba(45,42,110,0.90)',
-            color: 'white',
             padding: '10px 18px',
-            borderRadius: '12px',
             fontSize: '14px',
             fontWeight: 500,
-            border: '1px solid rgba(255,255,255,0.15)',
             cursor: 'pointer',
-            boxShadow: '0 8px 20px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.15)',
-            backdropFilter: 'blur(6px)',
+            backgroundColor: '#2D2A6E',
             transition: 'all 0.25s ease'
           }}
+          className="bg-[#2D2A6E] text-white rounded-xl hover:bg-[#25235c] transition"
           onMouseOver={(e) => {
             e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)'
-            e.currentTarget.style.background = '#3a378a'
-            e.currentTarget.style.boxShadow = '0 12px 28px rgba(45,42,110,0.30), 0 0 14px rgba(45,42,110,0.20)'
+            e.currentTarget.style.backgroundColor = '#25235c'
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)'
           }}
           onMouseOut={(e) => {
             e.currentTarget.style.transform = 'translateY(0) scale(1)'
-            e.currentTarget.style.background = 'rgba(45,42,110,0.90)'
-            e.currentTarget.style.boxShadow = '0 8px 20px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.15)'
+            e.currentTarget.style.backgroundColor = '#2D2A6E'
+            e.currentTarget.style.boxShadow = 'none'
           }}
         >
           {t.continueChat}
