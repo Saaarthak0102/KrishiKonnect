@@ -19,7 +19,7 @@ import cropsData from '@/data/crops.json'
 import mandiPricesData from '@/data/mandiPrices.json'
 import { GiWheat, GiPlantSeed } from 'react-icons/gi'
 import { MdLocationOn, MdCalendarToday } from 'react-icons/md'
-import { FiTrendingUp } from 'react-icons/fi'
+import { FiTrendingUp, FiCheckCircle } from 'react-icons/fi'
 import { FaTruck } from 'react-icons/fa'
 
 interface BestPriceData {
@@ -600,10 +600,22 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
+        whileHover={{
+          boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 0 24px rgba(196,106,61,0.18)'
+        }}
+        style={{
+          background: 'rgba(255,255,255,0.55)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          borderRadius: '16px',
+          boxShadow: '0 6px 24px rgba(0,0,0,0.05), 0 0 20px rgba(196,106,61,0.15)',
+          border: '1px solid rgba(196,106,61,0.35)',
+          transition: 'box-shadow 0.25s ease'
+        }}
+        className="p-6"
       >
-        <h2 className="text-xl font-semibold text-krishi-indigo mb-6 flex items-center gap-2">
-          <GiWheat size={24} className="text-krishi-agriculture" />
+        <h2 className="flex items-center gap-2 mb-6" style={{ color: '#2D2A6E', fontWeight: 600, fontSize: '20px' }}>
+          <GiWheat size={22} style={{ color: '#2D2A6E' }} />
           {t.farmOverview}
         </h2>
         
@@ -611,29 +623,29 @@ export default function DashboardPage() {
           {/* Column 1 - Crop & Location */}
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
-                <GiWheat size={20} />
+              <p className="mb-1 flex items-center gap-2" style={{ fontSize: '15px', color: '#2D2A6E', opacity: 0.75 }}>
+                <GiWheat size={22} style={{ color: '#2D2A6E' }} />
                 {t.primaryCrop}
               </p>
-              <p className="text-lg font-semibold text-krishi-indigo">
+              <p style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
                 {farmerProfile.primaryCrop}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
-                <MdLocationOn size={20} />
+              <p className="mb-1 flex items-center gap-2" style={{ fontSize: '15px', color: '#2D2A6E', opacity: 0.75 }}>
+                <MdLocationOn size={22} style={{ color: '#2D2A6E' }} />
                 {t.location}
               </p>
-              <p className="text-lg font-semibold text-krishi-indigo">
+              <p style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
                 {farmerProfile.village}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
-                <MdCalendarToday size={20} />
+              <p className="mb-1 flex items-center gap-2" style={{ fontSize: '15px', color: '#2D2A6E', opacity: 0.75 }}>
+                <MdCalendarToday size={22} style={{ color: '#2D2A6E' }} />
                 {t.season}
               </p>
-              <p className="text-lg font-semibold text-krishi-indigo">
+              <p style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
                 {cropSeason}
               </p>
             </div>
@@ -642,21 +654,28 @@ export default function DashboardPage() {
           {/* Column 2 - Market Trend */}
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
-                <FiTrendingUp size={20} />
+              <p className="mb-1 flex items-center gap-2" style={{ fontSize: '15px', color: '#2D2A6E', opacity: 0.75 }}>
+                <FiTrendingUp size={22} style={{ color: '#2D2A6E' }} />
                 {t.marketTrend}
               </p>
-              <p className={`text-lg font-semibold ${marketTrendColor}`}>
+              <p style={{ fontSize: '18px', fontWeight: 600, color: '#C46A3D' }}>
                 {marketTrendLabel}
               </p>
             </div>
-            <div className="bg-gradient-to-br from-[#FAF3E0] to-[#F5E6D3] rounded-lg p-4 border border-[#B85C38]/20">
-              <p className="text-sm text-gray-600 mb-2">
+            <div
+              style={{
+                background: 'rgba(196,106,61,0.12)',
+                border: '1px solid rgba(196,106,61,0.35)',
+                borderRadius: '12px'
+              }}
+              className="p-4"
+            >
+              <p className="mb-2" style={{ fontSize: '13px', color: '#2D2A6E', opacity: 0.7 }}>
                 {t.estimatedHarvest}
               </p>
-              <p className="text-3xl font-bold text-[#1F3C88]">
+              <p style={{ fontSize: '30px', fontWeight: 700, color: '#2D2A6E' }}>
                 {estimatedHarvestDays !== null ? estimatedHarvestDays : '--'}{' '}
-                <span className="text-lg font-normal">{t.days}</span>
+                <span style={{ fontSize: '16px', color: '#2D2A6E' }}>{t.days}</span>
               </p>
             </div>
           </div>
@@ -664,13 +683,16 @@ export default function DashboardPage() {
           {/* Column 3 - In Your Farm Today */}
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-gray-600 mb-2 flex items-center gap-2">
-                <GiPlantSeed size={20} />
+              <p className="mb-2 flex items-center gap-2" style={{ fontSize: '18px', color: '#2D2A6E', fontWeight: 600 }}>
+                <GiPlantSeed size={22} style={{ color: '#2D2A6E' }} />
                 {t.inYourFarmToday}
               </p>
-              <ul className="mt-2 space-y-1 text-sm text-gray-700">
+              <ul className="mt-2 space-y-1">
                 {cropAdvice.map((tip, index) => (
-                  <li key={index}>• {tip}</li>
+                  <li key={index} className="flex items-start gap-2" style={{ fontSize: '16px', fontWeight: 500, lineHeight: '1.7', color: '#2D2A6E' }}>
+                    <FiCheckCircle size={20} style={{ color: '#C46A3D', marginTop: '2px', flexShrink: 0 }} />
+                    <span>{tip}</span>
+                  </li>
                 ))}
               </ul>
             </div>
