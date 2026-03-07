@@ -47,8 +47,9 @@ export default function AIHighlight() {
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
           className="max-w-3xl mx-auto bg-white/50 backdrop-blur-md border border-indigo-200/40 rounded-2xl p-6 mb-6 shadow-lg"
         >
           <p className="text-sm text-gray-500 mb-3">{t.aiExampleTitle}</p>

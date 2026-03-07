@@ -117,6 +117,7 @@ export default function FeatureGrid() {
               trigger: ref,
               start: 'top 80%',
               toggleActions: 'play none none none',
+              once: true,
             },
           }
         )

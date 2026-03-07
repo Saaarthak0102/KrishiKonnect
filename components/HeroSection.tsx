@@ -30,8 +30,11 @@ export default function HeroSection() {
       <div className="grid grid-cols-12 gap-12 items-center">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}          className="col-span-12 md:col-span-5"        >
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="col-span-12 md:col-span-5"
+        >
           <h1 className="text-5xl md:text-6xl font-bold text-krishi-indigo mb-3">
             {t.heroHeadline}
           </h1>
@@ -63,7 +66,8 @@ export default function HeroSection() {
 
         <motion.div
           initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="col-span-12 md:col-span-7"
         >
