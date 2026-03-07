@@ -175,6 +175,19 @@
   transform: translateY(0);
 }
 
+/* Lightweight scroll reveal for Community Discussion cards */
+.community-discussion-grid .discussion-card {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+  will-change: transform, opacity;
+}
+
+.community-discussion-grid .discussion-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .crop-library-grid .crop-card,
   .crop-library-grid .crop-card.visible {
@@ -192,6 +205,13 @@
 
   .bazaar-reveal,
   .bazaar-reveal.visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .community-discussion-grid .discussion-card,
+  .community-discussion-grid .discussion-card.visible {
     opacity: 1;
     transform: none;
     transition: none;

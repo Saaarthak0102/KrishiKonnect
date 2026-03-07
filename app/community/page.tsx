@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import AskQuestionBox from '@/components/community/AskQuestionBox';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/context/AuthContext';
 import { addCommunityQuestion, subscribeToQuestions, type CommunityQuestion } from '@/lib/community';
+import { motion } from 'framer-motion';
 import { BsChatDots } from 'react-icons/bs';
 import { FaUsers } from 'react-icons/fa';
 import { FiMessageCircle, FiThumbsUp } from 'react-icons/fi';
@@ -86,6 +87,7 @@ export default function CommunityPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
+  const discussionGridRef = useRef<HTMLDivElement | null>(null);
 
   const FILTER_CATEGORIES = lang === 'en' ? FILTER_CATEGORIES_EN : FILTER_CATEGORIES_HI;
 
@@ -141,6 +143,39 @@ export default function CommunityPage() {
     });
   };
 
+  // Scroll reveal animation for discussion cards
+  useEffect(() => {
+    if (!discussionGridRef.current) {
+      return;
+    }
+
+    const cards = Array.from(discussionGridRef.current.querySelectorAll<HTMLElement>('.discussion-card'));
+    if (cards.length === 0) {
+      return;
+    }
+
+    if (typeof IntersectionObserver === 'undefined') {
+      cards.forEach((card) => card.classList.add('visible'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    cards.forEach((card) => observer.observe(card));
+
+    return () => observer.disconnect();
+  }, [filteredPosts]);
+
   // Handle new post submission
   const handleCreatePost = async (
     contentText: string,
@@ -174,36 +209,97 @@ export default function CommunityPage() {
       <div className="min-h-screen py-8 px-4">
         <main className="max-w-5xl mx-auto">
           {/* Header */}
-          <div className="mt-12 mb-8 text-center">
-            <h1 className="flex items-center justify-center text-[1.35rem] font-semibold text-[#2D2A6E] font-['Poppins']">
-              <FaUsers size={22} color="#C46A3D" className="mr-2" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mt-12 mb-8 text-center"
+          >
+            <div className="flex items-center justify-center gap-[10px] mb-3">
+              <h1 className="text-[2rem] font-bold tracking-[-0.5px] text-[#2D2A6E] font-['Poppins']">
+                <span className="text-[#2D2A6E]">
+                  {lang === 'hi' ? 'कृषि' : 'Krishi'}
+                </span>
+                {' '}
+                <span className="text-[#C46A3D]">
+                  {lang === 'hi' ? 'संघ' : 'Sangh'}
+                </span>
+              </h1>
+              <FaUsers
+                size={28}
+                color="#C46A3D"
+                style={{
+                  opacity: 0.9,
+                  marginLeft: '8px',
+                  transition: 'all 0.2s ease',
+                }}
+                className="hover:translate-y-[-1px]"
+              />
+            </div>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.08, duration: 0.5 }}
+              className="text-[1.05rem] font-medium text-[#C46A3D]"
+            >
               {t('communityDiscussions')}
-            </h1>
-            <p className="mt-[6px] text-[0.95rem] text-[rgba(45,42,110,0.75)]">
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.15, duration: 0.5 }}
+              className="text-[0.95rem] text-[rgba(45,42,110,0.75)] mt-2"
+            >
               {t('communityDescription')}
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           {/* Category Filter Buttons */}
-          <div className="mb-6 flex flex-wrap gap-2">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="mb-6 flex flex-wrap gap-2"
+          >
             {FILTER_CATEGORIES.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedFilter(category)}
-                className={`px-4 py-2 rounded-[10px] font-medium text-[#2D2A6E] transition-all duration-200 hover:-translate-y-[1px] ${
+                className={`px-4 py-2 rounded-[10px] font-medium transition-all duration-200 ease-out hover:translate-y-[-1px] ${
                   selectedFilter === category
-                    ? 'bg-[#C46A3D] text-white border-none'
-                    : 'bg-[rgba(255,255,255,0.55)] backdrop-blur-[10px] border border-[rgba(196,106,61,0.25)]'
+                    ? 'bg-[#C46A3D] text-white border-none shadow-lg'
+                    : 'bg-[rgba(255,255,255,0.55)] backdrop-blur-[10px] text-[#2D2A6E] border border-[rgba(196,106,61,0.25)]'
                 }`}
+                style={{
+                  transition: 'all 0.2s ease-out',
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedFilter === category) {
+                    e.currentTarget.style.boxShadow = '0 0 6px rgba(196,106,61,0.25)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedFilter === category) {
+                    e.currentTarget.style.boxShadow = '';
+                  }
+                }}
               >
                 {category}
               </button>
             ))}
-          </div>
+          </motion.div>
 
           {/* Posts Feed */}
-          <div className="mb-6 overflow-hidden rounded-2xl border border-[rgba(196,106,61,0.25)] bg-[rgba(255,255,255,0.55)] backdrop-blur-[12px] shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
-            <div className="max-w-5xl mx-auto space-y-4 overflow-y-auto h-[60vh] p-6">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15, duration: 0.5 }}
+            className="mb-6 overflow-hidden rounded-2xl border border-[rgba(196,106,61,0.25)] bg-[rgba(255,255,255,0.55)] backdrop-blur-[12px] shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
+          >
+            <div
+              ref={discussionGridRef}
+              className="community-discussion-grid max-w-5xl mx-auto space-y-4 overflow-y-auto h-[60vh] p-6"
+            >
               {isLoading ? (
                 <div className="h-full flex items-center justify-center">
                   <p className="text-krishi-indigo/70 text-lg">Loading...</p>
@@ -221,15 +317,39 @@ export default function CommunityPage() {
                 </div>
               ) : (
                 filteredPosts.map((post) => (
-                  <div
+                  <motion.div
                     key={post.id}
-                    className="rounded-[14px] border border-[rgba(196,106,61,0.30)] bg-[rgba(255,255,255,0.45)] backdrop-blur-[14px] p-4 shadow-[0_6px_18px_rgba(0,0,0,0.06)] transition-all duration-[250ms] ease-in-out hover:-translate-y-[3px]"
+                    className="discussion-card rounded-[14px] border border-[rgba(196,106,61,0.30)] bg-[rgba(255,255,255,0.45)] backdrop-blur-[14px] p-4 shadow-[0_6px_18px_rgba(0,0,0,0.06)]"
+                    style={{
+                      transition: 'transform 0.18s ease-out, box-shadow 0.18s ease-out, border-color 0.18s ease-out',
+                      willChange: 'transform, opacity',
+                      transform: 'translateZ(0)',
+                    }}
+                    whileHover={{
+                      y: -4,
+                      scale: 1.01,
+                      boxShadow: '0 14px 34px rgba(0,0,0,0.10), 0 0 14px rgba(196,106,61,0.10)',
+                      borderColor: 'rgba(196,106,61,0.35)',
+                      transition: { duration: 0.18, ease: 'easeOut' },
+                    }}
+                    whileTap={{ scale: 0.98, transition: { duration: 0.15, ease: 'easeOut' } }}
                   >
                     {/* Post Header */}
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
                         {/* Avatar */}
-                        <div className="h-[34px] w-[34px] rounded-full bg-krishi-agriculture text-white font-semibold flex items-center justify-center">
+                        <div
+                          className="h-[34px] w-[34px] rounded-full bg-krishi-agriculture text-white font-semibold flex items-center justify-center"
+                          style={{
+                            transition: 'transform 0.2s ease-out',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'scale(1)';
+                          }}
+                        >
                           {post.author.charAt(0).toUpperCase()}
                         </div>
                         <div>
@@ -244,7 +364,20 @@ export default function CommunityPage() {
                       </div>
                       {/* Crop Tag */}
                       {(post.cropTag_en || post.cropTag_hi) && (
-                        <span className="rounded-full bg-[rgba(196,106,61,0.15)] px-[10px] py-1 text-[0.8rem] text-[#C46A3D]">
+                        <span
+                          className="rounded-full bg-[rgba(196,106,61,0.15)] px-[10px] py-1 text-[0.8rem] text-[#C46A3D]"
+                          style={{
+                            transition: 'transform 0.25s ease-out, box-shadow 0.25s ease-out',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                            e.currentTarget.style.boxShadow = '0 0 6px rgba(196,106,61,0.15)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'scale(1)';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
+                        >
                           {lang === 'en' ? post.cropTag_en : post.cropTag_hi}
                         </span>
                       )}
@@ -261,14 +394,38 @@ export default function CommunityPage() {
                         onClick={() => handleUpvote(post.id)}
                         className="flex items-center gap-3 text-[#2D2A6E] transition-colors hover:text-krishi-clay"
                       >
-                        <FiThumbsUp size={18} className="opacity-80" />
+                        <FiThumbsUp
+                          size={18}
+                          className="opacity-80"
+                          style={{
+                            transition: 'transform 0.2s ease-out',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-1px) scale(1.05)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                          }}
+                        />
                         <span>{post.upvotes}</span>
                       </button>
                       <button
                         onClick={() => toggleReplies(post.id)}
                         className="flex items-center gap-3 text-[#2D2A6E] transition-colors hover:text-krishi-clay"
                       >
-                        <FiMessageCircle size={18} className="opacity-80" />
+                        <FiMessageCircle
+                          size={18}
+                          className="opacity-80"
+                          style={{
+                            transition: 'transform 0.2s ease-out',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-1px) scale(1.05)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                          }}
+                        />
                         <span>
                           {post.repliesCount} {post.repliesCount === 1 ? t('reply') : t('replies')}
                         </span>
@@ -283,11 +440,11 @@ export default function CommunityPage() {
                         </p>
                       </div>
                     )}
-                  </div>
+                  </motion.div>
                 ))
               )}
             </div>
-          </div>
+          </motion.div>
 
           {/* Ask Question Input Box */}
           <AskQuestionBox onPostCreated={handleCreatePost} />
