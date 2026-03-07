@@ -6,11 +6,12 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useAuth } from '@/context/AuthContext'
 import { logout } from '@/lib/auth'
-import { GiWheat, GiPlantSeed } from 'react-icons/gi'
+import { GiPlantSeed } from 'react-icons/gi'
 import { MdStorefront } from 'react-icons/md'
 import { FaUsers, FaTruck } from 'react-icons/fa'
 import { RiRobot2Line } from 'react-icons/ri'
 import { HiOutlineChartBar } from 'react-icons/hi'
+import { IoChevronForward, IoChevronBack } from 'react-icons/io5'
 import BrandName from '@/components/ui/BrandName'
 
 interface SidebarProps {
@@ -102,30 +103,45 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
 
   return (
     <aside
-      className={`sticky top-16 self-start h-[calc(100vh-4rem)] bg-white/70 backdrop-blur-md border-r-2 border-gray-200 transition-all duration-300 flex flex-col ${
+      className={`sticky top-16 self-start h-[calc(100vh-4rem)] transition-all duration-300 flex flex-col ${
         expanded ? 'w-64' : 'w-16'
       }`}
       style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
-        borderRightColor: '#E5E7EB',
+        background: 'rgba(255,255,255,0.45)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        borderRight: '1px solid rgba(196,106,61,0.25)',
+        boxShadow: '2px 0 20px rgba(0,0,0,0.05)'
       }}
     >
       {/* Header with Logo & Toggle */}
-      <div className="flex items-center justify-between p-4 border-b-2 border-gray-200">
-        {expanded && (
-          <Link href="/dashboard" className="flex items-center space-x-2 flex-1">
-            <GiWheat size={24} className="text-krishi-clay" />
-            <span className="text-sm">
-              <BrandName />
-            </span>
-          </Link>
-        )}
+      <div className="flex items-center justify-center p-4" style={{ borderBottom: '1px solid rgba(196,106,61,0.25)' }}>
         <button
           onClick={() => setExpanded(!expanded)}
-          className="p-2 hover:bg-gray-100 rounded-md flex-shrink-0 transition-colors duration-200"
+          className="flex items-center justify-center"
+          style={{
+            width: '42px',
+            height: '42px',
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.6)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            border: '1px solid rgba(196,106,61,0.35)',
+            color: '#2D2A6E',
+            transition: 'all 0.2s ease',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.05)';
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.08)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
           title={expanded ? 'Collapse' : 'Expand'}
         >
-          {expanded ? '‹' : '›'}
+          {expanded ? <IoChevronBack size={20} /> : <IoChevronForward size={20} />}
         </button>
       </div>
 
@@ -135,24 +151,36 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
           <Link
             key={item.href}
             href={item.href}
-            className={`flex items-center rounded-lg mx-2 transition-all duration-200 ${
+            className={`flex items-center mx-2 ${
               expanded ? 'justify-start px-4 space-x-3' : 'justify-center'
-            } py-3 ${
-              isActive(item.href)
-                ? 'bg-white/60 backdrop-blur-sm'
-                : 'hover:bg-gray-100'
-            }`}
-            style={
-              isActive(item.href)
+            } py-3`}
+            style={{
+              borderRadius: '10px',
+              transition: 'all 0.2s ease',
+              ...(isActive(item.href)
                 ? {
-                    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-                    color: '#1F3C88',
+                    background: 'rgba(45,42,110,0.12)',
+                    color: '#2D2A6E',
                   }
-                : {}
-            }
+                : {
+                    color: '#2D2A6E'
+                  })
+            }}
+            onMouseEnter={(e) => {
+              if (!isActive(item.href)) {
+                e.currentTarget.style.background = 'rgba(45,42,110,0.08)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isActive(item.href)) {
+                e.currentTarget.style.background = 'transparent';
+              }
+            }}
             title={!expanded ? item.label : ''}
           >
-            <span className="flex-shrink-0">{item.icon}</span>
+            <span className="flex-shrink-0" style={{ color: isActive(item.href) ? '#C46A3D' : '#2D2A6E', fontSize: '18px' }}>
+              {item.icon}
+            </span>
             {expanded && (
               <span className="font-semibold text-sm whitespace-nowrap">
                 {renderKrishiLabel(item.label, lang)}

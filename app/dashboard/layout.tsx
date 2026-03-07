@@ -33,19 +33,28 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen flex flex-col">
       {/* Sticky Top Navbar */}
-      <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-sm shadow-sm border-b-2 border-gray-200">
+      <header 
+        className="sticky top-0 z-50 shadow-sm"
+        style={{
+          background: 'rgba(255,255,255,0.35)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(196,106,61,0.25)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+        }}
+      >
         <div className="px-4 py-4 flex items-center justify-between">
           {/* Left - Logo and Brand */}
           <div className="flex items-center space-x-4">
             <GiWheat size={24} className="text-krishi-agriculture" />
-            <span className="text-lg hidden sm:inline">
+            <span className="text-lg hidden sm:inline" style={{ color: '#2D2A6E' }}>
               <BrandName />
             </span>
           </div>
 
           {/* Center - Welcome Message */}
           <div className="flex-1 text-center hidden md:block">
-            <h1 className="text-lg md:text-xl font-bold text-krishi-indigo">
+            <h1 className="text-lg md:text-xl font-bold" style={{ color: '#2D2A6E' }}>
               {lang === 'hi' ? 'स्वागत है' : 'Welcome back'}, {farmerProfile?.name || user?.phoneNumber} 👋
             </h1>
           </div>
@@ -53,10 +62,10 @@ export default function DashboardLayout({
           {/* Right - User Info and Language Toggle */}
           <div className="flex items-center space-x-4">
             <div className="hidden lg:block text-right">
-              <p className="text-sm text-gray-500 font-semibold">
+              <p className="text-sm font-semibold" style={{ color: '#2D2A6E' }}>
                 {farmerProfile?.village}, {farmerProfile?.state}
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs" style={{ color: 'rgba(45,42,110,0.6)' }}>
                 {farmerProfile?.primaryCrop}
               </p>
             </div>
