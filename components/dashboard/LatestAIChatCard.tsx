@@ -95,11 +95,19 @@ export default function LatestAIChatCard({
 
   if (loading) {
     return (
-      <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-lg p-4">
+      <div style={{
+        background: 'rgba(255,255,255,0.45)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        border: '1px solid rgba(196,106,61,0.35)',
+        borderRadius: '14px',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(45,42,110,0.08) inset',
+        padding: '16px'
+      }}>
         <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
-          <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
-          <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+          <div style={{ height: '16px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '75%', marginBottom: '12px' }}></div>
+          <div style={{ height: '12px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '100%', marginBottom: '8px' }}></div>
+          <div style={{ height: '12px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '83%' }}></div>
         </div>
       </div>
     )
@@ -107,24 +115,51 @@ export default function LatestAIChatCard({
 
   if (isEmptyState) {
     return (
-      <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-lg p-4">
+      <div style={{
+        background: 'rgba(255,255,255,0.45)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        border: '1px solid rgba(196,106,61,0.35)',
+        borderRadius: '14px',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(45,42,110,0.08) inset',
+        padding: '16px'
+      }}>
         <div className="mb-3">
-          <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#2D2A6E', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span>🤖</span>
             {t.title}
           </h3>
-          <p className="text-xs text-gray-500 mt-1">{t.subtitle}</p>
+          <p style={{ fontSize: '12px', color: 'rgba(45,42,110,0.6)', marginTop: '4px' }}>{t.subtitle}</p>
         </div>
 
         <div className="space-y-3">
           <div className="space-y-1">
-            <p className="text-sm text-gray-600">{t.emptyLine1}</p>
-            <p className="text-sm text-gray-600">{t.emptyLine2}</p>
+            <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)' }}>{t.emptyLine1}</p>
+            <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)' }}>{t.emptyLine2}</p>
           </div>
 
           <button
             onClick={handleClick}
-            className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+            style={{
+              width: '100%',
+              backgroundColor: '#2D2A6E',
+              color: 'white',
+              padding: '10px 12px',
+              borderRadius: '10px',
+              fontSize: '14px',
+              fontWeight: 500,
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.25s ease'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = '#3a378a'
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)'
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = '#2D2A6E'
+              e.currentTarget.style.boxShadow = 'none'
+            }}
           >
             {t.startChat}
           </button>
@@ -135,20 +170,28 @@ export default function LatestAIChatCard({
 
   if (!latestChat && hasFirestoreError) {
     return (
-      <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-lg p-4">
+      <div style={{
+        background: 'rgba(255,255,255,0.45)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        border: '1px solid rgba(196,106,61,0.35)',
+        borderRadius: '14px',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(45,42,110,0.08) inset',
+        padding: '16px'
+      }}>
         <div className="mb-3">
-          <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#2D2A6E', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span>🤖</span>
             {t.title}
           </h3>
-          <p className="text-xs text-gray-500 mt-1">{t.subtitle}</p>
+          <p style={{ fontSize: '12px', color: 'rgba(45,42,110,0.6)', marginTop: '4px' }}>{t.subtitle}</p>
         </div>
 
         <div className="space-y-3">
-          <p className="text-sm font-medium text-gray-800 leading-relaxed">
+          <p style={{ fontSize: '14px', fontWeight: 500, color: '#2D2A6E', lineHeight: '1.6' }}>
             {MOCK_CHAT_FALLBACK.title}
           </p>
-          <p className="text-xs text-gray-600 flex items-center gap-2">
+          <p style={{ fontSize: '12px', color: 'rgba(45,42,110,0.7)', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span>🌽 {MOCK_CHAT_FALLBACK.crop}</span>
             <span>•</span>
             <span>{MOCK_CHAT_FALLBACK.updatedAtLabel}</span>
@@ -156,7 +199,26 @@ export default function LatestAIChatCard({
 
           <button
             onClick={handleClick}
-            className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+            style={{
+              width: '100%',
+              backgroundColor: '#2D2A6E',
+              color: 'white',
+              padding: '10px 12px',
+              borderRadius: '10px',
+              fontSize: '14px',
+              fontWeight: 500,
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.25s ease'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = '#3a378a'
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)'
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = '#2D2A6E'
+              e.currentTarget.style.boxShadow = 'none'
+            }}
           >
             {t.continueChat}
           </button>
@@ -168,21 +230,29 @@ export default function LatestAIChatCard({
   const chat = latestChat as AIChat
 
   return (
-    <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-lg p-4">
+    <div style={{
+      background: 'rgba(255,255,255,0.45)',
+      backdropFilter: 'blur(14px)',
+      WebkitBackdropFilter: 'blur(14px)',
+      border: '1px solid rgba(196,106,61,0.35)',
+      borderRadius: '14px',
+      boxShadow: '0 8px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(45,42,110,0.08) inset',
+      padding: '16px'
+    }}>
       <div className="mb-3">
-        <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+        <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#2D2A6E', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>🤖</span>
           {t.title}
         </h3>
-        <p className="text-xs text-gray-500 mt-1">{t.subtitle}</p>
+        <p style={{ fontSize: '12px', color: 'rgba(45,42,110,0.6)', marginTop: '4px' }}>{t.subtitle}</p>
       </div>
 
       <div className="space-y-3">
-        <p className="text-sm font-medium text-gray-800 leading-relaxed">
+        <p style={{ fontSize: '14px', fontWeight: 500, color: '#2D2A6E', lineHeight: '1.6' }}>
           {previewText || MOCK_CHAT_FALLBACK.title}
         </p>
 
-        <div className="text-xs text-gray-600 flex items-center gap-2 flex-wrap">
+        <div style={{ fontSize: '12px', color: 'rgba(45,42,110,0.7)', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           {cropTag ? <span>🌽 {cropTag}</span> : null}
           {cropTag ? <span>•</span> : null}
           <span>{getShortTime(chat.updatedAt || chat.createdAt)}</span>
@@ -190,7 +260,26 @@ export default function LatestAIChatCard({
 
         <button
           onClick={handleClick}
-          className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+          style={{
+            width: '100%',
+            backgroundColor: '#2D2A6E',
+            color: 'white',
+            padding: '10px 12px',
+            borderRadius: '10px',
+            fontSize: '14px',
+            fontWeight: 500,
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.25s ease'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = '#3a378a'
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)'
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = '#2D2A6E'
+            e.currentTarget.style.boxShadow = 'none'
+          }}
         >
           {t.continueChat}
         </button>

@@ -124,11 +124,19 @@ export default function LatestCommunityQuestionCard({
 
   if (loading) {
     return (
-      <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-lg p-4">
+      <div style={{
+        background: 'rgba(255,255,255,0.45)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        border: '1px solid rgba(196,106,61,0.35)',
+        borderRadius: '14px',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(45,42,110,0.08) inset',
+        padding: '16px'
+      }}>
         <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
-          <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
-          <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+          <div style={{ height: '16px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '75%', marginBottom: '12px' }}></div>
+          <div style={{ height: '12px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '100%', marginBottom: '8px' }}></div>
+          <div style={{ height: '12px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '83%' }}></div>
         </div>
       </div>
     )
@@ -137,17 +145,44 @@ export default function LatestCommunityQuestionCard({
   if (!latestQuestion) {
     // Empty state
     return (
-      <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-lg p-4">
-        <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+      <div style={{
+        background: 'rgba(255,255,255,0.45)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        border: '1px solid rgba(196,106,61,0.35)',
+        borderRadius: '14px',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(45,42,110,0.08) inset',
+        padding: '16px'
+      }}>
+        <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#2D2A6E', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>🌾</span>
           {t.title}
         </h3>
-        <p className="text-sm text-gray-600 mb-4">
+        <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)', marginBottom: '16px' }}>
           {t.message}
         </p>
         <button
           onClick={handleClick}
-          className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+          style={{
+            width: '100%',
+            backgroundColor: '#2D2A6E',
+            color: 'white',
+            padding: '10px 12px',
+            borderRadius: '10px',
+            fontSize: '14px',
+            fontWeight: 500,
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.25s ease'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = '#3a378a'
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)'
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = '#2D2A6E'
+            e.currentTarget.style.boxShadow = 'none'
+          }}
         >
           {t.button}
         </button>
@@ -157,8 +192,16 @@ export default function LatestCommunityQuestionCard({
 
   // Display question
   return (
-    <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-lg p-4">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+    <div style={{
+      background: 'rgba(255,255,255,0.45)',
+      backdropFilter: 'blur(14px)',
+      WebkitBackdropFilter: 'blur(14px)',
+      border: '1px solid rgba(196,106,61,0.35)',
+      borderRadius: '14px',
+      boxShadow: '0 8px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(45,42,110,0.08) inset',
+      padding: '16px'
+    }}>
+      <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#2D2A6E', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
         <span>🌾</span>
         {t.title}
       </h3>
@@ -166,20 +209,29 @@ export default function LatestCommunityQuestionCard({
       <div className="space-y-3">
         {/* Question Preview */}
         <div>
-          <p className="text-gray-800 text-sm leading-relaxed mb-2">
+          <p style={{ fontSize: '14px', color: '#2D2A6E', lineHeight: '1.6', marginBottom: '8px', fontWeight: 500 }}>
             {getTruncatedText(latestQuestionText)}
           </p>
           {latestQuestion.description && (
-            <p className="text-gray-600 text-xs leading-relaxed">
+            <p style={{ fontSize: '12px', color: 'rgba(45,42,110,0.7)', lineHeight: '1.6' }}>
               {getTruncatedText(latestQuestion.description, 80)}
             </p>
           )}
         </div>
 
         {/* Metadata Row */}
-        <div className="flex items-center gap-3 text-xs text-gray-600">
+        <div className="flex items-center gap-3 text-xs" style={{ color: 'rgba(45,42,110,0.7)' }}>
           {/* Crop Tag */}
-          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-md font-medium inline-flex items-center gap-1">
+          <span style={{
+            backgroundColor: 'rgba(196,106,61,0.15)',
+            color: '#C46A3D',
+            padding: '4px 8px',
+            borderRadius: '6px',
+            fontWeight: 500,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px'
+          }}>
             {latestQuestion.cropEmoji} {latestQuestionCrop}
           </span>
 
@@ -197,7 +249,26 @@ export default function LatestCommunityQuestionCard({
         {/* View Discussion Button */}
         <button
           onClick={handleClick}
-          className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+          style={{
+            width: '100%',
+            backgroundColor: '#2D2A6E',
+            color: 'white',
+            padding: '10px 12px',
+            borderRadius: '10px',
+            fontSize: '14px',
+            fontWeight: 500,
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.25s ease'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = '#3a378a'
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)'
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = '#2D2A6E'
+            e.currentTarget.style.boxShadow = 'none'
+          }}
         >
           {t.viewDiscussion}
         </button>

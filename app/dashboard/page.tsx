@@ -784,14 +784,26 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
-          className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
+          style={{
+            background: 'rgba(255,255,255,0.55)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            borderRadius: '16px',
+            border: '1px solid rgba(196,106,61,0.25)',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+            transition: 'all 0.25s ease'
+          }}
+          whileHover={{
+            boxShadow: '0 12px 40px rgba(0,0,0,0.12), 0 0 24px rgba(45,42,110,0.08)'
+          }}
+          className="p-6"
         >
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-krishi-indigo flex items-center gap-2 mb-1">
-              <GiWheat size={24} className="text-krishi-agriculture" />
+            <h2 className="flex items-center gap-2 mb-1" style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
+              <GiWheat size={22} style={{ color: '#2D2A6E' }} />
               {t.myCrops}
             </h2>
-            <p className="text-sm text-gray-600">
+            <p style={{ fontSize: '15px', color: 'rgba(45,42,110,0.7)' }}>
               {t.latestMandiPrices}
             </p>
           </div>
@@ -800,17 +812,18 @@ export default function DashboardPage() {
           {myCrops.length === 0 && (
             <div className="py-12 px-6 text-center">
               <div className="mb-4 text-5xl flex justify-center">
-                <GiWheat size={64} className="text-krishi-agriculture" />
+                <GiWheat size={64} style={{ color: '#2D2A6E' }} />
               </div>
-              <h3 className="text-lg font-semibold text-krishi-indigo mb-2">
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E', marginBottom: '8px' }}>
                 {t.noCropsSelected}
               </h3>
-              <p className="text-gray-600 mb-6 max-w-sm mx-auto">
+              <p style={{ fontSize: '15px', color: 'rgba(45,42,110,0.7)', marginBottom: '24px', maxWidth: '28rem', marginLeft: 'auto', marginRight: 'auto' }}>
                 {t.noCropsMessage}
               </p>
               <Link
                 href="/crop-library"
-                className="inline-block bg-[#1F3C88] hover:bg-[#1F3C88]/80 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
+                className="inline-block text-white font-semibold px-6 py-2 rounded-lg transition-all hover:shadow-lg"
+                style={{ backgroundColor: '#2D2A6E', fontSize: '15px' }}
               >
                 {t.exploreCrops}
               </Link>
@@ -837,9 +850,9 @@ export default function DashboardPage() {
                 }
 
                 const getTrendColor = (trend: 'up' | 'down' | 'stable') => {
-                  if (trend === 'up') return 'text-[#7FB069]'
-                  if (trend === 'down') return 'text-[#B85C38]'
-                  return 'text-gray-600'
+                  if (trend === 'up') return '#7FB069'
+                  if (trend === 'down') return '#C46A3D'
+                  return '#2D2A6E'
                 }
 
                 return (
@@ -852,14 +865,27 @@ export default function DashboardPage() {
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className="flex items-center justify-between p-4 bg-[#FAF3E0]/30 rounded-lg border border-gray-200 hover:border-[#B85C38] hover:shadow-md transition-all cursor-pointer"
+                      style={{
+                        background: 'rgba(255,255,255,0.45)',
+                        backdropFilter: 'blur(14px)',
+                        WebkitBackdropFilter: 'blur(14px)',
+                        border: '1px solid rgba(196,106,61,0.35)',
+                        borderRadius: '14px',
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(45,42,110,0.08) inset',
+                        transition: 'all 0.25s ease'
+                      }}
+                      whileHover={{
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 12px 30px rgba(0,0,0,0.12), 0 0 14px rgba(45,42,110,0.12)'
+                      }}
+                      className="flex items-center justify-between p-4 cursor-pointer"
                     >
                       <div className="flex-1">
-                        <p className="font-semibold text-krishi-indigo mb-1">
+                        <p style={{ fontWeight: 600, color: '#2D2A6E', marginBottom: '6px', fontSize: '16px' }}>
                           {cropName}
                         </p>
                         {priceData && (
-                          <p className="text-sm text-gray-600">
+                          <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)' }}>
                             {t.topMandi}: {priceData.mandi}
                           </p>
                         )}
@@ -867,25 +893,25 @@ export default function DashboardPage() {
                       <div className="text-right">
                         {priceData ? (
                           <>
-                            <p className="text-lg font-bold text-krishi-indigo">
+                            <p style={{ fontSize: '18px', fontWeight: 700, color: '#2D2A6E', marginBottom: '4px' }}>
                               ₹{priceData.price.toLocaleString()}
                             </p>
-                            <p className={`text-sm font-medium ${getTrendColor(priceData.trend)}`}>
+                            <p style={{ fontSize: '14px', fontWeight: 500, color: getTrendColor(priceData.trend) }}>
                               {getTrendIcon(priceData.trend)} {getTrendText(priceData.trend)}
                             </p>
                             {priceData.lastUpdated && (
-                              <div className="flex items-center gap-1 mt-1">
+                              <div className="flex items-center gap-1 mt-1 justify-end">
                                 {isLivePrice(priceData.lastUpdated) && (
                                   <span className="inline-block w-1.5 h-1.5 bg-green-600 rounded-full animate-pulse"></span>
                                 )}
-                                <p className="text-xs text-gray-500">
+                                <p style={{ fontSize: '12px', color: 'rgba(45,42,110,0.5)' }}>
                                   {getRelativeTime(priceData.lastUpdated, lang === 'hi' ? 'hi' : 'en')}
                                 </p>
                               </div>
                             )}
                           </>
                         ) : (
-                          <p className="text-sm text-gray-500">—</p>
+                          <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.5)' }}>—</p>
                         )}
                       </div>
                     </motion.div>
@@ -901,41 +927,79 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
-          className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
+          style={{
+            background: 'rgba(255,255,255,0.55)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            borderRadius: '16px',
+            border: '1px solid rgba(196,106,61,0.25)',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+            transition: 'all 0.25s ease'
+          }}
+          whileHover={{
+            boxShadow: '0 12px 40px rgba(0,0,0,0.12), 0 0 24px rgba(45,42,110,0.08)'
+          }}
+          className="p-6"
         >
-          <h3 className="text-lg font-semibold text-krishi-indigo mb-4 flex items-center gap-2">
-            <FaTruck size={24} />
+          <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <FaTruck size={22} style={{ color: '#2D2A6E' }} />
             {t.yourServices}
           </h3>
         
         <div className="space-y-4">
           {!latestTransportBooking ? (
-            <p className="text-sm text-gray-500 py-4">
+            <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.6)', paddingTop: '16px', paddingBottom: '16px' }}>
               {t.noServices}
             </p>
           ) : (
-            <div key={latestTransportBooking.id} className="p-4 bg-white/50 backdrop-blur-sm rounded-lg border border-gray-200">
+            <div key={latestTransportBooking.id} style={{
+              background: 'rgba(255,255,255,0.45)',
+              backdropFilter: 'blur(14px)',
+              WebkitBackdropFilter: 'blur(14px)',
+              border: '1px solid rgba(196,106,61,0.35)',
+              borderRadius: '14px',
+              padding: '16px',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(45,42,110,0.08) inset',
+              transition: 'all 0.25s ease'
+            }}>
               <div className="flex items-start gap-3">
-                <FaTruck size={24} className="text-gray-600 mt-1" />
+                <FaTruck size={20} style={{ color: '#2D2A6E', marginTop: '4px' }} />
                 <div className="flex-1">
-                  <p className="font-semibold text-krishi-indigo mb-1">
+                  <p style={{ fontWeight: 600, color: '#2D2A6E', marginBottom: '8px', fontSize: '16px' }}>
                     {t.transportBooked}
                   </p>
-                  <p className="text-xs text-gray-500 mb-1">ID: {latestTransportBooking.id}</p>
-                  <p className="text-sm text-gray-700 mb-1">
+                  <p style={{ fontSize: '12px', color: 'rgba(45,42,110,0.5)', marginBottom: '8px' }}>ID: {latestTransportBooking.id}</p>
+                  <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.8)', marginBottom: '8px' }}>
                     {latestTransportBooking.crop} {'→'} {latestTransportBooking.destinationMandi}
                   </p>
-                  <p className="text-sm text-gray-600">{t.pickupDate}: {latestTransportBooking.pickupDate}</p>
-                  <p className="text-sm text-gray-600">{t.provider}: {latestTransportBooking.provider}</p>
-                  <p className="text-sm text-gray-600">{t.cost}: ₹{latestTransportBooking.cost.toLocaleString('en-IN')}</p>
-                  <p className="text-sm text-gray-600 mb-3">
-                    {t.status}: <span className="text-[#7FB069] font-semibold">{t.confirmed}</span>
+                  <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)' }}>{t.pickupDate}: {latestTransportBooking.pickupDate}</p>
+                  <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)' }}>{t.provider}: {latestTransportBooking.provider}</p>
+                  <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)' }}>{t.cost}: ₹{latestTransportBooking.cost.toLocaleString('en-IN')}</p>
+                  <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)', marginBottom: '16px' }}>
+                    {t.status}: <span style={{ color: '#7FB069', fontWeight: 600 }}>{t.confirmed}</span>
                   </p>
 
                   <button
                     onClick={() => router.push(`/transport?bookingId=${latestTransportBooking.id}`)}
-                    className="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all hover:scale-105"
-                    style={{ backgroundColor: '#1F3C88' }}
+                    style={{
+                      backgroundColor: '#2D2A6E',
+                      color: 'white',
+                      padding: '10px 18px',
+                      borderRadius: '10px',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'all 0.25s ease'
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.backgroundColor = '#3a378a'
+                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)'
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.backgroundColor = '#2D2A6E'
+                      e.currentTarget.style.boxShadow = 'none'
+                    }}
                   >
                     {t.viewReceipt}
                   </button>
