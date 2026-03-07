@@ -133,7 +133,7 @@ export default function FeatureGrid() {
               >
                 {/* Illustration Placeholder */}
                 <div className={`col-span-12 md:col-span-7 ${!isEven ? 'md:order-2' : 'md:order-1'}`}>
-                  <div className="w-full h-[320px] bg-white/45 backdrop-blur-sm rounded-xl flex items-center justify-center border border-neutral-200">
+                  <div className="w-full h-[320px] bg-white/40 backdrop-blur-md rounded-xl flex items-center justify-center border border-indigo-200/40 shadow-md">
                     <span className="text-neutral-400 text-sm font-medium">Illustration Placeholder</span>
                   </div>
                 </div>
@@ -143,7 +143,7 @@ export default function FeatureGrid() {
                   {/* Feature Icon */}
                   <div className="mb-6">
                     <motion.div
-                      className="inline-flex items-center justify-center w-16 h-16 bg-white/75 backdrop-blur-sm rounded-xl border-2 border-krishi-border shadow-sm text-krishi-clay"
+                      className="inline-flex items-center justify-center w-16 h-16 bg-white/60 backdrop-blur-md rounded-xl border border-indigo-200/40 shadow-md text-krishi-clay"
                       whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.2 }}
                     >

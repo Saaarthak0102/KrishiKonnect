@@ -123,7 +123,7 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.15 }}
-        className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6 h-full flex flex-col"
+        className="bg-white/45 backdrop-blur-md rounded-xl shadow-lg border border-indigo-200/40 p-6 h-full flex flex-col"
       >
       <h3 className="text-lg font-semibold text-krishi-indigo flex items-center gap-2 mb-6">
         <span>📊</span>
@@ -172,7 +172,7 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.15 }}
-      className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6 h-full flex flex-col"
+      className="bg-white/45 backdrop-blur-md rounded-xl shadow-lg border border-indigo-200/40 p-6 h-full flex flex-col"
     >
       <h3 className="text-lg font-semibold text-krishi-indigo flex items-center gap-2 mb-4">
         <span>📊</span>
@@ -191,7 +191,7 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
         </p>
 
         {/* Best mandi section */}
-        <div className="mt-4 p-4 bg-white/50 backdrop-blur-sm rounded-lg border border-gray-200">
+        <div className="mt-4 p-4 bg-white/30 backdrop-blur-sm rounded-lg border border-indigo-200/40 shadow-md">
           <p className="text-sm text-gray-600 mb-2">
             {lang === 'hi' ? (
               <>आज का सर्वश्रेष्ठ <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">बाजार</span></>

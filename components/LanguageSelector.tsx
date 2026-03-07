@@ -17,7 +17,7 @@ export default function LanguageSelector() {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.6 }}
-      className="bg-white/75 backdrop-blur-md border-2 border-krishi-border rounded-2xl shadow-lg p-8 md:p-12 max-w-md w-full mx-4"
+      className="bg-white/50 backdrop-blur-md border border-indigo-200/40 rounded-2xl shadow-lg p-8 md:p-12 max-w-md w-full mx-4"
     >
       <div className="text-center mb-8">
         <h1 className="text-4xl md:text-5xl font-bold text-krishi-indigo mb-3">

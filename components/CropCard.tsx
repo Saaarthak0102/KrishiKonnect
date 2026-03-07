@@ -56,7 +56,7 @@ export default memo(function CropCard({ crop }: CropCardProps) {
         <motion.div
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.98 }}
-          className="relative h-full bg-white/70 backdrop-blur-md border-2 border-krishi-border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+          className="relative h-full bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
         >
           {/* Crop Image with Star Overlay */}
           <div className="relative w-full h-48 bg-gradient-to-br from-krishi-bg to-krishi-agriculture overflow-hidden">
@@ -82,7 +82,7 @@ export default memo(function CropCard({ crop }: CropCardProps) {
               onMouseDown={(e) => e.preventDefault()}
               whileTap={{ scale: 1.15 }}
               whileHover={{ scale: 1.1 }}
-              className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm shadow-md flex items-center justify-center hover:shadow-lg hover:bg-white/95 transition-all duration-200"
+              className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white/70 backdrop-blur-md shadow-md flex items-center justify-center hover:shadow-lg hover:bg-white/90 transition-all duration-200"
               aria-label={isStarred(crop.id) ? 'Remove from My Crops' : 'Add to My Crops'}
               title={isStarred(crop.id) ? 'Remove from My Crops' : 'Add to My Crops'}
             >

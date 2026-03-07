@@ -214,7 +214,7 @@ export default function ChatCard({
   };
 
   return (
-    <div className="bg-white/70 backdrop-blur-md border-2 border-krishi-border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+    <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden">
       {/* Main Card Content */}
       <div className="p-4 md:p-5">
         {/* Header Section */}

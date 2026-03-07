@@ -98,7 +98,7 @@ export default function SuggestedQuestions({
             whileHover={{ scale: 1.02, y: -5 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onSelectQuestion(q.question)}
-            className="p-4 bg-white/70 backdrop-blur-sm border-2 border-krishi-border rounded-lg hover:border-krishi-clay hover:shadow-md transition-all text-left group"
+            className="p-4 bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl hover:border-krishi-clay/50 hover:shadow-lg transition-all text-left group"
           >
             <motion.div
               className="text-3xl mb-2"
@@ -120,7 +120,7 @@ export default function SuggestedQuestions({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="mt-6 p-4 bg-krishi-agriculture/10 border border-krishi-agriculture/30 rounded-lg"
+        className="mt-6 p-4 bg-white/30 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-md"
       >
         <p className="text-sm text-krishi-indigo/70 leading-relaxed">
           {lang === 'hi'

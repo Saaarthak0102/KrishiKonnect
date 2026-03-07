@@ -71,13 +71,13 @@ export default function AskQuestionBox({ onPostCreated }: AskQuestionBoxProps) {
   };
 
   return (
-    <div className="bg-white/70 backdrop-blur-md border-2 border-krishi-border rounded-xl shadow-sm p-4">
+    <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-lg p-4">
       <div className="flex flex-col gap-3">
         {/* Crop Selector */}
         <select
           value={selectedCrop}
           onChange={(e) => setSelectedCrop(e.target.value)}
-          className="w-full px-4 py-2.5 border border-krishi-border rounded-md focus:outline-none focus:ring-2 focus:ring-krishi-primary focus:border-krishi-primary bg-white/80"
+          className="w-full px-4 py-2.5 border border-indigo-200/40 rounded-md focus:outline-none focus:ring-2 focus:ring-krishi-primary focus:border-krishi-primary bg-white/60 backdrop-blur-sm"
         >
           <option value="">{t('selectCategory')}</option>
           {CROP_OPTIONS.map((crop) => (

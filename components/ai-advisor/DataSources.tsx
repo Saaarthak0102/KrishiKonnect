@@ -52,7 +52,7 @@ export default function DataSources({ lang = 'en' }: DataSourcesProps) {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6 + idx * 0.1 }}
-            className="flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-xs text-green-900"
+            className="flex items-center gap-1 px-2 py-1 bg-white/40 backdrop-blur-sm border border-green-300/40 rounded text-xs text-green-900"
           >
             <span className="text-green-600">✓</span>
             <span>{source.icon}</span>

@@ -72,7 +72,7 @@ export default function ChatWindow({
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-white/55 backdrop-blur-[2px] overflow-hidden">
+    <div className="flex-1 flex flex-col bg-gradient-to-b from-white/30 to-white/50 backdrop-blur-sm overflow-hidden">
       {farmContext && (
         <div className="px-6 pt-4">
           <ContextChips

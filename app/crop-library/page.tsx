@@ -30,32 +30,32 @@ const SEASON_COLORS: Record<string, string> = {
 const getFilterButtonClass = (season: string, isSelected: boolean): string => {
   if (season === 'all') {
     return isSelected
-      ? 'bg-gray-800 text-white shadow-md'
-      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+      ? 'bg-indigo-600 text-white shadow-lg backdrop-blur-md'
+      : 'bg-white/40 backdrop-blur-md text-gray-700 hover:bg-white/60 border border-indigo-200/40'
   }
 
   if (season === 'my-crops') {
     return isSelected
-      ? 'bg-[#F2A541] text-white shadow-md'
-      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+      ? 'bg-[#F2A541] text-white shadow-lg backdrop-blur-md'
+      : 'bg-white/40 backdrop-blur-md text-gray-700 hover:bg-white/60 border border-indigo-200/40'
   }
 
   if (isSelected) {
     const color = SEASON_COLORS[season]
-    return `text-white shadow-md`
+    return `text-white shadow-lg backdrop-blur-md`
   }
 
-  return 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+  return 'bg-white/40 backdrop-blur-md text-gray-700 hover:bg-white/60 border border-indigo-200/40'
 }
 
 // Get background color style for season buttons
 const getFilterBackgroundStyle = (season: string, isSelected: boolean): string => {
   if (season === 'all') {
-    return isSelected ? 'bg-gray-800' : 'bg-gray-100'
+    return isSelected ? 'bg-indigo-600' : 'bg-white/40 backdrop-blur-md'
   }
 
   if (season === 'my-crops') {
-    return isSelected ? 'bg-[#F2A541]' : 'bg-gray-100'
+    return isSelected ? 'bg-[#F2A541]' : 'bg-white/40 backdrop-blur-md'
   }
 
   if (isSelected) {
@@ -63,7 +63,7 @@ const getFilterBackgroundStyle = (season: string, isSelected: boolean): string =
     return `bg-[${color}]`
   }
 
-  return 'bg-gray-100'
+  return 'bg-white/40 backdrop-blur-md'
 }
 
 export default function CropLibraryPage() {
@@ -177,7 +177,7 @@ export default function CropLibraryPage() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="mb-10"
         >
-          <div className="bg-white/70 backdrop-blur-md border-2 border-krishi-border rounded-lg p-6 shadow-md">
+          <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl p-6 shadow-lg">
             {/* Search Input */}
             <div className="mb-6">
               <input
@@ -185,7 +185,7 @@ export default function CropLibraryPage() {
                 placeholder={t.searchPlaceholder}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-krishi-border rounded-lg focus:outline-none focus:border-krishi-primary bg-white/60 text-krishi-text placeholder-krishi-text/50"
+                className="w-full px-4 py-3 border border-indigo-200/40 rounded-lg focus:outline-none focus:border-krishi-primary bg-white/50 backdrop-blur-sm text-krishi-text placeholder-krishi-text/50"
               />
             </div>
 
@@ -203,15 +203,15 @@ export default function CropLibraryPage() {
 
                     if (season.value === 'all') {
                       buttonClass += isSelected
-                        ? 'bg-gray-800 text-white shadow-md'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-indigo-600 text-white shadow-lg'
+                        : 'bg-white/40 backdrop-blur-md text-gray-700 hover:bg-white/60 border border-indigo-200/40'
                     } else {
                       const seasonColor = SEASON_COLORS[season.value]
                       if (isSelected) {
-                        buttonClass += `text-white shadow-md`
+                        buttonClass += `text-white shadow-lg`
                         buttonClass += ` bg-[${seasonColor}]`
                       } else {
-                        buttonClass += 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        buttonClass += 'bg-white/40 backdrop-blur-md text-gray-700 hover:bg-white/60 border border-indigo-200/40'
                       }
                     }
 
@@ -232,8 +232,8 @@ export default function CropLibraryPage() {
                     style={selectedSeason === 'my-crops' ? { backgroundColor: '#F2A541' } : {}}
                     className={`px-4 py-2 rounded-full font-semibold transition-all duration-200 ${
                       selectedSeason === 'my-crops'
-                        ? 'bg-[#F2A541] text-white shadow-md'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-[#F2A541] text-white shadow-lg'
+                        : 'bg-white/40 backdrop-blur-md text-gray-700 hover:bg-white/60 border border-indigo-200/40'
                     }`}
                   >
                     ⭐ {lang === 'hi' ? 'मेरी फसलें' : 'My Crops'} ({starredCrops.length})

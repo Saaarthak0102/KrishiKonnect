@@ -85,7 +85,7 @@ export default function ChatInput({
               : 'Ask your farming question...'
           }
           rows={3}
-          className="w-full px-4 py-3 border-2 border-krishi-border rounded-lg resize-none focus:border-krishi-primary outline-none disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"
+          className="w-full px-4 py-3 border border-indigo-200/40 rounded-lg resize-none focus:border-krishi-primary outline-none disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors bg-white/50 backdrop-blur-sm"
         />
       </div>
 

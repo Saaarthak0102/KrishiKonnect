@@ -49,7 +49,7 @@ export default function AIHighlight() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="max-w-3xl mx-auto bg-white/65 backdrop-blur-[10px] border border-indigo-500/15 rounded-2xl p-6 mb-6 shadow-[0_10px_25px_rgba(0,0,0,0.08)]"
+          className="max-w-3xl mx-auto bg-white/50 backdrop-blur-md border border-indigo-200/40 rounded-2xl p-6 mb-6 shadow-lg"
         >
           <p className="text-sm text-gray-500 mb-3">{t.aiExampleTitle}</p>
 

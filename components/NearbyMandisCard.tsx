@@ -11,7 +11,7 @@ interface NearbyMandisCardProps {
 
 function NearbyMandisCard({ userState, mandis, lang }: NearbyMandisCardProps) {
   return (
-    <section className="rounded-xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-5">
+    <section className="rounded-xl border border-indigo-200/40 bg-white/45 backdrop-blur-md p-5 shadow-lg">
       <h3 className="text-lg font-bold text-krishi-indigo">
         {lang === 'hi' ? `Nearby Mandis in ${userState}` : `Nearby Mandis in ${userState}`}
       </h3>

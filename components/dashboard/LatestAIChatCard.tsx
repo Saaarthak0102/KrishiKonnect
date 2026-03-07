@@ -95,7 +95,7 @@ export default function LatestAIChatCard({
 
   if (loading) {
     return (
-      <div className="bg-white/80 backdrop-blur-sm border border-green-100 rounded-xl shadow-sm p-4">
+      <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-lg p-4">
         <div className="animate-pulse">
           <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
           <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
@@ -107,7 +107,7 @@ export default function LatestAIChatCard({
 
   if (isEmptyState) {
     return (
-      <div className="bg-white/80 backdrop-blur-sm border border-green-100 rounded-xl shadow-sm p-4">
+      <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-lg p-4">
         <div className="mb-3">
           <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             <span>🤖</span>
@@ -135,7 +135,7 @@ export default function LatestAIChatCard({
 
   if (!latestChat && hasFirestoreError) {
     return (
-      <div className="bg-white/80 backdrop-blur-sm border border-green-100 rounded-xl shadow-sm p-4">
+      <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-lg p-4">
         <div className="mb-3">
           <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             <span>🤖</span>
@@ -168,7 +168,7 @@ export default function LatestAIChatCard({
   const chat = latestChat as AIChat
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm border border-green-100 rounded-xl shadow-sm p-4">
+    <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl shadow-lg p-4">
       <div className="mb-3">
         <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
           <span>🤖</span>

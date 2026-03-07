@@ -67,7 +67,7 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="col-span-12 md:col-span-7"
         >
-          <div className="bg-krishi-agriculture/20 border-2 border-krishi-agriculture rounded-2xl p-8 md:p-12 text-center">
+          <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-2xl p-8 md:p-12 text-center shadow-lg hover:shadow-xl transition-all duration-300">
             <div className="text-8xl mb-4 flex justify-center">
               <GiWheat size={96} className="text-krishi-agriculture" />
             </div>

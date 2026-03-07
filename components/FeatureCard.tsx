@@ -32,7 +32,7 @@ export default function FeatureCard({ icon, title, description }: FeatureCardPro
       viewport={{ once: true }}
       whileHover={{ scale: 1.02, y: -5 }}
       transition={{ duration: 0.3 }}
-      className="bg-white/70 backdrop-blur-md border-2 border-krishi-border rounded-lg p-6 shadow-sm hover:shadow-md"
+      className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl p-6 shadow-lg hover:shadow-xl"
     >
       <motion.div
         className="text-5xl mb-4"

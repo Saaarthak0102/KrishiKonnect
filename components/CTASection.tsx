@@ -57,7 +57,7 @@ export default function CTASection() {
     <section className="max-w-6xl mx-auto px-6 py-20">
       <div
         ref={ctaRef}
-        className="bg-krishi-clay/90 backdrop-blur-md text-white rounded-2xl p-8 md:p-12 text-center shadow-xl"
+        className="bg-gradient-to-br from-krishi-clay/85 to-krishi-clay/90 backdrop-blur-md text-white rounded-2xl p-8 md:p-12 text-center shadow-lg border border-white/20"
       >
         <h2 className="text-4xl md:text-5xl font-bold mb-4">
           {t.ctaHeading}

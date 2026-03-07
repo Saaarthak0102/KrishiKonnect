@@ -47,7 +47,7 @@ export default function ChatHistorySidebar({
     <motion.div
       initial={{ x: 300 }}
       animate={{ x: 0 }}
-      className="w-80 bg-white/70 backdrop-blur-md border-l border-krishi-border overflow-hidden flex flex-col shadow-sm h-full"
+      className="w-80 bg-white/45 backdrop-blur-md border-l border-indigo-200/40 overflow-hidden flex flex-col shadow-lg h-full"
     >
       {/* Header */}
       <div className="p-4 border-b border-krishi-border bg-gradient-to-r from-krishi-primary/5 to-krishi-agriculture/5">
@@ -126,8 +126,8 @@ export default function ChatHistorySidebar({
                   onClick={() => onSelectChat(chat.id)}
                   className={`w-full text-left px-3 py-2.5 rounded-lg transition-all duration-200 flex flex-col ${
                     currentChatId === chat.id
-                      ? 'bg-indigo-50 border-l-4 border-indigo-600'
-                      : 'hover:bg-white/45 border-l-4 border-transparent'
+                      ? 'bg-white/60 backdrop-blur-sm border-l-4 border-indigo-600 shadow-md'
+                      : 'hover:bg-white/40 backdrop-blur-sm border-l-4 border-transparent'
                   }`}
                 >
                   <span className="font-semibold text-sm text-krishi-indigo truncate">

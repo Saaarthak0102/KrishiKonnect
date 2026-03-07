@@ -26,9 +26,9 @@ export default function Toast({
   }, [isVisible, duration, onClose])
 
   const bgColor = {
-    success: 'bg-green-50 border-green-200',
-    error: 'bg-red-50 border-red-200',
-    info: 'bg-blue-50 border-blue-200',
+    success: 'bg-white/50 backdrop-blur-md border-green-300/40',
+    error: 'bg-white/50 backdrop-blur-md border-red-300/40',
+    info: 'bg-white/50 backdrop-blur-md border-blue-300/40',
   }[type]
 
   const textColor = {
@@ -45,7 +45,7 @@ export default function Toast({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
-          className={`fixed top-6 right-6 z-50 px-6 py-4 rounded-lg border-2 ${bgColor} ${textColor} font-medium max-w-sm`}
+          className={`fixed top-6 right-6 z-50 px-6 py-4 rounded-xl border ${bgColor} ${textColor} font-medium max-w-sm shadow-lg`}
         >
           {message}
         </motion.div>

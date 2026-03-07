@@ -18,7 +18,7 @@ export default function HowItWorks() {
   return (
     <section 
       id="how-it-works" 
-      className="max-w-6xl mx-auto px-6 py-20 bg-white/65 backdrop-blur-[12px] border border-indigo-500/15 shadow-[0_10px_30px_rgba(0,0,0,0.08)] rounded-[20px] my-16"
+      className="max-w-6xl mx-auto px-6 py-20 bg-white/50 backdrop-blur-lg border border-indigo-200/40 shadow-lg rounded-2xl my-16"
     >
       <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-krishi-indigo text-center mb-12">
         {t.howItWorksHeading}
