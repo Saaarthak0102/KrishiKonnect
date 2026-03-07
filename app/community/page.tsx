@@ -216,7 +216,7 @@ export default function CommunityPage() {
             className="mt-12 mb-8 text-center"
           >
             <div className="flex items-center justify-center gap-[10px] mb-3">
-              <h1 className="text-[2rem] font-bold tracking-[-0.5px] text-[#2D2A6E] font-['Poppins']">
+              <h1 className="font-bold tracking-[-0.5px] font-['Poppins']" style={{ fontSize: '3rem' }}>
                 <span className="text-[#2D2A6E]">
                   {lang === 'hi' ? 'कृषि' : 'Krishi'}
                 </span>
@@ -226,11 +226,11 @@ export default function CommunityPage() {
                 </span>
               </h1>
               <FaUsers
-                size={28}
-                color="#C46A3D"
+                size={32}
+                color="#2D2A6E"
                 style={{
                   opacity: 0.9,
-                  marginLeft: '8px',
+                  marginLeft: '10px',
                   transition: 'all 0.2s ease',
                 }}
                 className="hover:translate-y-[-1px]"
