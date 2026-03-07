@@ -151,12 +151,13 @@ export default function CropLibraryPage() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <div className="flex items-center justify-center gap-2 mb-6">
+          <div className="flex items-center justify-center gap-2 mb-3">
             <h1 
-              className="text-[2.2rem] font-bold font-[Poppins]"
+              className="text-[2.6rem] font-bold font-[Poppins]"
               style={{
-                letterSpacing: '-0.5px',
-                textShadow: '0 0 10px rgba(45,42,110,0.08)',
+                letterSpacing: '-0.6px',
+                lineHeight: '1.2',
+                textShadow: '0 0 12px rgba(45,42,110,0.08)',
               }}
             >
               <span className="text-[#2D2A6E]">
@@ -168,20 +169,32 @@ export default function CropLibraryPage() {
               </span>
             </h1>
             <GiWheat 
-              size={28} 
+              size={30} 
               color="#2D2A6E" 
               style={{ 
                 opacity: 0.9,
-                marginLeft: '8px',
+                marginLeft: '10px',
                 transition: 'all 0.2s ease',
               }}
               className="hover:translate-y-[-1px]"
             />
           </div>
-          <p className="text-lg text-krishi-text font-medium mb-3">{t.cropLibrarySubtitle}</p>
           <p 
-            className="text-[0.95rem] leading-relaxed max-w-[650px] mx-auto"
-            style={{ color: 'rgba(45,42,110,0.75)', marginTop: '10px' }}
+            className="text-[1.05rem] font-medium font-[Poppins]"
+            style={{ 
+              color: '#C46A3D',
+              marginTop: '12px',
+            }}
+          >
+            {t.cropLibrarySubtitle}
+          </p>
+          <p 
+            className="text-[0.95rem] leading-relaxed max-w-[680px] mx-auto"
+            style={{ 
+              color: 'rgba(45,42,110,0.75)', 
+              marginTop: '6px',
+              lineHeight: '1.6',
+            }}
           >
             {t.cropLibraryDescription}
           </p>
@@ -195,13 +208,22 @@ export default function CropLibraryPage() {
           className="mb-10"
         >
           <div 
-            className="rounded-[16px] p-[20px_22px] transition-all duration-300 ease-out hover:translate-y-[-2px]"
+            className="rounded-[16px] p-[20px_22px] transition-all duration-[250ms] ease-out"
             style={{
-              background: 'rgba(255,255,255,0.55)',
+              background: 'linear-gradient(rgba(46,157,87,0.05), rgba(196,106,61,0.03)), rgba(255,255,255,0.55)',
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
               border: '1px solid rgba(196,106,61,0.25)',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 0 12px rgba(45,42,110,0.05)',
+              borderRadius: '16px',
+              boxShadow: '0 10px 28px rgba(0,0,0,0.08), 0 0 12px rgba(45,42,110,0.05)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 14px 34px rgba(0,0,0,0.12), 0 0 12px rgba(45,42,110,0.05)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 10px 28px rgba(0,0,0,0.08), 0 0 12px rgba(45,42,110,0.05)';
             }}
           >
             {/* Search Input */}
@@ -228,7 +250,7 @@ export default function CropLibraryPage() {
                 }}
                 onFocus={(e) => {
                   (e.currentTarget.parentElement as HTMLElement).style.border = '1px solid rgba(196,106,61,0.45)';
-                  (e.currentTarget.parentElement as HTMLElement).style.boxShadow = '0 0 0 2px rgba(196,106,61,0.15)';
+                  (e.currentTarget.parentElement as HTMLElement).style.boxShadow = '0 0 0 2px rgba(196,106,61,0.12)';
                 }}
                 onBlur={(e) => {
                   (e.currentTarget.parentElement as HTMLElement).style.border = '1px solid rgba(196,106,61,0.35)';
@@ -256,28 +278,38 @@ export default function CropLibraryPage() {
                   {seasons.map((season) => {
                     const isSelected = selectedSeason === season.value
                     
+                    // Season-specific styling
+                    const getSeasonStyle = () => {
+                      if (season.value === 'all') {
+                        return isSelected 
+                          ? { background: '#2D2A6E', color: 'white', border: 'none', boxShadow: '0 4px 12px rgba(45,42,110,0.25)' }
+                          : { background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(196,106,61,0.25)', color: 'rgba(45,42,110,0.85)' }
+                      }
+                      
+                      if (isSelected) {
+                        return { background: '#2D2A6E', color: 'white', border: 'none', boxShadow: '0 4px 12px rgba(45,42,110,0.25)' }
+                      }
+                      
+                      // Season-specific tint styling
+                      if (season.value === 'Rabi') {
+                        return { background: 'rgba(46,157,87,0.15)', color: '#2E9D57', border: '1px solid rgba(46,157,87,0.25)' }
+                      }
+                      if (season.value === 'Kharif') {
+                        return { background: 'rgba(196,106,61,0.15)', color: '#C46A3D', border: '1px solid rgba(196,106,61,0.25)' }
+                      }
+                      if (season.value === 'Zaid' || season.value === 'Year-round') {
+                        return { background: 'rgba(45,42,110,0.15)', color: '#2D2A6E', border: '1px solid rgba(45,42,110,0.25)' }
+                      }
+                      
+                      return { background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(196,106,61,0.25)', color: 'rgba(45,42,110,0.85)' }
+                    }
+                    
                     return (
                       <button
                         key={season.value}
                         onClick={() => setSelectedSeason(season.value)}
-                        style={
-                          isSelected && season.value !== 'all' 
-                            ? { backgroundColor: SEASON_COLORS[season.value], color: 'white', border: 'none' }
-                            : undefined
-                        }
-                        className={`
-                          px-[14px] py-[6px] rounded-full text-[0.85rem] font-medium
-                          transition-all duration-200 ease-out
-                          ${
-                            season.value === 'all' && isSelected
-                              ? 'bg-[#2D2A6E] text-white shadow-md'
-                              : season.value === 'all'
-                              ? 'bg-white/65 border border-[rgba(196,106,61,0.25)] text-[rgba(45,42,110,0.85)] hover:translate-y-[-1px] hover:shadow-[0_4px_12px_rgba(45,42,110,0.15)]'
-                              : isSelected
-                              ? 'text-white shadow-md'
-                              : 'bg-white/65 border border-[rgba(196,106,61,0.25)] text-[rgba(45,42,110,0.85)] hover:translate-y-[-1px] hover:shadow-[0_4px_12px_rgba(45,42,110,0.15)]'
-                          }
-                        `}
+                        style={getSeasonStyle()}
+                        className="px-[14px] py-[6px] rounded-full text-[0.85rem] font-medium transition-all duration-200 ease-out hover:translate-y-[-1px]"
                       >
                         {season.label}
                       </button>
@@ -286,16 +318,12 @@ export default function CropLibraryPage() {
                   {/* My Crops Filter Button */}
                   <button
                     onClick={() => setSelectedSeason('my-crops')}
-                    style={selectedSeason === 'my-crops' ? { backgroundColor: '#C46A3D' } : undefined}
-                    className={`
-                      px-[14px] py-[6px] rounded-full text-[0.85rem] font-medium
-                      transition-all duration-200 ease-out gap-[6px] inline-flex items-center
-                      ${
-                        selectedSeason === 'my-crops'
-                          ? 'bg-[#C46A3D] text-white shadow-md'
-                          : 'bg-white/65 border border-[rgba(196,106,61,0.25)] text-[rgba(45,42,110,0.85)] hover:translate-y-[-1px] hover:shadow-[0_4px_12px_rgba(45,42,110,0.15)]'
-                      }
-                    `}
+                    style={
+                      selectedSeason === 'my-crops' 
+                        ? { background: '#2D2A6E', color: 'white', border: 'none', boxShadow: '0 4px 12px rgba(45,42,110,0.25)' }
+                        : { background: 'rgba(196,106,61,0.15)', color: '#C46A3D', border: '1px solid rgba(196,106,61,0.25)' }
+                    }
+                    className="px-[14px] py-[6px] rounded-full text-[0.85rem] font-medium transition-all duration-200 ease-out gap-[6px] inline-flex items-center hover:translate-y-[-1px]"
                   >
                     <FiStar size={16} color={selectedSeason === 'my-crops' ? 'white' : '#C46A3D'} />
                     {lang === 'hi' ? 'मेरी फसलें' : 'My Crops'} ({starredCrops.length})
@@ -316,7 +344,7 @@ export default function CropLibraryPage() {
                   onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
                   className="w-full text-[0.9rem] font-medium"
                   style={{
-                    background: 'rgba(255,255,255,0.7)',
+                    background: 'rgba(255,255,255,0.75)',
                     border: '1px solid rgba(196,106,61,0.35)',
                     borderRadius: '10px',
                     padding: '10px 12px',
@@ -326,7 +354,7 @@ export default function CropLibraryPage() {
                   }}
                   onFocus={(e) => {
                     e.currentTarget.style.outline = 'none';
-                    e.currentTarget.style.boxShadow = '0 0 0 2px rgba(196,106,61,0.15)';
+                    e.currentTarget.style.boxShadow = '0 0 0 2px rgba(196,106,61,0.12)';
                   }}
                   onBlur={(e) => {
                     e.currentTarget.style.boxShadow = 'none';
