@@ -18,7 +18,7 @@ export default function HowItWorks() {
   return (
     <section 
       id="how-it-works" 
-      className="max-w-6xl mx-auto px-6 py-20 bg-white/50 backdrop-blur-lg border border-indigo-200/40 shadow-lg rounded-2xl my-16"
+      className="max-w-6xl mx-auto px-6 py-20 bg-white/50 backdrop-blur-lg rounded-2xl my-16 border-[1.5px] border-[#C46A3D] shadow-[0_10px_30px_rgba(196,106,61,0.18),0_2px_8px_rgba(45,42,110,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(196,106,61,0.25),0_4px_12px_rgba(45,42,110,0.12)]"
     >
       <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-krishi-indigo text-center mb-12">
         {t.howItWorksHeading}

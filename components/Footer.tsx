@@ -33,60 +33,47 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="bg-white/60 backdrop-blur-sm border-t-2 border-krishi-border mt-16">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer className="bg-transparent border-t border-krishi-clay/20 mt-16">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Brand Section */}
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <GiWheat size={24} className="text-krishi-agriculture" />
-              <h3 className="text-2xl">
+          <div className="flex items-center gap-2">
+            <GiWheat size={24} className="text-krishi-agriculture" />
+            <div>
+              <h3 className="text-xl">
                 <BrandName />
               </h3>
+              <p className="text-krishi-indigo/70 text-xs">{t.footerTagline}</p>
             </div>
-            <p className="text-krishi-indigo/80 text-sm">{t.footerTagline}</p>
           </div>
 
-          {/* Quick Links (Landing Page Navigation) */}
-          <div>
-            <h4 className="font-semibold text-krishi-indigo mb-4">
-              {lang === 'hi' ? 'त्वरित लिंक' : 'Quick Links'}
-            </h4>
-            <div className="flex flex-col gap-2">
-              {quickLinks.map((link) => (
+          {/* Quick Links - Horizontal */}
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            {quickLinks.map((link, index) => (
+              <span key={link.href} className="flex items-center gap-6">
                 <motion.a
-                  key={link.href}
                   href={link.href}
-                  className="text-krishi-indigo/80 hover:text-krishi-clay transition-colors text-sm"
-                  whileHover={{ scale: 1.05, x: 4 }}
+                  className="text-krishi-indigo/80 hover:text-krishi-clay transition-colors text-sm font-medium"
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   {link.label}
                 </motion.a>
-              ))}
-            </div>
+                {index < quickLinks.length - 1 && (
+                  <span className="text-krishi-clay/40">•</span>
+                )}
+              </span>
+            ))}
           </div>
 
           {/* Copyright */}
-          <div className="flex flex-col justify-between">
-            <p className="text-sm text-gray-500">{renderTextWithBrand(t.allRightsReserved)}</p>
-            <div className="mt-4">
-              <p className="text-xs text-gray-400">
-                {lang === 'hi'
-                  ? 'किसानों के भविष्य के लिए डिजिटल समाधान'
-                  : 'Digital solutions for farmers\' future'}
-              </p>
-            </div>
+          <div className="text-center md:text-right">
+            <p className="text-xs text-gray-500">
+              {lang === 'hi'
+                ? <>© 2026 <BrandName />। सर्वाधिकार सुरक्षित।</>
+                : <>© 2026 <BrandName />. All rights reserved.</>}
+            </p>
           </div>
-        </div>
-
-        {/* Bottom Divider */}
-        <div className="border-t border-krishi-border mt-8 pt-8">
-          <p className="text-center text-xs text-gray-400">
-            {lang === 'hi'
-              ? <>© 2026 <BrandName />। सर्वाधिकार सुरक्षित।</>
-              : <>© 2026 <BrandName />. All rights reserved.</>}
-          </p>
         </div>
       </div>
     </footer>

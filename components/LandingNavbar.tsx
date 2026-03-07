@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import LanguageToggle from './LanguageToggle'
@@ -11,6 +12,16 @@ import BrandName from '@/components/ui/BrandName'
 export default function LandingNavbar() {
   const { lang } = useLanguage()
   const t = translations[lang]
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const navLinks = [
     { href: '#home', label: t.home },
@@ -24,7 +35,12 @@ export default function LandingNavbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
-      className="sticky top-0 z-50 bg-white/60 backdrop-blur-sm border-b-2 border-krishi-border shadow-sm"
+      className={`sticky top-0 z-50 transition-all duration-300 ease-in-out ${
+        isScrolled
+          ? 'bg-white/55 backdrop-blur-[12px] border-b border-[rgba(196,106,61,0.35)] shadow-[0_8px_25px_rgba(45,42,110,0.12)]'
+          : 'bg-transparent border-b-0'
+      }`}
+      style={isScrolled ? { WebkitBackdropFilter: 'blur(12px)' } as React.CSSProperties : {}}
     >
       <div className="w-full">
         <div className="flex items-center justify-between h-16 px-4 md:px-8 lg:px-12">
