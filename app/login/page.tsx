@@ -310,7 +310,7 @@ export default function LoginPage() {
           <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#2D2A6E' }}>
             {t.loginTitle}
           </h1>
-          <p className="text-krishi-text/70">
+          <p style={{ color: 'rgba(45,42,110,0.75)' }}>
             {step === 'phone' ? t.subtitle : t.otpSubtitle}
           </p>
         </div>
