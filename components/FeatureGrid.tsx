@@ -1,7 +1,8 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import { RiRobot2Line } from 'react-icons/ri'
@@ -9,6 +10,10 @@ import { GiPlantSeed } from 'react-icons/gi'
 import { MdStorefront } from 'react-icons/md'
 import { FaUsers, FaTruck } from 'react-icons/fa'
 import { HiOutlineChartBar } from 'react-icons/hi'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 // Helper function to render two-colored Krishi titles
 function renderKrishiTitle(title: string) {
@@ -29,6 +34,7 @@ export default function FeatureGrid() {
   const { lang } = useLanguage()
   const t = translations[lang]
   const router = useRouter()
+  const featureRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const features = [
     {
@@ -79,9 +85,34 @@ export default function FeatureGrid() {
     }
   ]
 
+  useEffect(() => {
+    featureRefs.current.forEach((ref) => {
+      if (ref) {
+        gsap.fromTo(
+          ref,
+          {
+            opacity: 0,
+            y: 60,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: ref,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
+            },
+          }
+        )
+      }
+    })
+  }, [])
+
   return (
     <section id="features" className="bg-krishi-bg py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-6">
         <h2 className="text-4xl md:text-5xl font-bold text-krishi-heading text-center mb-20">
           {t.featuresHeading}
         </h2>
@@ -93,28 +124,31 @@ export default function FeatureGrid() {
             const description = t[feature.descKey as keyof typeof t] as string
             
             return (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className={`grid md:grid-cols-2 gap-12 lg:gap-16 items-center ${!isEven ? 'md:grid-flow-dense' : ''}`}
+                ref={(el) => {
+                  featureRefs.current[index] = el
+                }}
+                className="grid grid-cols-12 gap-12 items-center"
               >
                 {/* Illustration Placeholder */}
-                <div className={`${!isEven ? 'md:col-start-2' : ''}`}>
+                <div className={`col-span-12 md:col-span-7 ${!isEven ? 'md:order-2' : 'md:order-1'}`}>
                   <div className="w-full h-[320px] bg-neutral-100 rounded-xl flex items-center justify-center border border-neutral-200">
                     <span className="text-neutral-400 text-sm font-medium">Illustration Placeholder</span>
                   </div>
                 </div>
 
                 {/* Content Section */}
-                <div className={`${!isEven ? 'md:col-start-1 md:row-start-1' : ''} flex flex-col`}>
+                <div className={`col-span-12 md:col-span-5 flex flex-col ${!isEven ? 'md:order-1' : 'md:order-2'}`}>
                   {/* Feature Icon */}
                   <div className="mb-6">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-xl border-2 border-krishi-border shadow-sm text-krishi-primary">
+                    <motion.div
+                      className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-xl border-2 border-krishi-border shadow-sm text-krishi-primary"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.2 }}
+                    >
                       {feature.icon}
-                    </div>
+                    </motion.div>
                   </div>
 
                   {/* Feature Title */}
@@ -130,16 +164,18 @@ export default function FeatureGrid() {
                   {/* Optional CTA */}
                   {feature.cta && (
                     <div>
-                      <button
+                      <motion.button
                         onClick={() => router.push(feature.cta.href)}
                         className="inline-flex items-center px-6 py-3 bg-krishi-primary text-white font-semibold rounded-lg hover:bg-krishi-primary-dark transition-colors duration-200 shadow-md hover:shadow-lg"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                       >
                         {feature.cta.label}
-                      </button>
+                      </motion.button>
                     </div>
                   )}
                 </div>
-              </motion.div>
+              </div>
             )
           })}
         </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import { GiWheat } from 'react-icons/gi'
@@ -38,13 +39,15 @@ export default function Footer() {
             </h4>
             <div className="flex flex-col gap-2">
               {quickLinks.map((link) => (
-                <a
+                <motion.a
                   key={link.href}
                   href={link.href}
                   className="text-krishi-text/80 hover:text-krishi-primary transition-colors text-sm"
+                  whileHover={{ scale: 1.05, x: 4 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   {link.label}
-                </a>
+                </motion.a>
               ))}
             </div>
           </div>

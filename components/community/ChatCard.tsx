@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import ReplyItem, { NestedReply } from './ReplyItem';
 import { 
   subscribeToReplies, 
@@ -260,38 +261,53 @@ export default function ChatCard({
         {/* Action Buttons */}
         <div className="flex items-center gap-4 pt-2 border-t border-krishi-border">
           {/* Upvote Button */}
-          <button
+          <motion.button
             onClick={handleUpvote}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
               hasUpvoted
                 ? 'text-krishi-primary'
                 : 'text-krishi-text/70 hover:text-krishi-primary'
             }`}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
           >
             <span className="text-base">{hasUpvoted ? '👍' : '👍'}</span>
             <span>{localUpvotes}</span>
-          </button>
+          </motion.button>
 
           {/* Reply Button */}
-          <button
+          <motion.button
             onClick={handleReplyClick}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium border border-krishi-border text-krishi-text hover:bg-krishi-primary hover:text-white transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
           >
             <span className="text-base">💬</span>
             <span>Reply</span>
-          </button>
+          </motion.button>
 
           {/* Show Replies Button */}
           {localRepliesCount > 0 && (
-            <button
+            <motion.button
               onClick={toggleReplies}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-krishi-text/70 hover:text-krishi-primary transition-colors ml-auto"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
             >
-              <span className="text-base">{showReplies ? '⬆' : '⬇'}</span>
+              <motion.span
+                className="text-base"
+                animate={{ rotate: showReplies ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {showReplies ? '⬆' : '⬇'}
+              </motion.span>
               <span>
                 {showReplies ? 'Hide' : 'Show'} {localRepliesCount} {localRepliesCount === 1 ? 'Reply' : 'Replies'}
               </span>
-            </button>
+            </motion.button>
           )}
         </div>
       </div>

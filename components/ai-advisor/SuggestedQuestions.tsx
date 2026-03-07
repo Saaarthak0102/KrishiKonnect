@@ -100,9 +100,13 @@ export default function SuggestedQuestions({
             onClick={() => onSelectQuestion(q.question)}
             className="p-4 bg-white border-2 border-krishi-border rounded-lg hover:border-krishi-primary hover:shadow-md transition-all text-left group"
           >
-            <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+            <motion.div
+              className="text-3xl mb-2"
+              whileHover={{ scale: 1.15 }}
+              transition={{ duration: 0.2 }}
+            >
               {q.emoji}
-            </div>
+            </motion.div>
             <p className="font-semibold text-krishi-heading mb-1">{q.title}</p>
             <p className="text-sm text-krishi-text/70 group-hover:text-krishi-text transition-colors">
               {q.question}

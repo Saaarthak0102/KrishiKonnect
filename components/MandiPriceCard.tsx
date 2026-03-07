@@ -144,9 +144,14 @@ function MandiPriceCard({
           {lang === 'hi' ? 'बाजार प्रवृत्ति' : 'Market Trend'}
         </p>
         <div className="flex items-center gap-3">
-          <span className="text-3xl" style={{ color: getTrendColor(price.trend) }}>
+          <motion.span
+            className="text-3xl"
+            style={{ color: getTrendColor(price.trend) }}
+            whileHover={{ scale: 1.2 }}
+            transition={{ duration: 0.2 }}
+          >
             {getTrendIcon(price.trend)}
-          </span>
+          </motion.span>
           <span
             className="text-lg font-semibold"
             style={{ color: getTrendColor(price.trend) }}
@@ -178,7 +183,7 @@ function MandiPriceCard({
       <div className="flex items-center justify-between pt-3 border-t border-gray-300">
         <div></div>
         {onViewTrend && (
-          <button
+          <motion.button
             onClick={() => onViewTrend(price.id)}
             className="text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
             style={{
@@ -186,15 +191,12 @@ function MandiPriceCard({
               backgroundColor: '#E8DCC8',
               border: '1px solid #D4C4A8',
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#D4C4A8';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#E8DCC8';
-            }}
+            whileHover={{ scale: 1.05, backgroundColor: '#D4C4A8' }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
           >
             {lang === 'hi' ? 'चार्ट देखें' : 'View Chart'}
-          </button>
+          </motion.button>
         )}
       </div>
 

@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { subscribeToLatestAIChat, type AIChat } from '@/lib/aiAdvisor'
 import { getShortTime } from '@/lib/timeUtils'
 
@@ -130,12 +131,15 @@ export default function LatestAIChatCard({
             <p className="text-sm text-gray-600">{t.emptyLine2}</p>
           </div>
 
-          <button
+          <motion.button
             onClick={handleClick}
-            className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+            className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
           >
             {t.startChat}
-          </button>
+          </motion.button>
         </div>
       </div>
     )
@@ -170,12 +174,15 @@ export default function LatestAIChatCard({
             <span>{MOCK_CHAT_FALLBACK.updatedAtLabel}</span>
           </p>
 
-          <button
+          <motion.button
             onClick={handleClick}
-            className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+            className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
           >
             {t.continueChat}
-          </button>
+          </motion.button>
         </div>
       </div>
     )
@@ -212,12 +219,15 @@ export default function LatestAIChatCard({
           <span>{getShortTime(chat.updatedAt || chat.createdAt)}</span>
         </div>
 
-        <button
+        <motion.button
           onClick={handleClick}
-          className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+          className="w-full bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.2 }}
         >
           {t.continueChat}
-        </button>
+        </motion.button>
       </div>
     </div>
   )

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { memo } from 'react'
+import { motion } from 'framer-motion'
 import type { MandiPrice } from '@/lib/mandiService'
 import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
 
@@ -55,12 +56,18 @@ function MandiBestPriceCard({ bestMandi, lang }: MandiBestPriceCardProps) {
           <p className="mt-2 text-sm font-semibold text-krishi-text/80">
             {lang === 'hi' ? 'ट्रेंड' : 'Trend'}: {bestMandi.trend.toUpperCase()}
           </p>
-          <Link
-            href={`/transport?crop=${encodeURIComponent(bestMandi.cropEn)}&mandi=${encodeURIComponent(bestMandi.mandiEn)}`}
-            className="mt-4 inline-flex rounded-lg bg-krishi-primary px-4 py-2 text-sm font-semibold text-white"
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="mt-4"
           >
-            {lang === 'hi' ? 'यहीं बेचें → ट्रांसपोर्ट' : 'Sell Here → Transport'}
-          </Link>
+            <Link
+              href={`/transport?crop=${encodeURIComponent(bestMandi.cropEn)}&mandi=${encodeURIComponent(bestMandi.mandiEn)}`}
+              className="inline-flex rounded-lg bg-krishi-primary px-4 py-2 text-sm font-semibold text-white"
+            >
+              {lang === 'hi' ? 'यहीं बेचें → ट्रांसपोर्ट' : 'Sell Here → Transport'}
+            </Link>
+          </motion.div>
         </>
       ) : (
         <p className="mt-3 text-sm text-krishi-text/70">

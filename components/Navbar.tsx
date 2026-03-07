@@ -35,39 +35,89 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-6">
             {isHomePage ? (
               <>
-                <a href="#" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                <motion.a
+                  href="#"
+                  className="text-krishi-text hover:text-krishi-primary transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   {t.home}
-                </a>
-                <a href="#features" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                </motion.a>
+                <motion.a
+                  href="#features"
+                  className="text-krishi-text hover:text-krishi-primary transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   {lang === 'hi' ? 'सुविधाएं' : 'Features'}
-                </a>
-                <a href="#how-it-works" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                </motion.a>
+                <motion.a
+                  href="#how-it-works"
+                  className="text-krishi-text hover:text-krishi-primary transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   {t.howItWorksHeading}
-                </a>
-                <a href="#ai-advisor" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                </motion.a>
+                <motion.a
+                  href="#ai-advisor"
+                  className="text-krishi-text hover:text-krishi-primary transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   {t.aiAdvisor}
-                </a>
+                </motion.a>
               </>
             ) : (
               <>
-                <Link href="/" className="text-krishi-text hover:text-krishi-primary transition-colors">
-                  {t.home}
-                </Link>
-                <Link href="/crop-library" className="text-krishi-text hover:text-krishi-primary transition-colors">
-                  {t.cropLibrary}
-                </Link>
-                <Link href="/mandi" className="text-krishi-text hover:text-krishi-primary transition-colors">
-                  {t.mandiPrices}
-                </Link>
-                <Link href="/community" className="text-krishi-text hover:text-krishi-primary transition-colors">
-                  {t.community}
-                </Link>
-                <Link href="/transport" className="text-krishi-text hover:text-krishi-primary transition-colors">
-                  {t.transport}
-                </Link>
-                <Link href="/ai-advisor" className="text-krishi-text hover:text-krishi-primary transition-colors">
-                  {t.aiAdvisor}
-                </Link>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link href="/" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                    {t.home}
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link href="/crop-library" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                    {t.cropLibrary}
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link href="/mandi" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                    {t.mandiPrices}
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link href="/community" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                    {t.community}
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link href="/transport" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                    {t.transport}
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link href="/ai-advisor" className="text-krishi-text hover:text-krishi-primary transition-colors">
+                    {t.aiAdvisor}
+                  </Link>
+                </motion.div>
               </>
             )}
           </div>

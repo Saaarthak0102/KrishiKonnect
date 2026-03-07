@@ -11,7 +11,7 @@ export default function AIHighlight() {
   const t = translations[lang]
 
   return (
-    <section id="ai-advisor" className="container mx-auto px-4 py-16">
+    <section id="ai-advisor" className="max-w-6xl mx-auto px-6 py-20">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

@@ -34,7 +34,13 @@ export default function FeatureCard({ icon, title, description }: FeatureCardPro
       transition={{ duration: 0.3 }}
       className="bg-white border-2 border-krishi-border rounded-lg p-6 shadow-sm hover:shadow-md"
     >
-      <div className="text-5xl mb-4">{icon}</div>
+      <motion.div
+        className="text-5xl mb-4"
+        whileHover={{ scale: 1.1 }}
+        transition={{ duration: 0.2 }}
+      >
+        {icon}
+      </motion.div>
       <h3 className="text-xl font-semibold mb-3">
         {renderKrishiTitle(title)}
       </h3>

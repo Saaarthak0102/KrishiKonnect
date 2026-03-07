@@ -11,13 +11,12 @@ export default function HeroSection() {
   const t = translations[lang]
 
   return (
-    <section id="home" className="container mx-auto px-4 py-16 md:py-24">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <section id="home" className="max-w-6xl mx-auto px-6 py-24">
+      <div className="grid grid-cols-12 gap-12 items-center">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-        >
+          transition={{ duration: 0.8 }}          className="col-span-12 md:col-span-5"        >
           <h1 className="text-5xl md:text-6xl font-bold text-krishi-heading mb-3">
             {t.heroHeadline}
           </h1>
@@ -51,7 +50,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative"
+          className="col-span-12 md:col-span-7"
         >
           <div className="bg-krishi-agriculture/20 border-2 border-krishi-agriculture rounded-2xl p-8 md:p-12 text-center">
             <div className="text-8xl mb-4 flex justify-center">

@@ -95,19 +95,16 @@ export default function TransportBookingHistory({
         style={{ borderColor: '#E8DCC8', backgroundColor: '#FAF3E0' }}
       >
         <p className="text-gray-600 mb-6">{t.noBookings}</p>
-        <button
+        <motion.button
           onClick={() => router.push('/mandi')}
-          className="px-8 py-3 rounded-lg font-semibold text-white transition-all hover:scale-105 active:scale-95"
+          className="px-8 py-3 rounded-lg font-semibold text-white transition-all"
           style={{ backgroundColor: '#1F3C88' }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#162847'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#1F3C88'
-          }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.2 }}
         >
           {lang === 'hi' ? 'मंडी से बुक करें' : 'Book from Mandi'}
-        </button>
+        </motion.button>
       </motion.div>
     )
   }
@@ -198,19 +195,16 @@ export default function TransportBookingHistory({
                 </span>
               </div>
               <div className="flex gap-3">
-                <button
+                <motion.button
                   onClick={() => handleViewReceipt(booking.id)}
-                  className="px-4 py-2 rounded-lg font-semibold text-white transition-all text-sm hover:scale-105 active:scale-95"
+                  className="px-4 py-2 rounded-lg font-semibold text-white transition-all text-sm"
                   style={{ backgroundColor: '#1F3C88' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#162847'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#1F3C88'
-                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
                 >
                   {t.viewReceipt}
-                </button>
+                </motion.button>
               </div>
             </div>
           </motion.div>
