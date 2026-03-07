@@ -127,16 +127,25 @@ export default memo(function CropCard({ crop }: CropCardProps) {
     <>
       <Link href={`/crop-library/${crop.id}`}>
         <motion.div
-          whileHover={{ y: -4 }}
+          whileHover={{
+            y: -4,
+            scale: 1.01,
+            boxShadow: '0 16px 32px rgba(0,0,0,0.10), 0 0 14px rgba(45,42,110,0.12)',
+            borderColor: 'rgba(196,106,61,0.35)',
+          }}
           whileTap={{ scale: 0.98 }}
-          className="relative h-full overflow-hidden cursor-pointer transition-all duration-[250ms] ease-in-out hover:shadow-[0_16px_34px_rgba(0,0,0,0.12)]"
+          transition={{ duration: 0.18, ease: 'easeOut' }}
+          className="relative h-full overflow-hidden cursor-pointer"
           style={{
             background: 'rgba(255,255,255,0.55)',
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
             border: '1px solid rgba(196,106,61,0.25)',
             borderRadius: '16px',
-            boxShadow: '0 10px 28px rgba(0,0,0,0.08), 0 0 12px rgba(45,42,110,0.05)',
+            boxShadow: '0 10px 24px rgba(0,0,0,0.08), 0 0 12px rgba(45,42,110,0.08)',
+            transition: 'transform 0.18s ease-out, box-shadow 0.18s ease-out, border-color 0.18s ease-out, background 0.18s ease-out',
+            willChange: 'transform, box-shadow',
+            transform: 'translateZ(0)',
           }}
         >
           {/* Crop Image with Star Overlay */}
@@ -165,8 +174,9 @@ export default memo(function CropCard({ crop }: CropCardProps) {
               onClick={handleStarClick}
               onMouseDown={(e) => e.preventDefault()}
               whileTap={{ scale: 1.15 }}
-              whileHover={{ scale: 1.05 }}
-              className="absolute top-3 right-3 z-10 rounded-full flex items-center justify-center transition-all duration-200 ease-in-out"
+              whileHover={{ scale: 1.12 }}
+              transition={{ duration: 0.15, ease: 'easeOut' }}
+              className="absolute top-3 right-3 z-10 rounded-full flex items-center justify-center transition-transform duration-[150ms] ease-out"
               style={{
                 width: '34px',
                 height: '34px',
