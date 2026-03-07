@@ -610,16 +610,19 @@ export default function MandiPage() {
                     setExpandedMandi(null)
                     setSelectedState('')
                   }}
-                  className="px-4 py-2 rounded-lg font-semibold transition-all"
+                  className="rounded-[10px] px-[14px] py-[6px] font-medium transition-all duration-[200ms] ease-out"
                   style={{
-                    color: '#1F3C88',
-                    backgroundColor: '#E8DCC8',
+                    color: '#2D2A6E',
+                    background: 'rgba(45,42,110,0.08)',
+                    border: '1px solid rgba(45,42,110,0.25)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#D4C4A8'
+                    e.currentTarget.style.backgroundColor = '#2D2A6E'
+                    e.currentTarget.style.color = '#FFFFFF'
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#E8DCC8'
+                    e.currentTarget.style.backgroundColor = 'rgba(45,42,110,0.08)'
+                    e.currentTarget.style.color = '#2D2A6E'
                   }}
                 >
                   ← {lang === 'hi' ? 'वापस' : 'Back'}

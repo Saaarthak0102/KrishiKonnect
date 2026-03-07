@@ -59,9 +59,19 @@ function MandiTrendChartComponent({ data, crop, trend = 'stable', mandi = 'Mandi
   const yDomain = [Math.floor(minPrice * 0.98), Math.ceil(maxPrice * 1.02)]
 
   return (
-    <div className="rounded-xl bg-white/60 backdrop-blur-sm p-4 space-y-4">
+    <div
+      className="space-y-4 p-4"
+      style={{
+        background: 'rgba(255,255,255,0.55)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        borderRadius: '16px',
+        border: '1px solid rgba(196,106,61,0.25)',
+        boxShadow: '0 8px 22px rgba(0,0,0,0.08)',
+      }}
+    >
       <div>
-        <h3 className="text-sm font-bold" style={{ color: '#1F3C88' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#2D2A6E' }}>
           7-Day Price Trend
         </h3>
         <p className="text-xs text-gray-600 mt-0.5">

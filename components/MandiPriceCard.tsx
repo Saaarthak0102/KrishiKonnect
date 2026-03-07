@@ -4,9 +4,8 @@ import { memo } from 'react'
 import { MandiPrice } from '@/lib/mandiService'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import { FiMapPin, FiMinus, FiTrendingDown, FiTrendingUp } from 'react-icons/fi'
 import { useLanguage } from '@/lib/LanguageContext'
-import { translations } from '@/lib/translations'
-import { getTrendColor } from '@/lib/trendUtils'
 import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
 
 interface MandiPriceCardProps {
@@ -22,7 +21,6 @@ function MandiPriceCard({
 }: MandiPriceCardProps) {
   const router = useRouter()
   const { lang } = useLanguage()
-  const t = translations[lang]
 
   const handleRequestTransport = () => {
     router.push(
@@ -30,29 +28,41 @@ function MandiPriceCard({
     )
   }
 
-  const getTrendIcon = (trend: string) => {
+  const getTrendStyles = (trend: string) => {
     switch (trend) {
       case 'up':
-        return '⬆'
+        return {
+          cardBackground: 'rgba(46,157,87,0.12)',
+          cardBorder: '1px solid rgba(46,157,87,0.25)',
+          icon: FiTrendingUp,
+          iconColor: '#2E9D57',
+        }
       case 'down':
-        return '⬇'
+        return {
+          cardBackground: 'rgba(196,106,61,0.12)',
+          cardBorder: '1px solid rgba(196,106,61,0.25)',
+          icon: FiTrendingDown,
+          iconColor: '#C46A3D',
+        }
+      case 'stable':
+        return {
+          cardBackground: 'rgba(45,42,110,0.08)',
+          cardBorder: '1px solid rgba(45,42,110,0.18)',
+          icon: FiMinus,
+          iconColor: '#2D2A6E',
+        }
       default:
-        return '→'
+        return {
+          cardBackground: 'rgba(45,42,110,0.08)',
+          cardBorder: '1px solid rgba(45,42,110,0.18)',
+          icon: FiMinus,
+          iconColor: '#2D2A6E',
+        }
     }
   }
 
-  const getTrendBgColor = (trend: string) => {
-    switch (trend) {
-      case 'up':
-        return 'rgba(127, 176, 105, 0.1)'
-      case 'down':
-        return 'rgba(184, 92, 56, 0.1)'
-      case 'stable':
-        return 'rgba(242, 165, 65, 0.1)'
-      default:
-        return '#f0f0f0'
-    }
-  }
+  const trendStyles = getTrendStyles(price.trend)
+  const TrendIcon = trendStyles.icon
 
   const getLastUpdatedLabel = (): string => {
     // Try both possible field names for timestamp
@@ -78,22 +88,36 @@ function MandiPriceCard({
 
   return (
     <motion.div
-      whileHover={{ y: -4 }}
-      className={`rounded-xl border-0 p-5 md:p-6 transition-all duration-300 shadow-md hover:shadow-lg ${
+      whileHover={{
+        y: -3,
+        boxShadow: '0 14px 35px rgba(0,0,0,0.12), 0 0 14px rgba(45,42,110,0.10)',
+        borderColor: 'rgba(196,106,61,0.35)',
+      }}
+      className={`p-5 md:p-6 transition-all duration-[250ms] ease-out ${
         isHighlighted ? 'ring-2 ring-krishi-primary' : ''
       }`}
       style={{
-        backgroundColor: '#FAF3E0',
+        background: 'rgba(255,255,255,0.55)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        border: '1px solid rgba(196,106,61,0.25)',
+        borderRadius: '16px',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
       }}
     >
       {/* Header */}
       <div className="mb-4">
-        <h3
-          className="text-lg md:text-xl font-bold mb-1"
-          style={{ color: '#1F3C88' }}
-        >
-          {price.mandiEn}
-        </h3>
+        <div className="mb-1 flex items-center">
+          <motion.span whileHover={{ y: -1 }} transition={{ duration: 0.2 }} className="mr-[6px] inline-flex">
+            <FiMapPin size={20} style={{ color: '#2D2A6E', opacity: 0.85 }} />
+          </motion.span>
+          <h3
+            className="font-semibold"
+            style={{ fontSize: '1.2rem', color: '#2D2A6E', letterSpacing: '-0.2px' }}
+          >
+            {price.mandiEn}
+          </h3>
+        </div>
         <p className="text-sm text-gray-600">
           {price.district}, {price.state}
         </p>
@@ -106,30 +130,30 @@ function MandiPriceCard({
         </p>
         <div className="flex items-baseline gap-2">
           <span
-            className="text-4xl md:text-5xl font-bold"
-            style={{ color: '#1F3C88' }}
+            className="font-bold"
+            style={{ fontSize: '2rem', color: '#2D2A6E', letterSpacing: '-0.5px' }}
           >
             ₹{price.modalPrice.toLocaleString('en-IN')}
           </span>
-          <span className="text-gray-600 text-sm">/quintal</span>
+          <span style={{ fontSize: '0.9rem', color: 'rgba(45,42,110,0.65)' }}>/ quintal</span>
         </div>
       </div>
 
       {/* Price Range */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="mb-7 grid grid-cols-2 gap-6">
         <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wide mb-1 font-semibold">
+          <p className="mb-1" style={{ fontSize: '0.85rem', color: 'rgba(45,42,110,0.6)', fontWeight: 500 }}>
             {lang === 'hi' ? 'न्यूनतम' : 'Minimum'}
           </p>
-          <p className="text-lg font-semibold" style={{ color: '#1F3C88' }}>
+          <p style={{ fontSize: '1.1rem', fontWeight: 600, color: '#2D2A6E' }}>
             ₹{price.minPrice.toLocaleString('en-IN')}
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wide mb-1 font-semibold">
+          <p className="mb-1" style={{ fontSize: '0.85rem', color: 'rgba(45,42,110,0.6)', fontWeight: 500 }}>
             {lang === 'hi' ? 'अधिकतम' : 'Maximum'}
           </p>
-          <p className="text-lg font-semibold" style={{ color: '#1F3C88' }}>
+          <p style={{ fontSize: '1.1rem', fontWeight: 600, color: '#2D2A6E' }}>
             ₹{price.maxPrice.toLocaleString('en-IN')}
           </p>
         </div>
@@ -138,23 +162,21 @@ function MandiPriceCard({
       {/* Trend Section */}
       <div
         className="rounded-lg p-4 mb-4"
-        style={{ backgroundColor: getTrendBgColor(price.trend) }}
+        style={{
+          background: trendStyles.cardBackground,
+          border: trendStyles.cardBorder,
+        }}
       >
         <p className="text-xs text-gray-600 uppercase tracking-wide mb-2 font-semibold">
           {lang === 'hi' ? 'बाजार प्रवृत्ति' : 'Market Trend'}
         </p>
         <div className="flex items-center gap-3">
-          <motion.span
-            className="text-3xl"
-            style={{ color: getTrendColor(price.trend) }}
-            whileHover={{ scale: 1.2 }}
-            transition={{ duration: 0.2 }}
-          >
-            {getTrendIcon(price.trend)}
+          <motion.span whileHover={{ y: -1 }} transition={{ duration: 0.2 }}>
+            <TrendIcon size={20} style={{ color: trendStyles.iconColor }} />
           </motion.span>
           <span
             className="text-lg font-semibold"
-            style={{ color: getTrendColor(price.trend) }}
+            style={{ color: trendStyles.iconColor }}
           >
             {price.trend === 'up' && '+'}
             {price.trend === 'down' && '-'}
@@ -185,13 +207,13 @@ function MandiPriceCard({
         {onViewTrend && (
           <motion.button
             onClick={() => onViewTrend(price.id)}
-            className="text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
+            className="text-xs font-medium px-3 py-2 rounded-[10px] transition-all duration-[200ms] ease-out"
             style={{
-              color: '#1F3C88',
-              backgroundColor: '#E8DCC8',
-              border: '1px solid #D4C4A8',
+              color: '#2D2A6E',
+              background: 'rgba(45,42,110,0.08)',
+              border: '1px solid rgba(45,42,110,0.25)',
             }}
-            whileHover={{ scale: 1.05, backgroundColor: '#D4C4A8' }}
+            whileHover={{ scale: 1.02, backgroundColor: '#2D2A6E', color: '#FFFFFF' }}
             whileTap={{ scale: 0.95 }}
             transition={{ duration: 0.2 }}
           >
@@ -202,19 +224,19 @@ function MandiPriceCard({
 
       {/* Request Transport Button */}
       <div className="mt-6">
-        <button
+        <motion.button
           onClick={handleRequestTransport}
-          className="w-full font-semibold py-3 px-4 rounded-lg text-white transition-all hover:scale-105 active:scale-95"
-          style={{ backgroundColor: '#1F3C88' }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#162847'
+          className="w-full py-3 px-[18px] rounded-[10px] text-white font-medium transition-all duration-[200ms] ease-out"
+          style={{ background: '#2D2A6E' }}
+          whileHover={{
+            scale: 1.02,
+            backgroundColor: '#3A378A',
+            boxShadow: '0 6px 16px rgba(45,42,110,0.25)',
           }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#1F3C88'
-          }}
+          whileTap={{ scale: 0.98 }}
         >
           {lang === 'hi' ? 'परिवहन का अनुरोध करें' : 'Request Transport'}
-        </button>
+        </motion.button>
       </div>
     </motion.div>
   )
