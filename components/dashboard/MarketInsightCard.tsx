@@ -131,7 +131,7 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.15 }}
-        className="bg-white/55 backdrop-blur-[10px] rounded-2xl shadow-[0_6px_24px_rgba(0,0,0,0.05),0_0_18px_rgba(196,106,61,0.12)] border border-[rgba(196,106,61,0.35)] p-6 h-full flex flex-col hover:shadow-[0_10px_30px_rgba(0,0,0,0.08),0_0_22px_rgba(196,106,61,0.18)] transition-all duration-250"
+        className="dashboard-card bg-white/55 backdrop-blur-[10px] rounded-2xl shadow-[0_6px_24px_rgba(0,0,0,0.05),0_0_18px_rgba(196,106,61,0.12)] border border-[rgba(196,106,61,0.35)] p-6 h-full flex flex-col hover:shadow-[0_10px_30px_rgba(0,0,0,0.08),0_0_22px_rgba(196,106,61,0.18)] transition-all duration-250"
         style={{
           WebkitBackdropFilter: 'blur(10px)',
         }}
@@ -183,7 +183,7 @@ export default function MarketInsightCard({ starredCrops }: MarketInsightCardPro
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.15 }}
-      className="bg-white/55 backdrop-blur-[10px] rounded-2xl shadow-[0_6px_24px_rgba(0,0,0,0.05),0_0_18px_rgba(196,106,61,0.12)] border border-[rgba(196,106,61,0.35)] p-6 h-full flex flex-col hover:shadow-[0_10px_30px_rgba(0,0,0,0.08),0_0_22px_rgba(196,106,61,0.18)] transition-all duration-250"
+      className="dashboard-card bg-white/55 backdrop-blur-[10px] rounded-2xl shadow-[0_6px_24px_rgba(0,0,0,0.05),0_0_18px_rgba(196,106,61,0.12)] border border-[rgba(196,106,61,0.35)] p-6 h-full flex flex-col hover:shadow-[0_10px_30px_rgba(0,0,0,0.08),0_0_22px_rgba(196,106,61,0.18)] transition-all duration-250"
       style={{
         WebkitBackdropFilter: 'blur(10px)',
       }}

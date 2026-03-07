@@ -124,7 +124,7 @@ export default function LatestCommunityQuestionCard({
 
   if (loading) {
     return (
-      <div style={{
+      <div className="dashboard-card" style={{
         background: 'rgba(255,255,255,0.45)',
         backdropFilter: 'blur(14px)',
         WebkitBackdropFilter: 'blur(14px)',
@@ -145,7 +145,7 @@ export default function LatestCommunityQuestionCard({
   if (!latestQuestion) {
     // Empty state
     return (
-      <div style={{
+      <div className="dashboard-card" style={{
         background: 'rgba(255,255,255,0.45)',
         backdropFilter: 'blur(14px)',
         WebkitBackdropFilter: 'blur(14px)',
@@ -192,7 +192,7 @@ export default function LatestCommunityQuestionCard({
 
   // Display question
   return (
-    <div style={{
+    <div className="dashboard-card" style={{
       background: 'rgba(255,255,255,0.45)',
       backdropFilter: 'blur(14px)',
       WebkitBackdropFilter: 'blur(14px)',

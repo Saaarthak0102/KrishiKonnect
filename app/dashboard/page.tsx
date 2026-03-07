@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -368,6 +368,7 @@ export default function DashboardPage() {
   const [transportBookings, setTransportBookings] = useState<TransportBookingRecord[]>([])
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [marketTrend, setMarketTrend] = useState<TrendDirection>('stable')
+  const dashboardContentRef = useRef<HTMLDivElement | null>(null)
 
   // Compute My Crops from starred crops
   const myCrops = useMemo(() => {
@@ -477,6 +478,45 @@ export default function DashboardPage() {
     () => transportBookings.length > 0 ? transportBookings[0] : null,
     [transportBookings]
   )
+
+  useEffect(() => {
+    if (dashboardLoading || !dashboardContentRef.current) {
+      return
+    }
+
+    const cards = Array.from(
+      dashboardContentRef.current.querySelectorAll<HTMLElement>('.dashboard-card')
+    )
+
+    if (cards.length === 0) {
+      return
+    }
+
+    if (typeof IntersectionObserver === 'undefined') {
+      cards.forEach((card) => card.classList.add('visible'))
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.15 }
+    )
+
+    cards.forEach((card) => {
+      if (!card.classList.contains('visible')) {
+        observer.observe(card)
+      }
+    })
+
+    return () => observer.disconnect()
+  }, [dashboardLoading, starredCrops.length, transportBookings.length])
 
   if (loading) {
     return (
@@ -595,12 +635,9 @@ export default function DashboardPage() {
         : 'text-gray-600'
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div ref={dashboardContentRef} className="dashboard-content max-w-7xl mx-auto p-6 space-y-6">
       {/* Row 1 - Farm Overview Card (Full Width) */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
         whileHover={{
           boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 0 24px rgba(196,106,61,0.18)'
         }}
@@ -613,7 +650,7 @@ export default function DashboardPage() {
           border: '1px solid rgba(196,106,61,0.35)',
           transition: 'box-shadow 0.25s ease'
         }}
-        className="p-6"
+        className="dashboard-card p-6"
       >
         <h2 className="flex items-center gap-2 mb-6" style={{ color: '#2D2A6E', fontWeight: 600, fontSize: '20px' }}>
           <GiWheat size={22} style={{ color: '#2D2A6E' }} />
@@ -723,7 +760,7 @@ export default function DashboardPage() {
               boxShadow: '0 6px 24px rgba(0,0,0,0.05), 0 0 18px rgba(196,106,61,0.12)',
               transition: 'all 0.25s ease',
             }}
-            className="p-6 h-full flex flex-col"
+            className="dashboard-card p-6 h-full flex flex-col"
           >
             <h3 className="mb-4 flex items-center gap-2" style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
               <WiDaySunny size={24} style={{ color: '#2D2A6E' }} />
@@ -772,7 +809,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Market Insight Card */}
-        <div className="h-full md:col-span-8">
+        <div className="dashboard-card h-full md:col-span-8">
           <MarketInsightCard starredCrops={starredCrops} />
         </div>
       </motion.div>
@@ -781,9 +818,6 @@ export default function DashboardPage() {
       <div className="dashboard-sections">
         {/* Left Column - My Crops with Mandi Prices */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
           style={{
             background: 'rgba(255,255,255,0.55)',
             backdropFilter: 'blur(10px)',
@@ -796,7 +830,7 @@ export default function DashboardPage() {
           whileHover={{
             boxShadow: '0 12px 40px rgba(0,0,0,0.12), 0 0 24px rgba(45,42,110,0.08)'
           }}
-          className="p-6"
+          className="dashboard-card p-6"
         >
           <div className="mb-6">
             <h2 className="flex items-center gap-2 mb-1" style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
@@ -924,9 +958,6 @@ export default function DashboardPage() {
 
         {/* Right Column - Your Services Card */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
           style={{
             background: 'rgba(255,255,255,0.55)',
             backdropFilter: 'blur(10px)',
@@ -939,7 +970,7 @@ export default function DashboardPage() {
           whileHover={{
             boxShadow: '0 12px 40px rgba(0,0,0,0.12), 0 0 24px rgba(45,42,110,0.08)'
           }}
-          className="p-6"
+          className="dashboard-card p-6"
         >
           <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <FaTruck size={22} style={{ color: '#2D2A6E' }} />

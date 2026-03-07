@@ -96,7 +96,8 @@ export default function LatestAIChatCard({
 
   if (loading) {
     return (
-      <div 
+      <div
+        className="dashboard-card"
         style={{
           background: 'linear-gradient(135deg, rgba(45,42,110,0.35), rgba(196,106,61,0.28)), rgba(255,255,255,0.35)',
           backdropFilter: 'blur(16px)',
@@ -119,7 +120,8 @@ export default function LatestAIChatCard({
 
   if (isEmptyState) {
     return (
-      <div 
+      <div
+        className="dashboard-card"
         style={{
           background: 'linear-gradient(135deg, rgba(45,42,110,0.35), rgba(196,106,61,0.28)), rgba(255,255,255,0.35)',
           backdropFilter: 'blur(16px)',
@@ -189,7 +191,8 @@ export default function LatestAIChatCard({
 
   if (!latestChat && hasFirestoreError) {
     return (
-      <div 
+      <div
+        className="dashboard-card"
         style={{
           background: 'linear-gradient(135deg, rgba(45,42,110,0.35), rgba(196,106,61,0.28)), rgba(255,255,255,0.35)',
           backdropFilter: 'blur(16px)',
@@ -264,7 +267,8 @@ export default function LatestAIChatCard({
   const chat = latestChat as AIChat
 
   return (
-    <div 
+    <div
+      className="dashboard-card"
       style={{
         background: 'linear-gradient(135deg, rgba(45,42,110,0.35), rgba(196,106,61,0.28)), rgba(255,255,255,0.35)',
         backdropFilter: 'blur(16px)',
