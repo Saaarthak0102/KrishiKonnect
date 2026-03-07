@@ -13,7 +13,7 @@ import { useAuth } from '@/context/AuthContext'
 import cropsData from '@/data/crops.json'
 import { useMandiPrices } from '@/lib/MandiContext'
 import { FaTruck } from 'react-icons/fa'
-import { FiCalendar, FiMapPin, FiDollarSign, FiCheckCircle, FiPlus } from 'react-icons/fi'
+import { FiCalendar, FiMapPin, FiDollarSign, FiCheckCircle, FiPlus, FiArrowLeft } from 'react-icons/fi'
 import {
   generateBookingId,
   getTransportBookingById,
@@ -428,19 +428,25 @@ export default function TransportPage() {
   }
 
   const handleRequestNewTransport = () => {
+    const wasFormHidden = !showBookingForm
     setShowBookingForm(true)
     setStep('form')
     setSelectedTransporter(null)
-    setFormData({
-      farmerId: farmerProfile?.name || '',
-      crop: '',
-      quantity: '',
-      pickupVillage: farmerProfile?.village || '',
-      destinationMandi: '',
-      preferredDate: '',
-      phoneNumber: farmerProfile?.phoneNumber || '',
-      status: 'pending'
-    })
+
+    if (wasFormHidden) {
+      setFormData({
+        farmerId: farmerProfile?.name || '',
+        crop: '',
+        quantity: '',
+        pickupVillage: farmerProfile?.village || '',
+        destinationMandi: '',
+        preferredDate: '',
+        phoneNumber: farmerProfile?.phoneNumber || '',
+        status: 'pending'
+      })
+    }
+
+    window.setTimeout(scrollToBookingForm, 0)
   }
 
   const handleUseRecommendedMandi = () => {
@@ -455,9 +461,12 @@ export default function TransportPage() {
     const form = document.getElementById('transport-booking-form')
 
     if (form) {
-      form.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
+      const offset = -80
+      const y = form.getBoundingClientRect().top + window.pageYOffset + offset
+
+      window.scrollTo({
+        top: y,
+        behavior: 'smooth'
       })
     }
   }
@@ -508,39 +517,41 @@ export default function TransportPage() {
               }}>
                 Book transport to send your crops to the mandi
               </p>
-
-              <motion.button
-                onClick={scrollToBookingForm}
-                className="flex items-center justify-center absolute right-0 top-0"
-                style={{
-                  background: '#2D2A6E',
-                  color: 'white',
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '10px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                whileHover={{
-                  backgroundColor: '#3a378a',
-                  scale: 1.05,
-                  boxShadow: '0 6px 16px rgba(45,42,110,0.25)'
-                }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.2, ease: 'easeOut' }}
-              >
-                <FiPlus size={18} />
-              </motion.button>
             </div>
           </motion.div>
 
           {/* Section 1: Your Transport Bookings */}
           {!isReceiptRoute && (
-            <TransportBookingHistory
-              bookings={bookings}
-                            loading={bookingsLoading}
-              lang={lang}
-            />
+            <>
+              <div className="flex justify-end mt-5 mb-3">
+                <motion.button
+                  onClick={handleRequestNewTransport}
+                  className="px-8 py-4 rounded-lg font-bold text-lg transition-all"
+                  style={{ 
+                    background: '#2D2A6E',
+                    color: 'white',
+                    borderRadius: '10px',
+                    padding: '12px 24px',
+                    fontWeight: 600
+                  }}
+                  whileHover={{
+                    scale: 1.03,
+                    y: -2,
+                    backgroundColor: '#3a378a',
+                    boxShadow: '0 8px 18px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.12)'
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                >
+                  {lang === 'hi' ? '+ नई परिवहन बुक करें' : '+ Request New Transport'}
+                </motion.button>
+              </div>
+              <TransportBookingHistory
+                bookings={bookings}
+                              loading={bookingsLoading}
+                lang={lang}
+              />
+            </>
           )}
 
           {/* Receipt View */}
@@ -604,36 +615,6 @@ export default function TransportPage() {
           {/* Section 2: Request New Transport Form */}
           {!isReceiptRoute && (
             <>
-              {!showBookingForm && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-center mb-12"
-                >
-                  <motion.button
-                    onClick={handleRequestNewTransport}
-                    className="px-8 py-4 rounded-lg font-bold text-lg transition-all"
-                    style={{ 
-                      background: '#2D2A6E',
-                      color: 'white',
-                      borderRadius: '10px',
-                      padding: '12px 24px',
-                      fontWeight: 600
-                    }}
-                    whileHover={{
-                      scale: 1.03,
-                      y: -2,
-                      backgroundColor: '#3a378a',
-                      boxShadow: '0 8px 18px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.12)'
-                    }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ duration: 0.25, ease: 'easeOut' }}
-                  >
-                    {lang === 'hi' ? '+ नई परिवहन बुक करें' : '+ Request New Transport'}
-                  </motion.button>
-                </motion.div>
-              )}
-
               {showBookingForm && (
                 <TransportForm
                   formData={formData}
@@ -714,6 +695,31 @@ function ReceiptView({ booking, lang, onPrint }: ReceiptViewProps) {
       className="mb-8 rounded-xl border-2 p-8 md:p-10 text-center backdrop-blur-md"
       style={{ borderColor: '#7FB069', backgroundColor: 'rgba(255, 255, 255, 0.58)' }}
     >
+      <div className="max-w-2xl mx-auto mb-4 text-left transport-no-print">
+        <button
+          onClick={() => router.push('/transport')}
+          className="inline-flex items-center gap-[6px]"
+          style={{
+            fontSize: '0.95rem',
+            fontWeight: 500,
+            color: '#C46A3D',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateX(-2px)'
+            e.currentTarget.style.color = '#A9552F'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateX(0px)'
+            e.currentTarget.style.color = '#C46A3D'
+          }}
+        >
+          <FiArrowLeft size={18} />
+          Back to Krishi Setu
+        </button>
+      </div>
+
       <div id="transport-receipt" className="max-w-2xl mx-auto text-left space-y-4 rounded-lg border-2 p-6 backdrop-blur-sm" style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.56)' }}>
         <div className="text-center border-b pb-4" style={{ borderColor: '#E8DCC8' }}>
           <h3 className="text-2xl font-bold" style={{ color: '#1F3C88' }}>
