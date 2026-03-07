@@ -21,6 +21,7 @@ import { GiWheat, GiPlantSeed } from 'react-icons/gi'
 import { MdLocationOn, MdCalendarToday } from 'react-icons/md'
 import { FiTrendingUp, FiCheckCircle } from 'react-icons/fi'
 import { FaTruck } from 'react-icons/fa'
+import { WiDaySunny, WiThermometer, WiRain, WiHumidity, WiStrongWind } from 'react-icons/wi'
 
 interface BestPriceData {
   price: number
@@ -709,30 +710,65 @@ export default function DashboardPage() {
       >
         {/* Weather Card */}
         <div className="h-full md:col-span-4">
-          <div className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6 h-full flex flex-col">
-            <h3 className="text-lg font-semibold text-krishi-indigo mb-4 flex items-center gap-2">
-              🌤 {t.weatherToday}
+          <motion.div
+            whileHover={{
+              boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 0 22px rgba(196,106,61,0.18)',
+            }}
+            style={{
+              background: 'rgba(255,255,255,0.55)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              borderRadius: '16px',
+              border: '1px solid rgba(196,106,61,0.35)',
+              boxShadow: '0 6px 24px rgba(0,0,0,0.05), 0 0 18px rgba(196,106,61,0.12)',
+              transition: 'all 0.25s ease',
+            }}
+            className="p-6 h-full flex flex-col"
+          >
+            <h3 className="mb-4 flex items-center gap-2" style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
+              <WiDaySunny size={24} style={{ color: '#2D2A6E' }} />
+              {t.weatherToday}
             </h3>
             
             <div className="grid grid-cols-2 gap-6 flex-1">
               <div>
-                <p className="text-sm text-gray-600 mb-1">{t.temperature}</p>
-                <p className="text-2xl font-bold text-[#B85C38]">{weather ? `${weather.temperatureC}°C` : '--'}</p>
+                <p className="mb-1 flex items-center gap-2" style={{ fontSize: '16px', fontWeight: 500, color: '#2D2A6E', opacity: 0.8 }}>
+                  <WiThermometer size={32} style={{ color: '#C46A3D' }} />
+                  {t.temperature}
+                </p>
+                <p style={{ fontSize: '26px', fontWeight: 700, color: '#C46A3D' }}>
+                  {weather ? `${weather.temperatureC}°C` : '--'}
+                </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">{t.rainChance}</p>
-                <p className="text-2xl font-bold text-[#1F3C88]">{weather ? `${weather.rainChancePercent}%` : '--'}</p>
+                <p className="mb-1 flex items-center gap-2" style={{ fontSize: '16px', fontWeight: 500, color: '#2D2A6E', opacity: 0.8 }}>
+                  <WiRain size={32} style={{ color: '#C46A3D' }} />
+                  {t.rainChance}
+                </p>
+                <p style={{ fontSize: '26px', fontWeight: 700, color: '#2D2A6E' }}>
+                  {weather ? `${weather.rainChancePercent}%` : '--'}
+                </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">{t.humidity}</p>
-                <p className="text-2xl font-bold text-[#7FB069]">{weather ? `${weather.humidityPercent}%` : '--'}</p>
+                <p className="mb-1 flex items-center gap-2" style={{ fontSize: '16px', fontWeight: 500, color: '#2D2A6E', opacity: 0.8 }}>
+                  <WiHumidity size={32} style={{ color: '#C46A3D' }} />
+                  {t.humidity}
+                </p>
+                <p style={{ fontSize: '26px', fontWeight: 700, color: '#2D2A6E' }}>
+                  {weather ? `${weather.humidityPercent}%` : '--'}
+                </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">{t.wind}</p>
-                <p className="text-2xl font-bold text-gray-700">{weather ? `${weather.windSpeedKmh} km/h` : '--'}</p>
+                <p className="mb-1 flex items-center gap-2" style={{ fontSize: '16px', fontWeight: 500, color: '#2D2A6E', opacity: 0.8 }}>
+                  <WiStrongWind size={32} style={{ color: '#C46A3D' }} />
+                  {t.wind}
+                </p>
+                <p style={{ fontSize: '26px', fontWeight: 700, color: '#2D2A6E' }}>
+                  {weather ? `${weather.windSpeedKmh} km/h` : '--'}
+                </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Market Insight Card */}
