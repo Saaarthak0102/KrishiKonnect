@@ -81,7 +81,7 @@ function MandiBestPriceCard({ bestMandi, lang }: MandiBestPriceCardProps) {
             className="mt-4"
           >
             <Link
-              href={`/transport?crop=${encodeURIComponent(bestMandi.cropEn)}&mandi=${encodeURIComponent(bestMandi.mandiEn)}`}
+              href={`/transport?crop=${encodeURIComponent(bestMandi.cropEn)}&mandi=${encodeURIComponent(bestMandi.mandiEn)}&book=true`}
               className="inline-flex rounded-lg bg-krishi-clay px-4 py-2 text-sm font-semibold text-white"
               style={{ boxShadow: '0 6px 14px rgba(196,106,61,0.2)' }}
             >

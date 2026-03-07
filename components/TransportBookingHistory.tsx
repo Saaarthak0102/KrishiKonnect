@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import type { TransportBookingRecord } from '@/lib/transportBookings'
@@ -51,6 +51,7 @@ export default function TransportBookingHistory({
 }: TransportBookingHistoryProps) {
   const router = useRouter()
   const t = translations[lang]
+  const bookingCardsRef = useRef<HTMLDivElement | null>(null)
 
   const sortedBookings = useMemo(() => {
     return [...bookings]
@@ -66,6 +67,41 @@ export default function TransportBookingHistory({
   const handleViewReceipt = (bookingId: string) => {
     router.push(`/transport?bookingId=${bookingId}`)
   }
+
+  useEffect(() => {
+    if (!bookingCardsRef.current || sortedBookings.length === 0) {
+      return
+    }
+
+    const cards = Array.from(
+      bookingCardsRef.current.querySelectorAll<HTMLElement>('.transport-booking-card')
+    )
+
+    if (cards.length === 0) {
+      return
+    }
+
+    if (typeof IntersectionObserver === 'undefined') {
+      cards.forEach((card) => card.classList.add('visible'))
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.15 }
+    )
+
+    cards.forEach((card) => observer.observe(card))
+
+    return () => observer.disconnect()
+  }, [sortedBookings])
 
   if (loading) {
     return (
@@ -123,11 +159,12 @@ export default function TransportBookingHistory({
             fontWeight: 500
           }}
           whileHover={{ 
-            scale: 1.02,
-            boxShadow: '0 6px 16px rgba(45,42,110,0.25)'
+            scale: 1.03,
+            y: -2,
+            boxShadow: '0 8px 18px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.12)'
           }}
           whileTap={{ scale: 0.98 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
         >
           {lang === 'hi' ? 'मंडी से बुक करें' : 'Book from Mandi'}
         </motion.button>
@@ -137,9 +174,9 @@ export default function TransportBookingHistory({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      transition={{ delay: 0.1, duration: 0.35, ease: 'easeOut' }}
       className="mb-12 rounded-xl p-8"
       style={{ 
         background: 'rgba(255,255,255,0.55)',
@@ -157,38 +194,47 @@ export default function TransportBookingHistory({
         fontWeight: 600,
         color: '#2D2A6E'
       }}>
-        <FiCalendar size={20} style={{ color: '#2D2A6E', opacity: 0.85 }} />
+        <motion.span
+          whileHover={{ y: -1 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
+        >
+          <FiCalendar size={20} style={{ color: '#2D2A6E', opacity: 0.85 }} />
+        </motion.span>
         {t.yourTransportBookings}
       </h2>
 
-      <div className="space-y-4">
+      <div ref={bookingCardsRef} className="space-y-4 transport-booking-grid">
         {sortedBookings.map((booking, idx) => (
           <motion.div
             key={booking.id}
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: idx * 0.05, duration: 0.3 }}
-            className="rounded-lg p-6 transition-all"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.03 + idx * 0.04, duration: 0.35, ease: 'easeOut' }}
+            whileHover={{
+              y: -4,
+              scale: 1.01,
+              boxShadow: '0 12px 30px rgba(0,0,0,0.10), 0 0 14px rgba(45,42,110,0.08)',
+              borderColor: 'rgba(196,106,61,0.35)',
+            }}
+            whileTap={{ scale: 0.98 }}
+            className="rounded-lg p-6 transition-all transport-booking-card group"
             style={{ 
               background: 'rgba(255,255,255,0.45)',
               backdropFilter: 'blur(14px)',
               WebkitBackdropFilter: 'blur(14px)',
               border: '1px solid rgba(196,106,61,0.30)',
               borderRadius: '14px',
-              boxShadow: '0 6px 18px rgba(0,0,0,0.06)'
+              boxShadow: '0 6px 18px rgba(0,0,0,0.06)',
+              transition: 'transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out',
+              willChange: 'transform, opacity',
+              transform: 'translateZ(0)',
+              transitionDelay: `${0.03 + idx * 0.04}s`
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-3px)';
-              e.currentTarget.style.boxShadow = '0 10px 26px rgba(0,0,0,0.10), 0 0 12px rgba(45,42,110,0.08)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 6px 18px rgba(0,0,0,0.06)';
-            }}
+            
           >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
               {/* Crop → Destination */}
-              <div>
+              <div className="transport-booking-row">
                 <p className="text-xs mb-1 uppercase font-semibold flex items-center gap-1" style={{
                   fontSize: '0.8rem',
                   color: 'rgba(45,42,110,0.65)',
@@ -196,7 +242,11 @@ export default function TransportBookingHistory({
                   textTransform: 'uppercase',
                   letterSpacing: '0.4px'
                 }}>
-                  <FiMapPin size={14} />
+                  <FiMapPin
+                    size={14}
+                    className="transport-card-icon"
+                    style={{ transition: 'transform 0.2s ease-out' }}
+                  />
                   {t.crop} → {t.destination}
                 </p>
                 <p className="font-semibold" style={{ 
@@ -210,7 +260,7 @@ export default function TransportBookingHistory({
               </div>
 
               {/* Pickup Village */}
-              <div>
+              <div className="transport-booking-row">
                 <p className="text-xs mb-1 uppercase font-semibold" style={{
                   fontSize: '0.8rem',
                   color: 'rgba(45,42,110,0.65)',
@@ -218,6 +268,11 @@ export default function TransportBookingHistory({
                   textTransform: 'uppercase',
                   letterSpacing: '0.4px'
                 }}>
+                  <FiMapPin
+                    size={14}
+                    className="transport-card-icon inline mr-1"
+                    style={{ transition: 'transform 0.2s ease-out' }}
+                  />
                   {t.pickup}
                 </p>
                 <p className="font-semibold" style={{ 
@@ -231,7 +286,7 @@ export default function TransportBookingHistory({
               </div>
 
               {/* Pickup Date */}
-              <div>
+              <div className="transport-booking-row">
                 <p className="text-xs mb-1 uppercase font-semibold" style={{
                   fontSize: '0.8rem',
                   color: 'rgba(45,42,110,0.65)',
@@ -239,6 +294,11 @@ export default function TransportBookingHistory({
                   textTransform: 'uppercase',
                   letterSpacing: '0.4px'
                 }}>
+                  <FiCalendar
+                    size={14}
+                    className="transport-card-icon inline mr-1"
+                    style={{ transition: 'transform 0.2s ease-out' }}
+                  />
                   {lang === 'hi' ? 'पिकअप तारीख' : 'Pickup Date'}
                 </p>
                 <p className="font-semibold" style={{ 
@@ -252,7 +312,7 @@ export default function TransportBookingHistory({
               </div>
 
               {/* Provider */}
-              <div>
+              <div className="transport-booking-row">
                 <p className="text-xs mb-1 uppercase font-semibold flex items-center gap-1" style={{
                   fontSize: '0.8rem',
                   color: 'rgba(45,42,110,0.65)',
@@ -260,7 +320,11 @@ export default function TransportBookingHistory({
                   textTransform: 'uppercase',
                   letterSpacing: '0.4px'
                 }}>
-                  <FaTruck size={14} />
+                  <FaTruck
+                    size={14}
+                    className="transport-card-icon"
+                    style={{ transition: 'transform 0.2s ease-out' }}
+                  />
                   {t.provider}
                 </p>
                 <p className="font-semibold" style={{ 
@@ -274,7 +338,7 @@ export default function TransportBookingHistory({
               </div>
 
               {/* Cost */}
-              <div>
+              <div className="transport-booking-row">
                 <p className="text-xs mb-1 uppercase font-semibold" style={{
                   fontSize: '0.8rem',
                   color: 'rgba(45,42,110,0.65)',
@@ -297,7 +361,9 @@ export default function TransportBookingHistory({
             {/* Status and Actions */}
             <div className="flex items-center justify-between pt-4 border-t" style={{ borderColor: '#D8CFC0' }}>
               <div className="flex items-center gap-2">
-                <span
+                <motion.span
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
                   className="px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1"
                   style={{ 
                     background: 'rgba(46,157,87,0.12)',
@@ -305,12 +371,18 @@ export default function TransportBookingHistory({
                     fontSize: '0.8rem',
                     fontWeight: 500,
                     padding: '4px 10px',
-                    borderRadius: '999px'
+                    borderRadius: '999px',
+                    animation: 'badgeGlow 2.8s infinite',
+                    willChange: 'transform'
                   }}
                 >
-                  <FiCheckCircle size={12} />
+                  <FiCheckCircle
+                    size={12}
+                    className="transport-card-icon"
+                    style={{ transition: 'transform 0.2s ease-out' }}
+                  />
                   {t.confirmed}
-                </span>
+                </motion.span>
               </div>
               <div className="flex gap-3">
                 <motion.button
@@ -324,11 +396,12 @@ export default function TransportBookingHistory({
                     fontWeight: 500
                   }}
                   whileHover={{ 
-                    scale: 1.02,
-                    boxShadow: '0 6px 16px rgba(45,42,110,0.25)'
+                    scale: 1.03,
+                    y: -2,
+                    boxShadow: '0 8px 18px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.12)'
                   }}
                   whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
                 >
                   {t.viewReceipt}
                 </motion.button>

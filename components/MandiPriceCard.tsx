@@ -24,7 +24,7 @@ function MandiPriceCard({
 
   const handleRequestTransport = () => {
     router.push(
-      `/transport?crop=${encodeURIComponent(price.cropEn)}&mandi=${encodeURIComponent(price.mandiEn)}`
+      `/transport?crop=${encodeURIComponent(price.cropEn)}&mandi=${encodeURIComponent(price.mandiEn)}&book=true`
     )
   }
 

@@ -13,7 +13,7 @@ import { useAuth } from '@/context/AuthContext'
 import cropsData from '@/data/crops.json'
 import { useMandiPrices } from '@/lib/MandiContext'
 import { FaTruck } from 'react-icons/fa'
-import { FiCalendar, FiMapPin, FiDollarSign, FiCheckCircle } from 'react-icons/fi'
+import { FiCalendar, FiMapPin, FiDollarSign, FiCheckCircle, FiArrowLeft, FiPlus } from 'react-icons/fi'
 import {
   generateBookingId,
   getTransportBookingById,
@@ -159,6 +159,7 @@ export default function TransportPage() {
   const cropFromUrl = searchParams.get('crop') || ''
   const mandiFromUrl = searchParams.get('mandi') || ''
   const bookingIdFromUrl = searchParams.get('bookingId') || ''
+  const shouldScroll = searchParams.get('book')
   const isReceiptRoute = Boolean(bookingIdFromUrl)
 
   // Main state
@@ -183,6 +184,22 @@ export default function TransportPage() {
   const [estimatedCost, setEstimatedCost] = useState<{ min: number; max: number }>({ min: 0, max: 0 })
   const [activeBooking, setActiveBooking] = useState<TransportBookingRecord | null>(null)
   const [isBookingLookupComplete, setIsBookingLookupComplete] = useState(!isReceiptRoute)
+  const [highlightBookingForm, setHighlightBookingForm] = useState(false)
+
+  const scrollToBooking = (highlight = false) => {
+    const form = document.getElementById('transport-booking-form')
+
+    if (!form) return
+
+    form.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    })
+
+    if (highlight) {
+      setHighlightBookingForm(true)
+    }
+  }
 
   // Subscribe to realtime bookings updates
   useEffect(() => {
@@ -217,6 +234,30 @@ export default function TransportPage() {
     setShowBookingForm(false)
     setIsBookingLookupComplete(true)
   }, [bookingIdFromUrl, isReceiptRoute])
+
+  useEffect(() => {
+    if (shouldScroll !== 'true' || isReceiptRoute) return
+
+    if (!showBookingForm) {
+      setShowBookingForm(true)
+    }
+
+    const timer = setTimeout(() => {
+      scrollToBooking(true)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [shouldScroll, isReceiptRoute])
+
+  useEffect(() => {
+    if (!highlightBookingForm) return
+
+    const timer = setTimeout(() => {
+      setHighlightBookingForm(false)
+    }, 1100)
+
+    return () => clearTimeout(timer)
+  }, [highlightBookingForm])
 
   // Auto-fill from profile
   useEffect(() => {
@@ -443,6 +484,23 @@ export default function TransportPage() {
     })
   }
 
+  const handleScrollToBooking = () => {
+    if (isReceiptRoute) {
+      router.push('/transport?book=true')
+      return
+    }
+
+    if (!showBookingForm) {
+      handleRequestNewTransport()
+      setTimeout(() => {
+        scrollToBooking(true)
+      }, 120)
+      return
+    }
+
+    scrollToBooking(true)
+  }
+
   const handleUseRecommendedMandi = () => {
     if (!recommendedMandi) return
     setFormData((prev) => ({
@@ -467,21 +525,86 @@ export default function TransportPage() {
         <main className="container mx-auto px-4 py-12 md:py-16">
           {/* Header */}
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="mb-10 text-center"
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className="mb-10"
           >
-            <h1 className="mb-3 flex items-center justify-center gap-3" style={{ 
-              fontFamily: 'Poppins, sans-serif',
-              fontSize: '1.6rem', 
-              fontWeight: 600, 
-              color: '#2D2A6E' 
-            }}>
-              <FaTruck size={22} style={{ color: '#2D2A6E', opacity: 0.9 }} />
-              {lang === 'hi' ? 'परिवहन बुकिंग' : 'Transport Booking'}
-            </h1>
-            <p className="mx-auto max-w-3xl" style={{
+            <motion.button
+              onClick={() => router.push('/dashboard')}
+              className="mb-4 inline-flex items-center gap-[6px]"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.9rem',
+                fontWeight: 500,
+                color: '#2D2A6E',
+                background: 'rgba(255,255,255,0.45)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                border: '1px solid rgba(196,106,61,0.30)',
+                borderRadius: '10px',
+                padding: '6px 12px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              whileHover={{
+                x: -2,
+                backgroundColor: 'rgba(255,255,255,0.65)',
+                boxShadow: '0 6px 14px rgba(0,0,0,0.06)'
+              }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <FiArrowLeft size={15} />
+              {lang === 'hi' ? 'डैशबोर्ड पर वापस' : 'Back to Dashboard'}
+            </motion.button>
+
+            <div className="mb-3 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <h1 className="flex items-center gap-3" style={{ 
+                fontFamily: 'Poppins, sans-serif',
+                fontSize: '1.6rem', 
+                fontWeight: 600, 
+                color: '#2D2A6E' 
+              }}>
+                <motion.span
+                  whileHover={{ y: -1 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  style={{ display: 'inline-flex' }}
+                >
+                  <FaTruck size={22} style={{ color: '#2D2A6E', opacity: 0.9 }} />
+                </motion.span>
+                {lang === 'hi' ? 'परिवहन बुकिंग' : 'Transport Booking'}
+              </h1>
+
+              <motion.button
+                onClick={handleScrollToBooking}
+                className="inline-flex items-center gap-[6px]"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: '#2D2A6E',
+                  color: 'white',
+                  fontWeight: 500,
+                  fontSize: '0.9rem',
+                  padding: '8px 16px',
+                  borderRadius: '10px',
+                  transition: 'all 0.2s ease'
+                }}
+                whileHover={{
+                  scale: 1.02,
+                  backgroundColor: '#3a378a',
+                  boxShadow: '0 6px 16px rgba(45,42,110,0.25)'
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <FiPlus size={16} />
+                {lang === 'hi' ? '+ नई बुकिंग' : '+ New Booking'}
+              </motion.button>
+            </div>
+
+            <p className="max-w-3xl" style={{
               fontSize: '0.95rem',
               color: 'rgba(45,42,110,0.75)',
               marginTop: '4px'
@@ -530,7 +653,7 @@ export default function TransportPage() {
                   ? 'यह रसीद उपलब्ध नहीं है। नई परिवहन बुकिंग करें।'
                   : 'This receipt is unavailable. Please create a new transport booking.'}
               </p>
-              <button
+              <motion.button
                 onClick={() => router.push('/transport')}
                 className="px-8 py-3 rounded-lg font-semibold text-white transition-all"
                 style={{ 
@@ -540,19 +663,17 @@ export default function TransportPage() {
                   padding: '8px 16px',
                   fontWeight: 500
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#3a378a';
-                  e.currentTarget.style.transform = 'scale(1.02)';
-                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)';
+                whileHover={{
+                  scale: 1.03,
+                  y: -2,
+                  backgroundColor: '#3a378a',
+                  boxShadow: '0 8px 18px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.12)'
                 }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#2D2A6E';
-                  e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
               >
                 {lang === 'hi' ? 'परिवहन बुक करें' : 'Book Transport'}
-              </button>
+              </motion.button>
             </motion.div>
           )}
 
@@ -570,7 +691,7 @@ export default function TransportPage() {
                   animate={{ opacity: 1, y: 0 }}
                   className="text-center mb-12"
                 >
-                  <button
+                  <motion.button
                     onClick={handleRequestNewTransport}
                     className="px-8 py-4 rounded-lg font-bold text-lg transition-all"
                     style={{ 
@@ -580,24 +701,23 @@ export default function TransportPage() {
                       padding: '12px 24px',
                       fontWeight: 600
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#3a378a';
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)';
+                    whileHover={{
+                      scale: 1.03,
+                      y: -2,
+                      backgroundColor: '#3a378a',
+                      boxShadow: '0 8px 18px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.12)'
                     }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#2D2A6E';
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
                   >
                     {lang === 'hi' ? '+ नई परिवहन बुक करें' : '+ Request New Transport'}
-                  </button>
+                  </motion.button>
                 </motion.div>
               )}
 
               {showBookingForm && (
                 <TransportForm
+                  highlight={highlightBookingForm}
                   formData={formData}
                   step={step}
                   estim={estimatedCost}
@@ -628,6 +748,12 @@ export default function TransportPage() {
       </div>
 
       <style jsx global>{`
+        @keyframes highlightForm {
+          0% { box-shadow: 0 0 0 rgba(45,42,110,0); }
+          50% { box-shadow: 0 0 18px rgba(45,42,110,0.18); }
+          100% { box-shadow: 0 0 0 rgba(45,42,110,0); }
+        }
+
         @media print {
           body.transport-receipt-print * {
             visibility: hidden;
@@ -672,7 +798,7 @@ function ReceiptView({ booking, lang, onPrint }: ReceiptViewProps) {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
       className="mb-8 rounded-xl border-2 p-8 md:p-10 text-center backdrop-blur-md"
       style={{ borderColor: '#7FB069', backgroundColor: 'rgba(255, 255, 255, 0.58)' }}
     >
@@ -742,7 +868,7 @@ function ReceiptView({ booking, lang, onPrint }: ReceiptViewProps) {
       </div>
 
       <div className="mt-8 flex flex-col md:flex-row gap-4 justify-center transport-no-print">
-        <button
+        <motion.button
           onClick={onPrint}
           className="px-8 py-3 rounded-lg font-semibold transition-all"
           style={{ 
@@ -752,20 +878,18 @@ function ReceiptView({ booking, lang, onPrint }: ReceiptViewProps) {
             padding: '8px 16px',
             fontWeight: 500
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#A8582E';
-            e.currentTarget.style.transform = 'scale(1.02)';
-            e.currentTarget.style.boxShadow = '0 6px 16px rgba(196,106,61,0.25)';
+          whileHover={{
+            scale: 1.03,
+            y: -2,
+            backgroundColor: '#A8582E',
+            boxShadow: '0 8px 18px rgba(196,106,61,0.25), 0 0 10px rgba(196,106,61,0.12)'
           }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#C46A3D';
-            e.currentTarget.style.transform = 'scale(1)';
-            e.currentTarget.style.boxShadow = 'none';
-          }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
         >
           {lang === 'hi' ? 'रसीद प्रिंट करें' : 'Print Receipt'}
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           onClick={() => router.push('/transport')}
           className="px-8 py-3 rounded-lg font-semibold transition-all"
           style={{ 
@@ -775,25 +899,24 @@ function ReceiptView({ booking, lang, onPrint }: ReceiptViewProps) {
             padding: '8px 16px',
             fontWeight: 500
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#3a378a';
-            e.currentTarget.style.transform = 'scale(1.02)';
-            e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)';
+          whileHover={{
+            scale: 1.03,
+            y: -2,
+            backgroundColor: '#3a378a',
+            boxShadow: '0 8px 18px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.12)'
           }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#2D2A6E';
-            e.currentTarget.style.transform = 'scale(1)';
-            e.currentTarget.style.boxShadow = 'none';
-          }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
         >
           {lang === 'hi' ? 'बुकिंग देखें' : 'View Bookings'}
-        </button>
+        </motion.button>
       </div>
     </motion.div>
   )
 }
 
 interface TransportFormProps {
+  highlight: boolean
   formData: TransportRequest
   step: 'form' | 'estimate' | 'transporters' | 'confirmed'
   estim: { min: number; max: number }
@@ -817,6 +940,7 @@ interface TransportFormProps {
 }
 
 function TransportForm({
+  highlight,
   formData,
   step,
   estim,
@@ -842,9 +966,10 @@ function TransportForm({
     <>
       {/* Transport Form */}
       <motion.div
+        id="transport-booking-form"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.4 }}
+        transition={{ delay: 0.05, duration: 0.3, ease: 'easeOut' }}
         className="mb-8 rounded-xl p-6 md:p-8"
         style={{ 
           background: 'rgba(255,255,255,0.55)',
@@ -853,7 +978,8 @@ function TransportForm({
           border: '1px solid rgba(196,106,61,0.25)',
           borderRadius: '16px',
           boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 0 14px rgba(45,42,110,0.08)',
-          padding: '24px'
+          padding: '24px',
+          animation: highlight ? 'highlightForm 1s ease' : 'none'
         }}
       >
         <h2 className="text-2xl font-bold mb-6" style={{ 
@@ -1034,7 +1160,7 @@ function TransportForm({
               disabled={!isFormValid}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
+              transition={{ delay: 0.2, duration: 0.25, ease: 'easeOut' }}
               className="w-full md:w-auto px-8 py-4 rounded-lg font-bold text-white text-lg transition-all disabled:cursor-not-allowed"
               style={{ 
                 background: isFormValid ? '#2D2A6E' : '#94A3B8',
@@ -1042,17 +1168,17 @@ function TransportForm({
                 padding: '12px 24px',
                 fontWeight: 600
               }}
-              onMouseEnter={(e) => {
-                if (!isFormValid) return;
-                e.currentTarget.style.background = '#3a378a';
-                e.currentTarget.style.transform = 'scale(1.02)';
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = isFormValid ? '#2D2A6E' : '#94A3B8';
-                e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
+              whileHover={
+                isFormValid
+                  ? {
+                      scale: 1.03,
+                      y: -2,
+                      backgroundColor: '#3a378a',
+                      boxShadow: '0 8px 18px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.12)'
+                    }
+                  : undefined
+              }
+              whileTap={isFormValid ? { scale: 0.98 } : undefined}
             >
               {lang === 'hi' ? 'परिवहन खोजें' : 'Find Transport'}
             </motion.button>
@@ -1065,7 +1191,7 @@ function TransportForm({
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
           className="mb-8 rounded-xl p-6 md:p-8"
           style={{ 
             background: 'rgba(255,255,255,0.55)',
@@ -1111,7 +1237,7 @@ function TransportForm({
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.4 }}
+          transition={{ delay: 0.05, duration: 0.3, ease: 'easeOut' }}
           className="mb-8"
         >
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-2" style={{ 
@@ -1120,18 +1246,31 @@ function TransportForm({
             fontWeight: 600,
             color: '#2D2A6E'
           }}>
-            <FaTruck size={20} style={{ color: '#2D2A6E', opacity: 0.85 }} />
+            <motion.span
+              whileHover={{ y: -1 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              style={{ display: 'inline-flex' }}
+            >
+              <FaTruck size={20} style={{ color: '#2D2A6E', opacity: 0.85 }} />
+            </motion.span>
             {lang === 'hi' ? 'उपलब्ध परिवहन सेवाएं' : 'Available Transporters'}
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transport-provider-grid">
             {mockTransporters.map((transporter, idx) => (
               <motion.div
                 key={transporter.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: idx * 0.05, duration: 0.3 }}
-                className="rounded-xl p-6 transition-all"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.03 + idx * 0.04, duration: 0.35, ease: 'easeOut' }}
+                whileHover={{
+                  y: -4,
+                  scale: 1.01,
+                  boxShadow: '0 12px 30px rgba(0,0,0,0.10), 0 0 14px rgba(45,42,110,0.08)',
+                  borderColor: 'rgba(196,106,61,0.35)'
+                }}
+                whileTap={{ scale: 0.98 }}
+                className="rounded-xl p-6 transition-all transport-provider-card group"
                 style={{
                   background: 'rgba(255,255,255,0.45)',
                   backdropFilter: 'blur(14px)',
@@ -1140,24 +1279,23 @@ function TransportForm({
                     ? '1px solid rgba(46,157,87,0.40)' 
                     : '1px solid rgba(196,106,61,0.30)',
                   borderRadius: '14px',
-                  boxShadow: '0 6px 18px rgba(0,0,0,0.06)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-3px)';
-                  e.currentTarget.style.boxShadow = '0 10px 26px rgba(0,0,0,0.10), 0 0 12px rgba(45,42,110,0.08)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 6px 18px rgba(0,0,0,0.06)';
+                  boxShadow: '0 6px 18px rgba(0,0,0,0.06)',
+                  transition: 'transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out',
+                  willChange: 'transform, opacity',
+                  transform: 'translateZ(0)'
                 }}
               >
-                <div className="mb-4">
+                <div className="mb-4 transport-provider-row">
                   <h3 className="text-xl font-bold mb-2 flex items-center gap-2" style={{ 
                     fontSize: '0.95rem',
                     fontWeight: 600,
                     color: '#2D2A6E'
                   }}>
-                    <FaTruck size={16} style={{ color: 'rgba(45,42,110,0.75)' }} />
+                    <FaTruck
+                      size={16}
+                      className="transport-provider-icon"
+                      style={{ color: 'rgba(45,42,110,0.75)', transition: 'transform 0.2s ease-out' }}
+                    />
                     {transporter.name}
                   </h3>
                   <div className="flex items-center gap-2 mb-2">
@@ -1172,7 +1310,7 @@ function TransportForm({
                   </p>
                 </div>
 
-                <div className="mb-4 pb-4 border-b border-gray-300">
+                <div className="mb-4 pb-4 border-b border-gray-300 transport-provider-row">
                   <p className="font-bold" style={{ 
                     fontSize: '1.15rem',
                     fontWeight: 600,
@@ -1193,7 +1331,7 @@ function TransportForm({
                 </div>
 
                 {step === 'transporters' && (
-                  <button
+                  <motion.button
                     onClick={() => onBookTransport(transporter)}
                     className="w-full rounded-lg font-semibold text-white transition-all"
                     style={{ 
@@ -1203,33 +1341,36 @@ function TransportForm({
                       padding: '8px 16px',
                       fontWeight: 500
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#3a378a';
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)';
+                    whileHover={{
+                      scale: 1.03,
+                      y: -2,
+                      boxShadow: '0 8px 18px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.12)'
                     }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#2D2A6E';
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
                   >
                     {lang === 'hi' ? 'बुक करें' : 'Book Transport'}
-                  </button>
+                  </motion.button>
                 )}
 
                 {step === 'confirmed' && selectedTransporter?.id === transporter.id && (
-                  <div className="py-3 px-4 rounded-full font-semibold text-center flex items-center justify-center gap-2" style={{ 
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    className="py-3 px-4 rounded-full font-semibold text-center flex items-center justify-center gap-2"
+                    style={{ 
                     background: 'rgba(46,157,87,0.12)',
                     color: '#2E9D57',
                     fontSize: '0.8rem',
                     fontWeight: 500,
                     padding: '4px 10px',
-                    borderRadius: '999px'
+                    borderRadius: '999px',
+                    animation: 'badgeGlow 2.8s infinite',
+                    willChange: 'transform'
                   }}>
                     <FiCheckCircle size={14} />
                     {lang === 'hi' ? 'बुक किया गया' : 'Booked'}
-                  </div>
+                  </motion.div>
                 )}
               </motion.div>
             ))}
@@ -1242,7 +1383,7 @@ function TransportForm({
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
           className="mb-8 rounded-xl border-2 p-8 md:p-10 text-center backdrop-blur-md"
           style={{ borderColor: '#7FB069', backgroundColor: 'rgba(255, 255, 255, 0.58)' }}
         >
@@ -1324,7 +1465,7 @@ function TransportForm({
           </div>
 
           <div className="mt-8 flex flex-col md:flex-row gap-4 justify-center transport-no-print">
-            <button
+            <motion.button
               onClick={onPrintReceipt}
               className="px-8 py-3 rounded-lg font-semibold transition-all"
               style={{ 
@@ -1334,20 +1475,18 @@ function TransportForm({
                 padding: '8px 16px',
                 fontWeight: 500
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#A8582E';
-                e.currentTarget.style.transform = 'scale(1.02)';
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(196,106,61,0.25)';
+              whileHover={{
+                scale: 1.03,
+                y: -2,
+                backgroundColor: '#A8582E',
+                boxShadow: '0 8px 18px rgba(196,106,61,0.25), 0 0 10px rgba(196,106,61,0.12)'
               }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#C46A3D';
-                e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
             >
               {lang === 'hi' ? 'रसीद प्रिंट करें' : 'Print Receipt'}
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               onClick={onBackToMandi}
               className="px-8 py-3 rounded-lg font-semibold transition-all"
               style={{ 
@@ -1357,23 +1496,21 @@ function TransportForm({
                 padding: '8px 16px',
                 fontWeight: 500
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#3a378a';
-                e.currentTarget.style.transform = 'scale(1.02)';
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)';
+              whileHover={{
+                scale: 1.03,
+                y: -2,
+                backgroundColor: '#3a378a',
+                boxShadow: '0 8px 18px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.12)'
               }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#2D2A6E';
-                e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
             >
               {lang === 'hi' ? (
                 <>कृषि बाजार पर वापस जाएं</>
               ) : (
                 <>Back to <span className="text-white">Krishi</span>{' '}<span className="text-white">Bazaar</span></>
               )}
-            </button>
+            </motion.button>
           </div>
         </motion.div>
       )}

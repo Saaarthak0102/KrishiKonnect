@@ -421,7 +421,7 @@ export default function MandiCropDetailPage() {
 
                           <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.25, ease: 'easeOut' }}>
                             <Link
-                              href={`/transport?crop=${encodeURIComponent(cropId)}&mandi=${encodeURIComponent(row.mandiEn)}`}
+                              href={`/transport?crop=${encodeURIComponent(cropId)}&mandi=${encodeURIComponent(row.mandiEn)}&book=true`}
                               className="inline-flex w-fit items-center rounded-lg px-4 py-2 text-sm font-semibold text-white"
                               style={{ background: '#2D2A6E', boxShadow: '0 8px 16px rgba(45,42,110,0.24)' }}
                             >

@@ -228,6 +228,44 @@
   transform: translateY(0);
 }
 
+/* Lightweight scroll reveal for Transport booking cards */
+.transport-booking-grid .transport-booking-card {
+  opacity: 0;
+  transform: translateY(16px) translateZ(0);
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+  will-change: transform, opacity;
+}
+
+.transport-booking-grid .transport-booking-card.visible {
+  opacity: 1;
+  transform: translateY(0) translateZ(0);
+}
+
+.transport-booking-card.group:hover .transport-card-icon {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.transport-booking-card .transport-booking-row {
+  transition: transform 0.2s ease;
+}
+
+.transport-booking-card .transport-booking-row:hover {
+  transform: translateX(2px);
+}
+
+/* Micro-interactions for transporter cards in Krishi Setu */
+.transport-provider-card.group:hover .transport-provider-icon {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.transport-provider-card .transport-provider-row {
+  transition: transform 0.2s ease;
+}
+
+.transport-provider-card .transport-provider-row:hover {
+  transform: translateX(2px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .crop-library-grid .crop-card,
   .crop-library-grid .crop-card.visible {
@@ -255,6 +293,30 @@
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  .transport-booking-grid .transport-booking-card,
+  .transport-booking-grid .transport-booking-card.visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+
+  .transport-booking-card .transport-booking-row,
+  .transport-booking-card .transport-booking-row:hover,
+  .transport-booking-card .transport-card-icon,
+  .transport-booking-card.group:hover .transport-card-icon {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .transport-provider-card .transport-provider-row,
+  .transport-provider-card .transport-provider-row:hover,
+  .transport-provider-card .transport-provider-icon,
+  .transport-provider-card.group:hover .transport-provider-icon {
+    transform: none !important;
+    transition: none !important;
   }
 
   /* Disable transforms for posting card inputs */
