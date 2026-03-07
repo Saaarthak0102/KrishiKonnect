@@ -729,7 +729,7 @@ export default function MandiPage() {
                   boxShadow: '0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04), 0 0 12px rgba(196,106,61,0.10)',
                 }}
               >
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex items-end justify-between gap-4">
                   {/* State Filter Dropdown */}
                   <div className="flex flex-1 flex-col gap-[6px]">
                     <label className="block text-sm font-semibold" style={{ color: '#1F3C88' }}>
@@ -764,7 +764,7 @@ export default function MandiPage() {
 
                   {/* My Crops Button */}
                   {starredCrops.length > 0 && (
-                    <div className="flex items-center">
+                    <div className="flex items-end">
                       <motion.button
                         onClick={() => {
                           setSelectedCrop(null)
