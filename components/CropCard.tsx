@@ -22,20 +22,64 @@ interface CropCardProps {
   crop: Crop
 }
 
-// Helper function to get badge color and classes based on season
-const getSeasonBadgeClass = (seasonEn: string) => {
+// Helper function to get season badge style with tinted glass effect
+const getSeasonBadgeStyle = (seasonEn: string) => {
   const normalized = seasonEn.toLowerCase().replace(/\s+/g, '')
   const isMultiSeason = normalized.includes('/')
 
-  if (isMultiSeason) return 'bg-[rgba(120,120,120,0.15)] text-[rgba(45,42,110,0.85)]'
+  if (isMultiSeason || seasonEn === 'Year-round') {
+    return {
+      background: 'rgba(120,120,120,0.10)',
+      color: 'rgba(45,42,110,0.75)',
+      border: '1px solid rgba(120,120,120,0.25)',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)'
+    }
+  }
 
-  const season = seasonEn.split('/')[0].trim() // Handle composite seasons like "Kharif / Rabi"
+  const season = seasonEn.split('/')[0].trim()
   
-  if (season === 'Rabi') return 'bg-[rgba(46,157,87,0.15)] text-[#2E9D57]'
-  if (season === 'Kharif') return 'bg-[rgba(196,106,61,0.15)] text-[#C46A3D]'
-  if (season === 'Zaid') return 'bg-[rgba(45,42,110,0.15)] text-[#2D2A6E]'
-  if (season === 'Year-round') return 'bg-[rgba(45,42,110,0.15)] text-[#2D2A6E]'
-  return 'bg-[rgba(120,120,120,0.15)] text-[rgba(45,42,110,0.85)]'
+  if (season === 'Rabi') {
+    return {
+      background: 'rgba(46,157,87,0.12)',
+      color: '#2E9D57',
+      border: '1px solid rgba(46,157,87,0.30)',
+      boxShadow: '0 0 10px rgba(46,157,87,0.15)',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)'
+    }
+  }
+
+  if (season === 'Kharif') {
+    return {
+      background: 'rgba(196,106,61,0.12)',
+      color: '#C46A3D',
+      border: '1px solid rgba(196,106,61,0.30)',
+      boxShadow: '0 0 10px rgba(196,106,61,0.15)',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)'
+    }
+  }
+
+  if (season === 'Zaid') {
+    return {
+      background: 'rgba(45,42,110,0.12)',
+      color: '#2D2A6E',
+      border: '1px solid rgba(45,42,110,0.30)',
+      boxShadow: '0 0 10px rgba(45,42,110,0.15)',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)'
+    }
+  }
+
+  // Default fallback
+  return {
+    background: 'rgba(120,120,120,0.10)',
+    color: 'rgba(45,42,110,0.75)',
+    border: '1px solid rgba(120,120,120,0.25)',
+    backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)'
+  }
 }
 
 // Applies soft seasonal tint to the card banner while keeping image layout unchanged.
@@ -163,7 +207,10 @@ export default memo(function CropCard({ crop }: CropCardProps) {
 
             {/* Season Badge */}
             <div className="inline-block">
-              <span className={`${getSeasonBadgeClass(crop.season_en)} rounded-full px-[12px] py-[4px] text-[0.8rem] font-medium`}>
+              <span 
+                className="rounded-full px-[12px] py-[4px] text-[0.8rem] font-semibold transition-all duration-[250ms] ease-out hover:scale-[1.05]"
+                style={getSeasonBadgeStyle(crop.season_en)}
+              >
                 {seasonName}
               </span>
             </div>
