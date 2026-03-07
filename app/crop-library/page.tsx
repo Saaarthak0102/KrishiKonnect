@@ -151,15 +151,8 @@ export default function CropLibraryPage() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <h1 
-              className="text-[2.6rem] font-bold font-[Poppins]"
-              style={{
-                letterSpacing: '-0.6px',
-                lineHeight: '1.2',
-                textShadow: '0 0 12px rgba(45,42,110,0.08)',
-              }}
-            >
+          <div className="flex items-center justify-center gap-[10px] mb-3">
+            <h1 className="text-5xl font-bold tracking-tight">
               <span className="text-[#2D2A6E]">
                 {lang === 'hi' ? 'कृषि' : 'Krishi'}
               </span>
