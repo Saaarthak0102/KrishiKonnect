@@ -110,3 +110,24 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Micro-interactions for Crop Detail Pages */
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes badgeGlow {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(46, 157, 87, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(46, 157, 87, 0.25);
+  }
+}
