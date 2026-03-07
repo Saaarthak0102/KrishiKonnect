@@ -12,6 +12,8 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { useAuth } from '@/context/AuthContext'
 import cropsData from '@/data/crops.json'
 import { useMandiPrices } from '@/lib/MandiContext'
+import { FaTruck } from 'react-icons/fa'
+import { FiCalendar, FiMapPin, FiDollarSign, FiCheckCircle } from 'react-icons/fi'
 import {
   generateBookingId,
   getTransportBookingById,
@@ -470,10 +472,20 @@ export default function TransportPage() {
             transition={{ duration: 0.4 }}
             className="mb-10 text-center"
           >
-            <h1 className="mb-3 text-4xl font-bold md:text-5xl" style={{ color: '#1F3C88' }}>
-              {lang === 'hi' ? '🚛 परिवहन बुकिंग' : '🚛 Transport Booking'}
+            <h1 className="mb-3 flex items-center justify-center gap-3" style={{ 
+              fontFamily: 'Poppins, sans-serif',
+              fontSize: '1.6rem', 
+              fontWeight: 600, 
+              color: '#2D2A6E' 
+            }}>
+              <FaTruck size={22} style={{ color: '#2D2A6E', opacity: 0.9 }} />
+              {lang === 'hi' ? 'परिवहन बुकिंग' : 'Transport Booking'}
             </h1>
-            <p className="mx-auto max-w-3xl text-gray-700">
+            <p className="mx-auto max-w-3xl" style={{
+              fontSize: '0.95rem',
+              color: 'rgba(45,42,110,0.75)',
+              marginTop: '4px'
+            }}>
               {lang === 'hi'
                 ? 'अपनी फसल को मंडी तक पहुंचाने के लिए परिवहन बुक करें'
                 : 'Book transport to send your crops to the mandi'}
@@ -494,21 +506,50 @@ export default function TransportPage() {
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-8 rounded-xl border-2 p-8 text-center backdrop-blur-md"
-              style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.58)' }}
+              className="mb-8 rounded-xl p-8 text-center"
+              style={{ 
+                background: 'rgba(255,255,255,0.55)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                border: '1px solid rgba(196,106,61,0.25)',
+                borderRadius: '16px',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 0 14px rgba(45,42,110,0.08)',
+                padding: '24px'
+              }}
             >
-              <h2 className="text-2xl font-bold mb-2" style={{ color: '#1F3C88' }}>
+              <h2 className="text-2xl font-bold mb-2" style={{ 
+                fontFamily: 'Poppins, sans-serif',
+                fontSize: '1.25rem',
+                fontWeight: 600,
+                color: '#2D2A6E'
+              }}>
                 {lang === 'hi' ? 'बुकिंग नहीं मिली' : 'Booking not found'}
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="mb-6" style={{ color: 'rgba(45,42,110,0.75)' }}>
                 {lang === 'hi'
                   ? 'यह रसीद उपलब्ध नहीं है। नई परिवहन बुकिंग करें।'
                   : 'This receipt is unavailable. Please create a new transport booking.'}
               </p>
               <button
                 onClick={() => router.push('/transport')}
-                className="px-8 py-3 rounded-lg font-semibold text-white"
-                style={{ backgroundColor: '#1F3C88' }}
+                className="px-8 py-3 rounded-lg font-semibold text-white transition-all"
+                style={{ 
+                  background: '#2D2A6E',
+                  color: 'white',
+                  borderRadius: '10px',
+                  padding: '8px 16px',
+                  fontWeight: 500
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#3a378a';
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#2D2A6E';
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
                 {lang === 'hi' ? 'परिवहन बुक करें' : 'Book Transport'}
               </button>
@@ -531,13 +572,23 @@ export default function TransportPage() {
                 >
                   <button
                     onClick={handleRequestNewTransport}
-                    className="px-8 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105 active:scale-95"
-                    style={{ backgroundColor: '#1F3C88', color: '#FFFFFF' }}
+                    className="px-8 py-4 rounded-lg font-bold text-lg transition-all"
+                    style={{ 
+                      background: '#2D2A6E',
+                      color: 'white',
+                      borderRadius: '10px',
+                      padding: '12px 24px',
+                      fontWeight: 600
+                    }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#162847'
+                      e.currentTarget.style.background = '#3a378a';
+                      e.currentTarget.style.transform = 'scale(1.02)';
+                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#1F3C88'
+                      e.currentTarget.style.background = '#2D2A6E';
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.boxShadow = 'none';
                     }}
                   >
                     {lang === 'hi' ? '+ नई परिवहन बुक करें' : '+ Request New Transport'}
@@ -693,20 +744,46 @@ function ReceiptView({ booking, lang, onPrint }: ReceiptViewProps) {
       <div className="mt-8 flex flex-col md:flex-row gap-4 justify-center transport-no-print">
         <button
           onClick={onPrint}
-          className="px-8 py-3 rounded-lg font-semibold transition-all hover:scale-105"
-          style={{ backgroundColor: '#B85C38', color: '#FFFFFF' }}
+          className="px-8 py-3 rounded-lg font-semibold transition-all"
+          style={{ 
+            background: '#C46A3D',
+            color: 'white',
+            borderRadius: '10px',
+            padding: '8px 16px',
+            fontWeight: 500
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = '#A8582E';
+            e.currentTarget.style.transform = 'scale(1.02)';
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(196,106,61,0.25)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = '#C46A3D';
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
         >
           {lang === 'hi' ? 'रसीद प्रिंट करें' : 'Print Receipt'}
         </button>
         <button
           onClick={() => router.push('/transport')}
-          className="px-8 py-3 rounded-lg font-semibold transition-all hover:scale-105"
-          style={{ backgroundColor: '#1F3C88', color: '#FFFFFF' }}
+          className="px-8 py-3 rounded-lg font-semibold transition-all"
+          style={{ 
+            background: '#2D2A6E',
+            color: 'white',
+            borderRadius: '10px',
+            padding: '8px 16px',
+            fontWeight: 500
+          }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#162847'
+            e.currentTarget.style.background = '#3a378a';
+            e.currentTarget.style.transform = 'scale(1.02)';
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#1F3C88'
+            e.currentTarget.style.background = '#2D2A6E';
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = 'none';
           }}
         >
           {lang === 'hi' ? 'बुकिंग देखें' : 'View Bookings'}
@@ -768,10 +845,23 @@ function TransportForm({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.4 }}
-        className="mb-8 rounded-xl border-2 p-6 md:p-8 backdrop-blur-md"
-        style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.56)' }}
+        className="mb-8 rounded-xl p-6 md:p-8"
+        style={{ 
+          background: 'rgba(255,255,255,0.55)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          border: '1px solid rgba(196,106,61,0.25)',
+          borderRadius: '16px',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 0 14px rgba(45,42,110,0.08)',
+          padding: '24px'
+        }}
       >
-        <h2 className="text-2xl font-bold mb-6" style={{ color: '#1F3C88' }}>
+        <h2 className="text-2xl font-bold mb-6" style={{ 
+          fontFamily: 'Poppins, sans-serif',
+          fontSize: '1.25rem',
+          fontWeight: 600,
+          color: '#2D2A6E'
+        }}>
           {lang === 'hi' ? 'परिवहन विवरण' : 'Transport Details'}
         </h2>
 
@@ -945,14 +1035,23 @@ function TransportForm({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="w-full md:w-auto px-8 py-4 rounded-lg font-bold text-white text-lg transition-all hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:active:scale-100"
-              style={{ backgroundColor: isFormValid ? '#1F3C88' : '#94A3B8' }}
+              className="w-full md:w-auto px-8 py-4 rounded-lg font-bold text-white text-lg transition-all disabled:cursor-not-allowed"
+              style={{ 
+                background: isFormValid ? '#2D2A6E' : '#94A3B8',
+                borderRadius: '10px',
+                padding: '12px 24px',
+                fontWeight: 600
+              }}
               onMouseEnter={(e) => {
-                if (!isFormValid) return
-                e.currentTarget.style.backgroundColor = '#162847'
+                if (!isFormValid) return;
+                e.currentTarget.style.background = '#3a378a';
+                e.currentTarget.style.transform = 'scale(1.02)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = isFormValid ? '#1F3C88' : '#94A3B8'
+                e.currentTarget.style.background = isFormValid ? '#2D2A6E' : '#94A3B8';
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = 'none';
               }}
             >
               {lang === 'hi' ? 'परिवहन खोजें' : 'Find Transport'}
@@ -967,11 +1066,25 @@ function TransportForm({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="mb-8 rounded-xl border-2 p-6 md:p-8 backdrop-blur-md"
-          style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.56)' }}
+          className="mb-8 rounded-xl p-6 md:p-8"
+          style={{ 
+            background: 'rgba(255,255,255,0.55)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(196,106,61,0.25)',
+            borderRadius: '16px',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 0 14px rgba(45,42,110,0.08)',
+            padding: '24px'
+          }}
         >
-          <h2 className="text-2xl font-bold mb-4" style={{ color: '#1F3C88' }}>
-            {lang === 'hi' ? '💰 अनुमानित परिवहन लागत' : '💰 Estimated Transport Cost'}
+          <h2 className="text-2xl font-bold mb-4 flex items-center gap-2" style={{ 
+            fontFamily: 'Poppins, sans-serif',
+            fontSize: '1.25rem',
+            fontWeight: 600,
+            color: '#2D2A6E'
+          }}>
+            <FiDollarSign size={20} style={{ color: '#2D2A6E', opacity: 0.85 }} />
+            {lang === 'hi' ? 'अनुमानित परिवहन लागत' : 'Estimated Transport Cost'}
           </h2>
           <p className="text-gray-600 mb-4">
             {lang === 'hi'
@@ -1001,8 +1114,14 @@ function TransportForm({
           transition={{ delay: 0.1, duration: 0.4 }}
           className="mb-8"
         >
-          <h2 className="text-2xl font-bold mb-6" style={{ color: '#1F3C88' }}>
-            {lang === 'hi' ? '🚚 उपलब्ध परिवहन सेवाएं' : '🚚 Available Transporters'}
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2" style={{ 
+            fontFamily: 'Poppins, sans-serif',
+            fontSize: '1.25rem',
+            fontWeight: 600,
+            color: '#2D2A6E'
+          }}>
+            <FaTruck size={20} style={{ color: '#2D2A6E', opacity: 0.85 }} />
+            {lang === 'hi' ? 'उपलब्ध परिवहन सेवाएं' : 'Available Transporters'}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1012,15 +1131,34 @@ function TransportForm({
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: idx * 0.05, duration: 0.3 }}
-                className="rounded-xl border-2 p-6 transition-all hover:shadow-lg backdrop-blur-md"
+                className="rounded-xl p-6 transition-all"
                 style={{
-                  borderColor: step === 'confirmed' && selectedTransporter?.id === transporter.id ? '#7FB069' : '#E8DCC8',
-                  backgroundColor: 'rgba(255, 255, 255, 0.54)'
+                  background: 'rgba(255,255,255,0.45)',
+                  backdropFilter: 'blur(14px)',
+                  WebkitBackdropFilter: 'blur(14px)',
+                  border: step === 'confirmed' && selectedTransporter?.id === transporter.id 
+                    ? '1px solid rgba(46,157,87,0.40)' 
+                    : '1px solid rgba(196,106,61,0.30)',
+                  borderRadius: '14px',
+                  boxShadow: '0 6px 18px rgba(0,0,0,0.06)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-3px)';
+                  e.currentTarget.style.boxShadow = '0 10px 26px rgba(0,0,0,0.10), 0 0 12px rgba(45,42,110,0.08)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 6px 18px rgba(0,0,0,0.06)';
                 }}
               >
                 <div className="mb-4">
-                  <h3 className="text-xl font-bold mb-2" style={{ color: '#1F3C88' }}>
-                    🚛 {transporter.name}
+                  <h3 className="text-xl font-bold mb-2 flex items-center gap-2" style={{ 
+                    fontSize: '0.95rem',
+                    fontWeight: 600,
+                    color: '#2D2A6E'
+                  }}>
+                    <FaTruck size={16} style={{ color: 'rgba(45,42,110,0.75)' }} />
+                    {transporter.name}
                   </h3>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-yellow-500">⭐</span>
@@ -1035,10 +1173,21 @@ function TransportForm({
                 </div>
 
                 <div className="mb-4 pb-4 border-b border-gray-300">
-                  <p className="text-3xl font-bold" style={{ color: '#7FB069' }}>
+                  <p className="font-bold" style={{ 
+                    fontSize: '1.15rem',
+                    fontWeight: 600,
+                    color: '#2E9D57'
+                  }}>
                     ₹{transporter.price.toLocaleString('en-IN')}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm" style={{
+                    fontSize: '0.8rem',
+                    color: 'rgba(45,42,110,0.65)',
+                    fontWeight: 500,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.4px',
+                    marginTop: '2px'
+                  }}>
                     {lang === 'hi' ? 'कुल लागत' : 'Total cost'}
                   </p>
                 </div>
@@ -1046,13 +1195,23 @@ function TransportForm({
                 {step === 'transporters' && (
                   <button
                     onClick={() => onBookTransport(transporter)}
-                    className="w-full py-3 rounded-lg font-semibold text-white transition-all hover:scale-105 active:scale-95"
-                    style={{ backgroundColor: '#B85C38' }}
+                    className="w-full rounded-lg font-semibold text-white transition-all"
+                    style={{ 
+                      background: '#2D2A6E',
+                      color: 'white',
+                      borderRadius: '10px',
+                      padding: '8px 16px',
+                      fontWeight: 500
+                    }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#A04D2F'
+                      e.currentTarget.style.background = '#3a378a';
+                      e.currentTarget.style.transform = 'scale(1.02)';
+                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#B85C38'
+                      e.currentTarget.style.background = '#2D2A6E';
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.boxShadow = 'none';
                     }}
                   >
                     {lang === 'hi' ? 'बुक करें' : 'Book Transport'}
@@ -1060,8 +1219,16 @@ function TransportForm({
                 )}
 
                 {step === 'confirmed' && selectedTransporter?.id === transporter.id && (
-                  <div className="py-3 px-4 rounded-lg font-semibold text-center" style={{ backgroundColor: '#7FB069', color: '#FFFFFF' }}>
-                    ✓ {lang === 'hi' ? 'बुक किया गया' : 'Booked'}
+                  <div className="py-3 px-4 rounded-full font-semibold text-center flex items-center justify-center gap-2" style={{ 
+                    background: 'rgba(46,157,87,0.12)',
+                    color: '#2E9D57',
+                    fontSize: '0.8rem',
+                    fontWeight: 500,
+                    padding: '4px 10px',
+                    borderRadius: '999px'
+                  }}>
+                    <FiCheckCircle size={14} />
+                    {lang === 'hi' ? 'बुक किया गया' : 'Booked'}
                   </div>
                 )}
               </motion.div>
@@ -1159,20 +1326,46 @@ function TransportForm({
           <div className="mt-8 flex flex-col md:flex-row gap-4 justify-center transport-no-print">
             <button
               onClick={onPrintReceipt}
-              className="px-8 py-3 rounded-lg font-semibold transition-all hover:scale-105"
-              style={{ backgroundColor: '#B85C38', color: '#FFFFFF' }}
+              className="px-8 py-3 rounded-lg font-semibold transition-all"
+              style={{ 
+                background: '#C46A3D',
+                color: 'white',
+                borderRadius: '10px',
+                padding: '8px 16px',
+                fontWeight: 500
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#A8582E';
+                e.currentTarget.style.transform = 'scale(1.02)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(196,106,61,0.25)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#C46A3D';
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               {lang === 'hi' ? 'रसीद प्रिंट करें' : 'Print Receipt'}
             </button>
             <button
               onClick={onBackToMandi}
-              className="px-8 py-3 rounded-lg font-semibold transition-all hover:scale-105"
-              style={{ backgroundColor: '#1F3C88', color: '#FFFFFF' }}
+              className="px-8 py-3 rounded-lg font-semibold transition-all"
+              style={{ 
+                background: '#2D2A6E',
+                color: 'white',
+                borderRadius: '10px',
+                padding: '8px 16px',
+                fontWeight: 500
+              }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#162847'
+                e.currentTarget.style.background = '#3a378a';
+                e.currentTarget.style.transform = 'scale(1.02)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(45,42,110,0.25)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#1F3C88'
+                e.currentTarget.style.background = '#2D2A6E';
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = 'none';
               }}
             >
               {lang === 'hi' ? (
