@@ -586,8 +586,9 @@ export default function MandiPage() {
                         scale: 1.01,
                         boxShadow: '0 10px 28px rgba(0,0,0,0.10), 0 4px 10px rgba(0,0,0,0.06), 0 0 16px rgba(196,106,61,0.16)',
                         borderColor: 'rgba(196,106,61,0.35)',
+                        transition: { duration: 0.12, ease: 'easeOut' },
                       }}
-                      whileTap={{ scale: 0.98 }}
+                      whileTap={{ scale: 0.97, transition: { duration: 0.08, ease: 'easeOut' } }}
                       transition={{ delay: 0.05 + idx * 0.05, duration: 0.5, ease: 'easeOut' }}
                       onClick={() => setSelectedCrop(crop.name_en)}
                       className="crop-card bazaar-reveal group rounded-[16px] p-5 text-left"
@@ -599,7 +600,7 @@ export default function MandiPage() {
                         boxShadow: '0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04), 0 0 12px rgba(196,106,61,0.10)',
                         transform: 'translateZ(0)',
                         willChange: 'transform, box-shadow, opacity',
-                        transition: 'transform 0.18s ease-out, box-shadow 0.18s ease-out',
+                        transition: 'transform 0.12s ease-out, box-shadow 0.12s ease-out',
                       }}
                     >
                       <div className="flex items-start justify-between">

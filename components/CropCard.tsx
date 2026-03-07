@@ -132,9 +132,10 @@ export default memo(function CropCard({ crop }: CropCardProps) {
             scale: 1.01,
             boxShadow: '0 16px 32px rgba(0,0,0,0.10), 0 0 14px rgba(45,42,110,0.12)',
             borderColor: 'rgba(196,106,61,0.35)',
+            transition: { duration: 0.12, ease: 'easeOut' },
           }}
-          whileTap={{ scale: 0.98 }}
-          transition={{ duration: 0.18, ease: 'easeOut' }}
+          whileTap={{ scale: 0.97, transition: { duration: 0.08, ease: 'easeOut' } }}
+          transition={{ duration: 0.12, ease: 'easeOut' }}
           className="relative h-full overflow-hidden cursor-pointer"
           style={{
             background: 'rgba(255,255,255,0.55)',
@@ -143,7 +144,7 @@ export default memo(function CropCard({ crop }: CropCardProps) {
             border: '1px solid rgba(196,106,61,0.25)',
             borderRadius: '16px',
             boxShadow: '0 10px 24px rgba(0,0,0,0.08), 0 0 12px rgba(45,42,110,0.08)',
-            transition: 'transform 0.18s ease-out, box-shadow 0.18s ease-out, border-color 0.18s ease-out, background 0.18s ease-out',
+            transition: 'transform 0.12s ease-out, box-shadow 0.12s ease-out, border-color 0.12s ease-out, background 0.12s ease-out',
             willChange: 'transform, box-shadow',
             transform: 'translateZ(0)',
           }}
