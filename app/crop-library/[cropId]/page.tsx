@@ -164,7 +164,7 @@ export default function CropDetailPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.08),0_0_14px_rgba(45,42,110,0.10)] mb-12 rounded-2xl bg-white/55 backdrop-blur-[12px] border border-[rgba(196,106,61,0.25)]"
+          className="overflow-hidden shadow-[0_12px_30px_rgba(0,0,0,0.08),0_0_14px_rgba(45,42,110,0.10)] mb-12 rounded-[18px] bg-[rgba(255,255,255,0.55)] backdrop-blur-[14px] [-webkit-backdrop-filter:blur(14px)] border border-[rgba(196,106,61,0.25)] transition-all duration-250 ease-out hover:transform hover:translate-y-[-3px] hover:shadow-[0_16px_36px_rgba(0,0,0,0.10),0_0_18px_rgba(45,42,110,0.12)]"
         >
           {/* Crop Image */}
           <div className="relative w-full h-64 md:h-80 bg-gradient-to-br from-krishi-agriculture to-krishi-primary overflow-hidden">
@@ -187,26 +187,35 @@ export default function CropDetailPage() {
             {/* Left Side - Crop Details */}
             <div className="flex-1">
               <div className="flex items-center gap-4 mb-4">
-                <h1 className="text-[1.6rem] md:text-5xl font-semibold text-[#2D2A6E]">
+                <h1 className="text-[1.7rem] md:text-5xl font-semibold text-[#2D2A6E]" style={{ letterSpacing: '0.3px', textShadow: '0 0 8px rgba(45,42,110,0.10)' }}>
                   {cropName}
                 </h1>
                 <button
                   onClick={handleStarClick}
-                  className="text-[22px] hover:scale-110 transition-transform duration-250"
+                  className="text-[20px] hover:scale-110 transition-transform duration-250"
                   aria-label={isStarred(cropId) ? 'Unstar crop' : 'Star crop'}
+                  style={{ filter: 'drop-shadow(0 0 6px rgba(196,106,61,0.25))' }}
                 >
                   {isStarred(cropId) ? (
-                    <HiStar className="text-[#C46A3D]" size={22} />
+                    <HiStar className="text-[#C46A3D]" size={20} />
                   ) : (
-                    <HiOutlineStar className="text-[#2D2A6E] opacity-85" size={22} />
+                    <HiOutlineStar className="text-[#2D2A6E] opacity-85" size={20} />
                   )}
                 </button>
               </div>
               <div className="flex flex-wrap gap-4 items-center">
-                <span className={`${getSeasonBadgeClass(crop.season_en)} px-4 py-2 rounded-full font-semibold`}>
+                <span 
+                  className="px-[14px] py-[6px] rounded-[999px] font-semibold text-[0.85rem] border" 
+                  style={{
+                    background: 'rgba(46,157,87,0.12)',
+                    color: '#2E9D57',
+                    borderColor: 'rgba(46,157,87,0.25)',
+                    boxShadow: '0 0 10px rgba(46,157,87,0.12)'
+                  }}
+                >
                   {seasonName}
                 </span>
-                <p className="text-[rgba(45,42,110,0.75)] text-[0.95rem]">
+                <p className="text-[#C46A3D] text-[0.95rem] font-medium" style={{ opacity: 0.9 }}>
                   {lang === 'hi'
                     ? `${cropName} की विस्तृत खेती जानकारी`
                     : `Detailed Farming Information for ${cropName}`}
@@ -218,7 +227,22 @@ export default function CropDetailPage() {
             <div className="flex flex-col gap-3 w-full md:w-auto">
               <Link
                 href={`/mandi?crop=${encodeURIComponent(crop.id)}`}
-                className="bg-[#2D2A6E] hover:bg-[#3a378a] text-white font-medium px-[18px] py-[10px] rounded-[10px] transition-all duration-250 ease-out text-center whitespace-nowrap hover:scale-[1.02] hover:shadow-[0_6px_16px_rgba(45,42,110,0.25)]"
+                className="text-white font-medium px-[18px] py-[10px] rounded-[12px] transition-all duration-250 ease-out text-center whitespace-nowrap hover:transform hover:translate-y-[-1px] hover:scale-[1.02]"
+                style={{
+                  background: 'rgba(45,42,110,0.90)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  boxShadow: '0 6px 18px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.12)',
+                  backdropFilter: 'blur(6px)',
+                  WebkitBackdropFilter: 'blur(6px)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#3a378a'
+                  e.currentTarget.style.boxShadow = '0 10px 24px rgba(45,42,110,0.30), 0 0 14px rgba(45,42,110,0.18)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(45,42,110,0.90)'
+                  e.currentTarget.style.boxShadow = '0 6px 18px rgba(45,42,110,0.25), 0 0 10px rgba(45,42,110,0.12)'
+                }}
               >
                 {lang === 'hi' ? (
                   <>
