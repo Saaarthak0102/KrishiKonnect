@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
@@ -39,6 +39,8 @@ export default function MandiCropDetailPage() {
   const [stateRows, setStateRows] = useState<MandiPrice[]>([])
   const [trendData, setTrendData] = useState<PriceTrend[]>([])
   const [loading, setLoading] = useState(true)
+  const [reduceMotion, setReduceMotion] = useState(false)
+  const revealRef = useRef<HTMLDivElement | null>(null)
 
   const cropId = params.cropId
 
@@ -93,6 +95,54 @@ export default function MandiCropDetailPage() {
 
   const bestRow = useMemo(() => getBestPriceFromRows(mandiRowsForCrop), [mandiRowsForCrop])
 
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) {
+      return
+    }
+
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const applyPreference = () => setReduceMotion(mediaQuery.matches)
+    applyPreference()
+
+    mediaQuery.addEventListener('change', applyPreference)
+    return () => mediaQuery.removeEventListener('change', applyPreference)
+  }, [])
+
+  useEffect(() => {
+    if (!revealRef.current) {
+      return
+    }
+
+    const revealElements = Array.from(
+      revealRef.current.querySelectorAll<HTMLElement>('[data-bazaar-reveal="true"]')
+    )
+
+    if (!revealElements.length) {
+      return
+    }
+
+    if (reduceMotion || typeof IntersectionObserver === 'undefined') {
+      revealElements.forEach((element) => element.classList.add('visible'))
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.15 }
+    )
+
+    revealElements.forEach((element) => observer.observe(element))
+
+    return () => observer.disconnect()
+  }, [reduceMotion, loading, mandiRowsForCrop.length, trendData.length])
+
   if (!cropMeta) {
     return (
       <FeaturePageLayout>
@@ -119,23 +169,42 @@ export default function MandiCropDetailPage() {
   return (
     <FeaturePageLayout>
       <div className="min-h-screen">
-        <main className="container mx-auto px-4 py-10 md:py-14">
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-            <Link
+        <main ref={revealRef} className="container mx-auto px-4 py-10 md:py-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className="mb-6 flex flex-wrap items-center justify-between gap-3"
+          >
+            <motion.div whileHover={{ y: -2, scale: 1.03 }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.25, ease: 'easeOut' }}>
+              <Link
               href={`/mandi?state=${encodeURIComponent(selectedState)}`}
-              className="text-sm font-semibold text-krishi-primary hover:text-krishi-primary/80"
-            >
-              ← {lang === 'hi' ? 'सभी फसलों पर वापस' : 'Back to all crops'}
-            </Link>
+                className="inline-flex rounded-[10px] border px-[14px] py-[8px] text-sm font-semibold"
+                style={{
+                  color: '#2D2A6E',
+                  background: 'rgba(45,42,110,0.08)',
+                  borderColor: 'rgba(45,42,110,0.25)',
+                }}
+              >
+                ← {lang === 'hi' ? 'सभी फसलों पर वापस' : 'Back to all crops'}
+              </Link>
+            </motion.div>
 
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-semibold text-krishi-text">
+            <div className="bazaar-reveal flex items-center gap-2" data-bazaar-reveal="true">
+              <label className="text-sm font-semibold" style={{ color: '#2D2A6E' }}>
                 {lang === 'hi' ? 'राज्य' : 'State'}
               </label>
               <select
                 value={selectedState}
                 onChange={(event) => setSelectedState(event.target.value)}
-                className="rounded-lg border-2 border-krishi-border bg-white/80 px-3 py-2 text-sm text-krishi-text"
+                className="rounded-lg px-3 py-2 text-sm outline-none transition-all duration-[250ms] ease-out"
+                style={{
+                  background: 'rgba(255,255,255,0.55)',
+                  border: '1px solid rgba(196,106,61,0.25)',
+                  color: '#2D2A6E',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                }}
               >
                 {stateOptions.map((state) => (
                   <option key={state} value={state}>
@@ -144,16 +213,44 @@ export default function MandiCropDetailPage() {
                 ))}
               </select>
             </div>
-          </div>
+          </motion.div>
 
-          <h1 className="text-4xl font-bold text-krishi-heading md:text-5xl">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08, duration: 0.6, ease: 'easeOut' }}
+            className="text-4xl font-bold md:text-5xl"
+            style={{ color: '#2D2A6E' }}
+          >
             {lang === 'hi' ? cropMeta.name_hi : cropMeta.name_en}
-          </h1>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.16, duration: 0.6, ease: 'easeOut' }}
+            className="mt-2 max-w-3xl"
+            style={{ color: '#C46A3D' }}
+          >
+            {lang === 'hi'
+              ? 'राज्य-वार मंडी तुलना, ट्रेंड विश्लेषण और बेहतर बिक्री निर्णय के लिए लाइव भाव देखें।'
+              : 'Track live mandi prices, compare state-wise markets, and make better selling decisions.'}
+          </motion.p>
 
           {loading ? (
-            <div className="mt-8 rounded-2xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-10 text-center">
+            <div
+              className="bazaar-reveal mt-8 p-10 text-center"
+              data-bazaar-reveal="true"
+              style={{
+                background: 'rgba(255,255,255,0.55)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                border: '1px solid rgba(196,106,61,0.25)',
+                borderRadius: '16px',
+                boxShadow: '0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04), 0 0 12px rgba(196,106,61,0.10)',
+              }}
+            >
               <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-krishi-primary border-t-transparent" />
-              <p className="mt-3 text-krishi-text/70">
+              <p className="mt-3" style={{ color: 'rgba(45,42,110,0.72)' }}>
                 {lang === 'hi' ? 'भाव लोड हो रहे हैं...' : 'Loading crop prices...'}
               </p>
             </div>
@@ -163,9 +260,26 @@ export default function MandiCropDetailPage() {
                 <motion.div
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-2xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-6"
+                  transition={{ delay: 0.05, duration: 0.5, ease: 'easeOut' }}
+                  whileHover={{
+                    y: -4,
+                    scale: 1.01,
+                    boxShadow: '0 10px 28px rgba(0,0,0,0.10), 0 4px 10px rgba(0,0,0,0.06), 0 0 16px rgba(196,106,61,0.16)',
+                  }}
+                  className="bazaar-reveal p-6"
+                  data-bazaar-reveal="true"
+                  style={{
+                    background: 'rgba(255,255,255,0.55)',
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(196,106,61,0.25)',
+                    borderRadius: '16px',
+                    boxShadow: '0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04), 0 0 12px rgba(196,106,61,0.10)',
+                    willChange: 'transform, box-shadow, opacity',
+                    transform: 'translateZ(0)',
+                  }}
                 >
-                  <p className="inline-block rounded-full bg-[#B85C38]/15 px-3 py-1 text-xs font-bold text-[#B85C38]">
+                  <p className="badge-glow inline-block rounded-full bg-[#B85C38]/15 px-3 py-1 text-xs font-bold text-[#B85C38]" style={{ border: '1px solid rgba(196,106,61,0.25)' }}>
                     ⭐ {lang === 'hi' ? 'आज का सर्वश्रेष्ठ भाव' : 'Best Price Today'}
                   </p>
 
@@ -194,8 +308,24 @@ export default function MandiCropDetailPage() {
                 <motion.div
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.05 }}
-                  className="rounded-2xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-6"
+                  transition={{ delay: 0.1, duration: 0.5, ease: 'easeOut' }}
+                  whileHover={{
+                    y: -4,
+                    scale: 1.01,
+                    boxShadow: '0 10px 28px rgba(0,0,0,0.10), 0 4px 10px rgba(0,0,0,0.06), 0 0 16px rgba(196,106,61,0.16)',
+                  }}
+                  className="bazaar-reveal p-6"
+                  data-bazaar-reveal="true"
+                  style={{
+                    background: 'rgba(255,255,255,0.55)',
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(196,106,61,0.25)',
+                    borderRadius: '16px',
+                    boxShadow: '0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04), 0 0 12px rgba(196,106,61,0.10)',
+                    willChange: 'transform, box-shadow, opacity',
+                    transform: 'translateZ(0)',
+                  }}
                 >
                   <h2 className="text-xl font-bold text-krishi-heading">
                     {lang === 'hi' ? '7-दिन भाव ट्रेंड' : '7-Day Price Trend'}
@@ -227,8 +357,22 @@ export default function MandiCropDetailPage() {
                 </motion.div>
               </section>
 
-              <section className="mt-8 rounded-2xl border-2 border-krishi-border bg-white/70 backdrop-blur-md p-6">
-                <h2 className="text-2xl font-bold text-krishi-heading">
+              <motion.section
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.18, duration: 0.5, ease: 'easeOut' }}
+                className="bazaar-reveal mt-8 p-6"
+                data-bazaar-reveal="true"
+                style={{
+                  background: 'rgba(255,255,255,0.55)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(196,106,61,0.25)',
+                  borderRadius: '16px',
+                  boxShadow: '0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04), 0 0 12px rgba(196,106,61,0.10)',
+                }}
+              >
+                <h2 className="text-2xl font-bold" style={{ color: '#2D2A6E' }}>
                   {lang === 'hi' ? 'अन्य मंडियां' : 'Other Mandis'}
                 </h2>
 
@@ -240,35 +384,56 @@ export default function MandiCropDetailPage() {
                   </p>
                 ) : (
                   <div className="mt-4 space-y-3">
-                    {mandiRowsForCrop.map((row) => (
-                      <div
+                    {mandiRowsForCrop.map((row, index) => (
+                      <motion.div
                         key={row.id}
-                        className="rounded-xl border border-krishi-border bg-white/50 backdrop-blur-sm px-4 py-3"
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.05 + index * 0.05, duration: 0.5, ease: 'easeOut' }}
+                        whileHover={{
+                          y: -4,
+                          scale: 1.01,
+                          boxShadow: '0 10px 28px rgba(0,0,0,0.10), 0 4px 10px rgba(0,0,0,0.06), 0 0 16px rgba(196,106,61,0.16)',
+                          borderColor: 'rgba(196,106,61,0.35)',
+                        }}
+                        whileTap={{ scale: 0.98 }}
+                        className="bazaar-reveal rounded-xl px-4 py-3"
+                        data-bazaar-reveal="true"
+                        style={{
+                          background: 'rgba(255,255,255,0.55)',
+                          backdropFilter: 'blur(12px)',
+                          WebkitBackdropFilter: 'blur(12px)',
+                          border: '1px solid rgba(196,106,61,0.25)',
+                          boxShadow: '0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04), 0 0 12px rgba(196,106,61,0.10)',
+                        }}
                       >
                         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                           <div>
-                            <p className="text-lg font-bold text-krishi-heading">{row.mandiEn}</p>
-                            <p className="text-sm text-krishi-text/80">
+                            <p className="text-lg font-bold" style={{ color: '#2D2A6E' }}>{row.mandiEn}</p>
+                            <p className="badge-glow mt-1 inline-flex rounded-full px-3 py-1 text-sm" style={{ color: '#2D2A6E', background: 'rgba(46,157,87,0.10)', border: '1px solid rgba(46,157,87,0.25)' }}>
                               ₹{row.modalPrice} ({lang === 'hi' ? 'मोडल' : 'modal'})
                             </p>
-                            <p className="text-xs text-krishi-text/70">
+                            <p className="text-xs" style={{ color: 'rgba(45,42,110,0.7)' }}>
                               {lang === 'hi' ? 'न्यूनतम:' : 'Min:'} ₹{row.minPrice} |{' '}
                               {lang === 'hi' ? 'अधिकतम:' : 'Max:'} ₹{row.maxPrice}
                             </p>
                           </div>
 
-                          <Link
-                            href={`/transport?crop=${encodeURIComponent(cropId)}&mandi=${encodeURIComponent(row.mandiEn)}`}
-                            className="inline-flex w-fit items-center rounded-lg bg-krishi-primary px-4 py-2 text-sm font-semibold text-white hover:bg-krishi-primary/90"
-                          >
-                            {lang === 'hi' ? 'ट्रांसपोर्ट बुक करें' : 'Book Transport'}
-                          </Link>
+                          <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.25, ease: 'easeOut' }}>
+                            <Link
+                              href={`/transport?crop=${encodeURIComponent(cropId)}&mandi=${encodeURIComponent(row.mandiEn)}`}
+                              className="inline-flex w-fit items-center rounded-lg px-4 py-2 text-sm font-semibold text-white"
+                              style={{ background: '#2D2A6E', boxShadow: '0 8px 16px rgba(45,42,110,0.24)' }}
+                            >
+                              {lang === 'hi' ? 'ट्रांसपोर्ट बुक करें' : 'Book Transport'}
+                            </Link>
+                          </motion.div>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 )}
-              </section>
+              </motion.section>
             </>
           )}
         </main>

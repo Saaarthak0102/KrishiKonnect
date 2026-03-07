@@ -132,6 +132,10 @@
   }
 }
 
+.badge-glow {
+  animation: badgeGlow 2.8s infinite;
+}
+
 /* Lightweight scroll reveal for crop cards on Crop Library page */
 .crop-library-grid .crop-card {
   opacity: 0;
@@ -158,6 +162,19 @@
   transform: translateY(0);
 }
 
+/* Lightweight scroll reveal for Bazaar cards and sections */
+.bazaar-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+  will-change: transform, opacity;
+}
+
+.bazaar-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .crop-library-grid .crop-card,
   .crop-library-grid .crop-card.visible {
@@ -171,5 +188,16 @@
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  .bazaar-reveal,
+  .bazaar-reveal.visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .badge-glow {
+    animation: none;
   }
 }

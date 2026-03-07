@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { memo } from 'react'
 
 interface MandiPriceSummaryProps {
@@ -18,7 +19,25 @@ function MandiPriceSummary({
   lang,
 }: MandiPriceSummaryProps) {
   return (
-    <section className="rounded-xl border border-indigo-200/40 bg-white/45 backdrop-blur-md p-5 shadow-lg">
+    <motion.section
+      whileHover={{
+        y: -4,
+        scale: 1.01,
+        boxShadow: '0 10px 28px rgba(0,0,0,0.10), 0 4px 10px rgba(0,0,0,0.06), 0 0 16px rgba(196,106,61,0.16)',
+      }}
+      transition={{ duration: 0.18, ease: 'easeOut' }}
+      className="rounded-xl p-5"
+      style={{
+        background: 'rgba(255,255,255,0.55)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        border: '1px solid rgba(196,106,61,0.25)',
+        borderRadius: '16px',
+        boxShadow: '0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04), 0 0 12px rgba(196,106,61,0.10)',
+        willChange: 'transform, box-shadow, opacity',
+        transform: 'translateZ(0)',
+      }}
+    >
       <h3 className="text-lg font-bold text-krishi-indigo">
         {lang === 'hi' ? 'Price Summary' : 'Price Summary'}
       </h3>
@@ -28,7 +47,7 @@ function MandiPriceSummary({
         <p>{lang === 'hi' ? 'Lowest Price' : 'Lowest Price'}: ₹{lowestPrice.toLocaleString('en-IN')}</p>
         <p>{lang === 'hi' ? 'Mandis Available' : 'Mandis Available'}: {mandiCount}</p>
       </div>
-    </section>
+    </motion.section>
   )
 }
 

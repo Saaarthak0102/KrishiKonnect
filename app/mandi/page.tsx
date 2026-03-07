@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { IconType } from 'react-icons'
@@ -94,6 +94,8 @@ export default function MandiPage() {
   const [showMyCrops, setShowMyCrops] = useState(false)
   const [expandedMandi, setExpandedMandi] = useState<string | null>(null)
   const [shouldScroll, setShouldScroll] = useState(!!initialCropName)
+  const [reduceMotion, setReduceMotion] = useState(false)
+  const bazaarRevealRef = useRef<HTMLDivElement | null>(null)
 
   const componentPrices = useMemo(() => {
     if (!cachedPrices.length) return []
@@ -308,17 +310,67 @@ export default function MandiPage() {
     }
   }, [])
 
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) {
+      return
+    }
+
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const applyPreference = () => setReduceMotion(mediaQuery.matches)
+    applyPreference()
+
+    mediaQuery.addEventListener('change', applyPreference)
+
+    return () => mediaQuery.removeEventListener('change', applyPreference)
+  }, [])
+
+  useEffect(() => {
+    if (!bazaarRevealRef.current) {
+      return
+    }
+
+    const revealElements = Array.from(
+      bazaarRevealRef.current.querySelectorAll<HTMLElement>('[data-bazaar-reveal="true"]')
+    )
+
+    if (!revealElements.length) {
+      return
+    }
+
+    if (reduceMotion || typeof IntersectionObserver === 'undefined') {
+      revealElements.forEach((element) => element.classList.add('visible'))
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.15 }
+    )
+
+    revealElements.forEach((element) => observer.observe(element))
+
+    return () => observer.disconnect()
+  }, [reduceMotion, selectedCrop, filteredCrops.length, sortedStates.length, expandedMandi])
+
   return (
     <DashboardLayout>
       <div className="min-h-screen bg-transparent">
-        <main className="container mx-auto px-4 py-12 md:py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="mb-10 text-center"
-          >
-            <h1 className="mb-3 font-bold tracking-[-0.5px] flex items-center justify-center gap-2" style={{ fontSize: '3rem' }}>
+        <main ref={bazaarRevealRef} className="container mx-auto px-4 py-12 md:py-16">
+          <div className="mb-10 text-center">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+              className="mb-3 font-bold tracking-[-0.5px] flex items-center justify-center gap-2"
+              style={{ fontSize: '3rem' }}
+            >
               {lang === 'hi' ? (
                 <>
                   <span className="text-[#2D2A6E]">कृषि</span>
@@ -332,25 +384,58 @@ export default function MandiPage() {
                   <span className="text-[#C46A3D]">Bazaar</span>
                 </>
               )}
-              <MdStorefront size={32} style={{ color: '#2D2A6E', opacity: 0.9, marginLeft: '8px' }} />
-            </h1>
-            <p className="mx-auto max-w-3xl font-medium" style={{ fontSize: '1rem', color: '#C46A3D' }}>
+              <motion.span whileHover={{ y: -2, scale: 1.05 }} transition={{ duration: 0.2, ease: 'easeOut' }}>
+                <MdStorefront size={32} style={{ color: '#2D2A6E', opacity: 0.9, marginLeft: '8px' }} />
+              </motion.span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08, duration: 0.6, ease: 'easeOut' }}
+              className="mx-auto max-w-3xl font-medium"
+              style={{ fontSize: '1rem', color: '#C46A3D' }}
+            >
               {lang === 'hi'
                 ? 'अपनी फसल चुनें और सभी मंडियों में सर्वश्रेष्ठ भाव देखें।'
                 : 'Select your crop and view the best prices across all mandis.'}
-            </p>
-          </motion.div>
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.16, duration: 0.6, ease: 'easeOut' }}
+              className="mx-auto mt-2 max-w-3xl"
+              style={{ fontSize: '0.95rem', color: 'rgba(45,42,110,0.75)' }}
+            >
+              {lang === 'hi'
+                ? 'ग्लास-स्टाइल इंटरफेस, ट्रेंड संकेतक, और मंडी-वार तुलना के साथ बेहतर निर्णय लें।'
+                : 'Use glass-styled market cards, trend signals, and mandi-wise comparisons for smarter selling decisions.'}
+            </motion.p>
+          </div>
 
           {/* Display Mode: Crop Selection or Mandi Details */}
           {!selectedCrop ? (
             // Step 1: Show Crop Selection
             <>
               <motion.div
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05, duration: 0.4 }}
-                className="mb-8 rounded-xl border-2 bg-white/60 p-5 backdrop-blur-md transition-all duration-[250ms] ease-out hover:shadow-[0_10px_25px_rgba(0,0,0,0.08),0_0_10px_rgba(45,42,110,0.06)] hover:-translate-y-[2px]"
-                style={{ borderColor: '#E8DCC8' }}
+                whileHover={{
+                  y: -2,
+                  boxShadow: '0 12px 30px rgba(0,0,0,0.10), 0 4px 10px rgba(0,0,0,0.06), 0 0 16px rgba(196,106,61,0.14)',
+                }}
+                transition={{ delay: 0.2, duration: 0.5, ease: 'easeOut' }}
+                className="bazaar-reveal mb-8 p-5 transition-all duration-[250ms] ease-out"
+                data-bazaar-reveal="true"
+                style={{
+                  background: 'linear-gradient(rgba(46,157,87,0.05), rgba(196,106,61,0.03)), rgba(255,255,255,0.55)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(196,106,61,0.25)',
+                  borderRadius: '16px',
+                  boxShadow: '0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04), 0 0 12px rgba(196,106,61,0.10)',
+                  willChange: 'transform, box-shadow, opacity',
+                  transform: 'translateZ(0)',
+                }}
               >
                 {/* Search & Filter Container */}
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-3">
@@ -413,7 +498,7 @@ export default function MandiPage() {
                   {/* My Crops Filter Button */}
                   {starredCrops.length > 0 && (
                     <div className="w-full md:w-auto">
-                      <button
+                      <motion.button
                         onClick={() => setShowMyCrops(!showMyCrops)}
                         className="w-full rounded-[10px] px-6 py-3 font-semibold transition-all duration-[200ms] ease-out active:scale-[0.97]"
                         style={{
@@ -421,29 +506,18 @@ export default function MandiPage() {
                           backgroundColor: showMyCrops ? '#C46A3D' : 'rgba(196,106,61,0.12)',
                           border: showMyCrops ? '1px solid #C46A3D' : '1px solid rgba(196,106,61,0.35)',
                         }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)'
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(196,106,61,0.18)'
-                          if (showMyCrops) {
-                            e.currentTarget.style.backgroundColor = '#B95D31'
-                          } else {
-                            e.currentTarget.style.backgroundColor = '#C46A3D'
-                            e.currentTarget.style.color = '#FFFFFF'
-                          }
+                        whileHover={{
+                          scale: 1.03,
+                          y: -2,
+                          backgroundColor: showMyCrops ? '#B95D31' : '#242159',
+                          color: '#FFFFFF',
+                          boxShadow: '0 10px 20px rgba(45,42,110,0.24)',
                         }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = ''
-                          e.currentTarget.style.boxShadow = ''
-                          if (showMyCrops) {
-                            e.currentTarget.style.backgroundColor = '#C46A3D'
-                          } else {
-                            e.currentTarget.style.backgroundColor = 'rgba(196,106,61,0.12)'
-                            e.currentTarget.style.color = '#2D2A6E'
-                          }
-                        }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ duration: 0.25, ease: 'easeOut' }}
                       >
                         ⭐ {lang === 'hi' ? 'मेरी फसलें' : 'My Crops'} ({starredCrops.length})
-                      </button>
+                      </motion.button>
                     </div>
                   )}
                 </div>
@@ -507,27 +581,36 @@ export default function MandiPage() {
                       id={`crop-card-${crop.name_en.toLowerCase().replace(/\s+/g, '-')}`}
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      whileTap={{ scale: 0.995 }}
-                      transition={{ delay: idx * 0.05, duration: 0.4, ease: 'easeOut' }}
+                      whileHover={{
+                        y: -4,
+                        scale: 1.01,
+                        boxShadow: '0 10px 28px rgba(0,0,0,0.10), 0 4px 10px rgba(0,0,0,0.06), 0 0 16px rgba(196,106,61,0.16)',
+                        borderColor: 'rgba(196,106,61,0.35)',
+                      }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ delay: 0.05 + idx * 0.05, duration: 0.5, ease: 'easeOut' }}
                       onClick={() => setSelectedCrop(crop.name_en)}
-                      className="crop-card group rounded-[16px] p-5 text-left hover:-translate-y-[3px] hover:shadow-[0_12px_28px_rgba(0,0,0,0.10),0_0_12px_rgba(45,42,110,0.08)]"
+                      className="crop-card bazaar-reveal group rounded-[16px] p-5 text-left"
+                      data-bazaar-reveal="true"
                       style={{
                         background: 'rgba(255,255,255,0.55)',
                         backdropFilter: 'blur(12px)',
                         border: '1px solid rgba(196,106,61,0.30)',
-                        boxShadow: '0 8px 22px rgba(0,0,0,0.08)',
+                        boxShadow: '0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04), 0 0 12px rgba(196,106,61,0.10)',
                         transform: 'translateZ(0)',
-                        willChange: 'transform',
+                        willChange: 'transform, box-shadow, opacity',
                         transition: 'transform 0.18s ease-out, box-shadow 0.18s ease-out',
                       }}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="mb-1 flex items-center gap-2">
-                              <CropIcon
-                                size={20}
-                                style={{ color: '#2D2A6E', opacity: 0.85 }}
-                              />
+                              <motion.span whileHover={{ y: -2, scale: 1.05 }} transition={{ duration: 0.2, ease: 'easeOut' }}>
+                                <CropIcon
+                                  size={20}
+                                  style={{ color: '#2D2A6E', opacity: 0.85 }}
+                                />
+                              </motion.span>
                             <h3
                               className="font-semibold flex items-center"
                               style={{ fontSize: '1.2rem', color: '#2D2A6E' }}
@@ -543,7 +626,7 @@ export default function MandiPage() {
                               initial={{ opacity: 0, y: 6 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ duration: 0.35, ease: 'easeOut', delay: idx * 0.05 + 0.1 }}
-                              className="font-semibold"
+                              className="font-semibold badge-glow rounded-full px-3 py-1"
                               style={{ fontSize: '1.35rem', color: '#2E9D57' }}
                             >
                               ₹{bestPrice.toLocaleString('en-IN')}
@@ -552,6 +635,7 @@ export default function MandiPage() {
                               <motion.span
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
+                                whileHover={{ y: -2, scale: 1.05 }}
                                 transition={{ duration: 0.25, ease: 'easeOut', delay: idx * 0.05 + 0.16 }}
                               >
                                 <FiTrendingUp size={18} style={{ color: '#2E9D57' }} aria-label="Price trending up" />
@@ -561,6 +645,7 @@ export default function MandiPage() {
                               <motion.span
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
+                                whileHover={{ y: -2, scale: 1.05 }}
                                 transition={{ duration: 0.25, ease: 'easeOut', delay: idx * 0.05 + 0.16 }}
                               >
                                 <FiTrendingDown size={18} style={{ color: '#C46A3D' }} aria-label="Price trending down" />
@@ -575,8 +660,11 @@ export default function MandiPage() {
                           </p>
                         </div>
                       </div>
-                      <div
-                        className="view-prices-button mt-4 inline-flex cursor-pointer items-center rounded-[10px] border px-[14px] py-2 font-medium transition-all duration-[160ms] ease-out hover:shadow-[0_4px_12px_rgba(45,42,110,0.20)] active:scale-[0.97]"
+                      <motion.div
+                        whileHover={{ scale: 1.03, y: -2, backgroundColor: '#242159', color: '#FFFFFF', boxShadow: '0 10px 20px rgba(45,42,110,0.24)' }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ duration: 0.25, ease: 'easeOut' }}
+                        className="view-prices-button mt-4 inline-flex cursor-pointer items-center rounded-[10px] border px-[14px] py-2 font-medium"
                         style={{
                           background: 'rgba(45,42,110,0.08)',
                           color: '#2D2A6E',
@@ -585,7 +673,7 @@ export default function MandiPage() {
                       >
                         {lang === 'hi' ? 'भाव देखें' : 'View Prices'}
                         <span className="ml-2">→</span>
-                      </div>
+                      </motion.div>
                     </motion.button>
                   )
                 })}
@@ -604,7 +692,7 @@ export default function MandiPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-8 flex items-center gap-4"
               >
-                <button
+                <motion.button
                   onClick={() => {
                     setSelectedCrop(null)
                     setExpandedMandi(null)
@@ -616,17 +704,12 @@ export default function MandiPage() {
                     background: 'rgba(45,42,110,0.08)',
                     border: '1px solid rgba(45,42,110,0.25)',
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#2D2A6E'
-                    e.currentTarget.style.color = '#FFFFFF'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(45,42,110,0.08)'
-                    e.currentTarget.style.color = '#2D2A6E'
-                  }}
+                  whileHover={{ scale: 1.03, y: -2, backgroundColor: '#242159', color: '#FFFFFF', boxShadow: '0 10px 20px rgba(45,42,110,0.24)' }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
                 >
                   ← {lang === 'hi' ? 'वापस' : 'Back'}
-                </button>
+                </motion.button>
                 <h2 className="text-3xl font-bold" style={{ color: '#1F3C88' }}>
                   {selectedCrop} {lang === 'hi' ? 'भाव' : 'Prices'}
                 </h2>
@@ -634,11 +717,23 @@ export default function MandiPage() {
 
               {/* Search and Filter Section */}
               <motion.div
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1, duration: 0.4 }}
-                className="mb-8 rounded-xl border-2 bg-white/60 p-5 backdrop-blur-md"
-                style={{ borderColor: '#E8DCC8' }}
+                whileHover={{
+                  y: -2,
+                  boxShadow: '0 12px 30px rgba(0,0,0,0.10), 0 4px 10px rgba(0,0,0,0.06), 0 0 16px rgba(196,106,61,0.14)',
+                }}
+                transition={{ delay: 0.2, duration: 0.5, ease: 'easeOut' }}
+                className="bazaar-reveal mb-8 p-5"
+                data-bazaar-reveal="true"
+                style={{
+                  background: 'linear-gradient(rgba(46,157,87,0.05), rgba(196,106,61,0.03)), rgba(255,255,255,0.55)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(196,106,61,0.25)',
+                  borderRadius: '16px',
+                  boxShadow: '0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04), 0 0 12px rgba(196,106,61,0.10)',
+                }}
               >
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-3">
                   {/* State Filter Dropdown */}
@@ -676,7 +771,7 @@ export default function MandiPage() {
                   {/* My Crops Button */}
                   {starredCrops.length > 0 && (
                     <div className="flex items-end">
-                      <button
+                      <motion.button
                         onClick={() => {
                           setSelectedCrop(null)
                           setShowMyCrops(true)
@@ -688,42 +783,69 @@ export default function MandiPage() {
                           backgroundColor: 'rgba(196,106,61,0.12)',
                           border: '1px solid rgba(196,106,61,0.35)',
                         }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#C46A3D'
-                          e.currentTarget.style.color = '#FFFFFF'
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'rgba(196,106,61,0.12)'
-                          e.currentTarget.style.color = '#2D2A6E'
-                        }}
+                        whileHover={{ scale: 1.03, y: -2, backgroundColor: '#242159', color: '#FFFFFF', boxShadow: '0 10px 20px rgba(45,42,110,0.24)' }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ duration: 0.25, ease: 'easeOut' }}
                       >
                         ⭐ {lang === 'hi' ? 'मेरी फसलें' : 'My Crops'} ({starredCrops.length})
-                      </button>
+                      </motion.button>
                     </div>
                   )}
                 </div>
               </motion.div>
 
               <div className="mb-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
-                <MandiBestPriceCard bestMandi={bestMandiForSelectedCrop} lang={lang} />
-                <MandiPriceSummary
-                  bestPrice={priceSummary.bestPrice}
-                  averagePrice={priceSummary.averagePrice}
-                  lowestPrice={priceSummary.lowestPrice}
-                  mandiCount={priceSummary.mandiCount}
-                  lang={lang}
-                />
-                <NearbyMandisCard
-                  userState={farmerProfile?.state || (lang === 'hi' ? 'आपका राज्य' : 'Your State')}
-                  mandis={nearbyMandis}
-                  lang={lang}
-                />
-                <WeeklyMarketTrend
-                  direction={weeklyDirection.direction}
-                  label={weeklyDirection.label}
-                  averageChange={weeklyDirection.averageChange}
-                  lang={lang}
-                />
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 + 0 * 0.05, duration: 0.5, ease: 'easeOut' }}
+                  className="bazaar-reveal"
+                  data-bazaar-reveal="true"
+                >
+                  <MandiBestPriceCard bestMandi={bestMandiForSelectedCrop} lang={lang} />
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 + 1 * 0.05, duration: 0.5, ease: 'easeOut' }}
+                  className="bazaar-reveal"
+                  data-bazaar-reveal="true"
+                >
+                  <MandiPriceSummary
+                    bestPrice={priceSummary.bestPrice}
+                    averagePrice={priceSummary.averagePrice}
+                    lowestPrice={priceSummary.lowestPrice}
+                    mandiCount={priceSummary.mandiCount}
+                    lang={lang}
+                  />
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 + 2 * 0.05, duration: 0.5, ease: 'easeOut' }}
+                  className="bazaar-reveal"
+                  data-bazaar-reveal="true"
+                >
+                  <NearbyMandisCard
+                    userState={farmerProfile?.state || (lang === 'hi' ? 'आपका राज्य' : 'Your State')}
+                    mandis={nearbyMandis}
+                    lang={lang}
+                  />
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 + 3 * 0.05, duration: 0.5, ease: 'easeOut' }}
+                  className="bazaar-reveal"
+                  data-bazaar-reveal="true"
+                >
+                  <WeeklyMarketTrend
+                    direction={weeklyDirection.direction}
+                    label={weeklyDirection.label}
+                    averageChange={weeklyDirection.averageChange}
+                    lang={lang}
+                  />
+                </motion.div>
               </div>
 
               {/* States with Mandis */}
@@ -734,6 +856,8 @@ export default function MandiPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: stateIdx * 0.05, duration: 0.3 }}
+                    className="bazaar-reveal"
+                    data-bazaar-reveal="true"
                   >
                     <h3
                       className="text-2xl font-bold mb-5 pb-3 border-b-2"
@@ -749,6 +873,8 @@ export default function MandiPage() {
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: idx * 0.02, duration: 0.2 }}
+                          className="bazaar-reveal"
+                          data-bazaar-reveal="true"
                         >
                           <MandiPriceCard
                             price={mandi}
