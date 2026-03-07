@@ -60,29 +60,12 @@ export default function ChatHistorySidebar({
         className="p-4 border-b"
         style={{ borderColor: 'rgba(196,106,61,0.25)' }}
       >
-        <div className="flex items-center space-x-2 mb-3">
-          <span className="text-2xl">🌾</span>
-          <div>
-            <h2 className="font-bold text-sm">
-              {lang === 'hi' ? (
-                <>
-                  <span style={{ color: '#2D2A6E' }}>कृषि</span>
-                  {' '}
-                  <span style={{ color: '#C46A3D' }}>सहायक</span>
-                </>
-              ) : (
-                <>
-                  <span style={{ color: '#2D2A6E' }}>Krishi</span>
-                  {' '}
-                  <span style={{ color: '#C46A3D' }}>Sahayak</span>
-                </>
-              )}
-            </h2>
-            <p className="text-xs text-gray-500">
-              {lang === 'hi' ? 'AI सहायक' : 'AI Assistant'}
-            </p>
-          </div>
-        </div>
+        <h2
+          className="font-semibold text-base"
+          style={{ color: '#2D2A6E', fontFamily: 'Poppins, sans-serif' }}
+        >
+          {lang === 'hi' ? 'आपकी चैट हिस्ट्री' : 'Your Chat History'}
+        </h2>
       </div>
 
       {/* New Chat Button */}
