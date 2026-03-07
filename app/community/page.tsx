@@ -7,7 +7,8 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/context/AuthContext';
 import { addCommunityQuestion, subscribeToQuestions, type CommunityQuestion } from '@/lib/community';
 import { BsChatDots } from 'react-icons/bs';
-import { BiLike } from 'react-icons/bi';
+import { FaUsers } from 'react-icons/fa';
+import { FiMessageCircle, FiThumbsUp } from 'react-icons/fi';
 
 const FILTER_CATEGORIES_EN = ['All', 'Wheat', 'Rice', 'Vegetables', 'Fruits', 'Irrigation', 'Pest Control'];
 const FILTER_CATEGORIES_HI = ['सभी', 'गेहूँ', 'धान', 'सब्जियाँ', 'फल', 'सिंचाई', 'कीट नियंत्रण'];
@@ -173,11 +174,12 @@ export default function CommunityPage() {
       <div className="min-h-screen py-8 px-4">
         <main className="max-w-5xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold text-krishi-indigo mb-2">
+          <div className="mt-12 mb-8 text-center">
+            <h1 className="flex items-center justify-center text-[1.35rem] font-semibold text-[#2D2A6E] font-['Poppins']">
+              <FaUsers size={22} color="#C46A3D" className="mr-2" />
               {t('communityDiscussions')}
             </h1>
-            <p className="text-krishi-indigo/80 mt-1">
+            <p className="mt-[6px] text-[0.95rem] text-[rgba(45,42,110,0.75)]">
               {t('communityDescription')}
             </p>
           </div>
@@ -188,10 +190,10 @@ export default function CommunityPage() {
               <button
                 key={category}
                 onClick={() => setSelectedFilter(category)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`px-4 py-2 rounded-[10px] font-medium text-[#2D2A6E] transition-all duration-200 hover:-translate-y-[1px] ${
                   selectedFilter === category
-                    ? 'bg-krishi-clay text-white'
-                    : 'bg-white/70 backdrop-blur-sm border border-krishi-border text-krishi-indigo hover:bg-krishi-clay/10'
+                    ? 'bg-[#C46A3D] text-white border-none'
+                    : 'bg-[rgba(255,255,255,0.55)] backdrop-blur-[10px] border border-[rgba(196,106,61,0.25)]'
                 }`}
               >
                 {category}
@@ -200,7 +202,7 @@ export default function CommunityPage() {
           </div>
 
           {/* Posts Feed */}
-          <div className="bg-white/70 backdrop-blur-sm border-2 border-krishi-border rounded-xl shadow-sm mb-6 overflow-hidden">
+          <div className="mb-6 overflow-hidden rounded-2xl border border-[rgba(196,106,61,0.25)] bg-[rgba(255,255,255,0.55)] backdrop-blur-[12px] shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
             <div className="max-w-5xl mx-auto space-y-4 overflow-y-auto h-[60vh] p-6">
               {isLoading ? (
                 <div className="h-full flex items-center justify-center">
@@ -221,25 +223,20 @@ export default function CommunityPage() {
                 filteredPosts.map((post) => (
                   <div
                     key={post.id}
-                    className="bg-white/70 backdrop-blur-sm border-2 border-krishi-border rounded-xl p-4 hover:border-krishi-clay/50 transition-all"
+                    className="rounded-[14px] border border-[rgba(196,106,61,0.30)] bg-[rgba(255,255,255,0.45)] backdrop-blur-[14px] p-4 shadow-[0_6px_18px_rgba(0,0,0,0.06)] transition-all duration-[250ms] ease-in-out hover:-translate-y-[3px]"
                   >
                     {/* Post Header */}
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
                         {/* Avatar */}
-                        <div
-                          className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-                          style={{
-                            backgroundColor: `hsl(${post.author.charCodeAt(0) * 10}, 70%, 60%)`
-                          }}
-                        >
+                        <div className="h-[34px] w-[34px] rounded-full bg-krishi-agriculture text-white font-semibold flex items-center justify-center">
                           {post.author.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <h3 className="font-semibold text-krishi-indigo">
+                          <h3 className="text-[0.95rem] font-semibold text-[#2D2A6E]">
                             {post.author}
                           </h3>
-                          <p className="text-sm text-krishi-indigo/70">
+                          <p className="text-[0.85rem] text-[rgba(45,42,110,0.65)]">
                             {post.location && `${post.location} • `}
                             {toRelativeTime(post.createdAt)}
                           </p>
@@ -247,7 +244,7 @@ export default function CommunityPage() {
                       </div>
                       {/* Crop Tag */}
                       {(post.cropTag_en || post.cropTag_hi) && (
-                        <span className="px-3 py-1 bg-krishi-clay/10 text-krishi-clay rounded-full text-sm font-medium">
+                        <span className="rounded-full bg-[rgba(196,106,61,0.15)] px-[10px] py-1 text-[0.8rem] text-[#C46A3D]">
                           {lang === 'en' ? post.cropTag_en : post.cropTag_hi}
                         </span>
                       )}
@@ -259,19 +256,19 @@ export default function CommunityPage() {
                     </p>
 
                     {/* Actions */}
-                    <div className="flex items-center gap-4 text-sm">
+                    <div className="flex items-center gap-3 text-sm">
                       <button
                         onClick={() => handleUpvote(post.id)}
-                        className="flex items-center gap-1 text-krishi-indigo hover:text-krishi-clay transition-colors"
+                        className="flex items-center gap-3 text-[#2D2A6E] transition-colors hover:text-krishi-clay"
                       >
-                        <BiLike size={20} />
+                        <FiThumbsUp size={18} className="opacity-80" />
                         <span>{post.upvotes}</span>
                       </button>
                       <button
                         onClick={() => toggleReplies(post.id)}
-                        className="flex items-center gap-1 text-krishi-indigo hover:text-krishi-clay transition-colors"
+                        className="flex items-center gap-3 text-[#2D2A6E] transition-colors hover:text-krishi-clay"
                       >
-                        <BsChatDots size={20} />
+                        <FiMessageCircle size={18} className="opacity-80" />
                         <span>
                           {post.repliesCount} {post.repliesCount === 1 ? t('reply') : t('replies')}
                         </span>
