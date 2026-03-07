@@ -173,10 +173,10 @@ export default function MyCropsWithPrices({
 
         <div className="py-12 px-6 text-center">
           <div className="mb-4 text-5xl">🌾</div>
-          <h3 className="text-lg font-bold text-krishi-indigo mb-2">
+          <h3 className="text-lg font-bold mb-2" style={{ color: '#2D2A6E' }}>
             {t.noCropsSelected}
           </h3>
-          <p className="text-gray-600 mb-6 max-w-sm mx-auto">
+          <p className="mb-6 max-w-sm mx-auto" style={{ color: 'rgba(45, 42, 110, 0.75)' }}>
             {t.noCropsMessage}
           </p>
           <Link
@@ -203,7 +203,7 @@ export default function MyCropsWithPrices({
         transition={{ duration: 0.4 }}
         className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
       >
-        <h2 className="text-xl font-bold text-krishi-indigo mb-6 flex items-center gap-2">
+        <h2 className="text-xl font-bold mb-6 flex items-center gap-2" style={{ color: '#2D2A6E' }}>
           <span>🌾</span>
           {t.myCrops}
         </h2>
@@ -227,11 +227,11 @@ export default function MyCropsWithPrices({
       className="bg-white/70 backdrop-blur-md rounded-xl shadow-sm border border-gray-200 p-6"
     >
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-krishi-indigo flex items-center gap-2 mb-1">
+        <h2 className="text-xl font-bold flex items-center gap-2 mb-1" style={{ color: '#2D2A6E' }}>
           <span>🌾</span>
           {t.myCrops}
         </h2>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm" style={{ color: 'rgba(45, 42, 110, 0.75)' }}>
           {lang === 'hi' ? (
             <>आपकी फसलों के लिए नवीनतम <span className="text-[#2D4B8C]">कृषि</span>{' '}<span className="text-[#C96A3A]">बाजार</span> भाव</>
           ) : (

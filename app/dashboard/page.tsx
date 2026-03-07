@@ -968,13 +968,13 @@ export default function DashboardPage() {
                   <p style={{ fontWeight: 600, color: '#2D2A6E', marginBottom: '8px', fontSize: '16px' }}>
                     {t.transportBooked}
                   </p>
-                  <p style={{ fontSize: '12px', color: 'rgba(45,42,110,0.5)', marginBottom: '8px' }}>ID: {latestTransportBooking.id}</p>
+                  <p style={{ fontSize: '12px', color: '#C46A3D', fontWeight: 500, marginBottom: '8px' }}>ID: {latestTransportBooking.id}</p>
                   <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.8)', marginBottom: '8px' }}>
                     {latestTransportBooking.crop} {'→'} {latestTransportBooking.destinationMandi}
                   </p>
-                  <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)' }}>{t.pickupDate}: {latestTransportBooking.pickupDate}</p>
-                  <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)' }}>{t.provider}: {latestTransportBooking.provider}</p>
-                  <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)' }}>{t.cost}: ₹{latestTransportBooking.cost.toLocaleString('en-IN')}</p>
+                  <p style={{ fontSize: '14px', color: '#C46A3D', fontWeight: 500 }}>{t.pickupDate}: <span style={{ color: 'rgba(45,42,110,0.75)' }}>{latestTransportBooking.pickupDate}</span></p>
+                  <p style={{ fontSize: '14px', color: '#C46A3D', fontWeight: 500 }}>{t.provider}: <span style={{ color: 'rgba(45,42,110,0.75)' }}>{latestTransportBooking.provider}</span></p>
+                  <p style={{ fontSize: '14px', color: '#C46A3D', fontWeight: 500 }}>{t.cost}: <span style={{ color: 'rgba(45,42,110,0.75)' }}>₹{latestTransportBooking.cost.toLocaleString('en-IN')}</span></p>
                   <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)', marginBottom: '16px' }}>
                     {t.status}: <span style={{ color: '#7FB069', fontWeight: 600 }}>{t.confirmed}</span>
                   </p>

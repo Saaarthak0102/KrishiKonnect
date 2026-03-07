@@ -68,19 +68,19 @@
 
 .crop-name {
   font-weight: 600;
-  color: #1F3C88;
+  color: #2D2A6E;
   font-size: 14px;
 }
 
 .crop-mandi {
   font-size: 12px;
-  color: #666;
+  color: rgba(45, 42, 110, 0.75);
 }
 
 .crop-price {
   font-size: 16px;
   font-weight: bold;
-  color: #7FB069;
+  color: #2D2A6E;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -88,19 +88,19 @@
 
 .crop-trend {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .crop-trend-up {
-  color: #7FB069;
+  color: #2e9d57;
 }
 
 .crop-trend-down {
-  color: #E74C3C;
+  color: #C46A3D;
 }
 
 .crop-trend-stable {
-  color: #95A5A6;
+  color: rgba(45, 42, 110, 0.7);
 }
 
 /* Responsive design */
