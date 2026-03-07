@@ -7,6 +7,7 @@ import { translations } from '@/lib/translations'
 import { usePathname } from 'next/navigation'
 import LanguageToggle from '@/components/ui/LanguageToggle'
 import { GiWheat } from 'react-icons/gi'
+import BrandName from '@/components/ui/BrandName'
 
 export default function Navbar() {
   const { lang } = useLanguage()
@@ -27,8 +28,8 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center space-x-2">
             <GiWheat size={24} className="text-krishi-agriculture" />
-            <span className="text-2xl font-bold text-krishi-heading">
-              KrishiKonnect
+            <span className="text-2xl">
+              <BrandName />
             </span>
           </Link>
 

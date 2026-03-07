@@ -5,6 +5,21 @@ import Link from 'next/link'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import { GiWheat } from 'react-icons/gi'
+import BrandName from '@/components/ui/BrandName'
+
+function renderTextWithBrand(text: string) {
+  const parts = text.split('KrishiKonnect')
+  if (parts.length === 1) {
+    return text
+  }
+
+  return parts.map((part, index) => (
+    <span key={`brand-part-${index}`}>
+      {part}
+      {index < parts.length - 1 ? <BrandName /> : null}
+    </span>
+  ))
+}
 
 export default function HeroSection() {
   const { lang } = useLanguage()
@@ -24,7 +39,7 @@ export default function HeroSection() {
             {t.heroTagline}
           </p>
           <p className="text-lg md:text-xl text-krishi-text/80 mb-8">
-            {t.heroSubtext}
+            {renderTextWithBrand(t.heroSubtext)}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>

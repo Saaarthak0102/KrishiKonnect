@@ -5,6 +5,21 @@ import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import { GiWheat } from 'react-icons/gi'
+import BrandName from '@/components/ui/BrandName'
+
+function renderTextWithBrand(text: string) {
+  const parts = text.split('KrishiKonnect')
+  if (parts.length === 1) {
+    return text
+  }
+
+  return parts.map((part, index) => (
+    <span key={`brand-part-${index}`}>
+      {part}
+      {index < parts.length - 1 ? <BrandName /> : null}
+    </span>
+  ))
+}
 
 export default function Footer() {
   const { lang } = useLanguage()
@@ -25,8 +40,8 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <GiWheat size={24} className="text-krishi-agriculture" />
-              <h3 className="text-2xl font-bold text-krishi-heading">
-                KrishiKonnect
+              <h3 className="text-2xl">
+                <BrandName />
               </h3>
             </div>
             <p className="text-krishi-text/80 text-sm">{t.footerTagline}</p>
@@ -54,7 +69,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <div className="flex flex-col justify-between">
-            <p className="text-sm text-krishi-text/60">{t.allRightsReserved}</p>
+            <p className="text-sm text-krishi-text/60">{renderTextWithBrand(t.allRightsReserved)}</p>
             <div className="mt-4">
               <p className="text-xs text-krishi-text/50">
                 {lang === 'hi'
@@ -69,8 +84,8 @@ export default function Footer() {
         <div className="border-t border-krishi-border mt-8 pt-8">
           <p className="text-center text-xs text-krishi-text/50">
             {lang === 'hi'
-              ? '© 2026 KrishiKonnect। सर्वाधिकार सुरक्षित।'
-              : '© 2026 KrishiKonnect. All rights reserved.'}
+              ? <>© 2026 <BrandName />। सर्वाधिकार सुरक्षित।</>
+              : <>© 2026 <BrandName />. All rights reserved.</>}
           </p>
         </div>
       </div>

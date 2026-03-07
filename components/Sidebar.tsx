@@ -11,6 +11,7 @@ import { MdStorefront } from 'react-icons/md'
 import { FaUsers, FaTruck } from 'react-icons/fa'
 import { RiRobot2Line } from 'react-icons/ri'
 import { HiOutlineChartBar } from 'react-icons/hi'
+import BrandName from '@/components/ui/BrandName'
 
 interface SidebarProps {
   defaultExpanded?: boolean
@@ -114,7 +115,9 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
         {expanded && (
           <Link href="/dashboard" className="flex items-center space-x-2 flex-1">
             <GiWheat size={24} className="text-krishi-primary" />
-            <span className="font-bold text-krishi-heading text-sm">KrishiKonnect</span>
+            <span className="text-sm">
+              <BrandName />
+            </span>
           </Link>
         )}
         <button

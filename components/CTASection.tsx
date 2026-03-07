@@ -5,10 +5,25 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
+import BrandName from '@/components/ui/BrandName'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
+
+function renderTextWithBrand(text: string) {
+  const parts = text.split('KrishiKonnect')
+  if (parts.length === 1) {
+    return text
+  }
+
+  return parts.map((part, index) => (
+    <span key={`brand-part-${index}`}>
+      {part}
+      {index < parts.length - 1 ? <BrandName /> : null}
+    </span>
+  ))
+}
 
 export default function CTASection() {
   const { lang } = useLanguage()
@@ -48,7 +63,7 @@ export default function CTASection() {
           {t.ctaHeading}
         </h2>
         <p className="text-lg md:text-xl mb-8 opacity-90">
-          {t.ctaSubtext}
+          {renderTextWithBrand(t.ctaSubtext)}
         </p>
         <motion.div
           whileHover={{ scale: 1.05 }}

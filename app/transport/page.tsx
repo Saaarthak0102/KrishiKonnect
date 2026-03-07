@@ -7,6 +7,7 @@ import FeaturePageLayout from '@/components/FeaturePageLayout'
 import Footer from '@/components/Footer'
 import RecommendedMandiCard from '@/components/RecommendedMandiCard'
 import TransportBookingHistory from '@/components/TransportBookingHistory'
+import BrandName from '@/components/ui/BrandName'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useAuth } from '@/context/AuthContext'
 import cropsData from '@/data/crops.json'
@@ -627,7 +628,7 @@ function ReceiptView({ booking, lang, onPrint }: ReceiptViewProps) {
       <div id="transport-receipt" className="max-w-2xl mx-auto text-left space-y-4 rounded-lg border-2 p-6 backdrop-blur-sm" style={{ borderColor: '#E8DCC8', backgroundColor: 'rgba(255, 255, 255, 0.56)' }}>
         <div className="text-center border-b pb-4" style={{ borderColor: '#E8DCC8' }}>
           <h3 className="text-2xl font-bold" style={{ color: '#1F3C88' }}>
-            KrishiKonnect Transport Receipt
+            <BrandName /> Transport Receipt
           </h3>
           <p className="text-sm text-gray-600 mt-1">
             {lang === 'hi' ? 'परिवहन सेवा रसीद' : 'Transport Service Receipt'}
@@ -1093,7 +1094,7 @@ function TransportForm({
           <div id="transport-receipt" className="max-w-2xl mx-auto text-left space-y-4 rounded-lg border-2 p-6" style={{ borderColor: '#E8DCC8' }}>
             <div className="text-center border-b pb-4" style={{ borderColor: '#E8DCC8' }}>
               <h3 className="text-2xl font-bold" style={{ color: '#1F3C88' }}>
-                KrishiKonnect Transport Receipt
+                <BrandName /> Transport Receipt
               </h3>
               <p className="text-sm text-gray-600 mt-1">
                 {lang === 'hi' ? 'परिवहन सेवा रसीद' : 'Transport Service Receipt'}

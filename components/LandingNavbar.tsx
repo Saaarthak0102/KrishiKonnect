@@ -6,6 +6,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import LanguageToggle from './LanguageToggle'
 import { GiWheat } from 'react-icons/gi'
+import BrandName from '@/components/ui/BrandName'
 
 export default function LandingNavbar() {
   const { lang } = useLanguage()
@@ -30,8 +31,8 @@ export default function LandingNavbar() {
           {/* Left - Logo */}
           <Link href="/" className="flex items-center gap-2 flex-shrink-0">
             <GiWheat size={24} className="text-krishi-agriculture" />
-            <span className="text-2xl font-bold text-krishi-heading">
-              KrishiKonnect
+            <span className="text-2xl">
+              <BrandName />
             </span>
           </Link>
 

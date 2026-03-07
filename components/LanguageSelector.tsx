@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import BrandName from '@/components/ui/BrandName'
 
 export default function LanguageSelector() {
   const router = useRouter()
@@ -20,7 +21,7 @@ export default function LanguageSelector() {
     >
       <div className="text-center mb-8">
         <h1 className="text-4xl md:text-5xl font-bold text-krishi-heading mb-3">
-          KrishiKonnect 🌾
+          <BrandName /> 🌾
         </h1>
         <p className="text-krishi-text/80">
           किसानों के लिए डिजिटल प्लेटफॉर्म

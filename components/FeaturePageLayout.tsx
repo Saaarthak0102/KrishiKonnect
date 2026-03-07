@@ -5,6 +5,7 @@ import LanguageToggle from '@/components/LanguageToggle'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useLanguage } from '@/lib/LanguageContext'
+import BrandName from '@/components/ui/BrandName'
 
 interface FeaturePageLayoutProps {
   children: React.ReactNode
@@ -12,6 +13,10 @@ interface FeaturePageLayoutProps {
 
 // Helper function to render two-colored Krishi titles
 function renderKrishiTitle(title: string, lang: 'hi' | 'en') {
+  if (title === '__brand__') {
+    return <BrandName />
+  }
+
   if (lang === 'hi') {
     // Hindi titles: कृषि X
     if (title.startsWith('कृषि ')) {
@@ -51,7 +56,7 @@ export default function FeaturePageLayout({ children }: FeaturePageLayoutProps) 
     if (pathname === '/community') return lang === 'hi' ? 'कृषि संघ' : 'Krishi Sangh'
     if (pathname === '/ai-advisor') return lang === 'hi' ? 'कृषि सहायक' : 'Krishi Sahayak'
     if (pathname === '/transport') return lang === 'hi' ? 'कृषि सेतु' : 'Krishi Setu'
-    return 'KrishiKonnect'
+    return '__brand__'
   }
 
   const pageTitle = getPageTitle()
@@ -65,7 +70,9 @@ export default function FeaturePageLayout({ children }: FeaturePageLayoutProps) 
           <div className="flex items-center space-x-4">
             <Link href="/dashboard" className="flex items-center space-x-2">
               <span className="text-2xl">🌾</span>
-              <span className="font-bold text-krishi-heading text-lg hidden sm:inline">KrishiKonnect</span>
+              <span className="text-lg hidden sm:inline">
+                <BrandName />
+              </span>
             </Link>
             <span className="text-gray-300 hidden sm:inline">|</span>
             <h1 className="text-lg md:text-xl font-semibold">
