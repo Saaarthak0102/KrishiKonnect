@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
 import { GiWheat } from 'react-icons/gi'
+import { HiSparkles } from 'react-icons/hi'
 import {
   createNewChat,
   subscribeToChat,
@@ -324,13 +325,18 @@ export default function AIAdvisorPage() {
           {/* Left - Logo and Brand with Page Title */}
           <div className="flex items-center space-x-4">
             <GiWheat size={24} className="text-krishi-agriculture" />
-            <span className="text-lg hidden sm:inline font-semibold">
-              <span className="text-[#2D2A6E]">KrishiKonnect</span>
-              <span className="text-gray-400 mx-2">|</span>
-              <span className="text-[#2D2A6E]">Krishi</span>
-              {' '}
-              <span className="text-[#C46A3D]">Sahayak</span>
-            </span>
+            <div className="flex items-center space-x-2">
+              <span className="text-lg hidden sm:inline font-semibold">
+                <span className="text-[#2D2A6E]">KrishiKonnect</span>
+              </span>
+              <span className="text-gray-400 mx-2 hidden sm:inline">|</span>
+              <HiSparkles size={22} className="hidden sm:inline" style={{ color: '#2D2A6E', opacity: 0.9 }} />
+              <span className="text-lg font-semibold" style={{ fontFamily: 'Poppins', fontSize: '1.5rem', fontWeight: 600 }}>
+                <span style={{ color: '#2D2A6E' }}>Krishi</span>
+                {' '}
+                <span style={{ color: '#C46A3D' }}>Sahayak</span>
+              </span>
+            </div>
           </div>
 
           {/* Center - Greeting Message */}

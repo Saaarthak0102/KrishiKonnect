@@ -72,7 +72,16 @@ export default function ChatWindow({
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-gradient-to-b from-white/30 to-white/50 backdrop-blur-sm overflow-hidden">
+    <div 
+      className="flex-1 flex flex-col overflow-hidden rounded-2xl mx-3 my-3"
+      style={{
+        background: 'rgba(255,255,255,0.55)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        border: '1px solid rgba(196,106,61,0.25)',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 0 14px rgba(45,42,110,0.10)',
+      }}
+    >
       {farmContext && (
         <div className="px-6 pt-4">
           <ContextChips
@@ -149,7 +158,7 @@ export default function ChatWindow({
       )}
 
       {/* Input Area */}
-      <div className="border-t border-krishi-border p-4 bg-white/70 backdrop-blur-sm">
+      <div className="border-t p-4" style={{ borderColor: 'rgba(196,106,61,0.25)' }}>
         <ChatInput
           onSendMessage={handleSendMessage}
           onImageSelect={handleImageSelect}

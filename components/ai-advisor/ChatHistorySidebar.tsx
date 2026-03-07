@@ -47,56 +47,65 @@ export default function ChatHistorySidebar({
     <motion.div
       initial={{ x: 300 }}
       animate={{ x: 0 }}
-      className="w-80 bg-white/45 backdrop-blur-md border-l border-indigo-200/40 overflow-hidden flex flex-col shadow-lg h-full"
+      className="w-80 overflow-hidden flex flex-col shadow-lg h-full"
+      style={{
+        background: 'rgba(255,255,255,0.5)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        borderLeft: '1px solid rgba(196,106,61,0.25)',
+      }}
     >
       {/* Header */}
-      <div className="p-4 border-b border-krishi-border bg-gradient-to-r from-krishi-primary/5 to-krishi-agriculture/5">
+      <div 
+        className="p-4 border-b"
+        style={{ borderColor: 'rgba(196,106,61,0.25)' }}
+      >
         <div className="flex items-center space-x-2 mb-3">
           <span className="text-2xl">🌾</span>
           <div>
             <h2 className="font-bold text-sm">
               {lang === 'hi' ? (
                 <>
-                  <span className="text-krishi-indigo">कृषि</span>
+                  <span style={{ color: '#2D2A6E' }}>कृषि</span>
                   {' '}
-                  <span className="text-krishi-clay">सहायक</span>
+                  <span style={{ color: '#C46A3D' }}>सहायक</span>
                 </>
               ) : (
                 <>
-                  <span className="text-krishi-indigo">Krishi</span>
+                  <span style={{ color: '#2D2A6E' }}>Krishi</span>
                   {' '}
-                  <span className="text-krishi-clay">Sahayak</span>
+                  <span style={{ color: '#C46A3D' }}>Sahayak</span>
                 </>
               )}
             </h2>
             <p className="text-xs text-gray-500">
-              {lang === 'hi' ? (
-                <>
-                  <span className="text-[#2D4B8C]">कृषि</span>
-                  {' '}
-                  <span className="text-[#C96A3A]">सहायक</span>
-                </>
-              ) : (
-                <>
-                  <span className="text-[#2D4B8C]">Krishi</span>
-                  {' '}
-                  <span className="text-[#C96A3A]">Sahayak</span>
-                </>
-              )}
+              {lang === 'hi' ? 'AI सहायक' : 'AI Assistant'}
             </p>
           </div>
         </div>
       </div>
 
       {/* New Chat Button */}
-      <div className="p-4 border-b border-krishi-border">
-        <button
+      <div className="p-4 border-b" style={{ borderColor: 'rgba(196,106,61,0.25)' }}>
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
           onClick={onNewChat}
-          className="w-full px-4 py-2.5 bg-krishi-clay text-white rounded-lg font-semibold hover:bg-krishi-clay/90 transition-all flex items-center justify-center space-x-2 text-sm"
+          className="w-full px-4 py-2.5 text-white rounded-lg font-semibold transition-all flex items-center justify-center space-x-2 text-sm"
+          style={{
+            background: '#C46A3D',
+            boxShadow: '0 4px 12px rgba(196,106,61,0.25)',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = '#b35f35'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = '#C46A3D'
+          }}
         >
           <span>+</span>
           <span>{lang === 'hi' ? 'नई चैट' : 'New Chat'}</span>
-        </button>
+        </motion.button>
       </div>
 
       {/* Chat List */}
@@ -122,21 +131,48 @@ export default function ChatHistorySidebar({
                 }}
                 className={`relative group`}
               >
-                <button
+                <motion.button
+                  whileHover={{ x: 3 }}
+                  transition={{ duration: 0.2 }}
                   onClick={() => onSelectChat(chat.id)}
                   className={`w-full text-left px-3 py-2.5 rounded-lg transition-all duration-200 flex flex-col ${
                     currentChatId === chat.id
-                      ? 'bg-white/60 backdrop-blur-sm border-l-4 border-indigo-600 shadow-md'
-                      : 'hover:bg-white/40 backdrop-blur-sm border-l-4 border-transparent'
+                      ? 'border-l-4'
+                      : 'border-l-4'
                   }`}
+                  style={
+                    currentChatId === chat.id
+                      ? {
+                          background: 'rgba(255,255,255,0.6)',
+                          backdropFilter: 'blur(10px)',
+                          WebkitBackdropFilter: 'blur(10px)',
+                          borderLeftColor: '#C46A3D',
+                          boxShadow: '0 4px 12px rgba(196,106,61,0.2)',
+                        }
+                      : {
+                          backdropFilter: 'blur(10px)',
+                          WebkitBackdropFilter: 'blur(10px)',
+                          borderLeftColor: 'transparent',
+                        }
+                  }
+                  onMouseEnter={(e) => {
+                    if (currentChatId !== chat.id) {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.4)'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (currentChatId !== chat.id) {
+                      e.currentTarget.style.background = 'transparent'
+                    }
+                  }}
                 >
-                  <span className="font-semibold text-sm text-krishi-indigo truncate">
+                  <span className="font-semibold text-sm truncate" style={{ color: '#2D2A6E' }}>
                     {getTruncatedTitle(chat.title)}
                   </span>
                   <span className="text-xs text-gray-500 truncate">
                     {formatDate(chat.createdAt)}
                   </span>
-                </button>
+                </motion.button>
 
                 {/* Delete Button - Shows on Hover */}
                 {hoveredId === chat.id && (
@@ -161,7 +197,15 @@ export default function ChatHistorySidebar({
       </div>
 
       {/* Footer */}
-      <div className="p-3 border-t border-krishi-border bg-white/45 backdrop-blur-sm text-xs text-gray-400 text-center">
+      <div 
+        className="p-3 border-t text-xs text-gray-400 text-center"
+        style={{
+          borderColor: 'rgba(196,106,61,0.25)',
+          background: 'rgba(255,255,255,0.45)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+        }}
+      >
         {lang === 'hi' ? 'आपकी पिछली चैट' : 'Your chat history'}
       </div>
     </motion.div>

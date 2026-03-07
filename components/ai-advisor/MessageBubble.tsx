@@ -58,9 +58,17 @@ export default function MessageBubble({ message, isUser, enableTypewriter = fals
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
+        whileHover={{ y: -1 }}
         className="flex justify-end"
       >
-        <div className="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-lg bg-krishi-clay text-white rounded-br-none">
+        <div 
+          className="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-xl rounded-br-none transition-all duration-200"
+          style={{
+            background: '#C46A3D',
+            color: 'white',
+            boxShadow: '0 6px 16px rgba(0,0,0,0.12)',
+          }}
+        >
           {/* Image if exists */}
           {message.imageUrl && (
             <div className="mb-2">
@@ -73,7 +81,7 @@ export default function MessageBubble({ message, isUser, enableTypewriter = fals
           )}
 
           {/* Message text - preserve formatting */}
-          <p className="whitespace-pre-wrap break-words text-sm leading-relaxed">
+          <p className="whitespace-pre-wrap break-words text-sm leading-relaxed" style={{ fontSize: '0.95rem' }}>
             {message.content}
           </p>
 
@@ -98,7 +106,7 @@ export default function MessageBubble({ message, isUser, enableTypewriter = fals
       className="flex justify-start"
     >
       <div className="max-w-xs lg:max-w-md xl:max-w-lg w-full">
-        <p className="text-xs font-semibold mb-2 text-gray-500">
+        <p className="text-xs font-semibold mb-2" style={{ color: '#2D2A6E', fontWeight: 600 }}>
           {`Language: ${languageLabel}`}
         </p>
 

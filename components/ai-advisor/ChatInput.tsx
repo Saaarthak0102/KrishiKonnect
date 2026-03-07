@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { FiImage, FiSend } from 'react-icons/fi'
 
 interface ChatInputProps {
   onSendMessage: (content: string) => Promise<void>
@@ -85,7 +86,23 @@ export default function ChatInput({
               : 'Ask your farming question...'
           }
           rows={3}
-          className="w-full px-4 py-3 border border-indigo-200/40 rounded-lg resize-none focus:border-krishi-primary outline-none disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors bg-white/50 backdrop-blur-sm"
+          className="w-full px-4 py-3 rounded-xl resize-none outline-none disabled:cursor-not-allowed transition-all"
+          style={{
+            background: 'rgba(255,255,255,0.6)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            border: '1px solid rgba(196,106,61,0.25)',
+            fontSize: '0.95rem',
+            color: '#2D2A6E',
+          }}
+          onFocus={(e) => {
+            e.target.style.border = '1px solid #C46A3D'
+            e.target.style.boxShadow = '0 0 10px rgba(196,106,61,0.25)'
+          }}
+          onBlur={(e) => {
+            e.target.style.border = '1px solid rgba(196,106,61,0.25)'
+            e.target.style.boxShadow = 'none'
+          }}
         />
       </div>
 
@@ -93,18 +110,23 @@ export default function ChatInput({
       <div className="flex items-center justify-between gap-3">
         {/* Image Upload Button */}
         <motion.button
-          whileHover={{ scale: 1.05 }}
+          whileHover={{ y: -2, scale: 1.03 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => fileInputRef.current?.click()}
           disabled={disabled || isLoading}
-          className="flex items-center space-x-2 px-4 py-2 bg-krishi-highlight/20 text-krishi-highlight rounded-lg border border-krishi-highlight/30 hover:bg-krishi-highlight/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-sm"
+          className="flex items-center space-x-2 px-4 py-2.5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
+          style={{
+            background: 'rgba(255,255,255,0.55)',
+            border: '1px solid rgba(196,106,61,0.3)',
+            color: '#2D2A6E',
+          }}
           title={
             lang === 'hi'
               ? 'फसल की छवि अपलोड करें'
               : 'Upload crop image for analysis'
           }
         >
-          <span>📸</span>
+          <FiImage size={18} />
           <span>{lang === 'hi' ? 'छवि' : 'Image'}</span>
         </motion.button>
 
@@ -122,19 +144,31 @@ export default function ChatInput({
 
         {/* Send Button */}
         <motion.button
-          whileHover={{ scale: 1.05 }}
+          whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleSendMessage}
           disabled={disabled || isLoading || !message.trim()}
-          className="flex items-center space-x-2 px-6 py-2 bg-krishi-primary text-white rounded-lg hover:bg-krishi-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-sm"
+          className="flex items-center space-x-2 px-6 py-2.5 rounded-lg text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
+          style={{
+            background: '#2D2A6E',
+            boxShadow: '0 6px 16px rgba(45,42,110,0.25)',
+          }}
+          onMouseEnter={(e) => {
+            if (!disabled && !isLoading && message.trim()) {
+              e.currentTarget.style.background = '#3a378a'
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = '#2D2A6E'
+          }}
         >
           <span>{isLoading ? '...' : lang === 'hi' ? 'भेजें' : 'Send'}</span>
-          <span>→</span>
+          <FiSend size={18} />
         </motion.button>
       </div>
 
       {/* Help Text */}
-      <p className="text-xs text-krishi-text/60">
+      <p className="text-xs" style={{ color: 'rgba(45,42,110,0.6)' }}>
         {lang === 'hi'
           ? '💡 फसल की बीमारी, कीटों, सिंचाई, उर्वरक आदि के बारे में सवाल पूछें'
           : '💡 Ask questions about crop diseases, pests, irrigation, fertilizers, etc.'}

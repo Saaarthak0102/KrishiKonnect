@@ -52,9 +52,23 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-xl p-4 shadow-lg space-y-3"
+        className="rounded-xl p-4 space-y-3"
+        style={{
+          background: 'rgba(255,255,255,0.65)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          border: '1px solid rgba(196,106,61,0.25)',
+          boxShadow: '0 8px 20px rgba(0,0,0,0.06)',
+        }}
       >
-        <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-krishi-indigo">
+        <p 
+          className="whitespace-pre-wrap break-words leading-relaxed" 
+          style={{
+            fontSize: '0.95rem',
+            lineHeight: '1.6',
+            color: 'rgba(45,42,110,0.85)',
+          }}
+        >
           {parsed.fullText}
         </p>
       </motion.div>
@@ -74,15 +88,29 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-gradient-to-r from-green-50/60 to-white/45 backdrop-blur-md border border-green-300/40 rounded-xl p-4 shadow-lg"
+          className="rounded-xl p-4"
+          style={{
+            background: 'rgba(255,255,255,0.65)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(196,106,61,0.25)',
+            boxShadow: '0 8px 20px rgba(0,0,0,0.06)',
+          }}
         >
           <div className="flex items-center gap-2 mb-2">
             <HiOutlineLightBulb size={20} className="text-green-600" />
-            <h4 className="font-semibold text-green-900">
+            <h4 className="font-semibold text-green-900" style={{ fontWeight: 600 }}>
               {lang === 'hi' ? 'त्वरित उत्तर' : 'Quick Answer'}
             </h4>
           </div>
-          <p className="text-sm text-krishi-indigo whitespace-pre-wrap break-words leading-relaxed">
+          <p 
+            className="whitespace-pre-wrap break-words leading-relaxed"
+            style={{
+              fontSize: '0.95rem',
+              lineHeight: '1.6',
+              color: 'rgba(45,42,110,0.85)',
+            }}
+          >
             {parsed.quickAnswer}
           </p>
         </motion.div>
@@ -94,15 +122,29 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-gradient-to-r from-blue-50/60 to-white/45 backdrop-blur-md border border-blue-300/40 rounded-xl p-4 shadow-lg"
+          className="rounded-xl p-4"
+          style={{
+            background: 'rgba(255,255,255,0.65)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(196,106,61,0.25)',
+            boxShadow: '0 8px 20px rgba(0,0,0,0.06)',
+          }}
         >
           <div className="flex items-center gap-2 mb-2">
             <AiOutlineCheckCircle size={20} className="text-blue-600" />
-            <h4 className="font-semibold text-blue-900">
+            <h4 className="font-semibold text-blue-900" style={{ fontWeight: 600 }}>
               {lang === 'hi' ? 'अनुशंसित कार्रवाई' : 'Recommended Action'}
             </h4>
           </div>
-          <p className="text-sm text-krishi-indigo whitespace-pre-wrap break-words leading-relaxed">
+          <p 
+            className="whitespace-pre-wrap break-words leading-relaxed"
+            style={{
+              fontSize: '0.95rem',
+              lineHeight: '1.6',
+              color: 'rgba(45,42,110,0.85)',
+            }}
+          >
             {parsed.recommendedAction}
           </p>
         </motion.div>
@@ -114,15 +156,29 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-gradient-to-r from-amber-50/60 to-white/45 backdrop-blur-md border border-amber-300/40 rounded-xl p-4 shadow-lg"
+          className="rounded-xl p-4"
+          style={{
+            background: 'rgba(255,255,255,0.65)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(196,106,61,0.25)',
+            boxShadow: '0 8px 20px rgba(0,0,0,0.06)',
+          }}
         >
           <div className="flex items-center gap-2 mb-2">
             <WiDaySunny size={24} className="text-amber-600" />
-            <h4 className="font-semibold text-amber-900">
+            <h4 className="font-semibold text-amber-900" style={{ fontWeight: 600 }}>
               {lang === 'hi' ? 'मौसम का प्रभाव' : 'Weather Impact'}
             </h4>
           </div>
-          <p className="text-sm text-krishi-indigo whitespace-pre-wrap break-words leading-relaxed">
+          <p 
+            className="whitespace-pre-wrap break-words leading-relaxed"
+            style={{
+              fontSize: '0.95rem',
+              lineHeight: '1.6',
+              color: 'rgba(45,42,110,0.85)',
+            }}
+          >
             {parsed.weatherImpact}
           </p>
         </motion.div>
@@ -134,15 +190,29 @@ export default function AnswerCard({ content, lang = 'en' }: AnswerCardProps) {
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-gradient-to-r from-purple-50/60 to-white/45 backdrop-blur-md border border-purple-300/40 rounded-xl p-4 shadow-lg"
+          className="rounded-xl p-4"
+          style={{
+            background: 'rgba(255,255,255,0.65)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(196,106,61,0.25)',
+            boxShadow: '0 8px 20px rgba(0,0,0,0.06)',
+          }}
         >
           <div className="flex items-center gap-2 mb-2">
             <MdStorefront size={20} className="text-purple-600" />
-            <h4 className="font-semibold text-purple-900">
+            <h4 className="font-semibold text-purple-900" style={{ fontWeight: 600 }}>
               {lang === 'hi' ? 'बाजार अंतर्दृष्टि' : 'Market Insight'}
             </h4>
           </div>
-          <p className="text-sm text-krishi-indigo whitespace-pre-wrap break-words leading-relaxed">
+          <p 
+            className="whitespace-pre-wrap break-words leading-relaxed"
+            style={{
+              fontSize: '0.95rem',
+              lineHeight: '1.6',
+              color: 'rgba(45,42,110,0.85)',
+            }}
+          >
             {parsed.marketInsight}
           </p>
         </motion.div>
