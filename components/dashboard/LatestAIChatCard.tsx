@@ -129,7 +129,7 @@ export default function LatestAIChatCard({
             <span>🤖</span>
             {t.title}
           </h3>
-          <p style={{ fontSize: '12px', color: 'rgba(45,42,110,0.6)', marginTop: '4px' }}>{t.subtitle}</p>
+          <p style={{ fontSize: '12px', color: '#C46A3D', fontWeight: 500, marginTop: '4px' }}>{t.subtitle}</p>
         </div>
 
         <div className="space-y-3">
@@ -184,7 +184,7 @@ export default function LatestAIChatCard({
             <span>🤖</span>
             {t.title}
           </h3>
-          <p style={{ fontSize: '12px', color: 'rgba(45,42,110,0.6)', marginTop: '4px' }}>{t.subtitle}</p>
+          <p style={{ fontSize: '12px', color: '#C46A3D', fontWeight: 500, marginTop: '4px' }}>{t.subtitle}</p>
         </div>
 
         <div className="space-y-3">
@@ -244,7 +244,7 @@ export default function LatestAIChatCard({
           <span>🤖</span>
           {t.title}
         </h3>
-        <p style={{ fontSize: '12px', color: 'rgba(45,42,110,0.6)', marginTop: '4px' }}>{t.subtitle}</p>
+        <p style={{ fontSize: '12px', color: '#C46A3D', fontWeight: 500, marginTop: '4px' }}>{t.subtitle}</p>
       </div>
 
       <div className="space-y-3">

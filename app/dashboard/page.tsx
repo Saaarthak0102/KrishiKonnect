@@ -886,7 +886,7 @@ export default function DashboardPage() {
                         </p>
                         {priceData && (
                           <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)' }}>
-                            {t.topMandi}: {priceData.mandi}
+                            {t.topMandi}: <span style={{ color: '#C46A3D', fontWeight: 500 }}>{priceData.mandi}</span>
                           </p>
                         )}
                       </div>
@@ -1008,13 +1008,7 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Divider */}
-          {latestTransportBooking && (
-            <div className="border-t border-gray-200 my-2"></div>
-          )}
-
-          {/* Latest Community Question Card */}
-          <LatestCommunityQuestionCard 
+          <LatestCommunityQuestionCard
             farmerName={farmerProfile?.name || 'Ramesh Singh'}
             lang={lang as 'en' | 'hi'}
           />

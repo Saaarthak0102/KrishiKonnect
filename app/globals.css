@@ -74,7 +74,8 @@
 
 .crop-mandi {
   font-size: 12px;
-  color: rgba(45, 42, 110, 0.75);
+  color: #C46A3D;
+  font-weight: 500;
 }
 
 .crop-price {
