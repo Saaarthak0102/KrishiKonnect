@@ -1,78 +1,55 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
+import { FiBarChart2, FiGlobe, FiTrendingUp } from 'react-icons/fi'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
 
 export default function HowItWorks() {
   const { lang } = useLanguage()
   const t = translations[lang]
-  const sectionRef = useRef<HTMLElement>(null)
 
   const steps = [
-    { number: '1', titleKey: 'step1Title', descKey: 'step1Desc' },
-    { number: '2', titleKey: 'step2Title', descKey: 'step2Desc' },
-    { number: '3', titleKey: 'step3Title', descKey: 'step3Desc' }
+    { icon: FiGlobe, titleKey: 'step1Title', descKey: 'step1Desc' },
+    { icon: FiBarChart2, titleKey: 'step2Title', descKey: 'step2Desc' },
+    { icon: FiTrendingUp, titleKey: 'step3Title', descKey: 'step3Desc' }
   ]
-
-  useEffect(() => {
-    if (sectionRef.current) {
-      gsap.fromTo(
-        sectionRef.current,
-        {
-          opacity: 0,
-          y: 60,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          },
-        }
-      )
-    }
-  }, [])
 
   return (
     <section 
-      ref={sectionRef}
       id="how-it-works" 
-      className="max-w-6xl mx-auto px-6 py-20 bg-white/50 rounded-2xl my-16"
+      className="max-w-6xl mx-auto px-6 py-20 bg-white/65 backdrop-blur-[12px] border border-indigo-500/15 shadow-[0_10px_30px_rgba(0,0,0,0.08)] rounded-[20px] my-16"
     >
-      <h2 className="text-4xl md:text-5xl font-bold text-krishi-indigo text-center mb-12">
+      <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-krishi-indigo text-center mb-12">
         {t.howItWorksHeading}
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div className="relative grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="hidden md:block absolute top-8 left-[16.666%] right-[16.666%] h-px bg-indigo-500/20" aria-hidden="true" />
         {steps.map((step, index) => (
-          <div
+          <motion.div
             key={index}
-            className="text-center"
+            className="group text-center transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(0,0,0,0.08)]"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: 0.5, delay: index * 0.15, ease: 'easeOut' }}
           >
-            <motion.div
-              className="inline-block bg-krishi-clay text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-4"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-            >
-              {step.number}
-            </motion.div>
+            <div className="w-16 h-16 mb-4 mx-auto flex items-center justify-center">
+              <motion.div
+                className="text-indigo-600"
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              >
+                <step.icon size={38} />
+              </motion.div>
+            </div>
             <h3 className="text-2xl font-semibold text-krishi-indigo mb-3">
               {t[step.titleKey as keyof typeof t]}
             </h3>
-            <p className="text-krishi-indigo/80">
+            <p className="text-gray-600 leading-relaxed">
               {t[step.descKey as keyof typeof t]}
             </p>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>
