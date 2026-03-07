@@ -112,7 +112,8 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
           <div className="flex items-center space-x-4">
             <GiWheat size={24} className="text-krishi-agriculture" />
             <span className="text-lg hidden sm:inline font-semibold">
-              <span className="text-[#2D2A6E]">KrishiKonnect</span>
+              <span className="text-[#2D2A6E]">Krishi</span>
+              <span className="text-[#C46A3D]">Konnect</span>
               {currentPageTitle && (
                 <>
                   <span className="text-gray-400 mx-2">|</span>
