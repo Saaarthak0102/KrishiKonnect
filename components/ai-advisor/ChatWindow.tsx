@@ -73,7 +73,7 @@ export default function ChatWindow({
 
   return (
     <motion.div 
-      className="flex-1 min-h-0 flex flex-col overflow-hidden rounded-2xl mx-3 my-3"
+      className="flex-1 min-h-0 flex flex-col overflow-hidden rounded-2xl m-4"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.15, ease: 'easeOut' }}
