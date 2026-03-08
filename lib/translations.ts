@@ -9,6 +9,9 @@ export const translations = {
     aiAdvisor: 'कृषि सहायक',
     dataAnalytics: 'कृषि दृष्टि',
     
+    // Krishi Yojna Feature
+    krishiYojna: 'Krishi Yojna',
+    krishiYojnaDesc: 'Explore government schemes and subsidies available for farmers across India.',
     // Hero Section
     heroTitle: 'नमस्ते किसान 👨‍🌾',
     heroHeadline: 'नमस्ते किसान 👨‍🌾',
@@ -185,6 +188,9 @@ export const translations = {
     aiAdvisor: 'Krishi Sahayak',
     dataAnalytics: 'Krishi Drishti',
     
+    // Krishi Yojna Feature
+    krishiYojna: 'कृषि योजना',
+    krishiYojnaDesc: 'भारत भर के किसानों के लिए उपलब्ध सरकारी योजनाओं और सब्सिडी को जानें।',
     // Hero Section
     heroTitle: 'Namaste Farmer 🌾',
     heroHeadline: 'Namaste Farmer 🌾',

@@ -11,6 +11,7 @@ import { GiPlantSeed } from 'react-icons/gi'
 import { MdStorefront } from 'react-icons/md'
 import { FaUsers, FaTruck } from 'react-icons/fa'
 import { HiOutlineChartBar } from 'react-icons/hi'
+import { FaLandmark } from 'react-icons/fa'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
@@ -52,6 +53,18 @@ export default function FeatureGrid() {
   const featureRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const features = [
+        // Krishi Yojna Card
+        {
+          icon: <FaLandmark size={40} color="#C46A3D" />,
+          titleKey: 'krishiYojna',
+          descKey: 'krishiYojnaDesc',
+          cta: {
+            label: 'Explore Schemes',
+            href: '/krishi-yojna'
+          },
+          image: '/images/krishi-yojna-placeholder.jpg',
+          alt: 'Krishi Yojna government schemes illustration'
+        },
     {
       icon: <RiRobot2Line size={40} />,
       titleKey: 'aiAdvisor',
@@ -141,9 +154,10 @@ export default function FeatureGrid() {
             const isKrishiSangh = feature.titleKey === 'community'
             const isKrishiDrishti = feature.titleKey === 'dataAnalytics'
             const isKrishiSetu = feature.titleKey === 'transport'
+            const isKrishiYojna = feature.titleKey === 'krishiYojna'
             const title = t[feature.titleKey as keyof typeof t] as string
             const description = t[feature.descKey as keyof typeof t] as string
-            
+
             return (
               <div
                 key={index}
@@ -154,10 +168,10 @@ export default function FeatureGrid() {
               >
                 {/* Illustration Placeholder */}
                 <div className={`col-span-12 md:col-span-7 ${!isEven ? 'md:order-2' : 'md:order-1'}`}>
-                  <div className={`w-full h-[320px] flex items-center justify-center ${isKrishiFasal || isKrishiBazaar || isKrishiSangh || isKrishiDrishti || isKrishiSetu ? 'p-4' : ''}`}>
+                  <div className={`w-full h-[320px] flex items-center justify-center ${isKrishiFasal || isKrishiBazaar || isKrishiSangh || isKrishiDrishti || isKrishiSetu || isKrishiYojna ? 'p-4' : ''}`}>
                     <Image
-                      src={isKrishiFasal ? '/illustrations/krishi-fasal.png' : isKrishiBazaar ? '/illustrations/krishi-bazaar.png' : isKrishiSangh ? '/illustrations/krishi-sangh.png' : isKrishiDrishti ? '/illustrations/krishi-drishti.png' : isKrishiSetu ? '/illustrations/krishi-setu.png' : '/illustrations/krishi-sahayak.png'}
-                      alt={isKrishiFasal ? 'Krishi Fasal crop library interface illustration' : isKrishiBazaar ? 'Krishi Bazaar mandi price dashboard illustration' : isKrishiSangh ? 'Krishi Sangh farmer community discussion illustration' : isKrishiDrishti ? 'Krishi Drishti farm dashboard illustration' : isKrishiSetu ? 'Krishi Setu transport booking illustration' : 'Krishi Sahayak AI helping farmers'}
+                      src={isKrishiFasal ? '/illustrations/krishi-fasal.png' : isKrishiBazaar ? '/illustrations/krishi-bazaar.png' : isKrishiSangh ? '/illustrations/krishi-sangh.png' : isKrishiDrishti ? '/illustrations/krishi-drishti.png' : isKrishiSetu ? '/illustrations/krishi-setu.png' : isKrishiYojna ? '/images/krishi-yojna-placeholder.jpg' : '/illustrations/krishi-sahayak.png'}
+                      alt={isKrishiFasal ? 'Krishi Fasal crop library interface illustration' : isKrishiBazaar ? 'Krishi Bazaar mandi price dashboard illustration' : isKrishiSangh ? 'Krishi Sangh farmer community discussion illustration' : isKrishiDrishti ? 'Krishi Drishti farm dashboard illustration' : isKrishiSetu ? 'Krishi Setu transport booking illustration' : isKrishiYojna ? 'Krishi Yojna government schemes illustration' : 'Krishi Sahayak AI helping farmers'}
                       width={1600}
                       height={900}
                       className="w-full h-[320px] object-contain"
