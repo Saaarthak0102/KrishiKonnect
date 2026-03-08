@@ -1,9 +1,11 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import Footer from '@/components/Footer'
+import { db } from '@/lib/firebase'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 
 function toTitle(text: string) {
   return text
@@ -16,6 +18,7 @@ function toTitle(text: string) {
 export default function BuySummaryPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [isLoading, setIsLoading] = useState(false)
 
   const crop = searchParams.get('crop') || ''
   const item = searchParams.get('item') || ''
@@ -30,20 +33,37 @@ export default function BuySummaryPage() {
 
   const total = useMemo(() => itemPrice * quantity + transportFee + platformFee, [itemPrice, quantity])
 
-  const handleConfirm = () => {
-    const orderId = `KK-${Date.now()}`
-    const params = new URLSearchParams({
-      orderId,
-      crop,
-      item,
-      quantity: String(quantity),
-      unit,
-      address,
-      mobile,
-      total: String(total),
-      date: new Date().toISOString(),
-    })
-    router.push(`/receipt?${params.toString()}`)
+  const saveOrder = async () => {
+    try {
+      const docRef = await addDoc(collection(db, 'orders'), {
+        crop,
+        product: item,
+        quantity,
+        itemPrice,
+        unit,
+        transportFee,
+        platformFee,
+        totalPrice: total,
+        address,
+        mobile,
+        createdAt: serverTimestamp(),
+      })
+      return docRef.id
+    } catch (error) {
+      console.error('Error saving order:', error)
+      throw error
+    }
+  }
+
+  const handleConfirm = async () => {
+    setIsLoading(true)
+    try {
+      const orderId = await saveOrder()
+      router.push(`/receipt?orderId=${orderId}`)
+    } catch (error) {
+      setIsLoading(false)
+      alert('Failed to save order. Please try again.')
+    }
   }
 
   const handleCancel = () => {
@@ -86,10 +106,11 @@ export default function BuySummaryPage() {
             <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
               <button
                 onClick={handleConfirm}
-                className="rounded-[12px] px-4 py-3 text-sm font-semibold text-white transition-all duration-200 hover:opacity-95"
+                disabled={isLoading}
+                className="rounded-[12px] px-4 py-3 text-sm font-semibold text-white transition-all duration-200 hover:opacity-95 disabled:opacity-75 disabled:cursor-not-allowed"
                 style={{ backgroundColor: '#C46A3D', boxShadow: '0 10px 20px rgba(196,106,61,0.24)' }}
               >
-                Confirm Order
+                {isLoading ? 'Saving Order...' : 'Confirm Order'}
               </button>
               <button
                 onClick={handleCancel}

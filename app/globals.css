@@ -342,3 +342,24 @@
     transform: none !important;
   }
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #receipt-print,
+  #receipt-print * {
+    visibility: visible;
+  }
+
+  #receipt-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+}

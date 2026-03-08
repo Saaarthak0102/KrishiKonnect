@@ -66,6 +66,14 @@ export default function BuyInputPage() {
               boxShadow: '0 6px 20px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04), 0 0 12px rgba(196,106,61,0.10)',
             }}
           >
+            <button
+              onClick={() => router.back()}
+              className="mb-4 inline-flex items-center gap-1 border rounded-lg px-3 py-1 text-sm font-medium transition-all duration-200 hover:bg-gray-100"
+              style={{ color: '#2D2A6E', borderColor: 'rgba(45,42,110,0.25)' }}
+            >
+              ← Back
+            </button>
+
             <h1 className="text-2xl font-bold" style={{ color: '#2D2A6E' }}>
               Purchase Fertilizer
             </h1>
