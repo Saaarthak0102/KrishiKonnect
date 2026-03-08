@@ -654,7 +654,7 @@ export default function DashboardPage() {
         className="dashboard-card p-6"
       >
         <h2 className="flex items-center gap-2 mb-6" style={{ color: '#2D2A6E', fontWeight: 600, fontSize: '20px' }}>
-          <GiWheat size={22} style={{ color: '#2D2A6E' }} />
+          <GiWheat size={20} className="text-[#C46A3D]" />
           {t.farmOverview}
         </h2>
         
@@ -663,7 +663,7 @@ export default function DashboardPage() {
           <div className="space-y-4">
             <div>
               <p className="mb-1 flex items-center gap-2" style={{ fontSize: '15px', color: '#2D2A6E', opacity: 0.75 }}>
-                <GiWheat size={22} style={{ color: '#2D2A6E' }} />
+                <GiWheat size={20} className="text-[#C46A3D]" />
                 {t.primaryCrop}
               </p>
               <p style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
@@ -672,7 +672,7 @@ export default function DashboardPage() {
             </div>
             <div>
               <p className="mb-1 flex items-center gap-2" style={{ fontSize: '15px', color: '#2D2A6E', opacity: 0.75 }}>
-                <MdLocationOn size={22} style={{ color: '#2D2A6E' }} />
+                <MdLocationOn size={20} className="text-[#C46A3D]" />
                 {t.location}
               </p>
               <p style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
@@ -681,7 +681,7 @@ export default function DashboardPage() {
             </div>
             <div>
               <p className="mb-1 flex items-center gap-2" style={{ fontSize: '15px', color: '#2D2A6E', opacity: 0.75 }}>
-                <MdCalendarToday size={22} style={{ color: '#2D2A6E' }} />
+                <MdCalendarToday size={20} className="text-[#C46A3D]" />
                 {t.season}
               </p>
               <p style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
@@ -694,7 +694,7 @@ export default function DashboardPage() {
           <div className="space-y-4">
             <div>
               <p className="mb-1 flex items-center gap-2" style={{ fontSize: '15px', color: '#2D2A6E', opacity: 0.75 }}>
-                <FiTrendingUp size={22} style={{ color: '#2D2A6E' }} />
+                <FiTrendingUp size={20} className="text-[#C46A3D]" />
                 {t.marketTrend}
               </p>
               <p style={{ fontSize: '18px', fontWeight: 600, color: '#C46A3D' }}>
@@ -723,7 +723,7 @@ export default function DashboardPage() {
           <div className="space-y-4">
             <div>
               <p className="mb-2 flex items-center gap-2" style={{ fontSize: '18px', color: '#2D2A6E', fontWeight: 600 }}>
-                <GiPlantSeed size={22} style={{ color: '#2D2A6E' }} />
+                <GiPlantSeed size={20} className="text-[#C46A3D]" />
                 {t.inYourFarmToday}
               </p>
               <ul className="mt-2 space-y-1">
@@ -764,7 +764,7 @@ export default function DashboardPage() {
             className="dashboard-card p-6 h-full flex flex-col"
           >
             <h3 className="mb-4 flex items-center gap-2" style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
-              <WiDaySunny size={24} style={{ color: '#2D2A6E' }} />
+              <WiDaySunny size={20} className="text-[#C46A3D]" />
               {t.weatherToday}
             </h3>
             
@@ -842,7 +842,7 @@ export default function DashboardPage() {
         >
           <div className="mb-6">
             <h2 className="flex items-center gap-2 mb-1" style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
-              <GiWheat size={22} style={{ color: '#2D2A6E' }} />
+              <GiWheat size={20} className="text-[#C46A3D]" />
               {t.myCrops}
             </h2>
             <p style={{ fontSize: '15px', color: 'rgba(45,42,110,0.7)' }}>
@@ -854,7 +854,7 @@ export default function DashboardPage() {
           {myCrops.length === 0 && (
             <div className="py-12 px-6 text-center">
               <div className="mb-4 text-5xl flex justify-center">
-                <GiWheat size={64} style={{ color: '#2D2A6E' }} />
+                <GiWheat size={64} className="text-[#C46A3D]" />
               </div>
               <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E', marginBottom: '8px' }}>
                 {t.noCropsSelected}
@@ -981,7 +981,7 @@ export default function DashboardPage() {
           className="dashboard-card p-6"
         >
           <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <FaTruck size={22} style={{ color: '#2D2A6E' }} />
+            <FaTruck size={20} className="text-[#C46A3D]" />
             {t.yourServices}
           </h3>
         
@@ -1002,7 +1002,7 @@ export default function DashboardPage() {
               transition: 'all 0.25s ease'
             }}>
               <div className="flex items-start gap-3">
-                <FaTruck size={20} style={{ color: '#2D2A6E', marginTop: '4px' }} />
+                <FaTruck size={20} className="text-[#C46A3D] mt-1" />
                 <div className="flex-1">
                   <p style={{ fontWeight: 600, color: '#2D2A6E', marginBottom: '8px', fontSize: '16px' }}>
                     {t.transportBooked}
