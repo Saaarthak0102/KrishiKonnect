@@ -189,8 +189,8 @@ const Page = () => {
         {/* Header */}
         <div className="text-center py-10">
           <div className="flex items-center justify-center">
-            <h1 className="text-4xl font-semibold flex items-center gap-2">
-              Krishi <span className="text-[#C46A3D]">Yojna</span>
+            <h1 className="text-4xl font-semibold flex items-center gap-2" style={{ fontSize: '3rem' }}>
+              <span className="text-[#2D2A6E]">Krishi</span> <span className="text-[#C46A3D]">Yojna</span>
               <FaLandmark className="text-[#2D2A6E] text-[26px] ml-1" />
             </h1>
           </div>
