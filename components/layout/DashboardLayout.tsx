@@ -127,12 +127,22 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
               priority
             />
             <span className="text-lg hidden sm:inline font-semibold">
-              <span className="text-[#2D2A6E]">Krishi</span>
-              <span className="text-[#C46A3D]">Konnect</span>
-              {currentPageTitle && (
+              {pathname.startsWith('/yojna') ? (
                 <>
-                  <span className="text-gray-400 mx-2">|</span>
-                  {renderFeatureName(currentPageTitle)}
+                  <span className="text-[#2D2A6E]">KrishiKonnect</span>
+                  <span className="mx-2 text-gray-400">|</span>
+                  <span className="text-[#C46A3D]">Krishi Yojna</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-[#2D2A6E]">Krishi</span>
+                  <span className="text-[#C46A3D]">Konnect</span>
+                  {currentPageTitle && (
+                    <>
+                      <span className="text-gray-400 mx-2">|</span>
+                      {renderFeatureName(currentPageTitle)}
+                    </>
+                  )}
                 </>
               )}
             </span>

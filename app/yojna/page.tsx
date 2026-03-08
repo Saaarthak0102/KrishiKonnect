@@ -3,7 +3,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { FaUniversity, FaLeaf, FaSeedling, FaWater, FaMoneyBill, FaChartLine, FaUserShield, FaAppleAlt, FaWarehouse, FaIndustry, FaTractor } from "react-icons/fa";
+import { FaUniversity, FaLeaf, FaSeedling, FaWater, FaMoneyBill, FaChartLine, FaUserShield, FaAppleAlt, FaWarehouse, FaIndustry, FaTractor, FaLandmark } from "react-icons/fa";
 import { useLanguage } from "../../context/LanguageContext";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 
@@ -184,15 +184,14 @@ const Page = () => {
   const { language } = useLanguage ? useLanguage() : { language: "en" };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout pageTitle="Krishi Yojna">
       <div className="px-10 py-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center py-10">
-          <div className="flex items-center justify-center gap-3">
-            <FaUniversity className="text-[#2D2A6E] text-3xl" />
-            <h1 className="text-4xl font-bold">
-              <span className="text-[#2D2A6E]">Krishi</span>{" "}
-              <span className="text-[#C46A3D]">Yojna</span>
+          <div className="flex items-center justify-center">
+            <h1 className="text-4xl font-semibold flex items-center gap-2">
+              Krishi <span className="text-[#C46A3D]">Yojna</span>
+              <FaLandmark className="text-[#2D2A6E] text-[26px] ml-1" />
             </h1>
           </div>
           <p className="mt-2 text-lg text-[#C46A3D]">

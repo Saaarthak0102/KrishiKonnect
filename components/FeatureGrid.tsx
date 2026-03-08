@@ -56,10 +56,12 @@ export default function FeatureGrid() {
         // Krishi Yojna Card
         {
           icon: <FaLandmark size={40} color="#C46A3D" />,
-          titleKey: 'krishiYojna',
-          descKey: 'krishiYojnaDesc',
+          getTitle: (lang: string) => lang === 'hi' ? 'कृषि योजना' : 'Krishi Yojna',
+          getDesc: (lang: string) => lang === 'hi'
+            ? 'भारत भर के किसानों के लिए उपलब्ध सरकारी योजनाओं और सब्सिडी को जानें।'
+            : 'Explore government schemes and subsidies available for farmers across India.',
+          getCta: (lang: string) => lang === 'hi' ? 'योजनाएँ देखें' : 'Explore Schemes',
           cta: {
-            label: 'Explore Schemes',
             href: '/krishi-yojna'
           },
           image: '/images/krishi-yojna-placeholder.jpg',
@@ -154,9 +156,10 @@ export default function FeatureGrid() {
             const isKrishiSangh = feature.titleKey === 'community'
             const isKrishiDrishti = feature.titleKey === 'dataAnalytics'
             const isKrishiSetu = feature.titleKey === 'transport'
-            const isKrishiYojna = feature.titleKey === 'krishiYojna'
-            const title = t[feature.titleKey as keyof typeof t] as string
-            const description = t[feature.descKey as keyof typeof t] as string
+
+            const isKrishiYojna = !!feature.getTitle
+            const title = isKrishiYojna ? feature.getTitle(lang) : t[feature.titleKey as keyof typeof t] as string
+            const description = isKrishiYojna ? feature.getDesc(lang) : t[feature.descKey as keyof typeof t] as string
 
             return (
               <div
@@ -212,7 +215,7 @@ export default function FeatureGrid() {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        {feature.cta.label}
+                        {isKrishiYojna ? feature.getCta(lang) : feature.cta.label}
                       </motion.button>
                     </div>
                   )}
