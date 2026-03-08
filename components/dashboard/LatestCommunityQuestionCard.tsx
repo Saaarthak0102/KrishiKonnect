@@ -4,6 +4,9 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { subscribeToLatestQuestion } from '@/lib/community'
 import { getShortTime } from '@/lib/timeUtils'
+import { GiPlantRoots } from 'react-icons/gi'
+import { FiClock, FiMessageCircle } from 'react-icons/fi'
+import { FaUsers } from 'react-icons/fa'
 
 interface LatestCommunityQuestionCardProps {
   farmerName?: string
@@ -155,7 +158,7 @@ export default function LatestCommunityQuestionCard({
         padding: '16px'
       }}>
         <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#2D2A6E', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span>🌾</span>
+          <FaUsers className="text-[#C46A3D]" size={20} />
           {t.title}
         </h3>
         <p style={{ fontSize: '14px', color: 'rgba(45,42,110,0.7)', marginBottom: '16px' }}>
@@ -202,7 +205,7 @@ export default function LatestCommunityQuestionCard({
       padding: '16px'
     }}>
       <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#2D2A6E', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span>🌾</span>
+        <FaUsers className="text-[#C46A3D]" size={20} />
         {t.title}
       </h3>
 
@@ -232,17 +235,17 @@ export default function LatestCommunityQuestionCard({
             alignItems: 'center',
             gap: '4px'
           }}>
-            {latestQuestion.cropEmoji} {latestQuestionCrop}
+            <GiPlantRoots className="text-[#C46A3D]" size={16} /> {latestQuestionCrop}
           </span>
 
           {/* Replies Count */}
           <span className="inline-flex items-center gap-1">
-            💬 {replyCount} {replyCount === 1 ? t.reply : t.replies}
+            <FiMessageCircle className="text-[#C46A3D]" size={16} /> {replyCount} {replyCount === 1 ? t.reply : t.replies}
           </span>
 
           {/* Time Posted */}
           <span className="inline-flex items-center gap-1">
-            🕒 {getShortTime(latestQuestion.createdAt)}
+            <FiClock className="text-[#C46A3D]" size={16} /> {getShortTime(latestQuestion.createdAt)}
           </span>
         </div>
 

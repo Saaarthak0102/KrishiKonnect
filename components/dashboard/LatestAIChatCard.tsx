@@ -131,7 +131,7 @@ export default function LatestAIChatCard({
       >
         <div className="mb-3">
           <h3 className="text-[#2D2A6E] font-semibold" style={{ fontSize: '1.4rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <HiSparkles size={22} style={{ color: '#2D2A6E' }} />
+            <HiSparkles size={22} style={{ color: '#C46A3D' }} />
             {t.title}
           </h3>
           <p className="text-gray-600" style={{ fontSize: '0.95rem', marginTop: '4px' }}>{t.subtitle}</p>
@@ -189,7 +189,7 @@ export default function LatestAIChatCard({
       >
         <div className="mb-3">
           <h3 className="text-[#2D2A6E] font-semibold" style={{ fontSize: '1.4rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <HiSparkles size={22} style={{ color: '#2D2A6E' }} />
+            <HiSparkles size={22} style={{ color: '#C46A3D' }} />
             {t.title}
           </h3>
           <p className="text-gray-600" style={{ fontSize: '0.95rem', marginTop: '4px' }}>{t.subtitle}</p>
@@ -252,7 +252,7 @@ export default function LatestAIChatCard({
     >
       <div className="mb-3">
         <h3 className="text-[#2D2A6E] font-semibold" style={{ fontSize: '1.4rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <HiSparkles size={22} style={{ color: '#2D2A6E' }} />
+          <HiSparkles size={22} style={{ color: '#C46A3D' }} />
           {t.title}
         </h3>
         <p className="text-gray-600" style={{ fontSize: '0.95rem', marginTop: '4px' }}>{t.subtitle}</p>
