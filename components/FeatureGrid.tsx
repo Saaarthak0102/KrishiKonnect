@@ -64,7 +64,7 @@ export default function FeatureGrid() {
           cta: {
             href: '/krishi-yojna'
           },
-          image: '/images/krishi-yojna-placeholder.jpg',
+          image: '/illustrations/krishi-yojna.png',
           alt: 'Krishi Yojna government schemes illustration'
         },
     {
@@ -173,11 +173,23 @@ export default function FeatureGrid() {
                 <div className={`col-span-12 md:col-span-7 ${!isEven ? 'md:order-2' : 'md:order-1'}`}>
                   <div className={`w-full h-[320px] flex items-center justify-center ${isKrishiFasal || isKrishiBazaar || isKrishiSangh || isKrishiDrishti || isKrishiSetu || isKrishiYojna ? 'p-4' : ''}`}>
                     <Image
-                      src={isKrishiFasal ? '/illustrations/krishi-fasal.png' : isKrishiBazaar ? '/illustrations/krishi-bazaar.png' : isKrishiSangh ? '/illustrations/krishi-sangh.png' : isKrishiDrishti ? '/illustrations/krishi-drishti.png' : isKrishiSetu ? '/illustrations/krishi-setu.png' : isKrishiYojna ? '/images/krishi-yojna-placeholder.jpg' : '/illustrations/krishi-sahayak.png'}
-                      alt={isKrishiFasal ? 'Krishi Fasal crop library interface illustration' : isKrishiBazaar ? 'Krishi Bazaar mandi price dashboard illustration' : isKrishiSangh ? 'Krishi Sangh farmer community discussion illustration' : isKrishiDrishti ? 'Krishi Drishti farm dashboard illustration' : isKrishiSetu ? 'Krishi Setu transport booking illustration' : isKrishiYojna ? 'Krishi Yojna government schemes illustration' : 'Krishi Sahayak AI helping farmers'}
-                      width={1600}
-                      height={900}
-                      className="w-full h-[320px] object-contain"
+                      src={isKrishiFasal ? '/illustrations/krishi-fasal.png'
+                        : isKrishiBazaar ? '/illustrations/krishi-bazaar.png'
+                        : isKrishiSangh ? '/illustrations/krishi-sangh.png'
+                        : isKrishiDrishti ? '/illustrations/krishi-drishti.png'
+                        : isKrishiSetu ? '/illustrations/krishi-setu.png'
+                        : isKrishiYojna ? '/illustrations/krishi-yojna.png'
+                        : '/illustrations/krishi-sahayak.png'}
+                      alt={isKrishiFasal ? 'Krishi Fasal crop library interface illustration'
+                        : isKrishiBazaar ? 'Krishi Bazaar mandi price dashboard illustration'
+                        : isKrishiSangh ? 'Krishi Sangh farmer community discussion illustration'
+                        : isKrishiDrishti ? 'Krishi Drishti farm dashboard illustration'
+                        : isKrishiSetu ? 'Krishi Setu transport booking illustration'
+                        : isKrishiYojna ? 'Krishi Yojna government schemes illustration'
+                        : 'Krishi Sahayak AI helping farmers'}
+                      width={isKrishiYojna ? 600 : 1600}
+                      height={isKrishiYojna ? 450 : 900}
+                      className="w-full h-[320px] object-contain max-w-full h-auto"
                       priority
                     />
                   </div>
