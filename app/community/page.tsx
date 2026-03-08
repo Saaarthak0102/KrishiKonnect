@@ -5,7 +5,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import AskQuestionBox from '@/components/community/AskQuestionBox';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/context/AuthContext';
-import { addCommunityQuestion, subscribeToQuestions, type CommunityQuestion } from '@/lib/community';
+import { mockCommunityPosts } from '@/data/mockCommunityPosts';
 import { motion } from 'framer-motion';
 import { BsChatDots } from 'react-icons/bs';
 import { FaUsers } from 'react-icons/fa';
@@ -40,7 +40,64 @@ interface FeedPost {
   content_hi: string;
   upvotes: number;
   repliesCount: number;
+  replies: FeedReply[];
   createdAt: Date;
+}
+
+interface FeedReply {
+  id: string;
+  author: string;
+  message_en: string;
+  message_hi: string;
+  createdAt: Date;
+}
+
+const CATEGORY_HI_MAP: Record<string, string> = {
+  Wheat: 'गेहूँ',
+  Rice: 'धान',
+  Vegetables: 'सब्जियाँ',
+  Fruits: 'फल',
+  Irrigation: 'सिंचाई',
+  'Pest Control': 'कीट नियंत्रण',
+};
+
+function parseRelativeTimeLabel(timeLabel: string): Date {
+  const now = new Date();
+  const normalized = timeLabel.toLowerCase().trim();
+  const match = normalized.match(/^(\d+)\s*([mhd])\s*ago$/);
+  if (!match) return now;
+
+  const value = Number(match[1]);
+  const unit = match[2];
+  const date = new Date(now);
+
+  if (unit === 'm') date.setMinutes(date.getMinutes() - value);
+  if (unit === 'h') date.setHours(date.getHours() - value);
+  if (unit === 'd') date.setDate(date.getDate() - value);
+
+  return date;
+}
+
+function toFeedPostFromMock() : FeedPost[] {
+  return mockCommunityPosts.map((post) => ({
+    id: String(post.id),
+    author: post.user,
+    location: post.location,
+    cropTag_en: post.category,
+    cropTag_hi: CATEGORY_HI_MAP[post.category],
+    content_en: post.message,
+    content_hi: post.message,
+    upvotes: post.likes,
+    repliesCount: post.replies.length,
+    replies: post.replies.map((reply, index) => ({
+      id: `${post.id}-reply-${index + 1}`,
+      author: reply.user,
+      message_en: reply.message,
+      message_hi: reply.message,
+      createdAt: parseRelativeTimeLabel(reply.time),
+    })),
+    createdAt: parseRelativeTimeLabel(post.time),
+  }));
 }
 
 function toRelativeTime(date: Date): string {
@@ -57,24 +114,6 @@ function toRelativeTime(date: Date): string {
   return date.toLocaleDateString();
 }
 
-function toFeedPost(question: CommunityQuestion): FeedPost {
-  const englishTitle = question.title_en || question.questionText || '';
-  const hindiTitle = question.title_hi || question.questionText || englishTitle;
-
-  return {
-    id: question.id,
-    author: question.userName || 'Farmer',
-    location: question.userLocation || '',
-    cropTag_en: question.cropTag_en || question.cropTag || '',
-    cropTag_hi: question.cropTag_hi || question.cropTag || '',
-    content_en: englishTitle,
-    content_hi: hindiTitle,
-    upvotes: question.upvotes || 0,
-    repliesCount: question.repliesCount || question.replies || 0,
-    createdAt: question.createdAt,
-  };
-}
-
 function canonicalCropTag(cropTag?: string): string {
   if (!cropTag) return 'All';
   return FILTER_CATEGORIES_MAP[cropTag as keyof typeof FILTER_CATEGORIES_MAP] || cropTag;
@@ -83,29 +122,15 @@ function canonicalCropTag(cropTag?: string): string {
 export default function CommunityPage() {
   const { t, lang } = useTranslation();
   const { user, farmerProfile } = useAuth();
-  const [globalPosts, setGlobalPosts] = useState<FeedPost[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [globalPosts, setGlobalPosts] = useState<FeedPost[]>(toFeedPostFromMock);
+  const [isLoading] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
+  const [replyInputOpen, setReplyInputOpen] = useState<Set<string>>(new Set());
+  const [replyDrafts, setReplyDrafts] = useState<Record<string, string>>({});
   const discussionGridRef = useRef<HTMLDivElement | null>(null);
 
   const FILTER_CATEGORIES = lang === 'en' ? FILTER_CATEGORIES_EN : FILTER_CATEGORIES_HI;
-
-  useEffect(() => {
-    const unsubscribe = subscribeToQuestions(
-      (questions) => {
-        setGlobalPosts(questions.map(toFeedPost));
-        setIsLoading(false);
-      },
-      (error) => {
-        console.error('Error loading community feed:', error);
-        setIsLoading(false);
-      },
-      100
-    );
-
-    return () => unsubscribe();
-  }, []);
 
   // Filter posts based on selected category
   const filteredPosts = useMemo(() => {
@@ -140,6 +165,68 @@ export default function CommunityPage() {
         newSet.add(postId);
       }
       return newSet;
+    });
+  };
+
+  const toggleReplyInput = (postId: string) => {
+    setReplyInputOpen((prev) => {
+      const next = new Set(prev);
+      if (next.has(postId)) {
+        next.delete(postId);
+      } else {
+        next.add(postId);
+      }
+      return next;
+    });
+
+    setExpandedPosts((prev) => {
+      const next = new Set(prev);
+      next.add(postId);
+      return next;
+    });
+  };
+
+  const handleReplyChange = (postId: string, value: string) => {
+    setReplyDrafts((prev) => ({ ...prev, [postId]: value }));
+  };
+
+  const handleSendReply = (postId: string) => {
+    const draft = (replyDrafts[postId] || '').trim();
+    if (!draft) {
+      return;
+    }
+
+    const replyAuthor = user?.displayName || farmerProfile?.name || 'You';
+    const newReply: FeedReply = {
+      id: `${postId}-local-${Date.now()}`,
+      author: replyAuthor,
+      message_en: draft,
+      message_hi: draft,
+      createdAt: new Date(),
+    };
+
+    setGlobalPosts((posts) =>
+      posts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              replies: [...post.replies, newReply],
+              repliesCount: post.repliesCount + 1,
+            }
+          : post
+      )
+    );
+
+    setReplyDrafts((prev) => ({ ...prev, [postId]: '' }));
+    setReplyInputOpen((prev) => {
+      const next = new Set(prev);
+      next.delete(postId);
+      return next;
+    });
+    setExpandedPosts((prev) => {
+      const next = new Set(prev);
+      next.add(postId);
+      return next;
     });
   };
 
@@ -183,25 +270,21 @@ export default function CommunityPage() {
     cropTagHi: string,
     cropEmoji: string
   ) => {
-    if (!user) {
-      alert('Please sign in to post a question.');
-      return;
-    }
-
-    await addCommunityQuestion({
-      userId: user.uid,
-      userName: user.displayName || farmerProfile?.name || 'Farmer',
-      userLocation: farmerProfile?.state || 'India',
-      crop: cropTagEn,
-      cropTag: cropTagEn,
+    const nextPost: FeedPost = {
+      id: `local-${Date.now()}`,
+      author: user?.displayName || farmerProfile?.name || 'Farmer',
+      location: farmerProfile?.state || 'India',
       cropTag_en: cropTagEn,
       cropTag_hi: cropTagHi,
-      cropEmoji,
-      questionText: contentText,
-      title_en: lang === 'en' ? contentText : '',
-      title_hi: lang === 'hi' ? contentText : '',
-      description: '',
-    });
+      content_en: contentText,
+      content_hi: contentText,
+      upvotes: 0,
+      repliesCount: 0,
+      replies: [],
+      createdAt: new Date(),
+    };
+
+    setGlobalPosts((prev) => [nextPost, ...prev]);
   };
 
   return (
@@ -430,14 +513,57 @@ export default function CommunityPage() {
                           {post.repliesCount} {post.repliesCount === 1 ? t('reply') : t('replies')}
                         </span>
                       </button>
+                      <button
+                        onClick={() => toggleReplyInput(post.id)}
+                        className="text-[#C46A3D] flex items-center gap-1 transition-colors hover:text-[#aa5933]"
+                      >
+                        <FiMessageCircle size={16} />
+                        <span>{lang === 'hi' ? 'जवाब दें' : 'Reply'}</span>
+                      </button>
                     </div>
 
                     {/* Replies */}
-                    {expandedPosts.has(post.id) && post.repliesCount > 0 && (
-                      <div className="mt-4 pl-4 border-l-2 border-krishi-border space-y-3">
-                        <p className="text-sm text-krishi-indigo/70">
-                          {t('viewDetails')}
-                        </p>
+                    {expandedPosts.has(post.id) && (
+                      <div className="mt-4 space-y-2">
+                        {post.replies.map((reply) => (
+                          <div
+                            key={reply.id}
+                            className="text-sm ml-10 bg-[rgba(255,255,255,0.7)] rounded-[10px] px-3 py-2"
+                          >
+                            <p className="text-[#2D2A6E]">
+                              <span className="font-semibold">{reply.author}:</span>{' '}
+                              {lang === 'en' ? reply.message_en : reply.message_hi}
+                            </p>
+                            <p className="text-[rgba(45,42,110,0.55)] text-xs mt-1">
+                              {toRelativeTime(reply.createdAt)}
+                            </p>
+                          </div>
+                        ))}
+
+                        {replyInputOpen.has(post.id) && (
+                          <div className="ml-10 bg-[rgba(255,255,255,0.72)] rounded-[10px] p-3 border border-[rgba(196,106,61,0.22)]">
+                            <input
+                              value={replyDrafts[post.id] || ''}
+                              onChange={(e) => handleReplyChange(post.id, e.target.value)}
+                              placeholder={lang === 'hi' ? 'जवाब लिखें...' : 'Write a reply...'}
+                              className="w-full rounded-[8px] border border-[rgba(196,106,61,0.28)] bg-white/80 px-3 py-2 text-sm text-[#2D2A6E] focus:outline-none"
+                            />
+                            <div className="mt-2 flex justify-end">
+                              <button
+                                onClick={() => handleSendReply(post.id)}
+                                className="rounded-[8px] bg-[#C46A3D] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#aa5933]"
+                              >
+                                {lang === 'hi' ? 'भेजें' : 'Send'}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {post.replies.length === 0 && !replyInputOpen.has(post.id) && (
+                          <p className="text-sm ml-10 text-[rgba(45,42,110,0.65)]">
+                            {lang === 'hi' ? 'अभी कोई जवाब नहीं' : 'No replies yet'}
+                          </p>
+                        )}
                       </div>
                     )}
                   </motion.div>
