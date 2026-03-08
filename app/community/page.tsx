@@ -5,7 +5,10 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import AskQuestionBox from '@/components/community/AskQuestionBox';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/context/AuthContext';
-import { mockCommunityPosts } from '@/data/mockCommunityPosts';
+import { communityPosts } from '@/data/communityPosts';
+import { categoryHindiMap } from '@/data/categoryHindi';
+import { communityHindiLabels } from '@/data/communityHindiLabels';
+import { translateToEnglish, translateToHindi } from '@/utils/translateText';
 import { motion } from 'framer-motion';
 import { BsChatDots } from 'react-icons/bs';
 import { FaUsers } from 'react-icons/fa';
@@ -36,8 +39,10 @@ interface FeedPost {
   location?: string;
   cropTag_en?: string;
   cropTag_hi?: string;
-  content_en: string;
-  content_hi: string;
+  text: {
+    en: string;
+    hi: string;
+  };
   upvotes: number;
   repliesCount: number;
   replies: FeedReply[];
@@ -47,19 +52,12 @@ interface FeedPost {
 interface FeedReply {
   id: string;
   author: string;
-  message_en: string;
-  message_hi: string;
+  text: {
+    en: string;
+    hi: string;
+  };
   createdAt: Date;
 }
-
-const CATEGORY_HI_MAP: Record<string, string> = {
-  Wheat: 'गेहूँ',
-  Rice: 'धान',
-  Vegetables: 'सब्जियाँ',
-  Fruits: 'फल',
-  Irrigation: 'सिंचाई',
-  'Pest Control': 'कीट नियंत्रण',
-};
 
 function parseRelativeTimeLabel(timeLabel: string): Date {
   const now = new Date();
@@ -79,21 +77,19 @@ function parseRelativeTimeLabel(timeLabel: string): Date {
 }
 
 function toFeedPostFromMock() : FeedPost[] {
-  return mockCommunityPosts.map((post) => ({
+  return communityPosts.map((post) => ({
     id: String(post.id),
     author: post.user,
     location: post.location,
     cropTag_en: post.category,
-    cropTag_hi: CATEGORY_HI_MAP[post.category],
-    content_en: post.message,
-    content_hi: post.message,
+    cropTag_hi: categoryHindiMap[post.category],
+    text: post.text,
     upvotes: post.likes,
     repliesCount: post.replies.length,
     replies: post.replies.map((reply, index) => ({
       id: `${post.id}-reply-${index + 1}`,
       author: reply.user,
-      message_en: reply.message,
-      message_hi: reply.message,
+      text: reply.text,
       createdAt: parseRelativeTimeLabel(reply.time),
     })),
     createdAt: parseRelativeTimeLabel(post.time),
@@ -122,6 +118,7 @@ function canonicalCropTag(cropTag?: string): string {
 export default function CommunityPage() {
   const { t, lang } = useTranslation();
   const { user, farmerProfile } = useAuth();
+  const langKey = lang === 'hi' ? 'hi' : 'en';
   const [globalPosts, setGlobalPosts] = useState<FeedPost[]>(toFeedPostFromMock);
   const [isLoading] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('All');
@@ -197,11 +194,16 @@ export default function CommunityPage() {
     }
 
     const replyAuthor = user?.displayName || farmerProfile?.name || 'You';
+    const replyEnglish = langKey === 'en' ? draft : translateToEnglish(draft);
+    const replyHindi = langKey === 'hi' ? draft : translateToHindi(draft);
+
     const newReply: FeedReply = {
       id: `${postId}-local-${Date.now()}`,
       author: replyAuthor,
-      message_en: draft,
-      message_hi: draft,
+      text: {
+        en: replyEnglish,
+        hi: replyHindi,
+      },
       createdAt: new Date(),
     };
 
@@ -270,14 +272,19 @@ export default function CommunityPage() {
     cropTagHi: string,
     cropEmoji: string
   ) => {
+    const contentEnglish = langKey === 'en' ? contentText : translateToEnglish(contentText);
+    const contentHindi = langKey === 'hi' ? contentText : translateToHindi(contentText);
+
     const nextPost: FeedPost = {
       id: `local-${Date.now()}`,
       author: user?.displayName || farmerProfile?.name || 'Farmer',
       location: farmerProfile?.state || 'India',
       cropTag_en: cropTagEn,
       cropTag_hi: cropTagHi,
-      content_en: contentText,
-      content_hi: contentText,
+      text: {
+        en: contentEnglish,
+        hi: contentHindi,
+      },
       upvotes: 0,
       repliesCount: 0,
       replies: [],
@@ -468,7 +475,7 @@ export default function CommunityPage() {
 
                     {/* Post Content */}
                     <p className="text-krishi-indigo mb-4">
-                      {lang === 'en' ? post.content_en : post.content_hi}
+                      {post.text[langKey]}
                     </p>
 
                     {/* Actions */}
@@ -490,7 +497,7 @@ export default function CommunityPage() {
                             e.currentTarget.style.transform = 'translateY(0) scale(1)';
                           }}
                         />
-                        <span>{post.upvotes}</span>
+                        <span>{post.upvotes} {lang === 'hi' ? communityHindiLabels.likes : 'Likes'}</span>
                       </button>
                       <button
                         onClick={() => toggleReplies(post.id)}
@@ -510,7 +517,7 @@ export default function CommunityPage() {
                           }}
                         />
                         <span>
-                          {post.repliesCount} {post.repliesCount === 1 ? t('reply') : t('replies')}
+                          {post.repliesCount} {post.repliesCount === 1 ? t('reply') : lang === 'hi' ? communityHindiLabels.replies : t('replies')}
                         </span>
                       </button>
                       <button
@@ -518,7 +525,7 @@ export default function CommunityPage() {
                         className="text-[#C46A3D] flex items-center gap-1 transition-colors hover:text-[#aa5933]"
                       >
                         <FiMessageCircle size={16} />
-                        <span>{lang === 'hi' ? 'जवाब दें' : 'Reply'}</span>
+                        <span>{lang === 'hi' ? communityHindiLabels.reply : 'Reply'}</span>
                       </button>
                     </div>
 
@@ -532,7 +539,7 @@ export default function CommunityPage() {
                           >
                             <p className="text-[#2D2A6E]">
                               <span className="font-semibold">{reply.author}:</span>{' '}
-                              {lang === 'en' ? reply.message_en : reply.message_hi}
+                              {reply.text[langKey]}
                             </p>
                             <p className="text-[rgba(45,42,110,0.55)] text-xs mt-1">
                               {toRelativeTime(reply.createdAt)}

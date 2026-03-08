@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/hooks/useTranslation';
+import { communityHindiLabels } from '@/data/communityHindiLabels';
 
 interface AskQuestionBoxProps {
   onPostCreated?: (
@@ -147,7 +148,7 @@ export default function AskQuestionBox({ onPostCreated }: AskQuestionBoxProps) {
         <textarea
           value={questionText}
           onChange={(e) => setQuestionText(e.target.value)}
-          placeholder={t('questionsPlaceholder')}
+          placeholder={lang === 'hi' ? communityHindiLabels.postPlaceholder : t('questionsPlaceholder')}
           className="w-full px-4 py-3 rounded-[10px] focus:outline-none resize-none text-[0.95rem]"
           style={{
             background: 'rgba(255,255,255,0.75)',
