@@ -9,7 +9,7 @@ import { logout } from '@/lib/auth'
 import type { IconType } from 'react-icons'
 import { GiPlantSeed } from 'react-icons/gi'
 import { MdInsights, MdLogout, MdSmartToy, MdStorefront } from 'react-icons/md'
-import { FaUsers, FaTruck } from 'react-icons/fa'
+import { FaUsers, FaTruck, FaUniversity } from 'react-icons/fa'
 import { IoChevronForward, IoChevronBack } from 'react-icons/io5'
 import BrandName from '@/components/ui/BrandName'
 
@@ -65,6 +65,11 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
       label: lang === 'hi' ? 'कृषि फसल' : 'Krishi Fasal',
       href: '/crop-library',
     },
+      {
+        icon: FaUniversity,
+        label: lang === 'hi' ? 'कृषि योजना' : 'Krishi Yojna',
+        href: '/yojna',
+      },
     {
       icon: MdStorefront,
       label: lang === 'hi' ? 'कृषि बाजार' : 'Krishi Bazaar',
@@ -179,7 +184,7 @@ export default function Sidebar({ defaultExpanded = false }: SidebarProps) {
               className="flex h-7 w-7 flex-shrink-0 items-center justify-center"
               style={{ color: isActive(item.href) ? '#C46A3D' : '#2D2A6E' }}
             >
-              <item.icon size={24} />
+              <item.icon size={item.label === (lang === 'hi' ? 'कृषि योजना' : 'Krishi Yojna') ? 22 : 24} />
             </span>
             {expanded && (
               <span className="font-semibold text-sm whitespace-nowrap">
