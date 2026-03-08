@@ -30,8 +30,8 @@ export default function Navbar() {
             <Image
               src="/images/icon.png"
               alt="KrishiKonnect Logo"
-              width={40}
-              height={40}
+              width={56}
+              height={56}
               className="object-contain"
               priority
             />

@@ -5,7 +5,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
-import { GiWheat } from 'react-icons/gi'
 import BrandName from '@/components/ui/BrandName'
 
 function renderTextWithBrand(text: string) {
@@ -25,40 +24,36 @@ function renderTextWithBrand(text: string) {
 export default function HeroSection() {
   const { lang } = useLanguage()
   const t = translations[lang]
+  const heroGreeting = lang === 'hi' ? 'नमस्ते किसान' : 'Namaste Kisan'
 
   return (
     <section id="home" className="max-w-6xl mx-auto px-6 py-24">
-      <div className="grid grid-cols-12 gap-12 items-center">
+      <div className="flex flex-col items-center justify-center text-center min-h-[70vh] px-6">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="col-span-12 md:col-span-5"
+          className="flex flex-col items-center"
         >
-          <div className="flex flex-col items-start gap-4 mb-4">
-            <Image
-              src="/images/icon.png"
-              alt="KrishiKonnect Logo"
-              width={64}
-              height={64}
-              className="object-contain"
-              priority
-            />
-            <h1 className="text-4xl md:text-5xl font-bold text-krishi-indigo">
-              {t.heroHeadline}
-            </h1>
-          </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-krishi-indigo mb-3 sr-only">
-            {t.heroHeadline}
+          <Image
+            src="/images/icon.png"
+            alt="KrishiKonnect Logo"
+            width={120}
+            height={120}
+            priority
+            className="object-contain mb-6"
+          />
+          <h1 className="text-5xl md:text-6xl font-bold text-[#2D2A6E] mb-4">
+            {heroGreeting}
           </h1>
-          <p className="text-2xl md:text-3xl font-semibold text-krishi-clay mb-6">
+          <p className="text-2xl md:text-3xl font-semibold text-[#C46A3D] mb-6">
             {t.heroTagline}
           </p>
-          <p className="text-lg md:text-xl text-krishi-indigo/80 mb-8">
+          <p className="max-w-2xl text-lg md:text-xl text-krishi-indigo/80 mb-8">
             {renderTextWithBrand(t.heroSubtext)}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="/login"
@@ -75,23 +70,6 @@ export default function HeroSection() {
                 {t.exploreFeatures}
               </a>
             </motion.div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="col-span-12 md:col-span-7"
-        >
-          <div className="bg-white/45 backdrop-blur-md border border-indigo-200/40 rounded-2xl p-8 md:p-12 text-center shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="text-8xl mb-4 flex justify-center">
-              <GiWheat size={96} className="text-krishi-agriculture" />
-            </div>
-            <p className="text-2xl font-semibold text-krishi-indigo">
-              {t.harvestSuccess}
-            </p>
           </div>
         </motion.div>
       </div>
