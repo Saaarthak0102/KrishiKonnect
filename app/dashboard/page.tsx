@@ -18,6 +18,7 @@ import { getWeatherForLocation, type WeatherData } from '@/lib/weatherService'
 import { fetchCropPriceHistory, getBestPriceForCrop as getBestMandiPriceFromService } from '@/lib/mandiService'
 import cropsData from '@/data/crops.json'
 import mandiPricesData from '@/data/mandiPrices.json'
+import { getCropHindiName, getLocationHindiName } from '@/data/fertilizers'
 import { GiWheat, GiPlantSeed } from 'react-icons/gi'
 import { MdLocationOn, MdCalendarToday } from 'react-icons/md'
 import { FiTrendingUp, FiCheckCircle } from 'react-icons/fi'
@@ -586,7 +587,7 @@ export default function DashboardPage() {
       inYourFarmToday: 'In Your Farm Today',
       weatherToday: 'Weather Today',
       temperature: 'Temperature',
-      rainChance: 'Rain Chance',
+      rainChance: 'Rain Probability',
       humidity: 'Humidity',
       wind: 'Wind',
       yourServices: 'Your Services',
@@ -620,6 +621,12 @@ export default function DashboardPage() {
   const estimatedHarvestDays = calculateHarvestDays(farmerProfile.primaryCrop, plantingDate)
   const cropAdvice = getCropStageAdvice(farmerProfile.primaryCrop, plantingDate, lang)
   const cropSeason = getSeasonForCrop(farmerProfile.primaryCrop, lang)
+  const primaryCropDisplay = lang === 'hi'
+    ? getCropHindiName(farmerProfile.primaryCrop)
+    : farmerProfile.primaryCrop
+  const villageDisplay = lang === 'hi'
+    ? getLocationHindiName(farmerProfile.village)
+    : farmerProfile.village
 
   const marketTrendLabel =
     marketTrend === 'up'
@@ -667,7 +674,7 @@ export default function DashboardPage() {
                 {t.primaryCrop}
               </p>
               <p style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
-                {farmerProfile.primaryCrop}
+                {primaryCropDisplay}
               </p>
             </div>
             <div>
@@ -676,7 +683,7 @@ export default function DashboardPage() {
                 {t.location}
               </p>
               <p style={{ fontSize: '18px', fontWeight: 600, color: '#2D2A6E' }}>
-                {farmerProfile.village}
+                {villageDisplay}
               </p>
             </div>
             <div>

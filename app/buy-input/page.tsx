@@ -4,7 +4,8 @@ import { FormEvent, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import Footer from '@/components/Footer'
-import { cropFertilizerData } from '@/data/fertilizers'
+import { cropFertilizerData, formatBilingual, getCropHindiName, getFertilizerHindiName } from '@/data/fertilizers'
+import { useLanguage } from '@/lib/LanguageContext'
 
 function toTitle(text: string) {
   return text
@@ -17,6 +18,7 @@ function toTitle(text: string) {
 export default function BuyInputPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { lang } = useLanguage()
 
   const crop = (searchParams.get('crop') || '').toLowerCase()
   const itemSlug = (searchParams.get('item') || '').toLowerCase()
@@ -33,6 +35,29 @@ export default function BuyInputPage() {
   const [mobile, setMobile] = useState('')
 
   const selectedItem = itemsForCrop.find((entry) => entry.name === itemName) || initialItem
+  const t = lang === 'hi'
+    ? {
+        back: 'वापस',
+        title: 'उर्वरक खरीदें',
+        crop: 'फसल',
+        itemName: 'उत्पाद नाम',
+        selectItem: 'उत्पाद चुनें',
+        quantity: 'मात्रा',
+        deliveryAddress: 'डिलीवरी पता',
+        mobileNumber: 'मोबाइल नंबर',
+        proceed: 'चार्जेस देखें',
+      }
+    : {
+        back: 'Back',
+        title: 'Purchase Fertilizer',
+        crop: 'Crop',
+        itemName: 'Item Name',
+        selectItem: 'Select item',
+        quantity: 'Quantity',
+        deliveryAddress: 'Delivery Address',
+        mobileNumber: 'Mobile Number',
+        proceed: 'Proceed to Charges',
+      }
 
   const handleProceed = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -71,20 +96,20 @@ export default function BuyInputPage() {
               className="mb-4 inline-flex items-center gap-1 border rounded-lg px-3 py-1 text-sm font-medium transition-all duration-200 hover:bg-gray-100"
               style={{ color: '#2D2A6E', borderColor: 'rgba(45,42,110,0.25)' }}
             >
-              ← Back
+              ← {t.back}
             </button>
 
             <h1 className="text-2xl font-bold" style={{ color: '#2D2A6E' }}>
-              Purchase Fertilizer
+              {t.title}
             </h1>
 
             <form className="mt-6 space-y-4" onSubmit={handleProceed}>
               <div>
                 <label className="mb-1 block text-sm font-semibold" style={{ color: '#2D2A6E' }}>
-                  Crop
+                  {t.crop}
                 </label>
                 <input
-                  value={crop ? toTitle(crop) : ''}
+                  value={crop ? (lang === 'hi' ? formatBilingual(toTitle(crop), getCropHindiName(crop), true) : toTitle(crop)) : ''}
                   readOnly
                   className="w-full rounded-[12px] border px-4 py-2.5"
                   style={{ borderColor: 'rgba(196,106,61,0.3)', background: 'rgba(255,255,255,0.6)' }}
@@ -93,7 +118,7 @@ export default function BuyInputPage() {
 
               <div>
                 <label className="mb-1 block text-sm font-semibold" style={{ color: '#2D2A6E' }}>
-                  Item Name
+                  {t.itemName}
                 </label>
                 <select
                   value={itemName}
@@ -102,10 +127,12 @@ export default function BuyInputPage() {
                   className="w-full rounded-[12px] border px-4 py-2.5"
                   style={{ borderColor: 'rgba(196,106,61,0.3)', background: 'rgba(255,255,255,0.6)' }}
                 >
-                  <option value="">Select item</option>
+                  <option value="">{t.selectItem}</option>
                   {itemsForCrop.map((entry) => (
                     <option key={entry.name} value={entry.name}>
-                      {entry.name} - ₹{entry.price}/{entry.unit}
+                      {lang === 'hi'
+                        ? `${formatBilingual(entry.name, getFertilizerHindiName(entry.name), true)} - ₹${entry.price}/${entry.unit}`
+                        : `${entry.name} - ₹${entry.price}/${entry.unit}`}
                     </option>
                   ))}
                 </select>
@@ -113,7 +140,7 @@ export default function BuyInputPage() {
 
               <div>
                 <label className="mb-1 block text-sm font-semibold" style={{ color: '#2D2A6E' }}>
-                  Quantity
+                  {t.quantity}
                 </label>
                 <input
                   type="number"
@@ -128,7 +155,7 @@ export default function BuyInputPage() {
 
               <div>
                 <label className="mb-1 block text-sm font-semibold" style={{ color: '#2D2A6E' }}>
-                  Delivery Address
+                  {t.deliveryAddress}
                 </label>
                 <textarea
                   value={address}
@@ -142,7 +169,7 @@ export default function BuyInputPage() {
 
               <div>
                 <label className="mb-1 block text-sm font-semibold" style={{ color: '#2D2A6E' }}>
-                  Mobile Number
+                  {t.mobileNumber}
                 </label>
                 <input
                   value={mobile}
@@ -162,7 +189,7 @@ export default function BuyInputPage() {
                 style={{ backgroundColor: '#C46A3D', boxShadow: '0 10px 20px rgba(196,106,61,0.24)' }}
                 disabled={!selectedItem}
               >
-                Proceed to Charges
+                {t.proceed}
               </button>
             </form>
           </section>

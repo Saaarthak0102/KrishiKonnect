@@ -6,6 +6,8 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import Footer from '@/components/Footer'
 import { db } from '@/lib/firebase'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { useLanguage } from '@/lib/LanguageContext'
+import { formatBilingual, getCropHindiName, getFertilizerHindiName } from '@/data/fertilizers'
 
 function toTitle(text: string) {
   return text
@@ -18,6 +20,7 @@ function toTitle(text: string) {
 export default function BuySummaryPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { lang } = useLanguage()
   const [isLoading, setIsLoading] = useState(false)
 
   const crop = searchParams.get('crop') || ''
@@ -32,6 +35,45 @@ export default function BuySummaryPage() {
   const platformFee = 20
 
   const total = useMemo(() => itemPrice * quantity + transportFee + platformFee, [itemPrice, quantity])
+  const t = lang === 'hi'
+    ? {
+        title: 'चार्जेस सारांश',
+        crop: 'फसल',
+        product: 'उत्पाद',
+        itemPrice: 'उत्पाद मूल्य',
+        quantity: 'मात्रा',
+        transportFee: 'परिवहन शुल्क',
+        platformFee: 'प्लेटफॉर्म शुल्क',
+        total: 'कुल',
+        confirmOrder: 'ऑर्डर कन्फर्म करें',
+        savingOrder: 'ऑर्डर सेव हो रहा है...',
+        cancel: 'रद्द करें',
+        delivery: 'डिलीवरी',
+        mobile: 'मोबाइल',
+        saveFailed: 'ऑर्डर सेव नहीं हो सका। कृपया दोबारा कोशिश करें।',
+      }
+    : {
+        title: 'Charges Summary',
+        crop: 'Crop',
+        product: 'Product',
+        itemPrice: 'Item Price',
+        quantity: 'Quantity',
+        transportFee: 'Transport Fee',
+        platformFee: 'Platform Fee',
+        total: 'Total',
+        confirmOrder: 'Confirm Order',
+        savingOrder: 'Saving Order...',
+        cancel: 'Cancel',
+        delivery: 'Delivery',
+        mobile: 'Mobile',
+        saveFailed: 'Failed to save order. Please try again.',
+      }
+  const cropDisplay = lang === 'hi'
+    ? formatBilingual(toTitle(crop), getCropHindiName(crop), true)
+    : toTitle(crop)
+  const itemDisplay = lang === 'hi'
+    ? formatBilingual(item, getFertilizerHindiName(item), true)
+    : item
 
   const saveOrder = async () => {
     try {
@@ -62,7 +104,7 @@ export default function BuySummaryPage() {
       router.push(`/receipt?orderId=${orderId}`)
     } catch (error) {
       setIsLoading(false)
-      alert('Failed to save order. Please try again.')
+      alert(t.saveFailed)
     }
   }
 
@@ -85,21 +127,21 @@ export default function BuySummaryPage() {
             }}
           >
             <h1 className="text-2xl font-bold" style={{ color: '#2D2A6E' }}>
-              Charges Summary
+              {t.title}
             </h1>
 
             <div className="mt-6 space-y-3 text-sm" style={{ color: '#2D2A6E' }}>
-              <p><span className="font-semibold">Crop:</span> {toTitle(crop)}</p>
-              <p><span className="font-semibold">Product:</span> {item}</p>
-              <p><span className="font-semibold">Item Price:</span> ₹{itemPrice.toLocaleString('en-IN')} / {unit}</p>
-              <p><span className="font-semibold">Quantity:</span> {quantity} {quantity > 1 ? `${unit}s` : unit}</p>
-              <p><span className="font-semibold">Transport Fee:</span> ₹{transportFee.toLocaleString('en-IN')}</p>
-              <p><span className="font-semibold">Platform Fee:</span> ₹{platformFee.toLocaleString('en-IN')}</p>
+              <p><span className="font-semibold">{t.crop}:</span> {cropDisplay}</p>
+              <p><span className="font-semibold">{t.product}:</span> {itemDisplay}</p>
+              <p><span className="font-semibold">{t.itemPrice}:</span> ₹{itemPrice.toLocaleString('en-IN')} / {unit}</p>
+              <p><span className="font-semibold">{t.quantity}:</span> {quantity} {quantity > 1 ? `${unit}s` : unit}</p>
+              <p><span className="font-semibold">{t.transportFee}:</span> ₹{transportFee.toLocaleString('en-IN')}</p>
+              <p><span className="font-semibold">{t.platformFee}:</span> ₹{platformFee.toLocaleString('en-IN')}</p>
             </div>
 
             <div className="mt-6 rounded-[12px] border p-4" style={{ borderColor: 'rgba(196,106,61,0.3)' }}>
               <p className="text-lg font-bold" style={{ color: '#C46A3D' }}>
-                Total = ₹{total.toLocaleString('en-IN')}
+                {t.total} = ₹{total.toLocaleString('en-IN')}
               </p>
             </div>
 
@@ -110,19 +152,19 @@ export default function BuySummaryPage() {
                 className="rounded-[12px] px-4 py-3 text-sm font-semibold text-white transition-all duration-200 hover:opacity-95 disabled:opacity-75 disabled:cursor-not-allowed"
                 style={{ backgroundColor: '#C46A3D', boxShadow: '0 10px 20px rgba(196,106,61,0.24)' }}
               >
-                {isLoading ? 'Saving Order...' : 'Confirm Order'}
+                {isLoading ? t.savingOrder : t.confirmOrder}
               </button>
               <button
                 onClick={handleCancel}
                 className="rounded-[12px] border px-4 py-3 text-sm font-semibold"
                 style={{ borderColor: 'rgba(45,42,110,0.25)', color: '#2D2A6E', background: 'rgba(255,255,255,0.6)' }}
               >
-                Cancel
+                {t.cancel}
               </button>
             </div>
 
             <p className="mt-4 text-xs" style={{ color: 'rgba(45,42,110,0.7)' }}>
-              Delivery: {address} | Mobile: {mobile}
+              {t.delivery}: {address} | {t.mobile}: {mobile}
             </p>
           </section>
         </main>

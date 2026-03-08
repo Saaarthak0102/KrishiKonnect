@@ -6,6 +6,8 @@ import { motion } from 'framer-motion'
 import { FiShoppingBag, FiExternalLink } from 'react-icons/fi'
 import { collection, onSnapshot, orderBy, query, type Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
+import { useLanguage } from '@/lib/LanguageContext'
+import { getCropHindiName, getFertilizerHindiName, formatBilingual } from '@/data/fertilizers'
 
 type FirestoreTimestampLike = Timestamp | { seconds: number; toDate?: () => Date } | Date | string | number | null
 
@@ -67,8 +69,31 @@ function statusClasses(status: string): string {
 
 export default function YourOrdersCard() {
   const router = useRouter()
+  const { lang } = useLanguage()
   const [orders, setOrders] = useState<OrderItem[]>([])
   const [loading, setLoading] = useState(true)
+
+  const t = lang === 'hi'
+    ? {
+        title: 'आपके ऑर्डर',
+        loading: 'ऑर्डर लोड हो रहे हैं...',
+        emptyTitle: 'अभी तक कोई खरीदारी नहीं',
+        emptyMessage: 'कृषि बाजार से उर्वरक खरीदें',
+        goToBazaar: 'कृषि बाजार जाएं',
+        checkStatus: 'स्थिति देखें',
+        recent: 'हाल ही में',
+        defaultProduct: 'इनपुट',
+      }
+    : {
+        title: 'Your Orders',
+        loading: 'Loading orders...',
+        emptyTitle: 'No purchases yet',
+        emptyMessage: 'Buy fertilizers from Krishi Bazaar',
+        goToBazaar: 'Go to Bazaar',
+        checkStatus: 'Check Status',
+        recent: 'Recently',
+        defaultProduct: 'Input',
+      }
 
   useEffect(() => {
     const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'))
@@ -113,23 +138,23 @@ export default function YourOrdersCard() {
     >
       <h3 className="text-lg font-semibold text-[#2D2A6E] flex items-center gap-2 mb-4">
         <FiShoppingBag size={24} className="text-[#C46A3D]" />
-        Your Orders
+        {t.title}
       </h3>
 
       {loading ? (
         <div className="flex-1 flex items-center justify-center text-sm text-[#2D2A6E]/70">
-          Loading orders...
+          {t.loading}
         </div>
       ) : visibleOrders.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center">
-          <p className="text-base font-semibold text-[#2D2A6E]">No purchases yet</p>
-          <p className="mt-1 text-sm text-[#2D2A6E]/70">Buy fertilizers from Krishi Bazaar</p>
+          <p className="text-base font-semibold text-[#2D2A6E]">{t.emptyTitle}</p>
+          <p className="mt-1 text-sm text-[#2D2A6E]/70">{t.emptyMessage}</p>
           <button
             onClick={() => router.push('/mandi')}
             className="mt-4 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-colors"
             style={{ backgroundColor: '#1F3C88' }}
           >
-            Go to Bazaar
+            {t.goToBazaar}
           </button>
         </div>
       ) : (
@@ -142,9 +167,17 @@ export default function YourOrdersCard() {
                   month: 'short',
                   year: 'numeric',
                 })
-              : 'Recently'
+              : t.recent
 
             const status = order.status || 'Confirmed'
+            const cropName = toTitle(order.crop || '')
+            const cropDisplay = lang === 'hi'
+              ? getCropHindiName(cropName)
+              : cropName
+            const productName = order.product || t.defaultProduct
+            const productDisplay = lang === 'hi'
+              ? formatBilingual(productName, getFertilizerHindiName(productName), true)
+              : productName
 
             return (
               <div
@@ -155,14 +188,14 @@ export default function YourOrdersCard() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="font-medium text-[#2D2A6E]">
-                      {toTitle(order.crop || '')} {'•'} {order.product || 'Input'}
+                      {cropDisplay} {'•'} {productDisplay}
                     </p>
                     <p className="text-sm text-gray-500">{formattedDate}</p>
                     <button
                       onClick={() => router.push(`/receipt?orderId=${order.id}`)}
                       className="mt-2 flex items-center gap-1 text-xs px-3 py-1 rounded-lg border border-orange-300 text-orange-600 hover:bg-orange-50 transition"
                     >
-                      Check Status
+                      {t.checkStatus}
                       <FiExternalLink size={12} />
                     </button>
                   </div>

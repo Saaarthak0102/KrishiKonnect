@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/lib/LanguageContext'
+import { getCropHindiName, getLocationHindiName } from '@/data/fertilizers'
 import { logout } from '@/lib/auth'
 import LanguageToggle from '@/components/LanguageToggle'
 import Sidebar from '@/components/Sidebar'
@@ -24,6 +25,12 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
   const [scrolled, setScrolled] = useState(false)
   const isAIAdvisorPage = pathname.startsWith('/ai-advisor')
   const isDashboardPage = pathname === '/dashboard'
+  const cropDisplay = farmerProfile?.primaryCrop
+    ? (lang === 'hi' ? getCropHindiName(farmerProfile.primaryCrop) : farmerProfile.primaryCrop)
+    : ''
+  const villageDisplay = farmerProfile?.village
+    ? (lang === 'hi' ? getLocationHindiName(farmerProfile.village) : farmerProfile.village)
+    : ''
 
   useEffect(() => {
     const handleScroll = () => {
@@ -144,10 +151,10 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
           <div className="flex items-center space-x-4">
             <div className="hidden lg:block text-right">
               <p className="text-sm font-semibold" style={{ color: '#2D2A6E' }}>
-                {farmerProfile?.village}, {farmerProfile?.state}
+                {villageDisplay}, {farmerProfile?.state}
               </p>
               <p className="text-xs" style={{ color: 'rgba(45,42,110,0.6)' }}>
-                {farmerProfile?.primaryCrop}
+                {cropDisplay}
               </p>
             </div>
             <LanguageToggle />

@@ -6,6 +6,122 @@ export interface CropInputItem {
 	unit: 'bag' | 'litre' | 'kg'
 }
 
+export const cropHindiMap: Record<string, string> = {
+	wheat: 'गेहूं',
+	rice: 'धान',
+	maize: 'मक्का',
+	sugarcane: 'गन्ना',
+	cotton: 'कपास',
+	mustard: 'सरसों',
+	potato: 'आलू',
+	tomato: 'टमाटर',
+	onion: 'प्याज़',
+	soybean: 'सोयाबीन',
+	barley: 'जौ',
+	groundnut: 'मूंगफली',
+	bajra: 'बाजरा',
+	jowar: 'ज्वार',
+	chickpea: 'चना',
+	millet: 'बाजरा',
+	lentil: 'मसूर',
+	peanut: 'मूंगफली',
+	sunflower: 'सूरजमुखी',
+	watermelon: 'तरबूज',
+	muskmelon: 'खरबूजा',
+	cucumber: 'खीरा',
+}
+
+export const fertilizerHindiMap: Record<string, string> = {
+	urea: 'यूरिया',
+	dap: 'डीएपी',
+	potash: 'पोटाश',
+	npk: 'एनपीके',
+	zinc_sulphate: 'जिंक सल्फेट',
+	ammonium_sulphate: 'अमोनियम सल्फेट',
+	calcium_nitrate: 'कैल्शियम नाइट्रेट',
+	magnesium_sulphate: 'मैग्नीशियम सल्फेट',
+	boron: 'बोरॉन',
+	compost: 'कम्पोस्ट',
+	vermicompost: 'वर्मी कम्पोस्ट',
+	neem_cake: 'नीम खली',
+	super_phosphate: 'सुपर फॉस्फेट',
+}
+
+export const fertilizerProducts = [
+	{
+		name: 'Urea',
+		nameHindi: 'यूरिया',
+		price: '₹266',
+		weight: '45 kg',
+	},
+	{
+		name: 'DAP',
+		nameHindi: 'डीएपी',
+		price: '₹1350',
+		weight: '50 kg',
+	},
+	{
+		name: 'NPK 20:20:0',
+		nameHindi: 'एनपीके 20:20:0',
+		price: '₹1250',
+		weight: '50 kg',
+	},
+	{
+		name: 'Potash',
+		nameHindi: 'पोटाश',
+		price: '₹1700',
+		weight: '50 kg',
+	},
+	{
+		name: 'Zinc Sulphate',
+		nameHindi: 'जिंक सल्फेट',
+		price: '₹380',
+		weight: '10 kg',
+	},
+	{
+		name: 'Vermicompost',
+		nameHindi: 'वर्मी कम्पोस्ट',
+		price: '₹450',
+		weight: '25 kg',
+	},
+] as const
+
+export const locationHindiMap: Record<string, string> = {
+	ghaziabad: 'गाज़ियाबाद',
+}
+
+function normalizeKey(value: string): string {
+	return value.trim().toLowerCase().replace(/\s+/g, '_')
+}
+
+export function getCropHindiName(crop: string): string {
+	const key = normalizeKey(crop).replace(/_/g, '-')
+	const normalizedKey = key.replace(/-/g, '_')
+	return cropHindiMap[key] || cropHindiMap[normalizedKey] || crop
+}
+
+export function getFertilizerHindiName(name: string): string {
+	const key = normalizeKey(name)
+	if (fertilizerHindiMap[key]) return fertilizerHindiMap[key]
+
+	if (key.startsWith('npk')) {
+		const npkGrade = name.replace(/\s+/g, ' ').trim().split(' ').slice(1).join(' ')
+		return npkGrade ? `एनपीके ${npkGrade}` : fertilizerHindiMap.npk
+	}
+
+	return name
+}
+
+export function getLocationHindiName(location: string): string {
+	const key = normalizeKey(location).replace(/_/g, '')
+	return locationHindiMap[key] || location
+}
+
+export function formatBilingual(english: string, hindi: string, useHindi: boolean): string {
+	if (!useHindi || english === hindi) return english
+	return `${english} (${hindi})`
+}
+
 export const cropFertilizerData: Record<string, CropInputItem[]> = {
 	wheat: [
 		{
