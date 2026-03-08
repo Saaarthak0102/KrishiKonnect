@@ -82,7 +82,7 @@ Firestore database is used for:
 ## 🔗 Submission Links
 
 GitHub Repository:
-https://github.com/username/KrishiKonnect
+https://github.com/Saaarthak0102/KrishiKonnect
 
 Live Demo:
 https://krishikonnect.vercel.app
