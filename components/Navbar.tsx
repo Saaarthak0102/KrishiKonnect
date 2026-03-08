@@ -6,7 +6,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import { usePathname } from 'next/navigation'
 import LanguageToggle from '@/components/ui/LanguageToggle'
-import { GiWheat } from 'react-icons/gi'
+import Image from 'next/image'
 import BrandName from '@/components/ui/BrandName'
 
 export default function Navbar() {
@@ -26,9 +26,16 @@ export default function Navbar() {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center space-x-2">
-            <GiWheat size={24} className="text-krishi-agriculture" />
-            <span className="text-2xl">
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/images/icon.png"
+              alt="KrishiKonnect Logo"
+              width={40}
+              height={40}
+              className="object-contain"
+              priority
+            />
+            <span className="text-xl font-semibold">
               <BrandName />
             </span>
           </Link>

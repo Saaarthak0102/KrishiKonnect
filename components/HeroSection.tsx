@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import { GiWheat } from 'react-icons/gi'
@@ -35,7 +36,20 @@ export default function HeroSection() {
           transition={{ duration: 0.8 }}
           className="col-span-12 md:col-span-5"
         >
-          <h1 className="text-5xl md:text-6xl font-bold text-krishi-indigo mb-3">
+          <div className="flex flex-col items-start gap-4 mb-4">
+            <Image
+              src="/images/icon.png"
+              alt="KrishiKonnect Logo"
+              width={64}
+              height={64}
+              className="object-contain"
+              priority
+            />
+            <h1 className="text-4xl md:text-5xl font-bold text-krishi-indigo">
+              {t.heroHeadline}
+            </h1>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold text-krishi-indigo mb-3 sr-only">
             {t.heroHeadline}
           </h1>
           <p className="text-2xl md:text-3xl font-semibold text-krishi-clay mb-6">

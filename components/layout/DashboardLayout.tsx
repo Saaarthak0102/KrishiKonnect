@@ -8,7 +8,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { logout } from '@/lib/auth'
 import LanguageToggle from '@/components/LanguageToggle'
 import Sidebar from '@/components/Sidebar'
-import { GiWheat } from 'react-icons/gi'
+import Image from 'next/image'
 import BrandName from '@/components/ui/BrandName'
 
 interface DashboardLayoutProps {
@@ -110,8 +110,15 @@ export default function DashboardLayout({ children, pageTitle }: DashboardLayout
       >
         <div className="px-4 py-4 flex items-center justify-between">
           {/* Left - Logo and Brand with Page Title */}
-          <div className="flex items-center space-x-4">
-            <GiWheat size={24} className="text-krishi-agriculture" />
+          <div className="flex items-center gap-3">
+            <Image
+              src="/images/icon.png"
+              alt="KrishiKonnect Logo"
+              width={40}
+              height={40}
+              className="object-contain"
+              priority
+            />
             <span className="text-lg hidden sm:inline font-semibold">
               <span className="text-[#2D2A6E]">Krishi</span>
               <span className="text-[#C46A3D]">Konnect</span>
