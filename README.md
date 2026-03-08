@@ -88,7 +88,7 @@ Live Demo:
 https://krishikonnect.vercel.app
 
 Pitch Deck:
-(Add link here)
+([Pitch](https://drive.google.com/file/d/1Rnp4eGplqCvON6GCaWkCX376wCdY1W0O/view))
 
 Demo Video:
 ([Demo](https://drive.google.com/file/d/1Zr_dwvDPKQWzJMi2oxCyKbsk1lcbgjGs/view?usp=sharing))
