@@ -7,6 +7,12 @@ import { useRouter } from 'next/navigation'
 import { FiMapPin, FiMinus, FiTrendingDown, FiTrendingUp } from 'react-icons/fi'
 import { useLanguage } from '@/lib/LanguageContext'
 import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
+import {
+  bazaarButtonsHindi,
+  getHindiMandiName,
+  getHindiStateName,
+  priceLabelsHindi,
+} from '@/data/krishiBazaarHindiData'
 
 interface MandiPriceCardProps {
   price: MandiPrice
@@ -69,7 +75,7 @@ function MandiPriceCard({
     const timestamp = (price as any).date || (price as any).lastUpdated
     
     if (!timestamp) {
-      return lang === 'hi' ? 'आज अपडेट' : 'Updated today'
+      return lang === 'hi' ? priceLabelsHindi.lastUpdated : 'Updated today'
     }
     
     return getRelativeTime(timestamp, lang === 'hi' ? 'hi' : 'en')
@@ -85,6 +91,9 @@ function MandiPriceCard({
     
     return isLivePrice(timestamp)
   }
+
+  const mandiLabel = lang === 'hi' ? getHindiMandiName(price.mandiEn) : price.mandiEn
+  const stateLabel = lang === 'hi' ? getHindiStateName(price.state) : price.state
 
   return (
     <motion.div
@@ -120,18 +129,18 @@ function MandiPriceCard({
             className="font-semibold"
             style={{ fontSize: '1.2rem', color: '#2D2A6E', letterSpacing: '-0.2px' }}
           >
-            {price.mandiEn}
+            {mandiLabel}
           </h3>
         </div>
         <p className="text-sm" style={{ color: 'rgba(45,42,110,0.72)' }}>
-          {price.district}, {price.state}
+          {price.district}, {stateLabel}
         </p>
       </div>
 
       {/* Main Price Display */}
       <div className="mb-6 pb-6 border-b" style={{ borderColor: 'rgba(45,42,110,0.16)' }}>
         <p className="text-xs uppercase tracking-wide mb-2 font-semibold" style={{ color: 'rgba(45,42,110,0.66)' }}>
-          {lang === 'hi' ? 'मोडल भाव (प्रति क्विंटल)' : 'Modal Price (Per Quintal)'}
+          {lang === 'hi' ? `${priceLabelsHindi.modalPrice} (${priceLabelsHindi.pricePerQuintal})` : 'Modal Price (Per Quintal)'}
         </p>
         <div className="flex items-baseline gap-2">
           <span
@@ -140,7 +149,7 @@ function MandiPriceCard({
           >
             ₹{price.modalPrice.toLocaleString('en-IN')}
           </span>
-          <span style={{ fontSize: '0.9rem', color: 'rgba(45,42,110,0.65)' }}>/ quintal</span>
+          <span style={{ fontSize: '0.9rem', color: 'rgba(45,42,110,0.65)' }}>{lang === 'hi' ? '/ क्विंटल' : '/ quintal'}</span>
         </div>
       </div>
 
@@ -148,7 +157,7 @@ function MandiPriceCard({
       <div className="mb-7 grid grid-cols-2 gap-6">
         <div>
           <p className="mb-1" style={{ fontSize: '0.85rem', color: 'rgba(45,42,110,0.6)', fontWeight: 500 }}>
-            {lang === 'hi' ? 'न्यूनतम' : 'Minimum'}
+            {lang === 'hi' ? priceLabelsHindi.minimum : 'Minimum'}
           </p>
           <p style={{ fontSize: '1.1rem', fontWeight: 600, color: '#2D2A6E' }}>
             ₹{price.minPrice.toLocaleString('en-IN')}
@@ -156,7 +165,7 @@ function MandiPriceCard({
         </div>
         <div>
           <p className="mb-1" style={{ fontSize: '0.85rem', color: 'rgba(45,42,110,0.6)', fontWeight: 500 }}>
-            {lang === 'hi' ? 'अधिकतम' : 'Maximum'}
+            {lang === 'hi' ? priceLabelsHindi.maximum : 'Maximum'}
           </p>
           <p style={{ fontSize: '1.1rem', fontWeight: 600, color: '#2D2A6E' }}>
             ₹{price.maxPrice.toLocaleString('en-IN')}
@@ -173,7 +182,7 @@ function MandiPriceCard({
         }}
       >
         <p className="text-xs uppercase tracking-wide mb-2 font-semibold" style={{ color: 'rgba(45,42,110,0.68)' }}>
-          {lang === 'hi' ? 'बाजार प्रवृत्ति' : 'Market Trend'}
+          {lang === 'hi' ? priceLabelsHindi.marketTrend : 'Market Trend'}
         </p>
         <div className="flex items-center gap-3">
           <motion.span whileHover={{ y: -2, scale: 1.05 }} transition={{ duration: 0.2, ease: 'easeOut' }}>
@@ -222,7 +231,7 @@ function MandiPriceCard({
             whileTap={{ scale: 0.98 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
           >
-            {lang === 'hi' ? 'चार्ट देखें' : 'View Chart'}
+            {lang === 'hi' ? bazaarButtonsHindi.viewChart : 'View Chart'}
           </motion.button>
         )}
       </div>
@@ -242,7 +251,7 @@ function MandiPriceCard({
           whileTap={{ scale: 0.98 }}
           transition={{ duration: 0.25, ease: 'easeOut' }}
         >
-          {lang === 'hi' ? 'परिवहन का अनुरोध करें' : 'Request Transport'}
+          {lang === 'hi' ? bazaarButtonsHindi.transport : 'Request Transport'}
         </motion.button>
       </div>
     </motion.div>

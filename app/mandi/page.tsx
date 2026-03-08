@@ -22,6 +22,11 @@ import NearbyMandisCard from '@/components/NearbyMandisCard'
 import WeeklyMarketTrend from '@/components/WeeklyMarketTrend'
 import { useStarredCrops } from '@/lib/useStarredCrops'
 import cropsData from '@/data/crops.json'
+import {
+  getHindiCropName,
+  getHindiMandiName,
+  getHindiStateName,
+} from '@/data/krishiBazaarHindiData'
 
 interface ContextMandiPrice {
   id: string
@@ -60,7 +65,7 @@ function convertToComponentPrice(data: ContextMandiPrice, cropHi: string): Mandi
     cropHi: cropHi,
     mandi: data.mandi,
     mandiEn: data.mandi,
-    mandiHi: data.mandi,
+    mandiHi: getHindiMandiName(data.mandi),
     district: data.state,
     state: data.state,
     minPrice: data.minPrice,
@@ -249,6 +254,11 @@ export default function MandiPage() {
     if (!selectedCrop) return null
     return getBestMandiForCrop(selectedCrop, componentPrices)
   }, [selectedCrop, componentPrices])
+
+  const selectedCropLabel = useMemo(() => {
+    if (!selectedCrop) return ''
+    return lang === 'hi' ? getHindiCropName(selectedCrop) : selectedCrop
+  }, [lang, selectedCrop])
 
   const nearbyMandis = useMemo(() => {
     const userState = farmerProfile?.state
@@ -468,7 +478,7 @@ export default function MandiPage() {
                       </option>
                       {allStates.map((state) => (
                         <option key={state} value={state}>
-                          {state}
+                          {lang === 'hi' ? getHindiStateName(state) : state}
                         </option>
                       ))}
                     </select>
@@ -531,7 +541,7 @@ export default function MandiPage() {
                         className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium"
                         style={{ backgroundColor: 'rgba(31, 60, 136, 0.15)', color: '#1F3C88' }}
                       >
-                        {selectedState}
+                        {lang === 'hi' ? getHindiStateName(selectedState) : selectedState}
                         <button
                           onClick={() => setSelectedState('')}
                           className="hover:opacity-70"
@@ -595,7 +605,7 @@ export default function MandiPage() {
                               className="font-semibold flex items-center"
                               style={{ fontSize: '1.2rem', color: '#2D2A6E' }}
                             >
-                              {lang === 'hi' ? crop.name_hi : crop.name_en}
+                              {lang === 'hi' ? getHindiCropName(crop.name_en) : crop.name_en}
                             </h3>
                           </div>
                           <p className="font-medium mb-3" style={{ fontSize: '0.9rem', color: '#C46A3D' }}>
@@ -684,7 +694,7 @@ export default function MandiPage() {
                   <span>{lang === 'hi' ? 'वापस' : 'Back'}</span>
                 </button>
                 <h2 className="text-3xl font-bold" style={{ color: '#1F3C88' }}>
-                  {selectedCrop} {lang === 'hi' ? 'भाव' : 'Prices'}
+                  {selectedCropLabel} {lang === 'hi' ? 'भाव' : 'Prices'}
                 </h2>
               </motion.div>
 
@@ -735,7 +745,7 @@ export default function MandiPage() {
                       </option>
                       {availableStates.map((state) => (
                         <option key={state} value={state}>
-                          {state}
+                          {lang === 'hi' ? getHindiStateName(state) : state}
                         </option>
                       ))}
                     </select>
@@ -833,7 +843,7 @@ export default function MandiPage() {
                       className="text-2xl font-bold mb-5 pb-3 border-b-2"
                       style={{ color: '#1F3C88', borderColor: '#E8DCC8' }}
                     >
-                      {state}
+                      {lang === 'hi' ? getHindiStateName(state) : state}
                     </h3>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">

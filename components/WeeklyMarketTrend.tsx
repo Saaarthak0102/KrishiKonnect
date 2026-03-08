@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { memo } from 'react'
+import { bazaarHeadingsHindi, formatTrendHindi } from '@/data/krishiBazaarHindiData'
 
 interface WeeklyMarketTrendProps {
   direction: 'up' | 'down' | 'stable'
@@ -24,6 +25,7 @@ function WeeklyMarketTrend({
       : 'text-krishi-highlight'
 
   const prefix = averageChange > 0 ? '+' : ''
+  const trendLabel = lang === 'hi' ? formatTrendHindi(direction) : label
 
   return (
     <motion.section
@@ -46,11 +48,11 @@ function WeeklyMarketTrend({
       }}
     >
       <h3 className="text-lg font-bold text-krishi-indigo">
-        {lang === 'hi' ? 'Market Trend (7 Days)' : 'Market Trend (7 Days)'}
+        {lang === 'hi' ? bazaarHeadingsHindi.marketTrend : 'Market Trend (7 Days)'}
       </h3>
-      <p className={`badge-glow mt-2 inline-flex rounded-full px-3 py-1 text-base font-bold ${trendColorClass}`} style={{ background: 'rgba(46,157,87,0.1)', border: '1px solid rgba(46,157,87,0.25)' }}>{label}</p>
+      <p className={`badge-glow mt-2 inline-flex rounded-full px-3 py-1 text-base font-bold ${trendColorClass}`} style={{ background: 'rgba(46,157,87,0.1)', border: '1px solid rgba(46,157,87,0.25)' }}>{trendLabel}</p>
       <p className="mt-1 text-sm text-krishi-indigo/80">
-        {lang === 'hi' ? 'Average Change' : 'Average Change'}: {prefix}
+        {lang === 'hi' ? 'औसत बदलाव' : 'Average Change'}: {prefix}
         {averageChange.toFixed(1)}%
       </p>
     </motion.section>

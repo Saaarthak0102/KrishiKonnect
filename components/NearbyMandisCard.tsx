@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { memo } from 'react'
 import type { MandiPrice } from '@/lib/mandiService'
+import { bazaarHeadingsHindi, getHindiMandiName, getHindiStateName } from '@/data/krishiBazaarHindiData'
 
 interface NearbyMandisCardProps {
   userState: string
@@ -11,6 +12,8 @@ interface NearbyMandisCardProps {
 }
 
 function NearbyMandisCard({ userState, mandis, lang }: NearbyMandisCardProps) {
+  const stateLabel = lang === 'hi' ? getHindiStateName(userState) : userState
+
   return (
     <motion.section
       whileHover={{
@@ -32,7 +35,9 @@ function NearbyMandisCard({ userState, mandis, lang }: NearbyMandisCardProps) {
       }}
     >
       <h3 className="text-lg font-bold text-krishi-indigo">
-        {lang === 'hi' ? `Nearby Mandis in ${userState}` : `Nearby Mandis in ${userState}`}
+        {lang === 'hi'
+          ? `${bazaarHeadingsHindi.nearbyMandis} (${stateLabel})`
+          : `Nearby Mandis in ${userState}`}
       </h3>
 
       {mandis.length === 0 ? (
@@ -45,7 +50,7 @@ function NearbyMandisCard({ userState, mandis, lang }: NearbyMandisCardProps) {
         <ol className="mt-3 space-y-2 text-sm text-krishi-indigo">
           {mandis.map((mandi, index) => (
             <li key={mandi.id} className="badge-glow rounded-full px-3 py-1" style={{ background: 'rgba(46,157,87,0.1)', border: '1px solid rgba(46,157,87,0.24)' }}>
-              {index + 1}. {mandi.mandiEn} ₹{mandi.modalPrice.toLocaleString('en-IN')}
+              {index + 1}. {lang === 'hi' ? getHindiMandiName(mandi.mandiEn) : mandi.mandiEn} ₹{mandi.modalPrice.toLocaleString('en-IN')}
             </li>
           ))}
         </ol>

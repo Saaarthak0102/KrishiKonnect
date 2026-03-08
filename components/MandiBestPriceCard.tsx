@@ -5,6 +5,14 @@ import { memo } from 'react'
 import { motion } from 'framer-motion'
 import type { MandiPrice } from '@/lib/mandiService'
 import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
+import {
+  bazaarButtonsHindi,
+  bazaarHeadingsHindi,
+  formatTrendHindi,
+  getHindiMandiName,
+  getHindiStateName,
+  priceLabelsHindi,
+} from '@/data/krishiBazaarHindiData'
 
 interface MandiBestPriceCardProps {
   bestMandi: MandiPrice | null
@@ -25,6 +33,18 @@ function MandiBestPriceCard({ bestMandi, lang }: MandiBestPriceCardProps) {
     if (!timestamp) return false
     return isLivePrice(timestamp)
   }
+
+  const mandiLabel = bestMandi
+    ? lang === 'hi'
+      ? getHindiMandiName(bestMandi.mandiEn)
+      : bestMandi.mandiEn
+    : ''
+
+  const stateLabel = bestMandi
+    ? lang === 'hi'
+      ? getHindiStateName(bestMandi.state)
+      : bestMandi.state
+    : ''
 
   return (
     <motion.section
@@ -47,15 +67,15 @@ function MandiBestPriceCard({ bestMandi, lang }: MandiBestPriceCardProps) {
       }}
     >
       <p className="text-sm font-bold text-krishi-clay">
-        {lang === 'hi' ? '⭐ आज की सर्वश्रेष्ठ मंडी' : 'Best Mandi Today'}
+        {lang === 'hi' ? `⭐ ${bazaarHeadingsHindi.mandiTitle}` : 'Best Mandi Today'}
       </p>
 
       {bestMandi ? (
         <>
-          <p className="mt-3 text-2xl font-bold text-krishi-indigo">📍 {bestMandi.mandiEn}</p>
-          <p className="text-sm text-krishi-indigo/80">{bestMandi.state}</p>
+          <p className="mt-3 text-2xl font-bold text-krishi-indigo">📍 {mandiLabel}</p>
+          <p className="text-sm text-krishi-indigo/80">{stateLabel}</p>
           <p className="mt-2 text-3xl font-extrabold text-krishi-agriculture">
-            ₹{bestMandi.modalPrice.toLocaleString('en-IN')} / quintal
+            ₹{bestMandi.modalPrice.toLocaleString('en-IN')} {lang === 'hi' ? '/ क्विंटल' : '/ quintal'}
           </p>
           
           {/* Timestamp and Live Indicator */}
@@ -72,7 +92,7 @@ function MandiBestPriceCard({ bestMandi, lang }: MandiBestPriceCardProps) {
           </div>
 
           <p className="badge-glow mt-2 inline-flex rounded-full px-3 py-1 text-sm font-semibold text-krishi-indigo/80" style={{ border: '1px solid rgba(196,106,61,0.25)', background: 'rgba(196,106,61,0.09)' }}>
-            {lang === 'hi' ? 'ट्रेंड' : 'Trend'}: {bestMandi.trend.toUpperCase()}
+            {lang === 'hi' ? priceLabelsHindi.marketTrend : 'Trend'}: {lang === 'hi' ? formatTrendHindi(bestMandi.trend) : bestMandi.trend.toUpperCase()}
           </p>
           <motion.div
             whileHover={{ scale: 1.03, y: -2 }}
@@ -85,7 +105,7 @@ function MandiBestPriceCard({ bestMandi, lang }: MandiBestPriceCardProps) {
               className="inline-flex rounded-lg bg-krishi-clay px-4 py-2 text-sm font-semibold text-white"
               style={{ boxShadow: '0 6px 14px rgba(196,106,61,0.2)' }}
             >
-              {lang === 'hi' ? 'यहीं बेचें → ट्रांसपोर्ट' : 'Sell Here → Transport'}
+              {lang === 'hi' ? bazaarButtonsHindi.sellNow : 'Sell Here → Transport'}
             </Link>
           </motion.div>
         </>
