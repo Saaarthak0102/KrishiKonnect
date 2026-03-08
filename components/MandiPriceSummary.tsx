@@ -2,22 +2,28 @@
 
 import { motion } from 'framer-motion'
 import { memo } from 'react'
+import { useRouter } from 'next/navigation'
+import { cropFertilizerData } from '@/data/fertilizers'
 
 interface MandiPriceSummaryProps {
-  bestPrice: number
-  averagePrice: number
-  lowestPrice: number
-  mandiCount: number
+  selectedCrop: string | null
   lang: 'hi' | 'en'
 }
 
 function MandiPriceSummary({
-  bestPrice,
-  averagePrice,
-  lowestPrice,
-  mandiCount,
+  selectedCrop,
   lang,
 }: MandiPriceSummaryProps) {
+  const router = useRouter()
+  const cropKey = selectedCrop?.toLowerCase().replace(/\s+/g, '-') || ''
+  const fertilizerItems = cropFertilizerData[cropKey] ?? []
+
+  const handleBuy = (itemName: string) => {
+    if (!cropKey) return
+    const normalizedItem = itemName.toLowerCase().replace(/\s+/g, '-')
+    router.push(`/buy-input?crop=${encodeURIComponent(cropKey)}&item=${encodeURIComponent(normalizedItem)}`)
+  }
+
   return (
     <motion.section
       whileHover={{
@@ -39,13 +45,49 @@ function MandiPriceSummary({
       }}
     >
       <h3 className="text-lg font-bold text-krishi-indigo">
-        {lang === 'hi' ? 'Price Summary' : 'Price Summary'}
+        {lang === 'hi' ? 'Fertilizer & Crop Care' : 'Fertilizer & Crop Care'}
       </h3>
-      <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-krishi-indigo md:grid-cols-2">
-        <p>{lang === 'hi' ? 'Best Price' : 'Best Price'}: ₹{bestPrice.toLocaleString('en-IN')}</p>
-        <p>{lang === 'hi' ? 'Average Price' : 'Average Price'}: ₹{averagePrice.toLocaleString('en-IN')}</p>
-        <p>{lang === 'hi' ? 'Lowest Price' : 'Lowest Price'}: ₹{lowestPrice.toLocaleString('en-IN')}</p>
-        <p>{lang === 'hi' ? 'Mandis Available' : 'Mandis Available'}: {mandiCount}</p>
+      <div className="mt-3 space-y-2 text-sm text-krishi-indigo">
+        {fertilizerItems.slice(0, 3).map((item) => (
+          <div
+            key={`${cropKey}-${item.name}`}
+            className="rounded-[12px] border p-3"
+            style={{
+              borderColor: 'rgba(196,106,61,0.25)',
+              background: 'rgba(255,255,255,0.45)',
+            }}
+          >
+            <p className="font-semibold" style={{ color: '#2D2A6E' }}>
+              {item.name} ({item.type})
+            </p>
+            <p className="mt-1 text-xs" style={{ color: 'rgba(45,42,110,0.78)' }}>
+              {item.description}
+            </p>
+            <div className="mt-2 flex items-center justify-between gap-3">
+              <p className="text-sm font-semibold" style={{ color: '#C46A3D' }}>
+                ₹{item.price.toLocaleString('en-IN')} / {item.unit}
+              </p>
+              <motion.button
+                whileHover={{ scale: 1.03, y: -1, backgroundColor: '#B95D31' }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                onClick={() => handleBuy(item.name)}
+                className="rounded-[10px] px-4 py-1.5 text-xs font-semibold text-white"
+                style={{
+                  backgroundColor: '#C46A3D',
+                  border: '1px solid rgba(196,106,61,0.7)',
+                }}
+              >
+                {lang === 'hi' ? 'Buy' : 'Buy'}
+              </motion.button>
+            </div>
+          </div>
+        ))}
+        {!fertilizerItems.length && (
+          <p style={{ color: 'rgba(45,42,110,0.75)' }}>
+            {lang === 'hi' ? 'इस फसल के लिए सुझाव उपलब्ध नहीं हैं।' : 'No suggestions available for this crop yet.'}
+          </p>
+        )}
       </div>
     </motion.section>
   )

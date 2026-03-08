@@ -250,27 +250,6 @@ export default function MandiPage() {
     return getBestMandiForCrop(selectedCrop, componentPrices)
   }, [selectedCrop, componentPrices])
 
-  const priceSummary = useMemo(() => {
-    if (!selectedCropPrices.length) {
-      return {
-        bestPrice: 0,
-        lowestPrice: 0,
-        averagePrice: 0,
-        mandiCount: 0,
-      }
-    }
-
-    const modalPrices = selectedCropPrices.map((p) => p.modalPrice)
-    const total = modalPrices.reduce((acc, value) => acc + value, 0)
-
-    return {
-      bestPrice: Math.max(...modalPrices),
-      lowestPrice: Math.min(...modalPrices),
-      averagePrice: Math.round(total / modalPrices.length),
-      mandiCount: selectedCropPrices.length,
-    }
-  }, [selectedCropPrices])
-
   const nearbyMandis = useMemo(() => {
     const userState = farmerProfile?.state
     if (!userState || !selectedCropPrices.length) return []
@@ -806,10 +785,7 @@ export default function MandiPage() {
                   data-bazaar-reveal="true"
                 >
                   <MandiPriceSummary
-                    bestPrice={priceSummary.bestPrice}
-                    averagePrice={priceSummary.averagePrice}
-                    lowestPrice={priceSummary.lowestPrice}
-                    mandiCount={priceSummary.mandiCount}
+                    selectedCrop={selectedCrop}
                     lang={lang}
                   />
                 </motion.div>
