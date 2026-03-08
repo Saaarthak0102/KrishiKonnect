@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/brandicon.png" width="120"/>
+  <img src="icon.png" width="120"/>
 </p>
 
 <h1 align="center">KrishiKonnect</h1>
