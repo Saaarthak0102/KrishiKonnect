@@ -11,6 +11,7 @@ import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton'
 import MarketInsightCard from '@/components/dashboard/MarketInsightCard'
 import LatestCommunityQuestionCard from '@/components/dashboard/LatestCommunityQuestionCard'
 import LatestAIChatCard from '@/components/dashboard/LatestAIChatCard'
+import YourOrdersCard from '@/components/YourOrdersCard'
 import { subscribeToTransportBookings, type TransportBookingRecord } from '@/lib/transportBookings'
 import { getRelativeTime, isLivePrice } from '@/lib/timeUtils'
 import { getWeatherForLocation, type WeatherData } from '@/lib/weatherService'
@@ -808,9 +809,16 @@ export default function DashboardPage() {
           </motion.div>
         </div>
 
-        {/* Market Insight Card */}
-        <div className="dashboard-card h-full md:col-span-8">
-          <MarketInsightCard starredCrops={starredCrops} />
+        {/* Right Side Cards - Market Insight & Your Orders */}
+        <div className="h-full md:col-span-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+            <div className="h-full">
+              <MarketInsightCard starredCrops={starredCrops} />
+            </div>
+            <div className="h-full">
+              <YourOrdersCard />
+            </div>
+          </div>
         </div>
       </motion.div>
 
