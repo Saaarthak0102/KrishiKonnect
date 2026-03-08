@@ -344,22 +344,26 @@
 }
 
 @media print {
-  body * {
-    visibility: hidden;
+  /* Hide dashboard layout */
+  aside,
+  nav,
+  header {
+    display: none !important;
   }
 
-  #receipt-print,
-  #receipt-print * {
-    visibility: visible;
+  /* Expand main content to full width */
+  main {
+    width: 100% !important;
+    margin: 0 !important;
   }
 
-  #receipt-print {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    max-width: 820px;
-    margin: 0 auto;
-    padding: 16px;
+  /* Hide buttons during printing */
+  button {
+    display: none !important;
+  }
+
+  /* Ensure background prints cleanly */
+  body {
+    background: white !important;
   }
 }

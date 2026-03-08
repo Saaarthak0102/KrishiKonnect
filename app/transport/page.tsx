@@ -488,10 +488,8 @@ export default function TransportPage() {
     }
   }
 
-  const handlePrintReceipt = () => {
-    document.body.classList.add('transport-receipt-print')
+  function handlePrintReceipt() {
     window.print()
-    document.body.classList.remove('transport-receipt-print')
   }
 
   const handleBackToMandi = () => {
@@ -663,34 +661,6 @@ export default function TransportPage() {
         <Footer />
       </div>
 
-      <style jsx global>{`
-        @media print {
-          body.transport-receipt-print * {
-            visibility: hidden;
-          }
-
-          body.transport-receipt-print #transport-receipt,
-          body.transport-receipt-print #transport-receipt * {
-            visibility: visible;
-          }
-
-          body.transport-receipt-print #transport-receipt {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            margin: 0;
-            padding: 24px;
-            border: 0;
-            box-shadow: none;
-            background: #ffffff;
-          }
-
-          body.transport-receipt-print .transport-no-print {
-            display: none !important;
-          }
-        }
-      `}</style>
     </DashboardLayout>
   )
 }
