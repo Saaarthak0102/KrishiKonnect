@@ -141,12 +141,13 @@ function MandiPriceSummary({
                 </div>
               </div>
             ))}
-        {!fertilizerItems.length && lang !== 'hi' && (
-          <p style={{ color: 'rgba(45,42,110,0.75)' }}>
-            {lang === 'hi' ? 'इस फसल के लिए सुझाव उपलब्ध नहीं हैं।' : 'No suggestions available for this crop yet.'}
-          </p>
-        )}
-      </div>
+        {!fertilizerItems.length && (
+  <p style={{ color: 'rgba(45,42,110,0.75)' }}>
+    {lang === 'hi'
+      ? 'इस फसल के लिए सुझाव उपलब्ध नहीं हैं।'
+      : 'No suggestions available for this crop yet.'}
+  </p>
+)}      </div>
     </motion.section>
   )
 }
