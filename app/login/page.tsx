@@ -282,7 +282,7 @@ export default function LoginPage() {
           <div className="mb-2">
             <div className="font-medium text-orange-700">Check existing account</div>
             <div>Phone: <b>9876543210</b></div>
-            <div>OTP: <b>12345</b></div>
+            <div>OTP: <b>123456</b></div>
           </div>
           <div>
             <div className="font-medium text-orange-700">Create new account</div>
