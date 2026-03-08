@@ -12,14 +12,17 @@ import {
   subscribeToChats,
   addMessageToChat,
   generateKrishiAdvice,
+  generateBilingualKrishiAdvice,
   uploadImageToStorage,
   deleteChat,
   updateChatTitle,
   getGreetingMessage,
+  getBilingualGreeting,
   getFarmerContext,
   generateChatTitle,
   type AIChat,
   type AIMessage,
+  type BilingualContent,
 } from '@/lib/aiAdvisor'
 import ChatWindow from '@/components/ai-advisor/ChatWindow'
 import ChatHistorySidebar from '@/components/ai-advisor/ChatHistorySidebar'
@@ -111,11 +114,14 @@ export default function AIAdvisorPage() {
         const newChatId = await createNewChat(user.uid, lang as 'en' | 'hi')
         setCurrentChatId(newChatId)
 
-        // Add greeting message
+        // Add bilingual greeting message
+        const bilingualGreeting = getBilingualGreeting()
         await addMessageToChat(
           newChatId,
           'assistant',
-          getGreetingMessage(lang as 'en' | 'hi')
+          bilingualGreeting[lang as 'en' | 'hi'],
+          undefined,
+          bilingualGreeting
         )
       } catch (err) {
         console.error('Error creating first chat:', err)
@@ -195,11 +201,14 @@ export default function AIAdvisorPage() {
       setCurrentChatId(newChatId)
       setMessages([])
 
-      // Add greeting message
+      // Add bilingual greeting message
+      const bilingualGreeting = getBilingualGreeting()
       await addMessageToChat(
         newChatId,
         'assistant',
-        getGreetingMessage(lang as 'en' | 'hi')
+        bilingualGreeting[lang as 'en' | 'hi'],
+        undefined,
+        bilingualGreeting
       )
     } catch (err) {
       console.error('Error creating new chat:', err)
@@ -252,8 +261,20 @@ export default function AIAdvisorPage() {
         finalImageUrl = await uploadImageToStorage(imageFile, currentChatId, user.uid)
       }
 
-      // Add user message
-      await addMessageToChat(currentChatId, 'user', content, finalImageUrl)
+      // Create bilingual user message
+      const userBilingualContent: BilingualContent = {
+        en: content,
+        hi: content,
+      }
+
+      // Add user message with bilingual content
+      await addMessageToChat(
+        currentChatId,
+        'user',
+        content,
+        finalImageUrl,
+        userBilingualContent
+      )
 
       // Auto-generate title from first user message
       if (isFirstMessage && isDefaultTitle) {
@@ -270,8 +291,8 @@ export default function AIAdvisorPage() {
       const contextPreview = buildContextPreview(farmerContext)
       setFarmContext(contextPreview)
 
-      // Generate AI response
-      const aiResponse = await generateKrishiAdvice(
+      // Generate bilingual AI response
+      const bilingualResponse = await generateBilingualKrishiAdvice(
         content,
         user.uid,
         finalImageUrl,
@@ -279,8 +300,14 @@ export default function AIAdvisorPage() {
         lang as 'en' | 'hi'
       )
 
-      // Add AI response
-      await addMessageToChat(currentChatId, 'assistant', aiResponse)
+      // Add AI response with bilingual content
+      await addMessageToChat(
+        currentChatId,
+        'assistant',
+        bilingualResponse[lang as 'en' | 'hi'],
+        undefined,
+        bilingualResponse
+      )
     } catch (err) {
       console.error('Error sending message:', err)
       setError(err instanceof Error ? err.message : 'Failed to send message')

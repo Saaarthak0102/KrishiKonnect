@@ -27,12 +27,21 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db, storage } from './firebase'
 
 /**
+ * Bilingual text content
+ */
+export interface BilingualContent {
+  en: string
+  hi: string
+}
+
+/**
  * Type definitions for AI Chat
  */
 export interface AIMessage {
   id: string
   role: 'user' | 'assistant'
-  content: string
+  content: string // Legacy field for backward compatibility
+  bilingualContent?: BilingualContent // New bilingual content
   imageUrl?: string
   createdAt: Date
 }
@@ -79,16 +88,24 @@ export async function addMessageToChat(
   chatId: string,
   role: 'user' | 'assistant',
   content: string,
-  imageUrl?: string
+  imageUrl?: string,
+  bilingualContent?: BilingualContent
 ): Promise<string> {
   try {
     const messagesRef = collection(db, 'ai_chats', chatId, 'messages')
-    const messageRef = await addDoc(messagesRef, {
+    const messageData: any = {
       role,
       content,
       imageUrl: imageUrl || null,
       createdAt: serverTimestamp(),
-    })
+    }
+
+    // Add bilingual content if provided
+    if (bilingualContent) {
+      messageData.bilingualContent = bilingualContent
+    }
+
+    const messageRef = await addDoc(messagesRef, messageData)
 
     // Update chat's updatedAt timestamp
     await updateDoc(doc(db, 'ai_chats', chatId), {
@@ -160,13 +177,17 @@ export function subscribeToChat(
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
-        const messages = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          role: doc.data().role,
-          content: doc.data().content,
-          imageUrl: doc.data().imageUrl,
-          createdAt: doc.data().createdAt?.toDate() || new Date(),
-        })) as AIMessage[]
+        const messages = snapshot.docs.map((doc) => {
+          const data = doc.data()
+          return {
+            id: doc.id,
+            role: data.role,
+            content: data.content,
+            bilingualContent: data.bilingualContent,
+            imageUrl: data.imageUrl,
+            createdAt: data.createdAt?.toDate() || new Date(),
+          }
+        }) as AIMessage[]
         onUpdate(messages)
       },
       (error) => {
@@ -453,6 +474,16 @@ export function getGreetingMessage(language: 'en' | 'hi' = 'en'): string {
 }
 
 /**
+ * Get bilingual greeting message
+ */
+export function getBilingualGreeting(): BilingualContent {
+  return {
+    en: `Namaste! I'm Krishi Sahayak 🌾\nI can help you with your farming problems.\nYou can ask your questions.`,
+    hi: `नमस्ते! मैं कृषि सहायक हूँ 🌾\nमैं आपकी खेती से जुड़ी समस्याओं में मदद कर सकता हूँ।\nआप अपना सवाल पूछ सकते हैं।`,
+  }
+}
+
+/**
  * Detect if a message is agricultural in nature
  */
 export function isAgriculturalQuestion(question: string): boolean {
@@ -550,3 +581,53 @@ export function generateChatTitle(question: string, language: 'en' | 'hi' = 'en'
 
   return language === 'hi' ? 'खेती सलाह' : 'Farming Advice'
 }
+
+/**
+ * Generate bilingual Krishi Advice (both English and Hindi)
+ * Returns both versions for dynamic language switching
+ */
+export async function generateBilingualKrishiAdvice(
+  message: string,
+  userId: string,
+  imageUrl?: string,
+  farmerContext?: {
+    location?: string
+    crop?: string
+    season?: string
+  },
+  primaryLanguage: 'en' | 'hi' = 'en'
+): Promise<BilingualContent> {
+  try {
+    // Generate response in primary language
+    const primaryResponse = await generateKrishiAdvice(
+      message,
+      userId,
+      imageUrl,
+      farmerContext,
+      primaryLanguage
+    )
+
+    // Generate response in the other language
+    const secondaryLanguage = primaryLanguage === 'en' ? 'hi' : 'en'
+    const secondaryResponse = await generateKrishiAdvice(
+      message,
+      userId,
+      imageUrl,
+      farmerContext,
+      secondaryLanguage
+    )
+
+    return primaryLanguage === 'en'
+      ? { en: primaryResponse, hi: secondaryResponse }
+      : { en: secondaryResponse, hi: primaryResponse }
+  } catch (error) {
+    console.error('Error generating bilingual advice:', error)
+    // Fallback: return primary response for both languages
+    const fallbackResponse = 'Sorry, I encountered an issue. Please try again.'
+    return {
+      en: fallbackResponse,
+      hi: 'क्षमा करें, मुझे कोई समस्या आई। कृपया फिर से प्रयास करें।',
+    }
+  }
+}
+

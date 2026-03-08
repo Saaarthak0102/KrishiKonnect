@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { AIMessage } from '@/lib/aiAdvisor'
 import { detectLanguage, toResponseLanguage } from '@/lib/languageDetector'
+import { useLanguage } from '@/lib/LanguageContext'
 import AnswerCard from './AnswerCard'
 import DataSources from './DataSources'
 
@@ -12,7 +13,14 @@ interface MessageBubbleProps {
 }
 
 export default function MessageBubble({ message, isUser }: MessageBubbleProps) {
-  const detected = detectLanguage(message.content)
+  const { lang } = useLanguage()
+  
+  // Get the appropriate content based on current language
+  const displayContent = message.bilingualContent
+    ? message.bilingualContent[lang as 'en' | 'hi']
+    : message.content
+
+  const detected = detectLanguage(displayContent)
   const responseLanguage = toResponseLanguage(detected)
   const languageLabel =
     responseLanguage === 'hindi'
@@ -20,7 +28,7 @@ export default function MessageBubble({ message, isUser }: MessageBubbleProps) {
       : responseLanguage === 'hinglish'
         ? 'Hinglish'
         : 'English'
-  const lang = responseLanguage === 'hindi' ? 'hi' : 'en'
+  const contentLang = responseLanguage === 'hindi' ? 'hi' : 'en'
 
   // User message bubble
   if (isUser) {
@@ -54,7 +62,7 @@ export default function MessageBubble({ message, isUser }: MessageBubbleProps) {
 
           {/* Message text - preserve formatting */}
           <p className="whitespace-pre-wrap break-words text-sm leading-relaxed" style={{ fontSize: '0.95rem' }}>
-            {message.content}
+            {displayContent}
           </p>
 
           {/* Timestamp */}
@@ -95,10 +103,10 @@ export default function MessageBubble({ message, isUser }: MessageBubbleProps) {
         </p>
 
         {/* Use AnswerCard for structured display */}
-        <AnswerCard content={message.content} lang={lang} />
+        <AnswerCard content={displayContent} lang={contentLang} />
 
         {/* Data Sources */}
-        <DataSources lang={lang} />
+        <DataSources lang={contentLang} />
 
         {/* Timestamp */}
         <p className="text-xs mt-2 text-gray-500">
