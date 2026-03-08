@@ -165,11 +165,6 @@ export default memo(function CropCard({ crop }: CropCardProps) {
                 target.style.display = 'none'
               }}
             />
-            {/* Fallback gradient if image fails */}
-            <div className="absolute inset-0 bg-gradient-to-br from-krishi-agriculture/80 to-krishi-primary/80 flex items-center justify-center text-5xl font-bold opacity-0 hover:opacity-100 transition-opacity">
-              {cropName.charAt(0)}
-            </div>
-
             {/* Star Button Overlay */}
             <motion.button
               onClick={handleStarClick}

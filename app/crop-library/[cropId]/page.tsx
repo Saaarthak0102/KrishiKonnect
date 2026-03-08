@@ -227,9 +227,6 @@ export default function CropDetailPage() {
                 target.style.display = 'none'
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-[#2D2A6E]/80 to-[#C46A3D]/80 flex items-center justify-center text-8xl font-bold opacity-0 hover:opacity-100 transition-opacity duration-300">
-              {cropName.charAt(0)}
-            </div>
           </div>
 
           {/* Crop Info */}
