@@ -269,29 +269,33 @@ export default function LoginPage() {
       <div className="absolute top-4 right-6 z-50">
         <LanguageToggle />
       </div>
-      
-      {/* Development Notice - Remove in Production */}
-      {process.env.NODE_ENV === 'development' && (
-        <div 
-          className="fixed top-4 left-4 p-3 max-w-xs hidden md:block"
-          style={{
-            background: 'rgba(255,255,255,0.5)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-            border: '1px solid rgba(196,106,61,0.35)',
-            borderRadius: '12px',
-            boxShadow: '0 6px 20px rgba(45,42,110,0.08)'
-          }}
+
+      {/* Development Login Card (Demo Helper) - Show in all non-production envs */}
+      {(process.env.NODE_ENV !== 'production' || process.env.VERCEL_ENV !== 'production') && (
+        <div
+          className="fixed top-6 left-6 bg-white/90 backdrop-blur-md shadow-lg rounded-xl p-4 text-sm border border-orange-200 z-50"
+          style={{ minWidth: 220, maxWidth: 260, color: '#C46A3D', fontFamily: 'inherit' }}
         >
-          <p className="text-sm font-semibold flex items-center" style={{ color: '#2D2A6E' }}>
-            <FiTool size={18} className="mr-1" style={{ color: '#C46A3D' }} />
-            Development Mode
-          </p>
-          <p className="text-xs mt-1" style={{ color: '#2D2A6E' }}>Test Phone: <code className="px-2 py-1" style={{ background: 'rgba(196,106,61,0.1)', color: '#C46A3D', borderRadius: '4px' }}>+919876543210</code></p>
-          <p className="text-xs" style={{ color: '#2D2A6E' }}>Test OTP: <code className="px-2 py-1" style={{ background: 'rgba(196,106,61,0.1)', color: '#C46A3D', borderRadius: '4px' }}>123456</code></p>
+          <div className="font-semibold text-orange-600 mb-2 flex items-center">
+            <span className="mr-1">🔧</span> Development Mode
+          </div>
+          <div className="mb-2">
+            <div className="font-medium text-orange-700">Check existing account</div>
+            <div>Phone: <b>9876543210</b></div>
+            <div>OTP: <b>12345</b></div>
+          </div>
+          <div>
+            <div className="font-medium text-orange-700">Create new account</div>
+            <div>9876543211</div>
+            <div>9876543212</div>
+            <div>9876543213</div>
+            <div>9876543214</div>
+            <div>9876543215</div>
+            <div className="mt-1">OTP: <b>123456</b></div>
+          </div>
         </div>
       )}
-      
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
