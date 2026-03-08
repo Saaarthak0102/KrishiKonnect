@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations } from '@/lib/translations'
 import { RiRobot2Line } from 'react-icons/ri'
@@ -135,6 +136,11 @@ export default function FeatureGrid() {
         <div className="space-y-32">
           {features.map((feature, index) => {
             const isEven = index % 2 === 0
+            const isKrishiFasal = feature.titleKey === 'cropLibrary'
+            const isKrishiBazaar = feature.titleKey === 'mandiPrices'
+            const isKrishiSangh = feature.titleKey === 'community'
+            const isKrishiDrishti = feature.titleKey === 'dataAnalytics'
+            const isKrishiSetu = feature.titleKey === 'transport'
             const title = t[feature.titleKey as keyof typeof t] as string
             const description = t[feature.descKey as keyof typeof t] as string
             
@@ -148,8 +154,15 @@ export default function FeatureGrid() {
               >
                 {/* Illustration Placeholder */}
                 <div className={`col-span-12 md:col-span-7 ${!isEven ? 'md:order-2' : 'md:order-1'}`}>
-                  <div className="w-full h-[320px] bg-white/40 backdrop-blur-md rounded-xl flex items-center justify-center border border-indigo-200/40 shadow-md">
-                    <span className="text-neutral-400 text-sm font-medium">Illustration Placeholder</span>
+                  <div className={`w-full h-[320px] flex items-center justify-center ${isKrishiFasal || isKrishiBazaar || isKrishiSangh || isKrishiDrishti || isKrishiSetu ? 'p-4' : ''}`}>
+                    <Image
+                      src={isKrishiFasal ? '/illustrations/krishi-fasal.png' : isKrishiBazaar ? '/illustrations/krishi-bazaar.png' : isKrishiSangh ? '/illustrations/krishi-sangh.png' : isKrishiDrishti ? '/illustrations/krishi-drishti.png' : isKrishiSetu ? '/illustrations/krishi-setu.png' : '/illustrations/krishi-sahayak.png'}
+                      alt={isKrishiFasal ? 'Krishi Fasal crop library interface illustration' : isKrishiBazaar ? 'Krishi Bazaar mandi price dashboard illustration' : isKrishiSangh ? 'Krishi Sangh farmer community discussion illustration' : isKrishiDrishti ? 'Krishi Drishti farm dashboard illustration' : isKrishiSetu ? 'Krishi Setu transport booking illustration' : 'Krishi Sahayak AI helping farmers'}
+                      width={1600}
+                      height={900}
+                      className="w-full h-[320px] object-contain"
+                      priority
+                    />
                   </div>
                 </div>
 
