@@ -20,7 +20,7 @@ interface FarmContextPreview {
 interface ChatWindowProps {
   messages: AIMessage[]
   loading: boolean
-  onSendMessage: (content: string, imageFile?: File, imageUrl?: string) => Promise<void>
+  onSendMessage: (content: string) => Promise<void>
   error: string | null
   onErrorDismiss: () => void
   lang: string
@@ -38,8 +38,6 @@ export default function ChatWindow({
 }: ChatWindowProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [isSending, setIsSending] = useState(false)
-  const [selectedImage, setSelectedImage] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -51,24 +49,12 @@ export default function ChatWindow({
 
     setIsSending(true)
     try {
-      await onSendMessage(content, selectedImage || undefined)
-      setSelectedImage(null)
-      setImagePreview(null)
+      await onSendMessage(content)
     } catch (err) {
       console.error('Error sending message:', err)
     } finally {
       setIsSending(false)
     }
-  }
-
-  const handleImageSelect = (file: File, preview: string) => {
-    setSelectedImage(file)
-    setImagePreview(preview)
-  }
-
-  const handleClearImage = () => {
-    setSelectedImage(null)
-    setImagePreview(null)
   }
 
   return (
@@ -140,32 +126,10 @@ export default function ChatWindow({
         </motion.div>
       )}
 
-      {/* Image Preview */}
-      {imagePreview && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mx-6 mb-4 relative inline-block"
-        >
-          <img
-            src={imagePreview}
-            alt="Preview"
-            className="max-h-32 rounded-lg border border-krishi-border"
-          />
-          <button
-            onClick={handleClearImage}
-            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 text-sm"
-          >
-            ✕
-          </button>
-        </motion.div>
-      )}
-
       {/* Input Area */}
       <div className="shrink-0 border-t p-4 pt-3" style={{ borderColor: 'rgba(196,106,61,0.25)' }}>
         <ChatInput
           onSendMessage={handleSendMessage}
-          onImageSelect={handleImageSelect}
           disabled={isSending || loading}
           lang={lang}
         />

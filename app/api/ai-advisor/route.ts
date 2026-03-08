@@ -244,6 +244,54 @@ function containsCropName(question: string): boolean {
   return COMMON_CROPS.some((crop) => lowerQuestion.includes(crop))
 }
 
+function getCropAliases(crop: string): string[] {
+  const normalized = crop.toLowerCase().trim()
+  const aliasMap: Record<string, string[]> = {
+    maize: ['maize', 'corn', 'makka', 'मक्का'],
+    wheat: ['wheat', 'gehun', 'gehu', 'गेहूं', 'गेहु'],
+    rice: ['rice', 'paddy', 'chawal', 'धान', 'चावल'],
+    cotton: ['cotton', 'kapas', 'कपास'],
+    sugarcane: ['sugarcane', 'ganna', 'गन्ना'],
+    potato: ['potato', 'aloo', 'आलू'],
+    tomato: ['tomato', 'tamatar', 'टमाटर'],
+    onion: ['onion', 'pyaz', 'प्याज'],
+    banana: ['banana', 'kela', 'केला'],
+    mango: ['mango', 'aam', 'आम'],
+  }
+
+  const fallback = normalized
+    .split(/\s+/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+
+  return Array.from(new Set([normalized, ...(aliasMap[normalized] || []), ...fallback]))
+}
+
+function questionMentionsPrimaryCrop(question: string, primaryCrop: string): boolean {
+  const lowerQuestion = question.toLowerCase()
+  const aliases = getCropAliases(primaryCrop)
+  return aliases.some((alias) => lowerQuestion.includes(alias.toLowerCase()))
+}
+
+function extractMentionedCrop(question: string): string | null {
+  const lowerQuestion = question.toLowerCase()
+  const sortedByLength = [...COMMON_CROPS].sort((a, b) => b.length - a.length)
+  const match = sortedByLength.find((crop) => lowerQuestion.includes(crop.toLowerCase()))
+  return match || null
+}
+
+function shouldIncludePrimaryCropContext(question: string, primaryCrop: string): boolean {
+  if (!primaryCrop.trim()) return false
+
+  const mentionsAnyCrop = containsCropName(question)
+  if (!mentionsAnyCrop) {
+    // Generic questions benefit from user profile context.
+    return true
+  }
+
+  return questionMentionsPrimaryCrop(question, primaryCrop)
+}
+
 /**
  * Use Gemini to classify if a question is farming-related
  * Returns true if farming-related, false otherwise
@@ -508,6 +556,34 @@ function buildFarmerPrompt({
         ? 'Hinglish (Hindi written in English letters)'
         : 'English'
 
+  const includePrimaryCropContext = shouldIncludePrimaryCropContext(question, context.crop)
+  const mentionedCrop = extractMentionedCrop(question)
+
+  const contextualSections = [
+    `📍 Location: ${context.location}`,
+    `🌤️ Current weather: ${context.weather.temperature}, ${context.weather.condition}, Humidity ${context.weather.humidity}`,
+  ]
+
+  if (includePrimaryCropContext) {
+    contextualSections.push(
+      `🌾 Primary crop: ${context.crop}`,
+      `📅 Season: ${context.season}`,
+      `🌱 Crop stage: ${context.cropStage}`,
+      `💰 Market price for ${context.mandi.crop}: ${context.mandi.price}`,
+      `🏪 Market: ${context.mandi.market}`
+    )
+  } else if (context.crop) {
+    contextualSections.push(
+      `🌾 Primary crop: ${context.crop} (use only if the question is about ${context.crop} or farmer's own current crop)`
+    )
+  }
+
+  const cropFocusLine = mentionedCrop
+    ? `Question mentions crop: ${mentionedCrop}`
+    : includePrimaryCropContext
+      ? `Question mentions crop: not explicit (use profile crop context if needed)`
+      : 'Question mentions crop: not explicit'
+
   return `You are Krishi Sahayak, an AI agriculture advisor for Indian farmers.
 
 Language Rule:
@@ -517,25 +593,19 @@ If responseLanguage = Hinglish, write Hindi words using English letters.
 Use very simple farmer-friendly language.
 Do not switch to full English for Hinglish responses.
 
+Critical Relevance Rule:
+If farmer asks about a specific crop, answer for that crop.
+Do NOT switch the answer to the user's primary crop unless the question is about that crop.
+Use profile crop/mandi/crop-stage context only when it is relevant.
+
 Use the farmer's environment to give personalized advice.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Farmer Context:
+${contextualSections.join('\n')}
 
-📍 Location: ${context.location}
-🌾 Crop: ${context.crop}
-📅 Season: ${context.season}
-🌱 Crop Stage: ${context.cropStage}
-
-Weather:
-🌤️ Temperature: ${context.weather.temperature}
-💧 Humidity: ${context.weather.humidity}
-☁️ Condition: ${context.weather.condition}
-
-Market Data:
-💰 Current mandi price for ${context.crop}: ${context.mandi.price}
-🏪 Market: ${context.mandi.market}
+${cropFocusLine}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -543,7 +613,8 @@ Instructions:
 • Give practical farming advice
 • Keep answers simple and farmer-friendly
 • Use bullet points for clarity
-• Always consider weather, crop stage, and location
+• Always consider location and weather
+• Consider crop stage and mandi price only when relevant to the asked crop
 • Avoid generic chatbot answers
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

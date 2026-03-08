@@ -11,12 +11,9 @@ import {
   subscribeToChat,
   subscribeToChats,
   addMessageToChat,
-  generateKrishiAdvice,
   generateBilingualKrishiAdvice,
-  uploadImageToStorage,
   deleteChat,
   updateChatTitle,
-  getGreetingMessage,
   getBilingualGreeting,
   getFarmerContext,
   generateChatTitle,
@@ -240,11 +237,7 @@ export default function AIAdvisorPage() {
     }
   }
 
-  const handleSendMessage = async (
-    content: string,
-    imageFile?: File,
-    imageUrl?: string
-  ) => {
+  const handleSendMessage = async (content: string) => {
     if (!currentChatId || !user?.uid) return
 
     try {
@@ -254,12 +247,6 @@ export default function AIAdvisorPage() {
       const currentChat = chats.find((c) => c.id === currentChatId)
       const isFirstMessage = messages.length === 1 // Only greeting message
       const isDefaultTitle = currentChat?.title === 'New Chat' || currentChat?.title === 'नई चैट'
-
-      // Handle image upload if file is provided
-      let finalImageUrl = imageUrl
-      if (imageFile) {
-        finalImageUrl = await uploadImageToStorage(imageFile, currentChatId, user.uid)
-      }
 
       // Create bilingual user message
       const userBilingualContent: BilingualContent = {
@@ -272,7 +259,7 @@ export default function AIAdvisorPage() {
         currentChatId,
         'user',
         content,
-        finalImageUrl,
+        undefined,
         userBilingualContent
       )
 
@@ -295,7 +282,6 @@ export default function AIAdvisorPage() {
       const bilingualResponse = await generateBilingualKrishiAdvice(
         content,
         user.uid,
-        finalImageUrl,
         farmerContext || undefined,
         lang as 'en' | 'hi'
       )

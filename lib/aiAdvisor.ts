@@ -391,7 +391,6 @@ export async function updateChatTitle(chatId: string, title: string): Promise<vo
 export async function generateKrishiAdvice(
   message: string,
   userId: string,
-  imageUrl?: string,
   farmerContext?: {
     location?: string
     crop?: string
@@ -400,20 +399,13 @@ export async function generateKrishiAdvice(
   language: 'en' | 'hi' = 'en'
 ): Promise<string> {
   try {
-    const userQuestion = imageUrl
-      ? `[Farmer uploaded an image]
-${message}
-
-Please include image-based diagnosis or observations if relevant.`
-      : message
-
     const response = await fetch('/api/ai-advisor', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        userQuestion,
+        userQuestion: message,
         userId,
         location: farmerContext?.location,
         crop: farmerContext?.crop,
@@ -589,7 +581,6 @@ export function generateChatTitle(question: string, language: 'en' | 'hi' = 'en'
 export async function generateBilingualKrishiAdvice(
   message: string,
   userId: string,
-  imageUrl?: string,
   farmerContext?: {
     location?: string
     crop?: string
@@ -602,7 +593,6 @@ export async function generateBilingualKrishiAdvice(
     const primaryResponse = await generateKrishiAdvice(
       message,
       userId,
-      imageUrl,
       farmerContext,
       primaryLanguage
     )
@@ -612,7 +602,6 @@ export async function generateBilingualKrishiAdvice(
     const secondaryResponse = await generateKrishiAdvice(
       message,
       userId,
-      imageUrl,
       farmerContext,
       secondaryLanguage
     )
